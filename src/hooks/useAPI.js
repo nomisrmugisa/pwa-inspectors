@@ -18,7 +18,7 @@ function validateValue(value, valueType, compulsory = false) {
     case 'INTEGER':
     case 'INTEGER_POSITIVE':
     case 'INTEGER_NEGATIVE':
-    case 'INTEGER_ZERO_OR_POSITIVE':
+    case 'INTEGER_ZERO_OR_POSITIVE': {
       if (!/^-?\d+$/.test(stringValue)) {
         return { valid: false, message: 'Must be a whole number' };
       }
@@ -33,9 +33,10 @@ function validateValue(value, valueType, compulsory = false) {
         return { valid: false, message: 'Must be zero or positive' };
       }
       break;
+    }
       
     case 'NUMBER':
-    case 'PERCENTAGE':
+    case 'PERCENTAGE': {
       if (!/^-?\d*\.?\d+$/.test(stringValue)) {
         return { valid: false, message: 'Must be a valid number' };
       }
@@ -46,34 +47,39 @@ function validateValue(value, valueType, compulsory = false) {
         }
       }
       break;
+    }
       
-    case 'DATE':
+    case 'DATE': {
       const dateValue = new Date(stringValue);
       if (isNaN(dateValue.getTime())) {
         return { valid: false, message: 'Must be a valid date' };
       }
       break;
+    }
       
-    case 'DATETIME':
+    case 'DATETIME': {
       const datetimeValue = new Date(stringValue);
       if (isNaN(datetimeValue.getTime())) {
         return { valid: false, message: 'Must be a valid date and time' };
       }
       break;
+    }
       
-    case 'EMAIL':
+    case 'EMAIL': {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(stringValue)) {
         return { valid: false, message: 'Must be a valid email address' };
       }
       break;
+    }
       
-    case 'PHONE_NUMBER':
-      const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+    case 'PHONE_NUMBER': {
+      const phoneRegex = /^[+]?[1-9][\d]{0,15}$/;
       if (!phoneRegex.test(stringValue.replace(/\s/g, ''))) {
         return { valid: false, message: 'Must be a valid phone number' };
       }
       break;
+    }
       
     case 'URL':
       try {
@@ -144,7 +150,7 @@ class DHIS2APIService {
   }
 
   async getMe() {
-    return this.request('/api/me?fields=id,displayName,username,organisationUnits[id,displayName]');
+    return this.request('/api/me?fields=id,displayName,username,organisationUnits[id,name]');
   }
 
   /**
@@ -172,11 +178,17 @@ class DHIS2APIService {
 
   /**
    * Get user's assigned organisation units for data capture
+   * Uses the specific endpoint: /api/me?fields=organisationUnits[id,name]
    */
   async getUserOrgUnits() {
     const me = await this.getMe();
     if (me.organisationUnits && me.organisationUnits.length > 0) {
-      return { organisationUnits: me.organisationUnits };
+      // Transform 'name' field to 'displayName' for consistency with rest of the app
+      const transformedOrgUnits = me.organisationUnits.map(ou => ({
+        ...ou,
+        displayName: ou.name || ou.displayName
+      }));
+      return { organisationUnits: transformedOrgUnits };
     }
     
     // Fallback to all org units if user has no assignments

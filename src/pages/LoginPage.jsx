@@ -4,9 +4,9 @@ import { useApp } from '../contexts/AppContext';
 export function LoginPage() {
   const { login, loading, error } = useApp();
   const [formData, setFormData] = useState({
-    serverUrl: 'https://play.dhis2.org/40.2.2', // Pre-filled with demo server
-    username: 'admin',
-    password: 'district'
+    serverUrl: 'https://qimsdev.5am.co.bw/qims', // QIMS development server
+    username: '',
+    password: ''
   });
   const [formErrors, setFormErrors] = useState({});
 
@@ -66,9 +66,9 @@ export function LoginPage() {
     }
   };
 
-  const fillDemoCredentials = () => {
+  const fillQimsCredentials = () => {
     setFormData({
-      serverUrl: 'https://play.dhis2.org/40.2.2',
+      serverUrl: 'https://qimsdev.5am.co.bw/qims',
       username: 'admin',
       password: 'district'
     });
@@ -156,13 +156,13 @@ export function LoginPage() {
           </form>
           
           <div className="demo-section">
-            <p className="demo-text">Try the demo server:</p>
+            <p className="demo-text">Use QIMS server:</p>
             <button 
               type="button"
               className="btn btn-secondary btn-small"
-              onClick={fillDemoCredentials}
+              onClick={fillQimsCredentials}
             >
-              📝 Use Demo Credentials
+              📝 Use QIMS Credentials
             </button>
           </div>
           
