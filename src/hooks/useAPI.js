@@ -181,18 +181,28 @@ class DHIS2APIService {
    * Uses the specific endpoint: /api/me?fields=organisationUnits[id,name]
    */
   async getUserOrgUnits() {
+    console.log('🏥 Fetching user organization units...');
     const me = await this.getMe();
+    console.log('👤 User data from /api/me:', me);
+    
     if (me.organisationUnits && me.organisationUnits.length > 0) {
+      console.log('📍 Raw organization units from API:', me.organisationUnits);
+      
       // Transform 'name' field to 'displayName' for consistency with rest of the app
       const transformedOrgUnits = me.organisationUnits.map(ou => ({
         ...ou,
         displayName: ou.name || ou.displayName
       }));
+      
+      console.log('✅ Transformed organization units:', transformedOrgUnits);
       return { organisationUnits: transformedOrgUnits };
     }
     
+    console.log('⚠️ No user-assigned org units found, falling back to all org units');
     // Fallback to all org units if user has no assignments
-    return this.getOrganisationUnits();
+    const fallbackResult = await this.getOrganisationUnits();
+    console.log('📋 Fallback organization units:', fallbackResult);
+    return fallbackResult;
   }
 
   /**
@@ -200,40 +210,48 @@ class DHIS2APIService {
    * AND that the user has access to
    */
   async getProgramAssignedOrgUnits(programId) {
+    console.log(`🔍 Getting program-assigned org units for program: ${programId}`);
     try {
       // First get user's accessible org units
       const userOrgUnits = await this.getUserOrgUnits();
+      console.log('👥 User accessible org units:', userOrgUnits);
       const userOrgUnitIds = userOrgUnits.organisationUnits?.map(ou => ou.id) || [];
+      console.log('🆔 User org unit IDs:', userOrgUnitIds);
       
       if (userOrgUnitIds.length === 0) {
-        console.warn('User has no accessible organization units');
+        console.warn('⚠️ User has no accessible organization units');
         return { organisationUnits: [] };
       }
       
       // Get org units that have the program assigned
       const fields = 'id,displayName,path,programs[id]';
-      const programAssignedOrgUnits = await this.request(
-        `/api/organisationUnits?filter=programs:in:[${programId}]&fields=${fields}&paging=false`
-      );
+      const programQuery = `/api/organisationUnits?filter=programs:in:[${programId}]&fields=${fields}&paging=false`;
+      console.log('📡 Program assignment query:', programQuery);
+      
+      const programAssignedOrgUnits = await this.request(programQuery);
+      console.log('🏥 Program-assigned org units from API:', programAssignedOrgUnits);
       
       // Filter to only include org units that the user has access to
       const accessibleProgramOrgUnits = programAssignedOrgUnits.organisationUnits?.filter(ou => 
         userOrgUnitIds.includes(ou.id)
       ) || [];
       
-      console.log('✅ Program-assigned facilities:', {
+      console.log('✅ Program-assigned facilities summary:', {
         totalProgramAssigned: programAssignedOrgUnits.organisationUnits?.length || 0,
         userAccessible: userOrgUnitIds.length,
-        filtered: accessibleProgramOrgUnits.length
+        filtered: accessibleProgramOrgUnits.length,
+        finalOrgUnits: accessibleProgramOrgUnits
       });
       
       return { organisationUnits: accessibleProgramOrgUnits };
     } catch (error) {
-      console.error('Failed to fetch program-assigned org units:', error);
+      console.error('❌ Failed to fetch program-assigned org units:', error);
       
       // Fallback to user's org units if program assignment query fails
-      console.warn('Falling back to all user org units');
-      return this.getUserOrgUnits();
+      console.warn('🔄 Falling back to all user org units');
+      const fallback = await this.getUserOrgUnits();
+      console.log('📋 Fallback result:', fallback);
+      return fallback;
     }
   }
 
@@ -253,6 +271,8 @@ class DHIS2APIService {
         this.getProgramAssignedOrgUnits(FACILITY_REGISTRY_PROGRAM_ID)
       ]);
 
+      console.log('🏗️ Building configuration with org units:', orgUnits);
+
       // Build configuration from direct metadata
       const configuration = {
         program: {
@@ -270,6 +290,8 @@ class DHIS2APIService {
         },
         organisationUnits: orgUnits.organisationUnits || []
       };
+
+      console.log('🎯 Final configuration organization units:', configuration.organisationUnits);
 
       console.log('✅ Direct configuration loaded:', {
         program: configuration.program.displayName,
