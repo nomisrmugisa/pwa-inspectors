@@ -108,7 +108,13 @@ class DHIS2APIService {
   }
 
   setConfig(baseUrl, username, password) {
-    this.baseUrl = baseUrl.replace(/\/$/, '');
+    // In development, use relative URLs to leverage Vite proxy
+    if (import.meta.env.DEV) {
+      this.baseUrl = '';
+      console.log('🔧 Development mode: Using proxy for API calls');
+    } else {
+      this.baseUrl = baseUrl.replace(/\/$/, '');
+    }
     this.credentials = btoa(`${username}:${password}`);
     this.headers['Authorization'] = `Basic ${this.credentials}`;
   }
@@ -195,6 +201,20 @@ class DHIS2APIService {
       }));
       
       console.log('✅ Transformed organization units:', transformedOrgUnits);
+      
+      // IMMEDIATELY try to get service sections for this user
+      console.log('🔍 TESTING: Attempting to get service sections for user:', me.username);
+      if (transformedOrgUnits.length > 0) {
+        const firstFacility = transformedOrgUnits[0];
+        console.log(`🏢 TESTING: Getting service sections for facility: ${firstFacility.id} (${firstFacility.displayName}), user: ${me.username}`);
+        try {
+          const testSections = await this.getServiceSectionsForInspector(firstFacility.id, me.username);
+          console.log('🎯 TESTING: Service sections result:', testSections);
+        } catch (error) {
+          console.error('❌ TESTING: Failed to get service sections:', error);
+        }
+      }
+      
       return { organisationUnits: transformedOrgUnits };
     }
     
@@ -446,6 +466,93 @@ class DHIS2APIService {
       return response.ok;
     } catch {
       return false;
+    }
+  }
+
+  /**
+   * Get inspection assignments from dataStore
+   * Used to create dynamic service dropdown based on facility and inspector
+   */
+  async getInspectionAssignments(year = '2025') {
+    console.log(`📋 Fetching inspection assignments for year: ${year}`);
+    console.log(`🌐 Full URL will be: ${this.baseUrl}/api/dataStore/inspection/${year}`);
+    try {
+      const data = await this.request(`/api/dataStore/inspection/${year}`);
+      console.log('✅ Inspection assignments data:', data);
+      console.log('📊 Data structure:', {
+        hasInspections: !!data.inspections,
+        inspectionsCount: data.inspections?.length || 0,
+        inspectionsKeys: data.inspections ? Object.keys(data.inspections[0] || {}) : []
+      });
+      return data;
+    } catch (error) {
+      console.error('❌ Failed to fetch inspection assignments:', error);
+      console.error('📍 Error details:', {
+        message: error.message,
+        status: error.status,
+        url: `/api/dataStore/inspection/${year}`
+      });
+      return { inspections: [] };
+    }
+  }
+
+  /**
+   * Get service sections for a specific facility and inspector
+   * Returns array of section names that should populate the service dropdown
+   */
+  async getServiceSectionsForInspector(facilityId, username) {
+    console.log(`🔍 Getting service sections for facility: ${facilityId}, inspector: ${username}`);
+    
+    try {
+      const assignmentsData = await this.getInspectionAssignments();
+      console.log('📊 Processing assignments data:', assignmentsData);
+      
+      if (!assignmentsData.inspections || assignmentsData.inspections.length === 0) {
+        console.warn('⚠️ No inspections found in assignments data');
+        return [];
+      }
+
+      // Find the facility
+      const facilityInspection = assignmentsData.inspections.find(
+        inspection => inspection.facility === facilityId
+      );
+      
+      if (!facilityInspection) {
+        console.warn(`⚠️ No inspection found for facility: ${facilityId}`);
+        return [];
+      }
+
+      console.log('🏥 Found facility inspection:', facilityInspection);
+
+      // Find assignments for the inspector
+      const inspectorAssignments = facilityInspection.assignments.filter(
+        assignment => assignment.inspector === username
+      );
+
+      if (inspectorAssignments.length === 0) {
+        console.warn(`⚠️ No assignments found for inspector: ${username} at facility: ${facilityId}`);
+        return [];
+      }
+
+      console.log('👤 Found inspector assignments:', inspectorAssignments);
+
+      // Collect all sections from all assignments for this inspector
+      const allSections = [];
+      inspectorAssignments.forEach(assignment => {
+        if (assignment.sections && Array.isArray(assignment.sections)) {
+          allSections.push(...assignment.sections);
+        }
+      });
+
+      // Remove duplicates
+      const uniqueSections = [...new Set(allSections)];
+      
+      console.log('📋 Final service sections for dropdown:', uniqueSections);
+      return uniqueSections;
+
+    } catch (error) {
+      console.error('❌ Failed to get service sections:', error);
+      return [];
     }
   }
 

@@ -4,11 +4,34 @@ import { useApp } from '../contexts/AppContext';
 import { useAPI } from '../hooks/useAPI';
 
 // Form field component for individual data elements
-function FormField({ psde, value, onChange, error }) {
+function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoading = false }) {
   const { dataElement } = psde;
   const fieldId = `dataElement_${dataElement.id}`;
 
   const renderField = () => {
+    // Handle dynamic service dropdown (overrides static optionSet)
+    if (dynamicOptions !== null) {
+      return (
+        <select
+          id={fieldId}
+          value={value || ''}
+          onChange={onChange}
+          required={psde.compulsory}
+          className={`form-select ${error ? 'error' : ''}`}
+          disabled={isLoading}
+        >
+          <option value="">
+            {isLoading ? 'Loading service sections...' : `Select ${dataElement.displayName}`}
+          </option>
+          {dynamicOptions.map((section, index) => (
+            <option key={index} value={section}>
+              {section}
+            </option>
+          ))}
+        </select>
+      );
+    }
+
     // First check if field has optionSet (dropdown), regardless of valueType
     if (dataElement.optionSet && dataElement.optionSet.options) {
       return (
@@ -211,8 +234,15 @@ function FormField({ psde, value, onChange, error }) {
 }
 
 // Section component for organizing form fields
-function FormSection({ section, formData, onChange, errors }) {
+function FormSection({ section, formData, onChange, errors, serviceSections, loadingServiceSections }) {
   const [isExpanded, setIsExpanded] = useState(false);
+
+  // Function to determine if a field should use dynamic service dropdown
+  const isServiceField = (dataElement) => {
+    // Check if field name/displayName contains 'service' (case-insensitive)
+    const fieldName = (dataElement.displayName || dataElement.shortName || '').toLowerCase();
+    return fieldName.includes('service') || fieldName.includes('section');
+  };
 
   return (
     <div className="form-section">
@@ -233,15 +263,20 @@ function FormSection({ section, formData, onChange, errors }) {
         )}
 
         <div className="section-fields">
-          {section.dataElements.map(psde => (
-            <FormField
-              key={psde.dataElement.id}
-              psde={psde}
-              value={formData[`dataElement_${psde.dataElement.id}`]}
-              onChange={(e) => onChange(`dataElement_${psde.dataElement.id}`, e.target.value)}
-              error={errors[`dataElement_${psde.dataElement.id}`]}
-            />
-          ))}
+          {section.dataElements.map(psde => {
+            const isDynamicServiceField = isServiceField(psde.dataElement);
+            return (
+              <FormField
+                key={psde.dataElement.id}
+                psde={psde}
+                value={formData[`dataElement_${psde.dataElement.id}`]}
+                onChange={(e) => onChange(`dataElement_${psde.dataElement.id}`, e.target.value)}
+                error={errors[`dataElement_${psde.dataElement.id}`]}
+                dynamicOptions={isDynamicServiceField ? serviceSections : null}
+                isLoading={isDynamicServiceField ? loadingServiceSections : false}
+              />
+            );
+          })}
         </div>
       </div>
     </div>
@@ -252,6 +287,7 @@ function FormSection({ section, formData, onChange, errors }) {
 function FormPage() {
   const { eventId } = useParams();
   const navigate = useNavigate();
+  const api = useAPI();
   const { 
     configuration, 
     saveEvent, 
@@ -268,6 +304,11 @@ function FormPage() {
   const [isDraft, setIsDraft] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formStats, setFormStats] = useState({ percentage: 0, filled: 0, total: 0 });
+  
+  // Dynamic service dropdown state
+  const [serviceSections, setServiceSections] = useState([]);
+  const [loadingServiceSections, setLoadingServiceSections] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
 
   // Load existing event if editing
   useEffect(() => {
@@ -276,6 +317,23 @@ function FormPage() {
       // This would fetch from storage and populate formData
     }
   }, [eventId, configuration]);
+
+  // Fetch current user on mount
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const user = await api.getMe();
+        console.log('👤 Current user for service sections:', user);
+        setCurrentUser(user);
+      } catch (error) {
+        console.error('❌ Failed to fetch current user:', error);
+      }
+    };
+
+    if (api) {
+      fetchCurrentUser();
+    }
+  }, [api]);
 
   // Pre-select first organization unit if available
   useEffect(() => {
@@ -286,6 +344,32 @@ function FormPage() {
       }));
     }
   }, [configuration, formData.orgUnit]);
+
+  // Fetch service sections when facility or user changes
+  useEffect(() => {
+    const fetchServiceSections = async () => {
+      if (!formData.orgUnit || !currentUser?.username) {
+        console.log('⏳ Waiting for facility selection and user data...');
+        setServiceSections([]);
+        return;
+      }
+
+      setLoadingServiceSections(true);
+      try {
+        console.log(`🔍 Fetching service sections for facility: ${formData.orgUnit}, user: ${currentUser.username}`);
+        const sections = await api.getServiceSectionsForInspector(formData.orgUnit, currentUser.username);
+        setServiceSections(sections);
+        console.log('✅ Service sections loaded:', sections);
+      } catch (error) {
+        console.error('❌ Failed to fetch service sections:', error);
+        setServiceSections([]);
+      } finally {
+        setLoadingServiceSections(false);
+      }
+    };
+
+    fetchServiceSections();
+  }, [formData.orgUnit, currentUser?.username, api]);
 
   if (!configuration) {
     return (
@@ -544,6 +628,8 @@ function FormPage() {
                 formData={formData}
                 onChange={handleFieldChange}
                 errors={errors}
+                serviceSections={serviceSections}
+                loadingServiceSections={loadingServiceSections}
               />
             ))
           ) : (
