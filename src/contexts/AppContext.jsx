@@ -379,51 +379,43 @@ export function AppProvider({ children }) {
    */
   const fetchUserAssignments = async () => {
     try {
-      console.log('🔄 #1: Fetching assignments from DataStore...');
-      
-      // Get current user for username matching
+      console.log('************ Final user assignments:**************');
+      // Step 1: Start Fetching Assignments
+      console.log('Step 1: 🔄 Fetching assignments from DataStore...');
+      // Step 2: Get Current User
       const userResult = await api.getMe();
-      console.log('👤 #2: Current user:', {
+      console.log('Step 2: 👤 Current user:', {
         id: userResult.id,
         username: userResult.username,
         displayName: userResult.displayName
       });
-      
-      // Fetch DataStore response (DHIS2 standard format)
+      // Step 3: Fetch Assignments Data
       const datastoreResponse = await api.getInspectionAssignments();
-      console.log('📊 #1: Raw DataStore response:', datastoreResponse);
-      
-      // DHIS2 DataStore returns data directly (not wrapped in additional structure)
-      // The response should be the data itself, e.g., {inspections: [...]}
+      console.log('Step 3: 📊 Raw DataStore response:', datastoreResponse);
       const assignmentsData = datastoreResponse;
-      console.log('📋 Processing assignments data:', assignmentsData);
-      
-      // Log facilities found in DataStore
+      console.log('Step 3: 📋 Processing assignments data:', assignmentsData);
+      // Step 4: Log Facilities
       if (assignmentsData && assignmentsData.inspections) {
         const facilities = assignmentsData.inspections.map(i => i.facility).filter(f => f);
-        console.log('🏥 Facilities found in DataStore:', facilities);
+        console.log('Step 4: 🏥 Facilities found in DataStore:', facilities);
       }
-      
+      // Step 5: Validate Data Structure
       if (!assignmentsData || !assignmentsData.inspections || !Array.isArray(assignmentsData.inspections)) {
-        console.warn('⚠️ No valid inspections found in DataStore response');
+        console.warn('Step 5: ⚠️ No valid inspections found in DataStore response');
         dispatch({ type: ActionTypes.UPDATE_USER_ASSIGNMENTS, payload: [] });
         return;
       }
-
-      // Process assignments to match current user
+      // Step 6: Filter Assignments for Current User
       const userAssignments = [];
-      
       assignmentsData.inspections.forEach(inspection => {
         if (!inspection.facility || !inspection.assignments || !Array.isArray(inspection.assignments)) {
-          console.warn('⚠️ Invalid inspection structure:', inspection);
+          console.warn('Step 6: ⚠️ Invalid inspection structure:', inspection);
           return;
         }
-        
-        // Find assignments for current user
+        // Find assignments for current user by assignment.id === userResult.id
         const userInspectionAssignments = inspection.assignments.filter(
-          assignment => assignment.inspector === userResult.username
+          assignment => assignment.id === userResult.id
         );
-        
         userInspectionAssignments.forEach(assignment => {
           userAssignments.push({
             facility: inspection.facility,
@@ -432,8 +424,7 @@ export function AppProvider({ children }) {
           });
         });
       });
-      
-      console.log('🎯 #3: Final user assignments:', userAssignments);
+      console.log('Step 7: 🎯 Final user assignments:', userAssignments);
       
       // Update state
       dispatch({ type: ActionTypes.UPDATE_USER_ASSIGNMENTS, payload: userAssignments });

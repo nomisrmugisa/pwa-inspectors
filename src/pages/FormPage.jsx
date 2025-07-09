@@ -318,7 +318,9 @@ function FormPage() {
   // Get service options from the selected assignment
   const serviceOptions = selectedAssignment ? selectedAssignment.assignment.sections : [];
   // Get inspection period from the selected assignment
-  const inspectionPeriod = selectedAssignment ? selectedAssignment.inspectionPeriod : null;
+  const inspectionPeriod = selectedAssignment && selectedAssignment.assignment
+    ? selectedAssignment.assignment.inspectionPeriod
+    : null;
 
   // Load existing event if editing
   useEffect(() => {
@@ -382,18 +384,8 @@ function FormPage() {
     // fetchServiceSections();
   }, [formData.orgUnit, api]); // Removed currentUser?.username from dependency array
 
-  if (!configuration) {
-    return (
-      <div className="loading-container">
-        <div className="loading-content">
-          <div className="spinner"></div>
-          <p>Loading Facility-Registry inspection forms...</p>
-        </div>
-      </div>
-    );
-  }
-
-  const { program, programStage, organisationUnits } = configuration;
+  // Move this block after all hooks to avoid conditional hook call error
+  // if (!configuration) { ... }
 
   // Calculate form completion percentage and stats
   const calculateFormStats = () => {
@@ -532,6 +524,25 @@ function FormPage() {
     handleSave(true);
   };
 
+  // Log Inspection Scheduled: Dates for debugging
+  if (inspectionPeriod) {
+    console.log('Inspection Scheduled: Dates:', inspectionPeriod.startDate, 'to', inspectionPeriod.endDate);
+  }
+
+  // Place the configuration check here, after all hooks
+  if (!configuration) {
+    return (
+      <div className="loading-container">
+        <div className="loading-content">
+          <div className="spinner"></div>
+          <p>Loading Facility-Registry inspection forms...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const { program, programStage, organisationUnits } = configuration;
+
   return (
     <div className="screen">
       <div className="form-container">
@@ -623,7 +634,7 @@ function FormPage() {
                 </div>
                 {inspectionPeriod && (
                   <div className="form-field">
-                    <label className="form-label">Inspection Period</label>
+                    <label className="form-label">Inspection Scheduled: Dates:</label>
                     <div>
                       {inspectionPeriod.startDate} to {inspectionPeriod.endDate}
                     </div>
@@ -658,7 +669,7 @@ function FormPage() {
               <div className="section-content">
                 <div className="section-fields">
                   <div className="error-message">
-                    <p>⚠️ The Inspections program stage doesn't have any data elements configured.</p>
+                    <p>⚠️ The Inspections program stage doesn&#39;t have any data elements configured.</p>
                     <p>Please contact your DHIS2 administrator to configure the inspection form fields.</p>
                   </div>
                 </div>
