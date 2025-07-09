@@ -81,7 +81,7 @@ export function LoginPage() {
         <div className="login-form">
           <div className="login-header">
             <div className="app-logo">🏥</div>
-            <h1>Facility Registry Inspections</h1>
+            <h1>Inspections</h1>
             <p>Mobile data capture for facility inspections</p>
           </div>
           
@@ -174,7 +174,7 @@ export function LoginPage() {
         </div>
         
         <div className="login-footer">
-          <p>🏥 Built for Facility-Registry program</p>
+          <p>🏥 Built for QIMS program</p>
           <p>📋 Automated inspection data collection</p>
           <p>📴 Works offline with automatic sync</p>
         </div>

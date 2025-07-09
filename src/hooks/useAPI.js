@@ -214,15 +214,11 @@ class DHIS2APIService {
           console.error('❌ TESTING: Failed to get service sections:', error);
         }
       }
-      
       return { organisationUnits: transformedOrgUnits };
     }
     
-    console.log('⚠️ No user-assigned org units found, falling back to all org units');
-    // Fallback to all org units if user has no assignments
-    const fallbackResult = await this.getOrganisationUnits();
-    console.log('📋 Fallback organization units:', fallbackResult);
-    return fallbackResult;
+    console.log('⚠️ No user-assigned org units found, returning empty array');
+    return { organisationUnits: [] };
   }
 
   /**
@@ -266,18 +262,14 @@ class DHIS2APIService {
       return { organisationUnits: accessibleProgramOrgUnits };
     } catch (error) {
       console.error('❌ Failed to fetch program-assigned org units:', error);
-      
-      // Fallback to user's org units if program assignment query fails
-      console.warn('🔄 Falling back to all user org units');
-      const fallback = await this.getUserOrgUnits();
-      console.log('📋 Fallback result:', fallback);
-      return fallback;
+      // No fallback to user org units
+      return { organisationUnits: [] };
     }
   }
 
   /**
    * Get complete metadata configuration for data collection using direct endpoint
-   * Loads form configuration immediately - users only need to select organization unit
+   * Loads form configuration immediately - org units now come from DataStore assignments
    */
   async getDataCollectionConfiguration() {
     try {
@@ -285,13 +277,10 @@ class DHIS2APIService {
       const FACILITY_REGISTRY_PROGRAM_ID = 'EE8yeLVo6cN';
       const INSPECTIONS_STAGE_ID = 'Eupjm3J0dt2';
       
-      // Fetch stage metadata and program-assigned org units in parallel
-      const [stageMetadata, orgUnits] = await Promise.all([
-        this.getInspectionStageMetadata(INSPECTIONS_STAGE_ID),
-        this.getProgramAssignedOrgUnits(FACILITY_REGISTRY_PROGRAM_ID)
-      ]);
+      // Only fetch stage metadata - org units now come from DataStore assignments
+      const stageMetadata = await this.getInspectionStageMetadata(INSPECTIONS_STAGE_ID);
 
-      console.log('🏗️ Building configuration with org units:', orgUnits);
+      console.log('🏗️ Building configuration (org units from DataStore assignments)');
 
       // Build configuration from direct metadata
       const configuration = {
@@ -308,17 +297,15 @@ class DHIS2APIService {
           sections: this.processStageMetadataIntoSections(stageMetadata),
           allDataElements: this.extractAllDataElementsFromMetadata(stageMetadata)
         },
-        organisationUnits: orgUnits.organisationUnits || []
+        organisationUnits: [] // Now populated from DataStore assignments in userAssignments
       };
-
-      console.log('🎯 Final configuration organization units:', configuration.organisationUnits);
 
       console.log('✅ Direct configuration loaded:', {
         program: configuration.program.displayName,
         stage: configuration.programStage.displayName,
         sectionsCount: configuration.programStage.sections.length,
         dataElementsCount: configuration.programStage.allDataElements.length,
-        programAssignedFacilities: configuration.organisationUnits.length
+        note: 'Facilities now come from DataStore assignments'
       });
 
       return configuration;

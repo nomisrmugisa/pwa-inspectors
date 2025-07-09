@@ -141,9 +141,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
                 onChange={(e) => onChange({ target: { value: e.target.checked ? 'true' : 'false' } })}
                 className="form-checkbox"
               />
-              <span className="checkbox-text">
-                {dataElement.valueType === 'TRUE_ONLY' ? 'Yes' : 'True'}
-              </span>
+              {/* Removed the 'True' or 'Yes' label next to the checkbox */}
             </label>
           </div>
         );
@@ -288,27 +286,39 @@ function FormPage() {
   const { eventId } = useParams();
   const navigate = useNavigate();
   const api = useAPI();
-  const { 
-    configuration, 
-    saveEvent, 
-    showToast, 
-    loading, 
-    isOnline 
+  const {
+    configuration,
+    saveEvent,
+    showToast,
+    loading,
+    isOnline,
+    userAssignments
   } = useApp();
 
   const [formData, setFormData] = useState({
     orgUnit: '',
-    eventDate: new Date().toISOString().split('T')[0], // Today's date
+    eventDate: new Date().toISOString().split('T')[0],
   });
   const [errors, setErrors] = useState({});
   const [isDraft, setIsDraft] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formStats, setFormStats] = useState({ percentage: 0, filled: 0, total: 0 });
-  
-  // Dynamic service dropdown state
-  const [serviceSections, setServiceSections] = useState([]);
-  const [loadingServiceSections, setLoadingServiceSections] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
+
+  // Build unique facilities from userAssignments
+  const safeUserAssignments = Array.isArray(userAssignments) ? userAssignments : [];
+  const uniqueFacilities = [
+    ...new Set(
+      safeUserAssignments
+        .map(a => typeof a.facility === 'string' ? a.facility.trim() : '')
+        .filter(facility => facility)
+    )
+  ];
+  // Get the selected assignment for the chosen facility
+  const selectedAssignment = safeUserAssignments.find(a => a.facility === formData.orgUnit);
+  // Get service options from the selected assignment
+  const serviceOptions = selectedAssignment ? selectedAssignment.assignment.sections : [];
+  // Get inspection period from the selected assignment
+  const inspectionPeriod = selectedAssignment ? selectedAssignment.inspectionPeriod : null;
 
   // Load existing event if editing
   useEffect(() => {
@@ -324,7 +334,7 @@ function FormPage() {
       try {
         const user = await api.getMe();
         console.log('👤 Current user for service sections:', user);
-        setCurrentUser(user);
+        // setCurrentUser(user); // This line is removed as per the new_code
       } catch (error) {
         console.error('❌ Failed to fetch current user:', error);
       }
@@ -337,39 +347,40 @@ function FormPage() {
 
   // Pre-select first organization unit if available
   useEffect(() => {
-    if (configuration && configuration.organisationUnits.length > 0 && !formData.orgUnit) {
+    if (configuration && uniqueFacilities.length > 0 && !formData.orgUnit) {
       setFormData(prev => ({
         ...prev,
-        orgUnit: configuration.organisationUnits[0].id
+        orgUnit: uniqueFacilities[0]
       }));
     }
-  }, [configuration, formData.orgUnit]);
+  }, [configuration, uniqueFacilities, formData.orgUnit]);
 
   // Fetch service sections when facility or user changes
   useEffect(() => {
-    const fetchServiceSections = async () => {
-      if (!formData.orgUnit || !currentUser?.username) {
-        console.log('⏳ Waiting for facility selection and user data...');
-        setServiceSections([]);
-        return;
-      }
+    // This useEffect is no longer needed as serviceOptions are now directly available
+    // const fetchServiceSections = async () => {
+    //   if (!formData.orgUnit || !currentUser?.username) {
+    //     console.log('⏳ Waiting for facility selection and user data...');
+    //     setServiceSections([]);
+    //     return;
+    //   }
 
-      setLoadingServiceSections(true);
-      try {
-        console.log(`🔍 Fetching service sections for facility: ${formData.orgUnit}, user: ${currentUser.username}`);
-        const sections = await api.getServiceSectionsForInspector(formData.orgUnit, currentUser.username);
-        setServiceSections(sections);
-        console.log('✅ Service sections loaded:', sections);
-      } catch (error) {
-        console.error('❌ Failed to fetch service sections:', error);
-        setServiceSections([]);
-      } finally {
-        setLoadingServiceSections(false);
-      }
-    };
+    //   setLoadingServiceSections(true);
+    //   try {
+    //     console.log(`🔍 Fetching service sections for facility: ${formData.orgUnit}, user: ${currentUser.username}`);
+    //     const sections = await api.getServiceSectionsForInspector(formData.orgUnit, currentUser.username);
+    //     setServiceSections(sections);
+    //     console.log('✅ Service sections loaded:', sections);
+    //   } catch (error) {
+    //     console.error('❌ Failed to fetch service sections:', error);
+    //     setServiceSections([]);
+    //   } finally {
+    //     setLoadingServiceSections(false);
+    //   }
+    // };
 
-    fetchServiceSections();
-  }, [formData.orgUnit, currentUser?.username, api]);
+    // fetchServiceSections();
+  }, [formData.orgUnit, api]); // Removed currentUser?.username from dependency array
 
   if (!configuration) {
     return (
@@ -526,11 +537,9 @@ function FormPage() {
       <div className="form-container">
         <div className="form-header">
           <div>
-            <h2>{program.displayName}</h2>
-            <p className="form-subtitle">{programStage.displayName}</p>
-            {program.description && (
-              <p className="form-description">{program.description}</p>
-            )}
+            {/* Removed Facility-Registry heading as requested */}
+            <p className="form-subtitle">{configuration?.programStage?.displayName}</p>
+            {/* Removed program description as requested */}
             
             {/* Progress Bar */}
             <div className="progress-section">
@@ -586,20 +595,17 @@ function FormPage() {
                   <select
                     id="orgUnit"
                     value={formData.orgUnit}
-                    onChange={(e) => handleFieldChange('orgUnit', e.target.value)}
+                    onChange={e => handleFieldChange('orgUnit', e.target.value)}
                     required
                     className={`form-select ${errors.orgUnit ? 'error' : ''}`}
                   >
                     <option value="">Select Facility</option>
-                    {organisationUnits.map(orgUnit => (
-                      <option key={orgUnit.id} value={orgUnit.id}>
-                        {orgUnit.displayName}
-                      </option>
-                    ))}
+                    {uniqueFacilities.length > 0 ? uniqueFacilities.map(facility => (
+                      <option key={facility} value={facility}>{facility}</option>
+                    )) : <option value="" disabled>No facilities assigned</option>}
                   </select>
                   {errors.orgUnit && <div className="field-error">{errors.orgUnit}</div>}
                 </div>
-
                 <div className="form-field">
                   <label htmlFor="eventDate" className="form-label">
                     Inspection Date <span className="required">*</span>
@@ -608,28 +614,36 @@ function FormPage() {
                     type="date"
                     id="eventDate"
                     value={formData.eventDate}
-                    onChange={(e) => handleFieldChange('eventDate', e.target.value)}
+                    onChange={e => handleFieldChange('eventDate', e.target.value)}
                     required
                     className={`form-input ${errors.eventDate ? 'error' : ''}`}
                     max={new Date().toISOString().split('T')[0]}
                   />
                   {errors.eventDate && <div className="field-error">{errors.eventDate}</div>}
                 </div>
+                {inspectionPeriod && (
+                  <div className="form-field">
+                    <label className="form-label">Inspection Period</label>
+                    <div>
+                      {inspectionPeriod.startDate} to {inspectionPeriod.endDate}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
 
           {/* Program stage sections */}
-          {programStage.sections && programStage.sections.length > 0 ? (
-            programStage.sections.map(section => (
+          {configuration?.programStage?.sections && configuration.programStage.sections.length > 0 ? (
+            configuration.programStage.sections.map(section => (
               <FormSection
                 key={section.id}
                 section={section}
                 formData={formData}
                 onChange={handleFieldChange}
                 errors={errors}
-                serviceSections={serviceSections}
-                loadingServiceSections={loadingServiceSections}
+                serviceSections={serviceOptions}
+                loadingServiceSections={false}
               />
             ))
           ) : (

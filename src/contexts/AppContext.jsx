@@ -12,6 +12,9 @@ const initialState = {
   // Configuration - like Android DHIS2 app
   configuration: null,
   
+  // User assignments from DataStore
+  userAssignments: [],
+  
   // UI State
   loading: false,
   error: null,
@@ -46,6 +49,9 @@ const ActionTypes = {
   FETCH_CONFIGURATION_START: 'FETCH_CONFIGURATION_START',
   FETCH_CONFIGURATION_SUCCESS: 'FETCH_CONFIGURATION_SUCCESS',
   FETCH_CONFIGURATION_FAILURE: 'FETCH_CONFIGURATION_FAILURE',
+  
+  // User assignments actions
+  UPDATE_USER_ASSIGNMENTS: 'UPDATE_USER_ASSIGNMENTS',
   
   // UI actions
   SET_LOADING: 'SET_LOADING',
@@ -100,6 +106,12 @@ function appReducer(state, action) {
       return {
         ...initialState,
         isOnline: state.isOnline
+      };
+
+    case ActionTypes.UPDATE_USER_ASSIGNMENTS:
+      return {
+        ...state,
+        userAssignments: action.payload
       };
 
     case ActionTypes.FETCH_CONFIGURATION_START:
@@ -238,6 +250,9 @@ export function AppProvider({ children }) {
             
             // Fetch configuration immediately after login like Android app
             await fetchConfiguration();
+
+            // Fetch user assignments
+            await fetchUserAssignments();
           } else {
             // Clear invalid credentials
             await storage.clearAuth();
@@ -359,6 +374,83 @@ export function AppProvider({ children }) {
     }
   };
 
+  /**
+   * Fetch user assignments from DataStore
+   */
+  const fetchUserAssignments = async () => {
+    try {
+      console.log('🔄 #1: Fetching assignments from DataStore...');
+      
+      // Get current user for username matching
+      const userResult = await api.getMe();
+      console.log('👤 #2: Current user:', {
+        id: userResult.id,
+        username: userResult.username,
+        displayName: userResult.displayName
+      });
+      
+      // Fetch DataStore response (DHIS2 standard format)
+      const datastoreResponse = await api.getInspectionAssignments();
+      console.log('📊 #1: Raw DataStore response:', datastoreResponse);
+      
+      // DHIS2 DataStore returns data directly (not wrapped in additional structure)
+      // The response should be the data itself, e.g., {inspections: [...]}
+      const assignmentsData = datastoreResponse;
+      console.log('📋 Processing assignments data:', assignmentsData);
+      
+      // Log facilities found in DataStore
+      if (assignmentsData && assignmentsData.inspections) {
+        const facilities = assignmentsData.inspections.map(i => i.facility).filter(f => f);
+        console.log('🏥 Facilities found in DataStore:', facilities);
+      }
+      
+      if (!assignmentsData || !assignmentsData.inspections || !Array.isArray(assignmentsData.inspections)) {
+        console.warn('⚠️ No valid inspections found in DataStore response');
+        dispatch({ type: ActionTypes.UPDATE_USER_ASSIGNMENTS, payload: [] });
+        return;
+      }
+
+      // Process assignments to match current user
+      const userAssignments = [];
+      
+      assignmentsData.inspections.forEach(inspection => {
+        if (!inspection.facility || !inspection.assignments || !Array.isArray(inspection.assignments)) {
+          console.warn('⚠️ Invalid inspection structure:', inspection);
+          return;
+        }
+        
+        // Find assignments for current user
+        const userInspectionAssignments = inspection.assignments.filter(
+          assignment => assignment.inspector === userResult.username
+        );
+        
+        userInspectionAssignments.forEach(assignment => {
+          userAssignments.push({
+            facility: inspection.facility,
+            assignment: assignment,
+            inspectionPeriod: assignment.period || '2025' // Default period
+          });
+        });
+      });
+      
+      console.log('🎯 #3: Final user assignments:', userAssignments);
+      
+      // Update state
+      dispatch({ type: ActionTypes.UPDATE_USER_ASSIGNMENTS, payload: userAssignments });
+      
+      if (userAssignments.length > 0) {
+        showToast(`Found ${userAssignments.length} inspection assignment(s)`, 'success');
+      } else {
+        showToast('No inspection assignments found for your account', 'warning');
+      }
+      
+    } catch (error) {
+      console.error('❌ Failed to fetch user assignments:', error);
+      dispatch({ type: ActionTypes.UPDATE_USER_ASSIGNMENTS, payload: [] });
+      showToast(`Failed to load assignments: ${error.message}`, 'error');
+    }
+  };
+
   // Authentication functions
   const login = async (serverUrl, username, password) => {
     dispatch({ type: ActionTypes.LOGIN_START });
@@ -404,6 +496,9 @@ export function AppProvider({ children }) {
       
       // Immediately fetch configuration like Android app
       await fetchConfiguration();
+
+      // Fetch user assignments
+      await fetchUserAssignments();
       
     } catch (error) {
       dispatch({
@@ -614,7 +709,22 @@ export function AppProvider({ children }) {
   };
 
   return (
-    <AppContext.Provider value={value}>
+    <AppContext.Provider value={{
+      ...state,
+      api,
+      storage,
+      userAssignments: state.userAssignments, // Expose userAssignments from state
+      setUserAssignments: (assignments) => dispatch({ type: ActionTypes.UPDATE_USER_ASSIGNMENTS, payload: assignments }), // Expose setUserAssignments
+      login,
+      logout,
+      fetchUserAssignments,
+      saveEvent,
+      syncEvents,
+      updateStats,
+      showToast,
+      hideToast,
+      clearError
+    }}>
       {children}
     </AppContext.Provider>
   );
