@@ -7,6 +7,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      injectRegister: 'auto',
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
         runtimeCaching: [
@@ -18,9 +19,6 @@ export default defineConfig({
               expiration: {
                 maxEntries: 10,
                 maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
-              },
-              cacheKeyWillBeUsed: async ({ request }) => {
-                return `${request.url}?${new Date().getFullYear()}`;
               }
             }
           },
@@ -36,7 +34,7 @@ export default defineConfig({
             }
           },
           {
-            urlPattern: ({ url }) => url.pathname.includes('/api/'),
+            urlPattern: /\/api\/.*/i,
             handler: 'NetworkFirst',
             options: {
               cacheName: 'dhis2-api-cache',
@@ -108,6 +106,11 @@ export default defineConfig({
             purpose: 'maskable any'
           }
         ]
+      },
+      devOptions: {
+        enabled: process.env.NODE_ENV === 'development',
+        type: 'module',
+        navigateFallback: 'index.html'
       }
     })
   ],
@@ -129,12 +132,16 @@ export default defineConfig({
           proxy.on('proxyRes', (proxyRes, req, _res) => {
             console.log('📥 Proxy response:', proxyRes.statusCode, req.url);
           });
-        },
+        }
       }
     }
   },
   build: {
     outDir: 'dist',
-    sourcemap: true
+    sourcemap: true,
+    emptyOutDir: true
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom']
   }
-}); 
+});
