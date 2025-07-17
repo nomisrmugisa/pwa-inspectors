@@ -219,6 +219,9 @@ export function AppProvider({ children }) {
   const [state, dispatch] = useReducer(appReducer, initialState);
   const api = useAPI();
   const storage = useStorage();
+  // const [userAssignments, setUserAssignments] = useState([]);
+
+
 
   // Initialize app on mount
   useEffect(() => {
@@ -377,70 +380,140 @@ export function AppProvider({ children }) {
   /**
    * Fetch user assignments from DataStore
    */
+  // const fetchUserAssignments = async () => {
+  //   try {
+  //     console.log('************ Final user assignments:**************');
+  //     // Step 1: Start Fetching Assignments
+  //     console.log('Step 1: 🔄 Fetching assignments from DataStore...');
+  //     // Step 2: Get Current User
+  //     const userResult = await api.getMe();
+  //     console.log('Step 2: 👤 Current user:', {
+  //       id: userResult.id,
+  //       username: userResult.username,
+  //       displayName: userResult.displayName
+  //     });
+  //     // Step 3: Fetch Assignments Data
+  //     const datastoreResponse = await api.getInspectionAssignments();
+  //     console.log('Step 3: 📊 Raw DataStore response:', datastoreResponse);
+  //     const assignmentsData = datastoreResponse;
+  //     console.log('Step 3: 📋 Processing assignments data:', assignmentsData);
+  //     // Step 4: Log Facilities
+  //     // if (assignmentsData && assignmentsData.inspections) {
+  //     //   const facilities = assignmentsData.inspections.map(i => i.facility).filter(f => f);
+  //     //   console.log('Step 4: 🏥 Facilities found in DataStore:', facilities);
+  //     // }
+  //
+  //     // if (assignmentsData && Array.isArray(assignmentsData)) {
+  //     //   const facilities = assignmentsData.map(inspection => ({
+  //     //     id: inspection.facilityId,
+  //     //     name: inspection.facilityName
+  //     //   }));
+  //     //
+  //     //   console.log('Step 4: 🏥 Facilities found in DataStore:', facilities);
+  //     // }
+  //
+  //     if (datastoreResponse && Array.isArray(datastoreResponse)) {
+  //       const facilities = datastoreResponse.map(inspection => ({
+  //         facility: {
+  //           id: inspection.facilityId,
+  //           name: inspection.facilityName
+  //         }
+  //       }));
+  //
+  //       console.log('Setting facilities:', facilities);
+  //       dispatch({ type: ActionTypes.UPDATE_USER_ASSIGNMENTS, payload: facilities });
+  //     }
+  //
+  //     // Step 5: Validate Data Structure
+  //     if (!assignmentsData || !assignmentsData.inspections || !Array.isArray(assignmentsData.inspections)) {
+  //       console.warn('Step 5: ⚠️ No valid inspections found in DataStore response');
+  //       dispatch({ type: ActionTypes.UPDATE_USER_ASSIGNMENTS, payload: [] });
+  //       return;
+  //     }
+  //     // Step 6: Filter Assignments for Current User
+  //     const userAssignments = [];
+  //     assignmentsData.inspections.forEach(inspection => {
+  //       if (!inspection.facility || !inspection.assignments || !Array.isArray(inspection.assignments)) {
+  //         console.warn('Step 6: ⚠️ Invalid inspection structure:', inspection);
+  //         return;
+  //       }
+  //       // Find assignments for current user by assignment.id === userResult.id
+  //       const userInspectionAssignments = inspection.assignments.filter(
+  //         assignment => assignment.id === userResult.id
+  //       );
+  //       userInspectionAssignments.forEach(assignment => {
+  //         userAssignments.push({
+  //           facility: inspection.facility,
+  //           assignment: assignment,
+  //           inspectionPeriod: assignment.period || '2025' // Default period
+  //         });
+  //       });
+  //     });
+  //     console.log('Step 7: 🎯 Final user assignments:', userAssignments);
+  //
+  //     // Update state
+  //     dispatch({ type: ActionTypes.UPDATE_USER_ASSIGNMENTS, payload: userAssignments });
+  //
+  //     if (userAssignments.length > 0) {
+  //       showToast(`Found ${userAssignments.length} inspection assignment(s)`, 'success');
+  //     } else {
+  //       showToast('No inspection assignments found for your account', 'warning');
+  //     }
+  //
+  //   } catch (error) {
+  //     console.error('❌ Failed to fetch user assignments:', error);
+  //     dispatch({ type: ActionTypes.UPDATE_USER_ASSIGNMENTS, payload: [] });
+  //     showToast(`Failed to load assignments: ${error.message}`, 'error');
+  //   }
+  // };
+
   const fetchUserAssignments = async () => {
-    try {
-      console.log('************ Final user assignments:**************');
-      // Step 1: Start Fetching Assignments
-      console.log('Step 1: 🔄 Fetching assignments from DataStore...');
-      // Step 2: Get Current User
-      const userResult = await api.getMe();
-      console.log('Step 2: 👤 Current user:', {
-        id: userResult.id,
-        username: userResult.username,
-        displayName: userResult.displayName
-      });
-      // Step 3: Fetch Assignments Data
-      const datastoreResponse = await api.getInspectionAssignments();
-      console.log('Step 3: 📊 Raw DataStore response:', datastoreResponse);
-      const assignmentsData = datastoreResponse;
-      console.log('Step 3: 📋 Processing assignments data:', assignmentsData);
-      // Step 4: Log Facilities
-      if (assignmentsData && assignmentsData.inspections) {
-        const facilities = assignmentsData.inspections.map(i => i.facility).filter(f => f);
-        console.log('Step 4: 🏥 Facilities found in DataStore:', facilities);
-      }
-      // Step 5: Validate Data Structure
-      if (!assignmentsData || !assignmentsData.inspections || !Array.isArray(assignmentsData.inspections)) {
-        console.warn('Step 5: ⚠️ No valid inspections found in DataStore response');
-        dispatch({ type: ActionTypes.UPDATE_USER_ASSIGNMENTS, payload: [] });
-        return;
-      }
-      // Step 6: Filter Assignments for Current User
-      const userAssignments = [];
-      assignmentsData.inspections.forEach(inspection => {
-        if (!inspection.facility || !inspection.assignments || !Array.isArray(inspection.assignments)) {
-          console.warn('Step 6: ⚠️ Invalid inspection structure:', inspection);
-          return;
-        }
-        // Find assignments for current user by assignment.id === userResult.id
-        const userInspectionAssignments = inspection.assignments.filter(
-          assignment => assignment.id === userResult.id
-        );
-        userInspectionAssignments.forEach(assignment => {
-          userAssignments.push({
-            facility: inspection.facility,
-            assignment: assignment,
-            inspectionPeriod: assignment.period || '2025' // Default period
+        try {
+          console.log('************ Final user assignments:**************');
+          // Step 1: Start Fetching Assignments
+          console.log('Step 1: 🔄 Fetching assignments from DataStore...');
+          // Step 2: Get Current User
+          const userResult = await api.getMe();
+          console.log('Step 2: 👤 Current user:', {
+            id: userResult.id,
+            username: userResult.username,
+            displayName: userResult.displayName
           });
-        });
-      });
-      console.log('Step 7: 🎯 Final user assignments:', userAssignments);
-      
-      // Update state
-      dispatch({ type: ActionTypes.UPDATE_USER_ASSIGNMENTS, payload: userAssignments });
-      
-      if (userAssignments.length > 0) {
-        showToast(`Found ${userAssignments.length} inspection assignment(s)`, 'success');
-      } else {
-        showToast('No inspection assignments found for your account', 'warning');
-      }
-      
-    } catch (error) {
-      console.error('❌ Failed to fetch user assignments:', error);
-      dispatch({ type: ActionTypes.UPDATE_USER_ASSIGNMENTS, payload: [] });
-      showToast(`Failed to load assignments: ${error.message}`, 'error');
-    }
-  };
+          // Step 3: Fetch Assignments Data
+          const datastoreResponse = await api.getInspectionAssignments();
+          console.log('Step 3: 📊 Raw DataStore response:', datastoreResponse);
+          const assignmentsData = datastoreResponse;
+          console.log('Step 3: 📋 Processing assignments data:', assignmentsData);
+
+            // Step 4: Log Facilities
+          if (datastoreResponse && Array.isArray(datastoreResponse)) {
+            const facilities = datastoreResponse.map(inspection => ({
+              facility: {
+                id: inspection.facilityId,
+                name: inspection.facilityName
+              }
+            }));
+
+            console.log('Processing facilities:', facilities);
+
+            // Update the state with facilities
+            dispatch({ type: ActionTypes.UPDATE_USER_ASSIGNMENTS, payload: facilities });
+
+            if (facilities.length > 0) {
+              showToast(`Found ${facilities.length} facility assignments`, 'success');
+            } else {
+              showToast('No facility assignments found', 'warning');
+            }
+          } else {
+            console.warn('Invalid or empty response from DataStore');
+            dispatch({ type: ActionTypes.UPDATE_USER_ASSIGNMENTS, payload: [] });
+          }
+        } catch (error) {
+          console.error('Failed to fetch user assignments:', error);
+          dispatch({ type: ActionTypes.UPDATE_USER_ASSIGNMENTS, payload: [] });
+          showToast(`Failed to load assignments: ${error.message}`, 'error');
+        }
+      };
 
   // Authentication functions
   const login = async (serverUrl, username, password) => {
@@ -582,20 +655,45 @@ export function AppProvider({ children }) {
       
       for (const event of pendingEvents) {
         try {
-          const response = await api.submitEvent(event);
-          
+          // const response = await api.submitEvent(event);
+          //
+          // if (response.status === 'SUCCESS' || response.httpStatus === 'OK') {
+          //   // Mark as synced
+          //   await storage.updateEvent(event.event, {
+          //     ...event,
+          //     status: 'synced',
+          //     syncStatus: 'synced',
+          //     syncedAt: new Date().toISOString()
+          //   });
+          //   results.push({ event: event.event, status: 'success' });
+          // } else {
+          //   throw new Error('Server rejected event');
+          // }
+
+          // Clean payload before submission
+          const cleanEvent = {
+            ...event,
+            status: 'ACTIVE' // Change status to ACTIVE for online submission
+          };
+
+          // Remove internal tracking fields
+          delete cleanEvent.syncStatus;
+          delete cleanEvent.createdAt;
+          delete cleanEvent.updatedAt;
+
+          const response = await api.submitEvent(cleanEvent); // Submit cleaned event
+
           if (response.status === 'SUCCESS' || response.httpStatus === 'OK') {
-            // Mark as synced
+            // Mark as synced in local storage (keep tracking fields for local use)
             await storage.updateEvent(event.event, {
               ...event,
               status: 'synced',
               syncStatus: 'synced',
               syncedAt: new Date().toISOString()
             });
-            results.push({ event: event.event, status: 'success' });
-          } else {
-            throw new Error('Server rejected event');
+            results.push({event: event.event, status: 'success'});
           }
+
         } catch (error) {
           console.error(`Failed to sync event ${event.event}:`, error);
           
@@ -686,7 +784,8 @@ export function AppProvider({ children }) {
   const value = {
     // State
     ...state,
-    
+    // userAssignments,
+    // setUserAssignments,
     // Actions
     login,
     logout,

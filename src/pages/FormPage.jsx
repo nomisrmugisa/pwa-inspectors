@@ -295,6 +295,11 @@ function FormPage() {
     userAssignments
   } = useApp();
 
+  // Add debug effect
+  useEffect(() => {
+    console.log('FormPage - userAssignments received:', userAssignments);
+  }, [userAssignments]);
+
   const [formData, setFormData] = useState({
     orgUnit: '',
     eventDate: new Date().toISOString().split('T')[0],
@@ -303,16 +308,46 @@ function FormPage() {
   const [isDraft, setIsDraft] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formStats, setFormStats] = useState({ percentage: 0, filled: 0, total: 0 });
+  const [trackedEntityInstance, setTrackedEntityInstance] = useState(null);
+
+  const fetchTrackedEntityInstance = async (facilityId) => {
+    try {
+      const response = await api.get(`/api/trackedEntityInstances?ou=${facilityId}&program=EE8yeLVo6cN&fields=trackedEntityInstance&ouMode=DESCENDANTS`);
+
+      if (response.trackedEntityInstances && response.trackedEntityInstances.length > 0) {
+        const tei = response.trackedEntityInstances[0].trackedEntityInstance;
+        setTrackedEntityInstance(tei);
+        console.log('Tracked Entity Instance found:', tei);
+      } else {
+        console.log('No Tracked Entity Instance found for facility');
+        setTrackedEntityInstance(null);
+      }
+    } catch (error) {
+      console.error('Failed to fetch Tracked Entity Instance:', error);
+      setTrackedEntityInstance(null);
+    }
+  };
+
 
   // Build unique facilities from userAssignments
+  // const safeUserAssignments = Array.isArray(userAssignments) ? userAssignments : [];
+  // const uniqueFacilities = [
+  //   ...new Set(
+  //     safeUserAssignments
+  //       .map(a => typeof a.facility === 'string' ? a.facility.trim() : '')
+  //       .filter(facility => facility)
+  //   )
+  // ];
   const safeUserAssignments = Array.isArray(userAssignments) ? userAssignments : [];
-  const uniqueFacilities = [
-    ...new Set(
-      safeUserAssignments
-        .map(a => typeof a.facility === 'string' ? a.facility.trim() : '')
-        .filter(facility => facility)
-    )
-  ];
+  const uniqueFacilities = safeUserAssignments
+      .filter(assignment => assignment.facility && assignment.facility.id)
+      .map(assignment => ({
+        id: assignment.facility.id,
+        name: assignment.facility.name
+      }));
+
+  console.log('Facilities:', uniqueFacilities);
+
   // Get the selected assignment for the chosen facility
   const selectedAssignment = safeUserAssignments.find(a => a.facility === formData.orgUnit);
   // Get service options from the selected assignment
@@ -435,6 +470,11 @@ function FormPage() {
         [fieldName]: null
       }));
     }
+
+    // Fetch tracked entity instance when facility is selected
+    if (fieldName === 'orgUnit' && value) {
+      fetchTrackedEntityInstance(value);
+    }
   };
 
   const validateForm = () => {
@@ -485,6 +525,7 @@ function FormPage() {
         orgUnit: formData.orgUnit,
         eventDate: formData.eventDate,
         status: saveDraft ? 'SCHEDULE' : 'COMPLETED',
+        trackedEntityInstance: trackedEntityInstance,
         dataValues: []
       };
 
@@ -612,7 +653,7 @@ function FormPage() {
                   >
                     <option value="">Select Facility</option>
                     {uniqueFacilities.length > 0 ? uniqueFacilities.map(facility => (
-                      <option key={facility} value={facility}>{facility}</option>
+                      <option key={facility.id} value={facility.id}>{facility.name}</option>
                     )) : <option value="" disabled>No facilities assigned</option>}
                   </select>
                   {errors.orgUnit && <div className="field-error">{errors.orgUnit}</div>}
