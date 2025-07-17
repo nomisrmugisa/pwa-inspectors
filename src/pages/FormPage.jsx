@@ -311,11 +311,20 @@ function FormPage() {
   const [trackedEntityInstance, setTrackedEntityInstance] = useState(null);
 
   const fetchTrackedEntityInstance = async (facilityId) => {
+    const username = "admin";
+    const password = "5Am53808053@";
     try {
-      const response = await api.get(`/api/trackedEntityInstances?ou=${facilityId}&program=EE8yeLVo6cN&fields=trackedEntityInstance&ouMode=DESCENDANTS`);
-
-      if (response.trackedEntityInstances && response.trackedEntityInstances.length > 0) {
-        const tei = response.trackedEntityInstances[0].trackedEntityInstance;
+      const response = await fetch(
+          `/api/trackedEntityInstances?ou=${facilityId}&program=EE8yeLVo6cN&fields=trackedEntityInstance&ouMode=DESCENDANTS`,
+          {
+            headers: {
+              'Authorization': 'Basic ' + btoa(`${username}:${password}`)
+            }
+          }
+      );
+      const data = await response.json();
+      if (data.trackedEntityInstances && data.trackedEntityInstances.length > 0) {
+        const tei = data.trackedEntityInstances[0].trackedEntityInstance;
         setTrackedEntityInstance(tei);
         console.log('Tracked Entity Instance found:', tei);
       } else {
@@ -346,7 +355,7 @@ function FormPage() {
         name: assignment.facility.name
       }));
 
-  console.log('Facilities:', uniqueFacilities);
+  // console.log('Facilities:', uniqueFacilities);
 
   // Get the selected assignment for the chosen facility
   const selectedAssignment = safeUserAssignments.find(a => a.facility === formData.orgUnit);
