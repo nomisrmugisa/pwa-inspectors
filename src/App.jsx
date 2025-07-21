@@ -11,7 +11,7 @@ import { FormPage } from './pages/FormPage';
 
 // Main App Router
 function AppRouter() {
-  const { isAuthenticated, configuration, loading, toast, isOnline, stats } = useApp();
+  const { isAuthenticated, configuration, loading, toast, isOnline, stats, syncEvents } = useApp();
 
   if (loading) {
     return <LoadingScreen />;
