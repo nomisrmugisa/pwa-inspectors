@@ -285,14 +285,16 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
 function FormPage() {
   const { eventId } = useParams();
   const navigate = useNavigate();
-  const api = useAPI();
+  // const api = useAPI();
   const {
     configuration,
     saveEvent,
     showToast,
     loading,
     isOnline,
-    userAssignments
+    userAssignments,
+    user,
+    api
   } = useApp();
 
   // Add debug effect
@@ -306,6 +308,8 @@ function FormPage() {
   });
   const [errors, setErrors] = useState({});
   const [isDraft, setIsDraft] = useState(false);
+  // const [currentUser, setCurrentUser] = useState(null);
+  const [serviceSections, setServiceSections] = useState(configuration?.programStage?.sections);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formStats, setFormStats] = useState({ percentage: 0, filled: 0, total: 0 });
   const [trackedEntityInstance, setTrackedEntityInstance] = useState(null);
@@ -375,21 +379,22 @@ function FormPage() {
   }, [eventId, configuration]);
 
   // Fetch current user on mount
-  useEffect(() => {
-    const fetchCurrentUser = async () => {
-      try {
-        const user = await api.getMe();
-        console.log('👤 Current user for service sections:', user);
-        // setCurrentUser(user); // This line is removed as per the new_code
-      } catch (error) {
-        console.error('❌ Failed to fetch current user:', error);
-      }
-    };
+  // done in initialize app of context
+  // useEffect(() => {
+  //   const fetchCurrentUser = async () => {
+  //     try {
+  //       const user = await api.getMe();
+  //       // console.log('👤 Current user for service sections:', user);
+  //       // setCurrentUser(user); // This line is removed as per the new_code
+  //     } catch (error) {
+  //       console.error('❌ Failed to fetch current user:', error);
+  //     }
+  //   };
 
-    if (api) {
-      fetchCurrentUser();
-    }
-  }, [api]);
+  //   if (api) {
+  //     fetchCurrentUser();
+  //   }
+  // }, [api]);
 
   // Pre-select first organization unit if available
   useEffect(() => {
@@ -404,29 +409,32 @@ function FormPage() {
   // Fetch service sections when facility or user changes
   useEffect(() => {
     // This useEffect is no longer needed as serviceOptions are now directly available
-    // const fetchServiceSections = async () => {
-    //   if (!formData.orgUnit || !currentUser?.username) {
-    //     console.log('⏳ Waiting for facility selection and user data...');
-    //     setServiceSections([]);
-    //     return;
-    //   }
+    const fetchServiceSections = async () => {
+      const currentUser = user;
+      console.log("fetch serv sec", formData.orgUnit, currentUser)
+      if (!formData.orgUnit || !currentUser?.username) {
+        console.log('⏳ Waiting for facility selection and user data...');
+        setServiceSections(configuration?.programStage?.sections);
+        return;
+      }
 
-    //   setLoadingServiceSections(true);
-    //   try {
-    //     console.log(`🔍 Fetching service sections for facility: ${formData.orgUnit}, user: ${currentUser.username}`);
-    //     const sections = await api.getServiceSectionsForInspector(formData.orgUnit, currentUser.username);
-    //     setServiceSections(sections);
-    //     console.log('✅ Service sections loaded:', sections);
-    //   } catch (error) {
-    //     console.error('❌ Failed to fetch service sections:', error);
-    //     setServiceSections([]);
-    //   } finally {
-    //     setLoadingServiceSections(false);
-    //   }
-    // };
+      // setLoadingServiceSections(true);
+      try {
+        console.log(`🔍 Fetching service sections for facility: ${formData.orgUnit.id}, user: ${currentUser.username}`);
+        const sections = await api.getServiceSectionsForInspector(formData.orgUnit.id, currentUser.username);
+        if (sections.length > 0)
+          setServiceSections(sections);
+        console.log('✅ Service sections loaded:', sections);
+      } catch (error) {
+        console.error('❌ Failed to fetch service sections:', error);
+        setServiceSections([]);
+      } finally {
+        // setLoadingServiceSections(false);
+      }
+    };
 
-    // fetchServiceSections();
-  }, [formData.orgUnit, api]); // Removed currentUser?.username from dependency array
+    fetchServiceSections();
+  }, [formData.orgUnit, api, user]); // Removed currentUser?.username from dependency array
 
   // Move this block after all hooks to avoid conditional hook call error
   // if (!configuration) { ... }
@@ -695,8 +703,8 @@ function FormPage() {
           </div>
 
           {/* Program stage sections */}
-          {configuration?.programStage?.sections && configuration.programStage.sections.length > 0 ? (
-            configuration.programStage.sections.map(section => (
+          { serviceSections && serviceSections.length > 0 ? (
+            serviceSections.map(section => (
               <FormSection
                 key={section.id}
                 section={section}

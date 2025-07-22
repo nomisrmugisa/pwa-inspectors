@@ -491,7 +491,9 @@ class DHIS2APIService {
     console.log(`🔍 Getting service sections for facility: ${facilityId}, inspector: ${username}`);
     
     try {
-      const assignmentsData = await this.getInspectionAssignments();
+      let assignmentsData = await this.getInspectionAssignments();
+      if (Array.isArray(assignmentsData)) 
+        assignmentsData = { inspections: assignmentsData }
       console.log('📊 Processing assignments data:', assignmentsData);
       
       if (!assignmentsData.inspections || assignmentsData.inspections.length === 0) {
@@ -501,7 +503,7 @@ class DHIS2APIService {
 
       // Find the facility
       const facilityInspection = assignmentsData.inspections.find(
-        inspection => inspection.facility === facilityId
+        inspection => inspection.facilityId === facilityId
       );
       
       if (!facilityInspection) {
@@ -513,7 +515,7 @@ class DHIS2APIService {
 
       // Find assignments for the inspector
       const inspectorAssignments = facilityInspection.assignments.filter(
-        assignment => assignment.inspector === username
+        assignment => assignment.inspectorName === username
       );
 
       if (inspectorAssignments.length === 0) {

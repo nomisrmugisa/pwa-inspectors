@@ -226,6 +226,7 @@ export function AppProvider({ children }) {
   // Initialize app on mount
   useEffect(() => {
     const initializeApp = async () => {
+      console.log("Initializing app...");
       // Wait for storage to be ready before trying to use it
       if (!storage.isReady) {
         return;
