@@ -319,7 +319,7 @@ function FormPage() {
     const password = "5Am53808053@";
     try {
       const response = await fetch(
-          `/api/trackedEntityInstances?ou=${facilityId}&program=EE8yeLVo6cN&fields=trackedEntityInstance&ouMode=DESCENDANTS`,
+          `https://qimsdev.5am.co.bw/qims/api/trackedEntityInstances?ou=${facilityId}&program=EE8yeLVo6cN&fields=trackedEntityInstance&ouMode=DESCENDANTS`,
           {
             headers: {
               'Authorization': 'Basic ' + btoa(`${username}:${password}`)
