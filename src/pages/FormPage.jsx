@@ -414,7 +414,7 @@ function FormPage() {
       console.log("fetch serv sec", formData.orgUnit, currentUser)
       if (!formData.orgUnit || !currentUser?.username) {
         console.log('⏳ Waiting for facility selection and user data...');
-        setServiceSections(configuration?.programStage?.sections);
+        setServiceSections(configuration?.programStage?.sections.filter((section) => !section.displayName.startsWith("Pre-Inspection:") ));
         return;
       }
 
