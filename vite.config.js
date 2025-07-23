@@ -118,9 +118,10 @@ export default defineConfig({
     port: 3000,
     host: true,
     allowedHosts: [
-  'pwa-inspectors.onrender.com',
-  'localhost'
-],
+      'pwa-inspectors.onrender.com',
+      'pwa-inspectors.5am.co.bw',
+      'localhost'
+    ],
     proxy: {
       '/api': {
         target: 'https://qimsdev.5am.co.bw/qims',
