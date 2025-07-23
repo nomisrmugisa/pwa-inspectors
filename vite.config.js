@@ -122,6 +122,9 @@ export default defineConfig({
       'pwa-inspectors.5am.co.bw',
       'localhost'
     ],
+    preview: {
+      allowedHosts: ['pwa-inspectors.5am.co.bw']
+    },
     proxy: {
       '/api': {
         target: 'https://qimsdev.5am.co.bw/qims',
