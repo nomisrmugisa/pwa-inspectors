@@ -120,10 +120,14 @@ export default defineConfig({
     allowedHosts: [
       'pwa-inspectors.onrender.com',
       'pwa-inspectors.5am.co.bw',
+      'bw-inspectors.5am.co.bw',
       'localhost'
     ],
     preview: {
-      allowedHosts: ['pwa-inspectors.5am.co.bw']
+      allowedHosts: [
+        'pwa-inspectors.5am.co.bw',
+        'bw-inspectors.5am.co.bw'
+      ]
     },
     proxy: {
       '/api': {
