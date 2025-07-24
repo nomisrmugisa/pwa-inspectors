@@ -351,15 +351,34 @@ function FormPage() {
   //       .filter(facility => facility)
   //   )
   // ];
-  const safeUserAssignments = Array.isArray(userAssignments) ? userAssignments : [];
-  const uniqueFacilities = safeUserAssignments
-      .filter(assignment => assignment.facility && assignment.facility.id)
-      .map(assignment => ({
-        id: assignment.facility.id,
-        name: assignment.facility.name
-      }));
+  const today = new Date().toISOString().split('T')[0];
 
-  // console.log('Facilities:', uniqueFacilities);
+  const safeUserAssignments = Array.isArray(userAssignments) ? userAssignments : [];
+
+// get facilities with today's date in inspection period
+  const activeFacilities = safeUserAssignments.filter(a => {
+    const { startDate, endDate } = a.assignment.inspectionPeriod || {};
+    return startDate && endDate && startDate <= today && today <= endDate;
+  }).map(a => ({
+    id: a.facility.id,
+    name: a.facility.name
+  }));
+
+  console.log('Active facilities:', activeFacilities);
+
+  const uniqueFacilities = activeFacilities; //use when you want to filter by today's date
+
+ // use to show all facilities
+
+  // const uniqueFacilities =  safeUserAssignments
+  //     .filter(assignment => assignment.facility && assignment.facility.id)
+  //     .map(assignment => ({
+  //       id: assignment.facility.id,
+  //       name: assignment.facility.name
+  //     }));
+
+  console.log('safeUserAssignments:', safeUserAssignments);
+  console.log('Facilities:', uniqueFacilities);
 
   // Get the selected assignment for the chosen facility
   const selectedAssignment = safeUserAssignments.find(a => a.facility.id === formData.orgUnit);
@@ -532,7 +551,7 @@ function FormPage() {
     }
 
     setIsSubmitting(true);
-    
+
     try {
       // Prepare event data
       const eventData = {
