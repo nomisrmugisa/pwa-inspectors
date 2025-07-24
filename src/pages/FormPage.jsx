@@ -362,7 +362,7 @@ function FormPage() {
   // console.log('Facilities:', uniqueFacilities);
 
   // Get the selected assignment for the chosen facility
-  const selectedAssignment = safeUserAssignments.find(a => a.facility === formData.orgUnit);
+  const selectedAssignment = safeUserAssignments.find(a => a.facility.id === formData.orgUnit);
   // Get service options from the selected assignment
   const serviceOptions = selectedAssignment ? selectedAssignment.assignment.sections : [];
   // Get inspection period from the selected assignment
@@ -442,14 +442,14 @@ function FormPage() {
   // Calculate form completion percentage and stats
   const calculateFormStats = () => {
     if (!programStage.allDataElements) return { percentage: 0, filled: 0, total: 0 };
-    
+
     const totalFields = programStage.allDataElements.length + 2; // +2 for orgUnit and eventDate
     let filledFields = 0;
-    
+
     // Check basic fields
     if (formData.orgUnit) filledFields++;
     if (formData.eventDate) filledFields++;
-    
+
     // Check data element fields
     programStage.allDataElements.forEach(psde => {
       const fieldName = `dataElement_${psde.dataElement.id}`;
@@ -458,7 +458,7 @@ function FormPage() {
         filledFields++;
       }
     });
-    
+
     return {
       percentage: Math.round((filledFields / totalFields) * 100),
       filled: filledFields,
@@ -479,7 +479,7 @@ function FormPage() {
       ...prev,
       [fieldName]: value
     }));
-    
+
     // Clear field error when user starts typing
     if (errors[fieldName]) {
       setErrors(prev => ({
@@ -496,12 +496,12 @@ function FormPage() {
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     // Validate required fields
     if (!formData.orgUnit) {
       newErrors.orgUnit = 'Organisation unit is required';
     }
-    
+
     if (!formData.eventDate) {
       newErrors.eventDate = 'Event date is required';
     }
@@ -511,11 +511,11 @@ function FormPage() {
       programStage.allDataElements.forEach(psde => {
         const fieldName = `dataElement_${psde.dataElement.id}`;
         const value = formData[fieldName];
-        
+
         if (psde.compulsory && (!value || value.toString().trim() === '')) {
           newErrors[fieldName] = `${psde.dataElement.displayName} is required`;
         }
-        
+
         // TODO: Add value type validation here
         // You could use the API validation functions
       });
@@ -559,12 +559,12 @@ function FormPage() {
 
       const savedEvent = await saveEvent(eventData, saveDraft);
       setIsDraft(saveDraft);
-      
+
       if (!saveDraft && !eventId) {
         // Navigate to home after successful save of new event
         navigate('/home');
       }
-      
+
     } catch (error) {
       console.error('Failed to save event:', error);
       showToast(`Failed to save: ${error.message}`, 'error');
@@ -609,7 +609,7 @@ function FormPage() {
             {/* Removed Facility-Registry heading as requested */}
             <p className="form-subtitle">{configuration?.programStage?.displayName}</p>
             {/* Removed program description as requested */}
-            
+
             {/* Progress Bar */}
             <div className="progress-section">
               <div className="progress-info">
@@ -619,8 +619,8 @@ function FormPage() {
                 <span className="progress-percentage">{formStats.percentage}%</span>
               </div>
               <div className="progress-bar">
-                <div 
-                  className="progress-fill" 
+                <div
+                  className="progress-fill"
                   style={{ width: `${formStats.percentage}%` }}
                   data-progress={
                     formStats.percentage === 100 ? 'complete' :
@@ -631,7 +631,7 @@ function FormPage() {
               </div>
             </div>
           </div>
-          
+
           <div className="form-actions">
             <button
               type="button"
@@ -647,14 +647,14 @@ function FormPage() {
         <form onSubmit={handleSubmit} className="inspection-form">
           {/* Form metadata section */}
           <div className="form-section">
-            <button 
+            <button
               type="button"
               className="section-header"
               style={{ cursor: 'default' }}
             >
               <h3 className="section-title">Inspection Information</h3>
             </button>
-            
+
             <div className="section-content">
               <div className="section-fields">
                 <div className="form-field">
@@ -717,7 +717,7 @@ function FormPage() {
             ))
           ) : (
             <div className="form-section">
-              <button 
+              <button
                 type="button"
                 className="section-header"
                 style={{ cursor: 'default' }}
@@ -747,7 +747,7 @@ function FormPage() {
             <span>💾</span>
             <span>{isSubmitting ? 'Saving...' : 'Save Draft'}</span>
           </button>
-          
+
           <button
             type="button"
             onClick={handleSubmit}
@@ -757,11 +757,11 @@ function FormPage() {
             <span>📤</span>
             <span>{isSubmitting ? 'Submitting...' : 'Submit Inspection'}</span>
           </button>
-          
+
           {!isOnline && (
-            <div className="offline-notice" style={{ 
-              gridColumn: '1 / -1', 
-              textAlign: 'center', 
+            <div className="offline-notice" style={{
+              gridColumn: '1 / -1',
+              textAlign: 'center',
               padding: '8px',
               background: 'var(--md-surface-variant)',
               borderRadius: '8px',
@@ -771,11 +771,11 @@ function FormPage() {
               📴 Offline - Inspection will sync when connected
             </div>
           )}
-          
+
           {isDraft && (
-            <div className="draft-notice" style={{ 
-              gridColumn: '1 / -1', 
-              textAlign: 'center', 
+            <div className="draft-notice" style={{
+              gridColumn: '1 / -1',
+              textAlign: 'center',
               padding: '8px',
               background: 'var(--md-surface-variant)',
               borderRadius: '8px',
@@ -791,4 +791,4 @@ function FormPage() {
   );
 }
 
-export { FormPage }; 
+export { FormPage };

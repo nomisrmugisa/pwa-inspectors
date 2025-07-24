@@ -492,6 +492,14 @@ export function AppProvider({ children }) {
               facility: {
                 id: inspection.facilityId,
                 name: inspection.facilityName
+              },
+              assignment: {
+                // Always provide an array for sections
+                sections: (inspection.assignments || []).flatMap(a => Array.isArray(a.sections) ? a.sections : []),
+                inspectionPeriod: {
+                  startDate: inspection.startDate,
+                  endDate: inspection.endDate
+                }
               }
             }));
 
