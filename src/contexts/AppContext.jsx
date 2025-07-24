@@ -585,9 +585,15 @@ export function AppProvider({ children }) {
   };
 
   const logout = async () => {
+    const confirmed = window.confirm(
+        "Logging out will clear all synced data from this device. Do you want to continue?"
+    );
+    if (!confirmed) return;
+
     try {
       if (storage.isReady) {
         try {
+          await storage.clearSyncedEvents();
           await storage.clearAuth();
         } catch (storageError) {
           console.warn('Failed to clear stored credentials:', storageError);

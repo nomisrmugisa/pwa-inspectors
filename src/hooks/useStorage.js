@@ -402,6 +402,15 @@ class StorageService {
     });
   }
 
+  async clearSyncedEvents() {
+    await this.ensureReady();
+    const allEvents = await this.getAllEvents();
+    const syncedEvents = allEvents.filter(e => e.syncStatus === 'synced');
+    for (const event of syncedEvents) {
+      await this.deleteEvent(event.event); // or event.id if your key is 'id'
+    }
+  }
+
   // Utility methods
   async clearAll() {
     await this.ensureReady();
@@ -549,6 +558,10 @@ export function useStorage() {
     getEvent: async (...args) => {
       if (!isReady || !storageRef.current) throw new Error('Storage not ready');
       return storageRef.current.getEvent(...args);
+    },
+    clearSyncedEvents: async (...args) => {
+      if (!isReady || !storageRef.current) throw new Error('Storage not ready');
+      return storageRef.current.clearSyncedEvents(...args);
     },
     deleteEvent: async (...args) => {
       if (!isReady || !storageRef.current) throw new Error('Storage not ready');
