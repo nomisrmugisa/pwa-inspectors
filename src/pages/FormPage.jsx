@@ -364,7 +364,7 @@ function FormPage() {
     name: a.facility.name
   }));
 
-  console.log('Active facilities:', activeFacilities);
+  // console.log('Active facilities:', activeFacilities);
 
   const uniqueFacilities = activeFacilities; //use when you want to filter by today's date
 
@@ -377,8 +377,8 @@ function FormPage() {
   //       name: assignment.facility.name
   //     }));
 
-  console.log('safeUserAssignments:', safeUserAssignments);
-  console.log('Facilities:', uniqueFacilities);
+  // console.log('safeUserAssignments:', safeUserAssignments);
+  // console.log('Facilities:', uniqueFacilities);
 
   // Get the selected assignment for the chosen facility
   const selectedAssignment = safeUserAssignments.find(a => a.facility.id === formData.orgUnit);
