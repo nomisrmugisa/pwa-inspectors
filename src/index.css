@@ -793,6 +793,8 @@ body {
     background: var(--md-surface);
     border-color: var(--md-primary);
     box-shadow: 0 0 0 1px var(--md-primary);
+    background-position: right 12px center;
+    background-repeat: no-repeat;
 }
 
 .form-input:hover,
@@ -800,6 +802,8 @@ body {
 .form-select:hover {
     background: var(--md-surface);
     border-color: var(--md-on-surface-variant);
+    background-position: right 12px center;
+    background-repeat: no-repeat;
 }
 
 .form-input.error,
