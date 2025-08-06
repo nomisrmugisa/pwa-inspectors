@@ -24,7 +24,7 @@ export function Header() {
     logout();
   };
 
-  console.log("path", pathname)
+ 
   return (
     <header className="app-header">
       <div className="header-content">
@@ -90,7 +90,7 @@ export function Header() {
               </span>
             )}
           </div>
-          {pathname == "/form" && (
+          {pathname?.startsWith("/form") && (
           <div className='inspect-date'>
             <span className="stat-item">
               Inspection Date: { inspectionDate }
