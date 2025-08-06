@@ -1,5 +1,6 @@
 import React from 'react';
 import { useApp } from '../contexts/AppContext';
+import { useLocation } from 'react-router-dom';
 
 export function Header() {
   const { 
@@ -13,6 +14,8 @@ export function Header() {
     inspectionDate
   } = useApp();
 
+  const { pathname } = useLocation();
+
   const handleSync = () => {
     syncEvents();
   };
@@ -21,6 +24,7 @@ export function Header() {
     logout();
   };
 
+  console.log("path", pathname)
   return (
     <header className="app-header">
       <div className="header-content">
@@ -86,11 +90,13 @@ export function Header() {
               </span>
             )}
           </div>
+          {pathname == "/form" && (
           <div className='inspect-date'>
             <span className="stat-item">
               Inspection Date: { inspectionDate }
             </span>
           </div>
+          )}
         </div>
       </div>
     </header>
