@@ -294,7 +294,8 @@ function FormPage() {
     isOnline,
     userAssignments,
     user,
-    api
+    api,
+    setEventDate
   } = useApp();
 
   // Add debug effect
@@ -340,6 +341,10 @@ function FormPage() {
       setTrackedEntityInstance(null);
     }
   };
+
+  useEffect(() => {
+    setEventDate(formData.eventDate);
+  }, [formData.eventDate]);
 
 
   // Build unique facilities from userAssignments

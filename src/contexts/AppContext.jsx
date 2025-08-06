@@ -4,6 +4,7 @@ import { useStorage } from '../hooks/useStorage';
 
 // Initial state
 const initialState = {
+  inspectionDate: null,
   // Authentication
   isAuthenticated: false,
   user: null,
@@ -70,12 +71,20 @@ const ActionTypes = {
   UPDATE_PENDING_EVENTS: 'UPDATE_PENDING_EVENTS',
   
   // Stats actions
-  UPDATE_STATS: 'UPDATE_STATS'
+  UPDATE_STATS: 'UPDATE_STATS',
+
+  SET_INSPECTION_DATE: 'SET_INSPECTION_DATE'
 };
 
 // Reducer
 function appReducer(state, action) {
   switch (action.type) {
+    case ActionTypes.SET_INSPECTION_DATE:
+      return {
+        ...state,
+        inspectionDate: action.payload
+      };
+
     case ActionTypes.LOGIN_START:
       return {
         ...state,
@@ -320,6 +329,13 @@ export function AppProvider({ children }) {
       return () => clearTimeout(timer);
     }
   }, [state.toast]);
+
+  const setEventDate = (date) => {
+    dispatch({
+      type: ActionTypes.SET_INSPECTION_DATE,
+      payload: date
+    });
+  }
 
   /**
    * Fetch complete data collection configuration like Android DHIS2 app
@@ -802,6 +818,7 @@ export function AppProvider({ children }) {
     // userAssignments,
     // setUserAssignments,
     // Actions
+    setEventDate,
     login,
     logout,
     fetchConfiguration,
@@ -828,7 +845,8 @@ export function AppProvider({ children }) {
       updateStats,
       showToast,
       hideToast,
-      clearError
+      clearError,
+      setEventDate
     }}>
       {children}
     </AppContext.Provider>

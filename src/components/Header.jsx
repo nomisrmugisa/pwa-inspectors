@@ -9,7 +9,8 @@ export function Header() {
     loading, 
     syncInProgress,
     stats,
-    user
+    user,
+    inspectionDate
   } = useApp();
 
   const handleSync = () => {
@@ -87,7 +88,7 @@ export function Header() {
           </div>
           <div className='inspect-date'>
             <span className="stat-item">
-              Inspection Date: { "08/05/2025" }
+              Inspection Date: { inspectionDate }
             </span>
           </div>
         </div>
