@@ -470,6 +470,11 @@ body {
     gap: 20px;
 }
 
+.header-row {
+    display: flex;
+    justify-content: space-between;
+}
+
 .form-header h2 {
     color: var(--md-on-surface);
     font-weight: 700;

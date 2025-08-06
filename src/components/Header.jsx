@@ -71,19 +71,25 @@ export function Header() {
             {isOnline ? '🌐 Online' : '📴 Offline'}
           </span>
         </div>
-        
-        <div className="stats-summary">
-          <span className="stat-item">
-            📋 {stats.totalEvents} total
-          </span>
-          <span className="stat-item">
-            ✅ {stats.syncedEvents} synced
-          </span>
-          {stats.errorEvents > 0 && (
-            <span className="stat-item error">
-              ❌ {stats.errorEvents} errors
+        <div className="header-row">
+          <div className="stats-summary">
+            <span className="stat-item">
+              📋 {stats.totalEvents} total
             </span>
-          )}
+            <span className="stat-item">
+              ✅ {stats.syncedEvents} synced
+            </span>
+            {stats.errorEvents > 0 && (
+              <span className="stat-item error">
+                ❌ {stats.errorEvents} errors
+              </span>
+            )}
+          </div>
+          <div className='inspect-date'>
+            <span className="stat-item">
+              Inspection Date: { "08/05/2025" }
+            </span>
+          </div>
         </div>
       </div>
     </header>
