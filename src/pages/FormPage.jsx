@@ -625,7 +625,7 @@ function FormPage() {
 
   const { program, programStage, organisationUnits } = configuration;
 
-  const _today = new Date();
+  const _today = new Date(formData.eventDate);
   const _start = new Date(inspectionPeriod?.startDate);
   const _end = new Date(inspectionPeriod?.endDate);
 
