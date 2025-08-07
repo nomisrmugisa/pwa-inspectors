@@ -630,7 +630,7 @@ function FormPage() {
   const _end = new Date(inspectionPeriod?.endDate);
 
   const date_valid = !inspectionPeriod ? true : (_today >= _start && _today <= _end);
-  console.log("valid", date_valid);
+  console.log("valid", date_valid, _today >= _start, _today <= _end);
 
   return (
     <div className="screen">
