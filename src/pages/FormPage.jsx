@@ -625,6 +625,9 @@ function FormPage() {
 
   const { program, programStage, organisationUnits } = configuration;
 
+  const _today = new Date()
+  const date_valid = !inspectionPeriod ? true : _today >= (new Date(inspectionPeriod.startDate)) && _today <= (new Date(inspectionPeriod.endDate))
+
   return (
     <div className="screen">
       <div className="form-container">
@@ -728,7 +731,7 @@ function FormPage() {
           </div>
 
           {/* Program stage sections */}
-          { serviceSections && serviceSections.length > 0 ? (
+          { serviceSections && date_valid && serviceSections.length > 0 ? (
             serviceSections.map(section => (
               <FormSection
                 key={section.id}
