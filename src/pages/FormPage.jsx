@@ -625,9 +625,13 @@ function FormPage() {
 
   const { program, programStage, organisationUnits } = configuration;
 
-  const _today = new Date()
-  const date_valid = !inspectionPeriod ? true : (_today >= (new Date(inspectionPeriod.startDate)) && _today <= (new Date(inspectionPeriod.endDate)));
-console.log("valid", date_valid, (_today >= (new Date(inspectionPeriod.startDate)));
+  const _today = new Date();
+  const _start = new Date(inspectionPeriod.startDate);
+  const _end = new Date(inspectionPeriod.endDate);
+
+  const date_valid = !inspectionPeriod ? true : (_today >= _start && _today <= _end);
+  console.log("valid", date_valid);
+  
   return (
     <div className="screen">
       <div className="form-container">
