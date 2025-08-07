@@ -710,7 +710,7 @@ function FormPage() {
                     onChange={e => handleFieldChange('eventDate', e.target.value)}
                     required
                     className={`form-input ${errors.eventDate ? 'error' : ''}`}
-                    max={inspectionPeriod?.endDate}
+                    max={inspectionPeriod ? inspectionPeriod?.endDate : new Date().toISOString().split('T')[0] }
                     min={ inspectionPeriod ? new Date(inspectionPeriod.startDate).toISOString().split('T')[0] : "" }
                   />
                   {errors.eventDate && <div className="field-error">{errors.eventDate}</div>}
