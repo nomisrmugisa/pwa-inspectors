@@ -300,6 +300,18 @@ class DHIS2APIService {
         organisationUnits: [] // Now populated from DataStore assignments in userAssignments
       };
 
+      // Fallback: if no sections configured in the stage, create a single synthetic section
+      if (!configuration.programStage.sections || configuration.programStage.sections.length === 0) {
+        const synthetic = {
+          id: 'section_all',
+          displayName: stageMetadata.name || 'Inspection Form',
+          description: null,
+          sortOrder: 0,
+          dataElements: configuration.programStage.allDataElements || []
+        };
+        configuration.programStage.sections = [synthetic];
+      }
+
       console.log('✅ Direct configuration loaded:', {
         program: configuration.program.displayName,
         stage: configuration.programStage.displayName,
@@ -487,8 +499,8 @@ class DHIS2APIService {
    * Get service sections for a specific facility and inspector
    * Returns array of section names that should populate the service dropdown
    */
-  async getServiceSectionsForInspector(facilityId, username) {
-    console.log(`🔍 Getting service sections for facility: ${facilityId}, inspector: ${username}`);
+  async getServiceSectionsForInspector(facilityId, inspectorDisplayName) {
+    console.log(`🔍 Getting service sections for facility: ${facilityId}, inspector: ${inspectorDisplayName}`);
     
     try {
       let assignmentsData = await this.getInspectionAssignments();
@@ -513,10 +525,17 @@ class DHIS2APIService {
 
       console.log('🏥 Found facility inspection:', facilityInspection);
 
-      // Find assignments for the inspector
-      const inspectorAssignments = facilityInspection.assignments.filter(
-        assignment => assignment.inspectorName === username
-      );
+      // Find assignments for the inspector using displayName, robust match
+      const norm = (v) => (v ?? '').toString().trim().toLowerCase();
+      const inspectorAssignments = facilityInspection.assignments.filter((assignment) => {
+        const aName = norm(assignment.inspectorName);
+        const iName = norm(inspectorDisplayName);
+        return (
+          aName === iName ||
+          aName.includes(iName) ||
+          iName.includes(aName)
+        );
+      });
 
       if (inspectorAssignments.length === 0) {
         console.warn(`⚠️ No assignments found for inspector: ${username} at facility: ${facilityId}`);

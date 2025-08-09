@@ -4,7 +4,7 @@ import { useApp } from '../contexts/AppContext';
 import { useAPI } from '../hooks/useAPI';
 
 // Form field component for individual data elements
-function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoading = false }) {
+function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoading = false, readOnly = false }) {
   const { dataElement } = psde;
   const fieldId = `dataElement_${dataElement.id}`;
 
@@ -18,7 +18,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
           onChange={onChange}
           required={psde.compulsory}
           className={`form-select ${error ? 'error' : ''}`}
-          disabled={isLoading}
+          disabled={readOnly || isLoading}
         >
           <option value="">
             {isLoading ? 'Loading service sections...' : `Select ${dataElement.displayName}`}
@@ -41,6 +41,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
           onChange={onChange}
           required={psde.compulsory}
           className={`form-select ${error ? 'error' : ''}`}
+          disabled={readOnly}
         >
           <option value="">Select {dataElement.displayName}</option>
           {dataElement.optionSet.options
@@ -66,6 +67,8 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
             placeholder={`Enter ${dataElement.displayName}`}
             required={psde.compulsory}
             className={`form-input ${error ? 'error' : ''}`}
+          readOnly={readOnly}
+          disabled={readOnly}
           />
         );
 
@@ -79,6 +82,8 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
             required={psde.compulsory}
             className={`form-textarea ${error ? 'error' : ''}`}
             rows={4}
+          readOnly={readOnly}
+          disabled={readOnly}
           />
         );
 
@@ -102,6 +107,8 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
                  dataElement.valueType === 'INTEGER_ZERO_OR_POSITIVE' ? '0' :
                  dataElement.valueType === 'PERCENTAGE' ? '0' : undefined}
             max={dataElement.valueType === 'PERCENTAGE' ? '100' : undefined}
+            readOnly={readOnly}
+            disabled={readOnly}
           />
         );
 
@@ -114,6 +121,8 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
             onChange={onChange}
             required={psde.compulsory}
             className={`form-input ${error ? 'error' : ''}`}
+          readOnly={readOnly}
+          disabled={readOnly}
           />
         );
 
@@ -126,6 +135,8 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
             onChange={onChange}
             required={psde.compulsory}
             className={`form-input ${error ? 'error' : ''}`}
+          readOnly={readOnly}
+          disabled={readOnly}
           />
         );
 
@@ -140,6 +151,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
                 checked={value === 'true' || value === true}
                 onChange={(e) => onChange({ target: { value: e.target.checked ? 'true' : 'false' } })}
                 className="form-checkbox"
+                disabled={readOnly}
               />
               {/* Removed the 'True' or 'Yes' label next to the checkbox */}
             </label>
@@ -156,6 +168,8 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
             placeholder={`Enter ${dataElement.displayName}`}
             required={psde.compulsory}
             className={`form-input ${error ? 'error' : ''}`}
+          readOnly={readOnly}
+          disabled={readOnly}
           />
         );
 
@@ -169,6 +183,8 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
             placeholder={`Enter ${dataElement.displayName}`}
             required={psde.compulsory}
             className={`form-input ${error ? 'error' : ''}`}
+          readOnly={readOnly}
+          disabled={readOnly}
           />
         );
 
@@ -182,6 +198,8 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
             placeholder={`Enter ${dataElement.displayName}`}
             required={psde.compulsory}
             className={`form-input ${error ? 'error' : ''}`}
+          readOnly={readOnly}
+          disabled={readOnly}
           />
         );
 
@@ -197,6 +215,8 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
             className={`form-input ${error ? 'error' : ''}`}
             pattern="^-?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*-?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$"
             title="Enter coordinates in format: latitude,longitude (e.g., -24.6282,25.9231)"
+          readOnly={readOnly}
+          disabled={readOnly}
           />
         );
 
@@ -211,6 +231,8 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
             placeholder={`Enter ${dataElement.displayName}`}
             required={psde.compulsory}
             className={`form-input ${error ? 'error' : ''}`}
+            readOnly={readOnly}
+            disabled={readOnly}
           />
         );
     }
@@ -232,7 +254,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 }
 
 // Section component for organizing form fields
-function FormSection({ section, formData, onChange, errors, serviceSections, loadingServiceSections }) {
+function FormSection({ section, formData, onChange, errors, serviceSections, loadingServiceSections, readOnlyFields = {} }) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   // Function to determine if a field should use dynamic service dropdown
@@ -261,7 +283,7 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
         )}
 
         <div className="section-fields">
-          {section.dataElements.map(psde => {
+          {(section.dataElements || []).map(psde => {
             const isDynamicServiceField = isServiceField(psde.dataElement);
             return (
               <FormField
@@ -272,6 +294,7 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
                 error={errors[`dataElement_${psde.dataElement.id}`]}
                 dynamicOptions={isDynamicServiceField ? serviceSections : null}
                 isLoading={isDynamicServiceField ? loadingServiceSections : false}
+                readOnly={!!readOnlyFields[`dataElement_${psde.dataElement.id}`]}
               />
             );
           })}
@@ -307,6 +330,7 @@ function FormPage() {
     orgUnit: '',
     eventDate: new Date().toISOString().split('T')[0],
   });
+  const [readOnlyFields, setReadOnlyFields] = useState({});
   const [errors, setErrors] = useState({});
   const [isDraft, setIsDraft] = useState(false);
   // const [currentUser, setCurrentUser] = useState(null);
@@ -386,9 +410,11 @@ function FormPage() {
   // console.log('Facilities:', uniqueFacilities);
 
   // Get the selected assignment for the chosen facility
-  const selectedAssignment = safeUserAssignments.find(a => a.facility.id === formData.orgUnit);
+  const selectedAssignment = safeUserAssignments.find(a => a.facility.id === (typeof formData.orgUnit === 'string' ? formData.orgUnit : formData.orgUnit?.id));
   // Get service options from the selected assignment
   const serviceOptions = selectedAssignment ? selectedAssignment.assignment.sections : [];
+  const assignmentType = selectedAssignment ? selectedAssignment.assignment.type : null;
+  const assignmentInspectionId = selectedAssignment ? selectedAssignment.assignment.inspectionId : null;
   // Get inspection period from the selected assignment
   const inspectionPeriod = selectedAssignment && selectedAssignment.assignment
     ? selectedAssignment.assignment.inspectionPeriod
@@ -425,7 +451,7 @@ function FormPage() {
     if (configuration && uniqueFacilities.length > 0 && !formData.orgUnit) {
       setFormData(prev => ({
         ...prev,
-        orgUnit: uniqueFacilities[0]
+        orgUnit: uniqueFacilities[0].id
       }));
     }
   }, [configuration, uniqueFacilities, formData.orgUnit]);
@@ -444,11 +470,50 @@ function FormPage() {
 
       // setLoadingServiceSections(true);
       try {
-        console.log(`🔍 Fetching service sections for facility: ${formData.orgUnit.id}, user: ${currentUser.username}`);
-        const sections = await api.getServiceSectionsForInspector(formData.orgUnit.id, currentUser.username);
-        if (sections.length > 0)
-          setServiceSections(sections);
-        console.log('✅ Service sections loaded:', sections);
+        const facilityId = typeof formData.orgUnit === 'string' ? formData.orgUnit : formData.orgUnit?.id;
+        console.log(`🔍 Fetching service sections for facility: ${facilityId}, inspector: ${currentUser.displayName || currentUser.username}`);
+        const assignedSectionNames = await api.getServiceSectionsForInspector(
+          facilityId,
+          currentUser.displayName || currentUser.username
+        );
+        const allProgramSections = configuration?.programStage?.sections || [];
+        if (Array.isArray(assignedSectionNames) && assignedSectionNames.length > 0 && allProgramSections.length > 0) {
+          const normalize = (v) => (v ?? '')
+            .toString()
+            .trim()
+            .toLowerCase()
+            .replace(/[^a-z0-9]/g, '');
+          const filtered = allProgramSections.filter((s) => {
+            const sName = normalize(s.displayName);
+            return assignedSectionNames.some((n) => {
+              const aName = normalize(n);
+              return aName === sName || aName.includes(sName) || sName.includes(aName);
+            });
+          });
+          // If nothing matched (label mismatches), fall back to all non pre-inspection sections
+          if (filtered.length > 0) {
+            setServiceSections(filtered);
+          } else {
+            setServiceSections(allProgramSections.filter((s) => !s.displayName?.startsWith('Pre-Inspection:')));
+          }
+        } else {
+          // Fallback: show all non pre-inspection sections
+          setServiceSections(allProgramSections.filter((s) => !s.displayName?.startsWith('Pre-Inspection:')));
+        }
+        console.log('✅ Service sections loaded for render:', {
+          assigned: assignedSectionNames,
+          allProgramSections: allProgramSections.map(s => s.displayName),
+          final: (Array.isArray(assignedSectionNames) && assignedSectionNames.length > 0 && allProgramSections.length > 0)
+            ? allProgramSections.filter((s) => {
+                const norm = (v) => (v ?? '').toString().trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+                const sName = norm(s.displayName);
+                return assignedSectionNames.some((n) => {
+                  const aName = norm(n);
+                  return aName === sName || aName.includes(sName) || sName.includes(aName);
+                });
+              }).map(s => s.displayName)
+            : allProgramSections.filter(s => !s.displayName?.startsWith('Pre-Inspection:')).map(s => s.displayName)
+        });
       } catch (error) {
         console.error('❌ Failed to fetch service sections:', error);
         setServiceSections([]);
@@ -465,29 +530,55 @@ function FormPage() {
 
   // Calculate form completion percentage and stats
   const calculateFormStats = () => {
-    if (!programStage.allDataElements) return { percentage: 0, filled: 0, total: 0 };
+    if (!configuration) return { percentage: 0, filled: 0, total: 0 };
 
-    const totalFields = programStage.allDataElements.length + 2; // +2 for orgUnit and eventDate
+    // Prefer currently rendered sections when available; fallback to configuration
+    const sectionsSource = Array.isArray(serviceSections) && serviceSections.length > 0
+      ? serviceSections
+      : (configuration?.programStage?.sections || []);
+
+    const normalize = (value) => (value || '').toString().trim().toLowerCase();
+    const isPreInspection = (section) => normalize(section?.displayName).startsWith('pre-inspection');
+    const isDocumentReview = (section) => normalize(section?.displayName).includes('document review');
+
+    const hasAnyDataInSection = (section) => {
+      if (!section?.dataElements) return false;
+      return section.dataElements.some((psde) => {
+        const fieldName = `dataElement_${psde.dataElement.id}`;
+        const value = formData[fieldName];
+        return value !== undefined && value !== null && value.toString().trim() !== '';
+      });
+    };
+
+    const documentReviewSections = sectionsSource.filter((s) => isDocumentReview(s));
+    const nonPreNonDocSections = sectionsSource.filter((s) => !isPreInspection(s) && !isDocumentReview(s));
+
+    // If any data has been entered in Document Review section(s), only count those.
+    // Otherwise, count the rest of the sections excluding pre-inspection ones.
+    const useDocumentReviewOnly = documentReviewSections.some((s) => hasAnyDataInSection(s));
+    const countedSections = useDocumentReviewOnly ? documentReviewSections : nonPreNonDocSections;
+
+    let totalFields = 0;
     let filledFields = 0;
 
-    // Check basic fields
+    // Always include the two basic fields
+    totalFields += 2; // orgUnit and eventDate
     if (formData.orgUnit) filledFields++;
     if (formData.eventDate) filledFields++;
 
-    // Check data element fields
-    programStage.allDataElements.forEach(psde => {
-      const fieldName = `dataElement_${psde.dataElement.id}`;
-      const value = formData[fieldName];
-      if (value && value.toString().trim() !== '') {
-        filledFields++;
-      }
+    countedSections.forEach((section) => {
+      (section.dataElements || []).forEach((psde) => {
+        totalFields += 1;
+        const fieldName = `dataElement_${psde.dataElement.id}`;
+        const value = formData[fieldName];
+        if (value !== undefined && value !== null && value.toString().trim() !== '') {
+          filledFields += 1;
+        }
+      });
     });
 
-    return {
-      percentage: Math.round((filledFields / totalFields) * 100),
-      filled: filledFields,
-      total: totalFields
-    };
+    const percentage = totalFields === 0 ? 0 : Math.round((filledFields / totalFields) * 100);
+    return { percentage, filled: filledFields, total: totalFields };
   };
 
   // Update form stats when form data changes
@@ -517,6 +608,69 @@ function FormPage() {
       fetchTrackedEntityInstance(value);
     }
   };
+
+  // Set Type from assignment and lock field when facility/orgUnit changes
+  useEffect(() => {
+    if (!configuration) return;
+    const typeElement = configuration.programStage.allDataElements?.find(psde => {
+      const name = (psde.dataElement.displayName || psde.dataElement.shortName || '').toLowerCase();
+      return name === 'type' || name.includes('facility type') || name.includes('inspection type');
+    });
+
+    if (typeElement) {
+      const fieldKey = `dataElement_${typeElement.dataElement.id}`;
+      if (assignmentType) {
+        // If the Type field uses an optionSet, map the assignment type to the option value
+        let valueToSet = assignmentType;
+        const options = typeElement.dataElement.optionSet?.options || [];
+        if (Array.isArray(options) && options.length > 0) {
+          const normalized = (v) => (v ?? '').toString().trim().toLowerCase();
+          const matched = options.find(opt =>
+            normalized(opt.displayName) === normalized(assignmentType) ||
+            normalized(opt.code) === normalized(assignmentType) ||
+            normalized(opt.id) === normalized(assignmentType)
+          );
+          if (matched) {
+            valueToSet = matched.code || matched.id;
+          }
+        }
+        setFormData(prev => ({
+          ...prev,
+          [fieldKey]: valueToSet
+        }));
+      }
+      // Always lock the field regardless of whether a value exists
+      setReadOnlyFields(prev => ({ ...prev, [fieldKey]: true }));
+    }
+  }, [configuration, assignmentType, formData.orgUnit]);
+
+  // Set Inspection-id from assignment and lock field when facility/orgUnit changes
+  useEffect(() => {
+    if (!configuration) return;
+    const idElement = configuration.programStage.allDataElements?.find(psde => {
+      const display = (psde.dataElement.displayName || '').toLowerCase();
+      const short = (psde.dataElement.shortName || '').toLowerCase();
+      return (
+        display === 'inspection-id' || short === 'inspection-id' ||
+        display === 'inspection id' || short === 'inspection id' ||
+        display.includes('inspection-id') || short.includes('inspection-id') ||
+        display.includes('inspection id') || short.includes('inspection id')
+      );
+    });
+
+    if (idElement) {
+      const fieldKey = `dataElement_${idElement.dataElement.id}`;
+      // If the field has an optionSet, there's usually no optionSet for IDs; set raw string value
+      if (assignmentInspectionId !== null && assignmentInspectionId !== undefined && assignmentInspectionId !== '') {
+        setFormData(prev => ({
+          ...prev,
+          [fieldKey]: assignmentInspectionId
+        }));
+      }
+      // Always lock the field regardless of whether a value exists
+      setReadOnlyFields(prev => ({ ...prev, [fieldKey]: true }));
+    }
+  }, [configuration, assignmentInspectionId, formData.orgUnit]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -745,6 +899,7 @@ function FormPage() {
                 errors={errors}
                 serviceSections={serviceOptions}
                 loadingServiceSections={false}
+                readOnlyFields={readOnlyFields}
               />
             ))
           ) : (

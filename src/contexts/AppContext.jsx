@@ -504,20 +504,32 @@ export function AppProvider({ children }) {
 
             // Step 4: Log Facilities
           if (datastoreResponse && Array.isArray(datastoreResponse)) {
-            const facilities = datastoreResponse.map(inspection => ({
-              facility: {
-                id: inspection.facilityId,
-                name: inspection.facilityName
-              },
-              assignment: {
-                // Always provide an array for sections
-                sections: (inspection.assignments || []).flatMap(a => Array.isArray(a.sections) ? a.sections : []),
-                inspectionPeriod: {
-                  startDate: inspection.startDate,
-                  endDate: inspection.endDate
+            const facilities = datastoreResponse.map(inspection => {
+              // Prefer the assignment entry for the current user when present
+              const norm = (v) => (v ?? '').toString().trim().toLowerCase();
+              const inspectorAssignment = (inspection.assignments || []).find(a => {
+                const aName = norm(a.inspectorName);
+                const iName = norm(userResult.displayName || userResult.username);
+                return aName === iName || aName.includes(iName) || iName.includes(aName);
+              });
+              return {
+                facility: {
+                  id: inspection.facilityId,
+                  name: inspection.facilityName
+                },
+                assignment: {
+                  // Sections from the inspector-specific assignment if available; fall back to all
+                  sections: inspectorAssignment?.sections || (inspection.assignments || []).flatMap(a => Array.isArray(a.sections) ? a.sections : []),
+                  inspectionPeriod: {
+                    startDate: inspection.startDate,
+                    endDate: inspection.endDate
+                  },
+                  // Prefer per-assignment values, then facility-level fallbacks
+                  type: inspectorAssignment?.type || inspection.type || inspection.Type || inspection.inspectionType || null,
+                  inspectionId: inspectorAssignment?.inspectionId || inspectorAssignment?.inspectionID || inspection.inspectionId || inspection.inspectionID || inspection.id || inspection.Id || null
                 }
-              }
-            }));
+              };
+            });
 
             console.log('Processing facilities:', facilities);
 
@@ -702,25 +714,33 @@ export function AppProvider({ children }) {
           // }
 
           // Clean payload before submission
+          // DHIS2 will generate the event UID on create; omit local temp ID to avoid 409 conflicts
           const cleanEvent = {
-            ...event,
-            status: 'ACTIVE' // Change status to ACTIVE for online submission
+            program: event.program,
+            programStage: event.programStage,
+            orgUnit: event.orgUnit,
+            eventDate: event.eventDate,
+            status: 'ACTIVE',
+            trackedEntityInstance: event.trackedEntityInstance,
+            dataValues: Array.isArray(event.dataValues) ? event.dataValues : []
           };
-
-          // Remove internal tracking fields
-          delete cleanEvent.syncStatus;
-          delete cleanEvent.createdAt;
-          delete cleanEvent.updatedAt;
 
           const response = await api.submitEvent(cleanEvent); // Submit cleaned event
 
-          if (response.status === 'SUCCESS' || response.httpStatus === 'OK') {
+          const topLevelStatus = response?.status || response?.httpStatus || response?.response?.status;
+          const importSummaries = response?.response?.importSummaries || response?.importSummaries || [];
+          const firstSummary = Array.isArray(importSummaries) && importSummaries.length > 0 ? importSummaries[0] : null;
+          const summaryStatus = firstSummary?.status || firstSummary?.httpStatus;
+
+          if (topLevelStatus === 'SUCCESS' || topLevelStatus === 'OK' || summaryStatus === 'SUCCESS') {
+            const serverEventId = firstSummary?.reference || firstSummary?.uid || response?.response?.uid || null;
             // Mark as synced in local storage (keep tracking fields for local use)
             await storage.updateEvent(event.event, {
               ...event,
               status: 'synced',
               syncStatus: 'synced',
-              syncedAt: new Date().toISOString()
+              syncedAt: new Date().toISOString(),
+              serverEventId
             });
             results.push({event: event.event, status: 'success'});
           }
