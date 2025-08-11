@@ -416,7 +416,7 @@ function FormPage() {
   });
   const [readOnlyFields, setReadOnlyFields] = useState({});
   const [errors, setErrors] = useState({});
-  const [showDebugPanel, setShowDebugPanel] = useState(true); // Show debug panel by default
+  const [showDebugPanel, setShowDebugPanel] = useState(false); // Hide debug panel by default
   const [isDraft, setIsDraft] = useState(false);
   // const [currentUser, setCurrentUser] = useState(null);
   const [serviceSections, setServiceSections] = useState(configuration?.programStage?.sections);
