@@ -4,7 +4,7 @@ import { useApp } from '../contexts/AppContext';
 import { useAPI } from '../hooks/useAPI';
 
 // Form field component for individual data elements
-function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoading = false, readOnly = false }) {
+function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoading = false, readOnly = false, getCurrentPosition }) {
   const { dataElement } = psde;
   const fieldId = `dataElement_${dataElement.id}`;
 
@@ -205,19 +205,40 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
       case 'COORDINATE':
         return (
-          <input
-            type="text"
-            id={fieldId}
-            value={value || ''}
-            onChange={onChange}
-            placeholder="Enter coordinates (latitude,longitude)"
-            required={psde.compulsory}
-            className={`form-input ${error ? 'error' : ''}`}
-            pattern="^-?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*-?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$"
-            title="Enter coordinates in format: latitude,longitude (e.g., -24.6282,25.9231)"
-          readOnly={readOnly}
-          disabled={readOnly}
-          />
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <input
+              type="text"
+              id={fieldId}
+              value={value || ''}
+              onChange={onChange}
+              placeholder="Enter coordinates (latitude,longitude)"
+              required={psde.compulsory}
+              className={`form-input ${error ? 'error' : ''}`}
+              pattern="^-?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*-?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$"
+              title="Enter coordinates in format: latitude,longitude (e.g., -24.6282,25.9231)"
+              readOnly={readOnly}
+              disabled={readOnly}
+              style={{ flex: 1 }}
+            />
+            <button
+              type="button"
+              onClick={() => getCurrentPosition(fieldId, onChange)}
+              disabled={readOnly}
+              style={{
+                backgroundColor: '#007bff',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                padding: '8px 12px',
+                fontSize: '12px',
+                cursor: readOnly ? 'not-allowed' : 'pointer',
+                whiteSpace: 'nowrap'
+              }}
+              title="Get current GPS coordinates"
+            >
+              📍 GPS
+            </button>
+          </div>
         );
 
       default:
@@ -254,7 +275,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 }
 
 // Section component for organizing form fields
-function FormSection({ section, formData, onChange, errors, serviceSections, loadingServiceSections, readOnlyFields = {} }) {
+function FormSection({ section, formData, onChange, errors, serviceSections, loadingServiceSections, readOnlyFields = {}, getCurrentPosition }) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   // Function to determine if a field should use dynamic service dropdown
@@ -295,6 +316,7 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
                 dynamicOptions={isDynamicServiceField ? serviceSections : null}
                 isLoading={isDynamicServiceField ? loadingServiceSections : false}
                 readOnly={!!readOnlyFields[`dataElement_${psde.dataElement.id}`]}
+                getCurrentPosition={getCurrentPosition}
               />
             );
           })}
@@ -321,6 +343,68 @@ function FormPage() {
     setEventDate
   } = useApp();
 
+  // GPS coordinate function
+  const getCurrentPosition = (fieldId, onChange) => {
+    if (!navigator.geolocation) {
+      showToast('Geolocation is not supported by this browser', 'error');
+      return;
+    }
+
+    showToast('Getting GPS coordinates...', 'info');
+    
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        const coordinates = `${latitude.toFixed(6)},${longitude.toFixed(6)}`;
+        
+        // Update the form field
+        onChange({ target: { value: coordinates } });
+        
+        // Update GPS state for debugging
+        setGpsCoordinates({
+          latitude: latitude.toFixed(6),
+          longitude: longitude.toFixed(6),
+          accuracy: position.coords.accuracy ? `${position.coords.accuracy.toFixed(2)}m` : 'Unknown',
+          timestamp: new Date(position.timestamp).toLocaleString(),
+          fieldId: fieldId
+        });
+        
+        showToast(`GPS coordinates captured: ${coordinates}`, 'success');
+        
+        console.log('🔍 GPS coordinates captured:', {
+          latitude: latitude.toFixed(6),
+          longitude: longitude.toFixed(6),
+          accuracy: position.coords.accuracy ? `${position.coords.accuracy.toFixed(2)}m` : 'Unknown',
+          timestamp: new Date(position.timestamp).toLocaleString(),
+          fieldId: fieldId
+        });
+      },
+      (error) => {
+        let errorMessage = 'Failed to get GPS coordinates';
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage = 'GPS access denied. Please allow location access.';
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = 'GPS location information unavailable.';
+            break;
+          case error.TIMEOUT:
+            errorMessage = 'GPS request timed out.';
+            break;
+          default:
+            errorMessage = `GPS error: ${error.message}`;
+        }
+        showToast(errorMessage, 'error');
+        console.error('GPS error:', error);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 60000
+      }
+    );
+  };
+
   // Add debug effect
   useEffect(() => {
     console.log('FormPage - userAssignments received:', userAssignments);
@@ -332,37 +416,38 @@ function FormPage() {
   });
   const [readOnlyFields, setReadOnlyFields] = useState({});
   const [errors, setErrors] = useState({});
+  const [showDebugPanel, setShowDebugPanel] = useState(true); // Show debug panel by default
   const [isDraft, setIsDraft] = useState(false);
   // const [currentUser, setCurrentUser] = useState(null);
   const [serviceSections, setServiceSections] = useState(configuration?.programStage?.sections);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formStats, setFormStats] = useState({ percentage: 0, filled: 0, total: 0 });
   const [trackedEntityInstance, setTrackedEntityInstance] = useState(null);
+  const [gpsCoordinates, setGpsCoordinates] = useState(null);
 
   const fetchTrackedEntityInstance = async (facilityId) => {
-    const username = "admin";
-    const password = "5Am53808053@";
     try {
-      const response = await fetch(
-          `https://qimsdev.5am.co.bw/qims/api/trackedEntityInstances?ou=${facilityId}&program=EE8yeLVo6cN&fields=trackedEntityInstance&ouMode=DESCENDANTS`,
-          {
-            headers: {
-              'Authorization': 'Basic ' + btoa(`${username}:${password}`)
-            }
-          }
+      console.log('🔍 Fetching Tracked Entity Instance for facility:', facilityId);
+      
+      // Use the API service instead of direct fetch
+      const response = await api.request(
+        `trackedEntityInstances?ou=${facilityId}&program=EE8yeLVo6cN&fields=trackedEntityInstance&ouMode=DESCENDANTS`
       );
-      const data = await response.json();
-      if (data.trackedEntityInstances && data.trackedEntityInstances.length > 0) {
-        const tei = data.trackedEntityInstances[0].trackedEntityInstance;
+      
+      if (response.trackedEntityInstances && response.trackedEntityInstances.length > 0) {
+        const tei = response.trackedEntityInstances[0].trackedEntityInstance;
         setTrackedEntityInstance(tei);
-        console.log('Tracked Entity Instance found:', tei);
+        console.log('✅ Tracked Entity Instance found:', tei);
       } else {
-        console.log('No Tracked Entity Instance found for facility');
+        console.log('ℹ️ No Tracked Entity Instance found for facility');
         setTrackedEntityInstance(null);
       }
     } catch (error) {
-      console.error('Failed to fetch Tracked Entity Instance:', error);
-      setTrackedEntityInstance(null);
+      console.error('❌ Failed to fetch Tracked Entity Instance:', error);
+      // Don't set to null on error, keep previous value if available
+      if (!trackedEntityInstance) {
+        setTrackedEntityInstance(null);
+      }
     }
   };
 
@@ -380,34 +465,68 @@ function FormPage() {
   //       .filter(facility => facility)
   //   )
   // ];
-  const today = new Date().toISOString().split('T')[0];
+  
+  // Get today's date in Botswana timezone (UTC+2)
+  const getBotswanaDate = () => {
+    const now = new Date();
+    // Botswana is UTC+2, so add 2 hours to get local time
+    const botswanaTime = new Date(now.getTime() + (2 * 60 * 60 * 1000));
+    return botswanaTime.toISOString().split('T')[0];
+  };
+  
+  const today = getBotswanaDate();
+  console.log('🌍 Today in Botswana timezone:', today);
 
   const safeUserAssignments = Array.isArray(userAssignments) ? userAssignments : [];
 
-// get facilities with today's date in inspection period
+  // Get facilities with today's date in inspection period
   const activeFacilities = safeUserAssignments.filter(a => {
     const { startDate, endDate } = a.assignment.inspectionPeriod || {};
-    return startDate && endDate && startDate <= today && today <= endDate;
+    
+    if (!startDate || !endDate) {
+      console.log(`⚠️ Assignment for ${a.facility.name} missing inspection period dates`);
+      return false;
+    }
+    
+    // Convert assignment dates to Date objects for comparison
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const todayDate = new Date(today);
+    
+    // Reset time to start of day for accurate date comparison
+    start.setHours(0, 0, 0, 0);
+    end.setHours(23, 59, 59, 999); // End of day
+    todayDate.setHours(12, 0, 0, 0); // Middle of day
+    
+    const isActive = start <= todayDate && todayDate <= end;
+    
+    console.log(`🔍 Facility: ${a.facility.name}, Period: ${startDate} to ${endDate}, Today: ${today}, Active: ${isActive}`);
+    
+    return isActive;
   }).map(a => ({
     id: a.facility.id,
     name: a.facility.name
   }));
 
-  // console.log('Active facilities:', activeFacilities);
+  console.log('✅ Active facilities for today:', activeFacilities);
+  console.log('📅 All assignments:', safeUserAssignments.map(a => ({
+    facility: a.facility.name,
+    period: a.assignment.inspectionPeriod
+  })));
 
-  const uniqueFacilities = activeFacilities; //use when you want to filter by today's date
+  const uniqueFacilities = activeFacilities; // Only show facilities with active assignments for today
 
- // use to show all facilities
-
-  // const uniqueFacilities =  safeUserAssignments
-  //     .filter(assignment => assignment.facility && assignment.facility.id)
-  //     .map(assignment => ({
-  //       id: assignment.facility.id,
-  //       name: assignment.facility.name
-  //     }));
-
-  // console.log('safeUserAssignments:', safeUserAssignments);
-  // console.log('Facilities:', uniqueFacilities);
+  // Toggle for debugging: show all facilities vs only active ones
+  const [showAllFacilities, setShowAllFacilities] = useState(false);
+  
+  const finalFacilities = showAllFacilities 
+    ? safeUserAssignments
+        .filter(assignment => assignment.facility && assignment.facility.id)
+        .map(assignment => ({
+          id: assignment.facility.id,
+          name: assignment.facility.name
+        }))
+    : uniqueFacilities;
 
   // Get the selected assignment for the chosen facility
   const selectedAssignment = safeUserAssignments.find(a => a.facility.id === (typeof formData.orgUnit === 'string' ? formData.orgUnit : formData.orgUnit?.id));
@@ -448,13 +567,13 @@ function FormPage() {
 
   // Pre-select first organization unit if available
   useEffect(() => {
-    if (configuration && uniqueFacilities.length > 0 && !formData.orgUnit) {
+    if (configuration && finalFacilities.length > 0 && !formData.orgUnit) {
       setFormData(prev => ({
         ...prev,
-        orgUnit: uniqueFacilities[0].id
+        orgUnit: finalFacilities[0].id
       }));
     }
-  }, [configuration, uniqueFacilities, formData.orgUnit]);
+  }, [configuration, finalFacilities, formData.orgUnit]);
 
   // Fetch service sections when facility or user changes
   useEffect(() => {
@@ -464,7 +583,7 @@ function FormPage() {
       console.log("fetch serv sec", formData.orgUnit, currentUser)
       if (!formData.orgUnit || !currentUser?.username) {
         console.log('⏳ Waiting for facility selection and user data...');
-        setServiceSections(configuration?.programStage?.sections.filter((section) => !section.displayName.startsWith("Pre-Inspection:") ));
+        setServiceSections(makeTypeSourceServiceFieldsMandatory(configuration?.programStage?.sections.filter((section) => !section.displayName.startsWith("Pre-Inspection:") )));
         return;
       }
 
@@ -492,13 +611,13 @@ function FormPage() {
           });
           // If nothing matched (label mismatches), fall back to all non pre-inspection sections
           if (filtered.length > 0) {
-            setServiceSections(filtered);
+            setServiceSections(makeTypeSourceServiceFieldsMandatory(filtered));
           } else {
-            setServiceSections(allProgramSections.filter((s) => !s.displayName?.startsWith('Pre-Inspection:')));
+            setServiceSections(makeTypeSourceServiceFieldsMandatory(allProgramSections.filter((s) => !s.displayName?.startsWith('Pre-Inspection:'))));
           }
         } else {
           // Fallback: show all non pre-inspection sections
-          setServiceSections(allProgramSections.filter((s) => !s.displayName?.startsWith('Pre-Inspection:')));
+          setServiceSections(makeTypeSourceServiceFieldsMandatory(allProgramSections.filter((s) => !s.displayName?.startsWith('Pre-Inspection:'))));
         }
         console.log('✅ Service sections loaded for render:', {
           assigned: assignedSectionNames,
@@ -525,6 +644,42 @@ function FormPage() {
     fetchServiceSections();
   }, [formData.orgUnit, api, user]); // Removed currentUser?.username from dependency array
 
+  // Function to make type, source, and service fields mandatory
+  const makeTypeSourceServiceFieldsMandatory = (sections) => {
+    if (!sections || !Array.isArray(sections)) return sections;
+    
+    return sections.map(section => ({
+      ...section,
+      dataElements: section.dataElements?.map(psde => {
+        const dataElement = psde.dataElement;
+        const fieldName = (dataElement.displayName || dataElement.shortName || '').toLowerCase();
+        
+        // Check if this is a type, source, or service field
+        const isTypeField = fieldName.includes('type');
+        const isSourceField = fieldName.includes('source');
+        const isServiceField = fieldName.includes('service');
+        
+        // Make these fields mandatory
+        if (isTypeField || isSourceField || isServiceField) {
+          console.log(`🔒 Making field mandatory: ${dataElement.displayName} (${isTypeField ? 'type' : ''}${isSourceField ? 'source' : ''}${isServiceField ? 'service' : ''})`);
+          return {
+            ...psde,
+            compulsory: true
+          };
+        }
+        
+        return psde;
+      })
+    }));
+  };
+
+  // Function to determine if a field should use dynamic service dropdown
+  const isServiceField = (dataElement) => {
+    // Check if field name/displayName contains 'service' (case-insensitive)
+    const fieldName = (dataElement.displayName || dataElement.shortName || '').toLowerCase();
+    return fieldName.includes('service') || fieldName.includes('section');
+  };
+
   // Move this block after all hooks to avoid conditional hook call error
   // if (!configuration) { ... }
 
@@ -535,7 +690,7 @@ function FormPage() {
     // Prefer currently rendered sections when available; fallback to configuration
     const sectionsSource = Array.isArray(serviceSections) && serviceSections.length > 0
       ? serviceSections
-      : (configuration?.programStage?.sections || []);
+      : makeTypeSourceServiceFieldsMandatory(configuration?.programStage?.sections || []);
 
     const normalize = (value) => (value || '').toString().trim().toLowerCase();
     const isPreInspection = (section) => normalize(section?.displayName).startsWith('pre-inspection');
@@ -672,6 +827,54 @@ function FormPage() {
     }
   }, [configuration, assignmentInspectionId, formData.orgUnit]);
 
+  // Check if all mandatory fields are filled
+  const areAllMandatoryFieldsFilled = () => {
+    if (!configuration) return false;
+
+    // Check basic required fields
+    if (!formData.orgUnit || !formData.eventDate) {
+      return false;
+    }
+
+    // Check all data elements that are marked as compulsory
+    if (programStage.allDataElements) {
+      // Process data elements to ensure type, source, and service fields are mandatory
+      const processedDataElements = programStage.allDataElements.map(psde => {
+        const dataElement = psde.dataElement;
+        const fieldName = (dataElement.displayName || dataElement.shortName || '').toLowerCase();
+        
+        // Check if this is a type, source, or service field
+        const isTypeField = fieldName.includes('type');
+        const isSourceField = fieldName.includes('source');
+        const isServiceField = fieldName.includes('service');
+        
+        // Make these fields mandatory
+        if (isTypeField || isSourceField || isServiceField) {
+          return {
+            ...psde,
+            compulsory: true
+          };
+        }
+        
+        return psde;
+      });
+
+      // Check if all compulsory fields are filled
+      for (const psde of processedDataElements) {
+        if (psde.compulsory) {
+          const fieldName = `dataElement_${psde.dataElement.id}`;
+          const value = formData[fieldName];
+          
+          if (!value || value.toString().trim() === '') {
+            return false;
+          }
+        }
+      }
+    }
+
+    return true;
+  };
+
   const validateForm = () => {
     const newErrors = {};
 
@@ -686,7 +889,28 @@ function FormPage() {
 
     // Validate data elements using configuration
     if (programStage.allDataElements) {
-      programStage.allDataElements.forEach(psde => {
+      // Process data elements to ensure type, source, and service fields are mandatory
+      const processedDataElements = programStage.allDataElements.map(psde => {
+        const dataElement = psde.dataElement;
+        const fieldName = (dataElement.displayName || dataElement.shortName || '').toLowerCase();
+        
+        // Check if this is a type, source, or service field
+        const isTypeField = fieldName.includes('type');
+        const isSourceField = fieldName.includes('source');
+        const isServiceField = fieldName.includes('service');
+        
+        // Make these fields mandatory
+        if (isTypeField || isSourceField || isServiceField) {
+          return {
+            ...psde,
+            compulsory: true
+          };
+        }
+        
+        return psde;
+      });
+
+      processedDataElements.forEach(psde => {
         const fieldName = `dataElement_${psde.dataElement.id}`;
         const value = formData[fieldName];
 
@@ -829,6 +1053,301 @@ function FormPage() {
           </div>
         </div>
 
+        {/* Debug Panel */}
+        <div className="debug-panel" style={{
+          backgroundColor: '#f5f5f5',
+          border: '1px solid #ddd',
+          borderRadius: '8px',
+          padding: '16px',
+          margin: '16px 0',
+          fontFamily: 'monospace',
+          fontSize: '12px'
+        }}>
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center',
+            marginBottom: '12px'
+          }}>
+            <h3 style={{ margin: 0, color: '#333' }}>🔍 Debug Information</h3>
+            <button
+              type="button"
+              onClick={() => setShowDebugPanel(!showDebugPanel)}
+              style={{
+                backgroundColor: '#007bff',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                padding: '4px 8px',
+                fontSize: '10px',
+                cursor: 'pointer'
+              }}
+            >
+              {showDebugPanel ? 'Hide' : 'Show'} Debug
+            </button>
+          </div>
+          
+          {showDebugPanel && (
+            <>
+              {/* Configuration Status */}
+              <div style={{ marginBottom: '12px' }}>
+                <strong>Configuration Status:</strong>
+                <div style={{ marginLeft: '16px' }}>
+                  <div>✅ Configuration Loaded: {configuration ? 'Yes' : 'No'}</div>
+                  {configuration && (
+                    <>
+                      <div>📋 Program: {configuration.program?.name || 'N/A'} (ID: {configuration.program?.id || 'N/A'})</div>
+                      <div>📊 Program Stage: {configuration.programStage?.name || 'N/A'} (ID: {configuration.programStage?.id || 'N/A'})</div>
+                      <div>📁 Total Sections: {configuration.programStage?.sections?.length || 0}</div>
+                      <div>🔢 Total Data Elements: {configuration.programStage?.allDataElements?.length || 0}</div>
+                    </>
+                  )}
+                </div>
+              </div>
+              
+              {/* User Assignments Status */}
+              <div style={{ marginBottom: '12px' }}>
+                <strong>User Assignments:</strong>
+                <div style={{ marginLeft: '16px' }}>
+                  <div>👤 User: {user?.displayName || user?.username || 'N/A'}</div>
+                  <div>📋 Total Assignments: {safeUserAssignments.length}</div>
+                  <div>🏥 Active Facilities: {activeFacilities.length}</div>
+                </div>
+              </div>
+              
+              {/* Timezone and Date Filtering */}
+              <div style={{ marginBottom: '12px' }}>
+                <strong>🌍 Timezone & Date Filtering:</strong>
+                <div style={{ marginLeft: '16px' }}>
+                  <div>🕐 Today in Botswana (UTC+2): {today}</div>
+                  <div>🔄 Facility Filter Mode: {showAllFacilities ? '🔍 Show All' : '✅ Active Only'}</div>
+                  <div>📊 Facilities in Dropdown: {finalFacilities.length}</div>
+                  <div>📅 Date Comparison Method: {showAllFacilities ? 'N/A (showing all)' : 'Strict date range check'}</div>
+                </div>
+              </div>
+              
+              {/* Current Form State */}
+              <div style={{ marginBottom: '12px' }}>
+                <strong>Current Form State:</strong>
+                <div style={{ marginLeft: '16px' }}>
+                  <div>🏥 Selected Facility: {formData.orgUnit || 'None'}</div>
+                  {formData.orgUnit && (
+                    <div>🔍 Facility Name: {
+                      finalFacilities.find(f => f.id === formData.orgUnit)?.name || 'Unknown'
+                    }</div>
+                  )}
+                  <div>📝 Form Data Keys: {Object.keys(formData).join(', ') || 'None'}</div>
+                </div>
+              </div>
+              
+              {/* Assignment Details */}
+              {formData.orgUnit && safeUserAssignments.length > 0 && (
+                <div style={{ marginBottom: '12px' }}>
+                  <strong>Assignment Details for Selected Facility:</strong>
+                  <div style={{ marginLeft: '16px' }}>
+                    {safeUserAssignments
+                      .filter(a => a.facility.id === formData.orgUnit)
+                      .map((assignment, index) => (
+                        <div key={index} style={{ 
+                          backgroundColor: '#fff', 
+                          padding: '8px', 
+                          margin: '4px 0', 
+                          borderRadius: '4px',
+                          border: '1px solid #e0e0e0'
+                        }}>
+                          <div>🏥 Facility: {assignment.facility.name} (ID: {assignment.facility.id})</div>
+                          <div>📋 Type: {assignment.assignment.type || 'N/A'}</div>
+                          <div>🆔 Inspection ID: {assignment.assignment.inspectionId || 'N/A'}</div>
+                          <div>📅 Period: {assignment.assignment.inspectionPeriod?.startDate || 'N/A'} to {assignment.assignment.inspectionPeriod?.endDate || 'N/A'}</div>
+                          <div>📁 Sections: {assignment.assignment.sections?.length || 0}</div>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              )}
+              
+              {/* Service Sections Status */}
+              <div style={{ marginBottom: '12px' }}>
+                <strong>Service Sections:</strong>
+                <div style={{ marginLeft: '16px' }}>
+                  <div>📁 Total Sections: {serviceSections.length}</div>
+                  <div>📝 Section Names: {serviceSections.map(s => s.displayName).join(', ') || 'None'}</div>
+                </div>
+              </div>
+              
+              {/* Mandatory Fields Status */}
+              <div style={{ marginBottom: '12px' }}>
+                <strong>🔒 Mandatory Fields (Type/Source/Service):</strong>
+                <div style={{ marginLeft: '16px' }}>
+                  {(() => {
+                    const mandatoryFields = [];
+                    serviceSections.forEach(section => {
+                      section.dataElements?.forEach(psde => {
+                        const dataElement = psde.dataElement;
+                        const fieldName = (dataElement.displayName || dataElement.shortName || '').toLowerCase();
+                        const isTypeField = fieldName.includes('type');
+                        const isSourceField = fieldName.includes('source');
+                        const isServiceField = fieldName.includes('service');
+                        
+                        if (isTypeField || isSourceField || isServiceField) {
+                          mandatoryFields.push({
+                            name: dataElement.displayName,
+                            type: [isTypeField && 'Type', isSourceField && 'Source', isServiceField && 'Service'].filter(Boolean).join('/'),
+                            compulsory: psde.compulsory
+                          });
+                        }
+                      });
+                    });
+                    
+                    if (mandatoryFields.length === 0) {
+                      return <div>ℹ️ No type/source/service fields found</div>;
+                    }
+                    
+                    return (
+                      <div>
+                        <div>📊 Total Mandatory Fields: {mandatoryFields.length}</div>
+                        {mandatoryFields.map((field, index) => (
+                          <div key={index} style={{
+                            backgroundColor: field.compulsory ? '#e8f5e8' : '#fff3cd',
+                            padding: '4px 8px',
+                            margin: '2px 0',
+                            borderRadius: '4px',
+                            border: `1px solid ${field.compulsory ? '#4caf50' : '#ffc107'}`,
+                            fontSize: '11px'
+                          }}>
+                            {field.compulsory ? '✅' : '⚠️'} {field.name} ({field.type})
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  })()}
+                </div>
+              </div>
+              
+              {/* Form Validation Status */}
+              <div style={{ marginBottom: '12px' }}>
+                <strong>Form Validation:</strong>
+                <div style={{ marginLeft: '16px' }}>
+                  <div>✅ Valid: {Object.keys(errors).length === 0 ? 'Yes' : 'No'}</div>
+                  {Object.keys(errors).length > 0 && (
+                    <div>❌ Errors: {Object.keys(errors).map(key => `${key}: ${errors[key]}`).join(', ')}</div>
+                  )}
+                </div>
+              </div>
+
+              {/* Missing Mandatory Fields */}
+              <div style={{ marginBottom: '12px' }}>
+                <strong>🔒 Missing Mandatory Fields:</strong>
+                <div style={{ marginLeft: '16px' }}>
+                  {(() => {
+                    if (!configuration) return <div>ℹ️ Configuration not loaded</div>;
+                    
+                    const missingFields = [];
+                    
+                    // Check basic required fields
+                    if (!formData.orgUnit) {
+                      missingFields.push({ name: 'Organisation Unit', type: 'Basic Field' });
+                    }
+                    if (!formData.eventDate) {
+                      missingFields.push({ name: 'Event Date', type: 'Basic Field' });
+                    }
+                    
+                    // Check data elements that are marked as compulsory
+                    if (programStage.allDataElements) {
+                      const processedDataElements = programStage.allDataElements.map(psde => {
+                        const dataElement = psde.dataElement;
+                        const fieldName = (dataElement.displayName || dataElement.shortName || '').toLowerCase();
+                        
+                        const isTypeField = fieldName.includes('type');
+                        const isSourceField = fieldName.includes('source');
+                        const isServiceField = fieldName.includes('service');
+                        
+                        if (isTypeField || isSourceField || isServiceField) {
+                          return {
+                            ...psde,
+                            compulsory: true
+                          };
+                        }
+                        
+                        return psde;
+                      });
+
+                      processedDataElements.forEach(psde => {
+                        if (psde.compulsory) {
+                          const fieldName = `dataElement_${psde.dataElement.id}`;
+                          const value = formData[fieldName];
+                          
+                          if (!value || value.toString().trim() === '') {
+                            missingFields.push({ 
+                              name: psde.dataElement.displayName, 
+                              type: 'Data Element',
+                              fieldId: fieldName
+                            });
+                          }
+                        }
+                      });
+                    }
+                    
+                    if (missingFields.length === 0) {
+                      return <div style={{ color: '#4caf50' }}>✅ All mandatory fields are filled</div>;
+                    }
+                    
+                    return (
+                      <div>
+                        <div style={{ color: '#f44336', marginBottom: '8px' }}>
+                          ❌ {missingFields.length} mandatory field(s) missing
+                        </div>
+                        {missingFields.map((field, index) => (
+                          <div key={index} style={{
+                            backgroundColor: '#ffebee',
+                            padding: '6px 8px',
+                            margin: '4px 0',
+                            borderRadius: '4px',
+                            border: '1px solid #f44336',
+                            fontSize: '12px',
+                            color: '#c62828'
+                          }}>
+                            ❌ {field.name} ({field.type})
+                            {field.fieldId && <div style={{ fontSize: '10px', opacity: 0.8 }}>Field ID: {field.fieldId}</div>}
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  })()}
+                </div>
+              </div>
+
+              {/* GPS Status */}
+              <div style={{ marginBottom: '12px' }}>
+                <strong>GPS Status:</strong>
+                <div style={{ marginLeft: '16px' }}>
+                  <div>📍 Geolocation Supported: {navigator.geolocation ? 'Yes' : 'No'}</div>
+                  <div>🔒 Permission Status: {navigator.permissions ? 'Available' : 'Not Available'}</div>
+                  {navigator.geolocation && (
+                    <div>📱 GPS Ready: Ready to capture coordinates</div>
+                  )}
+                  {gpsCoordinates && (
+                    <div style={{
+                      backgroundColor: '#e8f5e8',
+                      padding: '8px',
+                      margin: '4px 0',
+                      borderRadius: '4px',
+                      border: '1px solid #4caf50'
+                    }}>
+                      <div>📍 Last Captured Coordinates:</div>
+                      <div>Latitude: {gpsCoordinates.latitude}</div>
+                      <div>Longitude: {gpsCoordinates.longitude}</div>
+                      <div>Accuracy: {gpsCoordinates.accuracy}</div>
+                      <div>Time: {gpsCoordinates.timestamp}</div>
+                      <div>Field: {gpsCoordinates.fieldId}</div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+
         <form onSubmit={handleSubmit} className="inspection-form">
           {/* Form metadata section */}
           <div className="form-section">
@@ -842,6 +1361,26 @@ function FormPage() {
 
             <div className="section-content">
               <div className="section-fields">
+                {/* Debug toggle for facility filtering */}
+                <div className="form-field" style={{ marginBottom: '10px' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
+                    <input
+                      type="checkbox"
+                      checked={showAllFacilities}
+                      onChange={(e) => setShowAllFacilities(e.target.checked)}
+                      style={{ margin: 0 }}
+                    />
+                    <span style={{ fontSize: '14px', color: '#666' }}>
+                      {showAllFacilities ? '🔍 Show all assigned facilities' : '✅ Show only active facilities for today'}
+                    </span>
+                  </label>
+                  {showAllFacilities && (
+                    <div style={{ fontSize: '12px', color: '#888', marginTop: '5px' }}>
+                      Debug mode: Showing all facilities regardless of inspection period
+                    </div>
+                  )}
+                </div>
+                
                 <div className="form-field">
                   <label htmlFor="orgUnit" className="form-label">
                     Facility/Organisation Unit <span className="required">*</span>
@@ -854,7 +1393,7 @@ function FormPage() {
                     className={`form-select ${errors.orgUnit ? 'error' : ''}`}
                   >
                     <option value="">Select Facility</option>
-                    {uniqueFacilities.length > 0 ? uniqueFacilities.map(facility => (
+                    {finalFacilities.length > 0 ? finalFacilities.map(facility => (
                       <option key={facility.id} value={facility.id}>{facility.name}</option>
                     )) : <option value="" disabled>No facilities assigned</option>}
                   </select>
@@ -900,6 +1439,7 @@ function FormPage() {
                 serviceSections={serviceOptions}
                 loadingServiceSections={false}
                 readOnlyFields={readOnlyFields}
+                getCurrentPosition={getCurrentPosition}
               />
             ))
           ) : (
@@ -928,7 +1468,7 @@ function FormPage() {
           <button
             type="button"
             onClick={handleSaveDraft}
-            disabled={isSubmitting}
+            disabled={isSubmitting || !areAllMandatoryFieldsFilled()}
             className="btn btn-secondary"
           >
             <span>💾</span>
@@ -938,12 +1478,28 @@ function FormPage() {
           <button
             type="button"
             onClick={handleSubmit}
-            disabled={isSubmitting || (!isOnline && !isDraft)}
+            disabled={isSubmitting || (!isOnline && !isDraft) || !areAllMandatoryFieldsFilled()}
             className="btn btn-primary"
           >
             <span>📤</span>
             <span>{isSubmitting ? 'Submitting...' : 'Submit Inspection'}</span>
           </button>
+
+          {/* Validation status indicator */}
+          {!areAllMandatoryFieldsFilled() && (
+            <div className="validation-notice" style={{
+              gridColumn: '1 / -1',
+              textAlign: 'center',
+              padding: '8px',
+              background: 'var(--md-error-container)',
+              borderRadius: '8px',
+              color: 'var(--md-on-error-container)',
+              fontSize: '0.875rem',
+              marginTop: '8px'
+            }}>
+              ⚠️ Please fill in all mandatory fields to enable form submission
+            </div>
+          )}
 
           {!isOnline && (
             <div className="offline-notice" style={{

@@ -538,7 +538,7 @@ class DHIS2APIService {
       });
 
       if (inspectorAssignments.length === 0) {
-        console.warn(`⚠️ No assignments found for inspector: ${username} at facility: ${facilityId}`);
+        console.warn(`⚠️ No assignments found for inspector: ${inspectorDisplayName} at facility: ${facilityId}`);
         return [];
       }
 
