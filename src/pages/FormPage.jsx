@@ -16,7 +16,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
           id={fieldId}
           value={value || ''}
           onChange={onChange}
-          required={psde.compulsory}
           className={`form-select ${error ? 'error' : ''}`}
           disabled={readOnly || isLoading}
         >
@@ -39,7 +38,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
           id={fieldId}
           value={value || ''}
           onChange={onChange}
-          required={psde.compulsory}
           className={`form-select ${error ? 'error' : ''}`}
           disabled={readOnly}
         >
@@ -65,7 +63,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
             value={value || ''}
             onChange={onChange}
             placeholder={`Enter ${dataElement.displayName}`}
-            required={psde.compulsory}
             className={`form-input ${error ? 'error' : ''}`}
           readOnly={readOnly}
           disabled={readOnly}
@@ -79,7 +76,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
             value={value || ''}
             onChange={onChange}
             placeholder={`Enter ${dataElement.displayName}`}
-            required={psde.compulsory}
             className={`form-textarea ${error ? 'error' : ''}`}
             rows={4}
           readOnly={readOnly}
@@ -100,7 +96,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
             value={value || ''}
             onChange={onChange}
             placeholder={`Enter ${dataElement.displayName}`}
-            required={psde.compulsory}
             className={`form-input ${error ? 'error' : ''}`}
             step={dataElement.valueType.includes('INTEGER') ? '1' : 'any'}
             min={dataElement.valueType === 'INTEGER_POSITIVE' ? '1' : 
@@ -119,7 +114,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
             id={fieldId}
             value={value || ''}
             onChange={onChange}
-            required={psde.compulsory}
             className={`form-input ${error ? 'error' : ''}`}
           readOnly={readOnly}
           disabled={readOnly}
@@ -133,7 +127,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
             id={fieldId}
             value={value || ''}
             onChange={onChange}
-            required={psde.compulsory}
             className={`form-input ${error ? 'error' : ''}`}
           readOnly={readOnly}
           disabled={readOnly}
@@ -166,7 +159,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
             value={value || ''}
             onChange={onChange}
             placeholder={`Enter ${dataElement.displayName}`}
-            required={psde.compulsory}
             className={`form-input ${error ? 'error' : ''}`}
           readOnly={readOnly}
           disabled={readOnly}
@@ -181,7 +173,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
             value={value || ''}
             onChange={onChange}
             placeholder={`Enter ${dataElement.displayName}`}
-            required={psde.compulsory}
             className={`form-input ${error ? 'error' : ''}`}
           readOnly={readOnly}
           disabled={readOnly}
@@ -196,7 +187,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
             value={value || ''}
             onChange={onChange}
             placeholder={`Enter ${dataElement.displayName}`}
-            required={psde.compulsory}
             className={`form-input ${error ? 'error' : ''}`}
           readOnly={readOnly}
           disabled={readOnly}
@@ -212,7 +202,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
               value={value || ''}
               onChange={onChange}
               placeholder="Enter coordinates (latitude,longitude)"
-              required={psde.compulsory}
               className={`form-input ${error ? 'error' : ''}`}
               pattern="^-?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*-?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$"
               title="Enter coordinates in format: latitude,longitude (e.g., -24.6282,25.9231)"
@@ -250,7 +239,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
             value={value || ''}
             onChange={onChange}
             placeholder={`Enter ${dataElement.displayName}`}
-            required={psde.compulsory}
             className={`form-input ${error ? 'error' : ''}`}
             readOnly={readOnly}
             disabled={readOnly}
@@ -263,7 +251,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
     <div className="form-field">
       <label htmlFor={fieldId} className="form-label">
         {dataElement.displayName}
-        {psde.compulsory && <span className="required">*</span>}
         {dataElement.description && (
           <span className="field-description">{dataElement.description}</span>
         )}
@@ -427,23 +414,57 @@ function FormPage() {
 
   const fetchTrackedEntityInstance = async (facilityId) => {
     try {
+      const apiEndpoint = `/api/trackedEntityInstances?ou=${facilityId}&program=EE8yeLVo6cN&fields=trackedEntityInstance&ouMode=DESCENDANTS`;
+      const fullUrl = `${import.meta.env.VITE_DHIS2_URL}${apiEndpoint}`;
+      
       console.log('🔍 Fetching Tracked Entity Instance for facility:', facilityId);
+      console.log('🌐 API Endpoint:', apiEndpoint);
+      console.log('🔗 Full URL:', fullUrl);
+      console.log('📤 Request Method: GET');
+      console.log('📋 Request Headers:', {
+        'Content-Type': 'application/json',
+        'Authorization': 'Basic ' + btoa(import.meta.env.VITE_DHIS2_USERNAME + ':' + import.meta.env.VITE_DHIS2_PASSWORD)
+      });
+      console.log('📊 Query Parameters:', {
+        ou: facilityId,
+        program: 'EE8yeLVo6cN',
+        fields: 'trackedEntityInstance',
+        ouMode: 'DESCENDANTS'
+      });
       
       // Use the API service instead of direct fetch
-      const response = await api.request(
-        `trackedEntityInstances?ou=${facilityId}&program=EE8yeLVo6cN&fields=trackedEntityInstance&ouMode=DESCENDANTS`
-      );
+      const response = await api.request(apiEndpoint);
+      
+      console.log('📡 TEI API Response Status: Success');
+      console.log('📡 TEI API Response Body:', JSON.stringify(response, null, 2));
+      console.log('📡 TEI API Response Structure:', {
+        hasTrackedEntityInstances: !!response.trackedEntityInstances,
+        trackedEntityInstancesCount: response.trackedEntityInstances?.length || 0,
+        responseKeys: Object.keys(response)
+      });
       
       if (response.trackedEntityInstances && response.trackedEntityInstances.length > 0) {
         const tei = response.trackedEntityInstances[0].trackedEntityInstance;
-        setTrackedEntityInstance(tei);
-        console.log('✅ Tracked Entity Instance found:', tei);
+        if (tei && tei.trim() !== '') {
+          setTrackedEntityInstance(tei);
+          console.log('✅ Tracked Entity Instance found:', tei);
+        } else {
+          console.log('⚠️ TEI found but is empty or invalid:', tei);
+          setTrackedEntityInstance(null);
+        }
       } else {
         console.log('ℹ️ No Tracked Entity Instance found for facility');
         setTrackedEntityInstance(null);
       }
     } catch (error) {
       console.error('❌ Failed to fetch Tracked Entity Instance:', error);
+      console.log('🔍 Error details:', {
+        message: error.message,
+        status: error.status,
+        response: error.response,
+        name: error.name,
+        stack: error.stack
+      });
       // Don't set to null on error, keep previous value if available
       if (!trackedEntityInstance) {
         setTrackedEntityInstance(null);
@@ -583,7 +604,7 @@ function FormPage() {
       console.log("fetch serv sec", formData.orgUnit, currentUser)
       if (!formData.orgUnit || !currentUser?.username) {
         console.log('⏳ Waiting for facility selection and user data...');
-        setServiceSections(makeTypeSourceServiceFieldsMandatory(configuration?.programStage?.sections.filter((section) => !section.displayName.startsWith("Pre-Inspection:") )));
+        setServiceSections(configuration?.programStage?.sections.filter((section) => !section.displayName.startsWith("Pre-Inspection:") ));
         return;
       }
 
@@ -611,13 +632,13 @@ function FormPage() {
           });
           // If nothing matched (label mismatches), fall back to all non pre-inspection sections
           if (filtered.length > 0) {
-            setServiceSections(makeTypeSourceServiceFieldsMandatory(filtered));
+            setServiceSections(filtered);
           } else {
-            setServiceSections(makeTypeSourceServiceFieldsMandatory(allProgramSections.filter((s) => !s.displayName?.startsWith('Pre-Inspection:'))));
+            setServiceSections(allProgramSections.filter((s) => !s.displayName?.startsWith('Pre-Inspection:')));
           }
         } else {
           // Fallback: show all non pre-inspection sections
-          setServiceSections(makeTypeSourceServiceFieldsMandatory(allProgramSections.filter((s) => !s.displayName?.startsWith('Pre-Inspection:'))));
+          setServiceSections(allProgramSections.filter((s) => !s.displayName?.startsWith('Pre-Inspection:')));
         }
         console.log('✅ Service sections loaded for render:', {
           assigned: assignedSectionNames,
@@ -644,34 +665,7 @@ function FormPage() {
     fetchServiceSections();
   }, [formData.orgUnit, api, user]); // Removed currentUser?.username from dependency array
 
-  // Function to make type, source, and service fields mandatory
-  const makeTypeSourceServiceFieldsMandatory = (sections) => {
-    if (!sections || !Array.isArray(sections)) return sections;
-    
-    return sections.map(section => ({
-      ...section,
-      dataElements: section.dataElements?.map(psde => {
-        const dataElement = psde.dataElement;
-        const fieldName = (dataElement.displayName || dataElement.shortName || '').toLowerCase();
-        
-        // Check if this is a type, source, or service field
-        const isTypeField = fieldName.includes('type');
-        const isSourceField = fieldName.includes('source');
-        const isServiceField = fieldName.includes('service');
-        
-        // Make these fields mandatory
-        if (isTypeField || isSourceField || isServiceField) {
-          console.log(`🔒 Making field mandatory: ${dataElement.displayName} (${isTypeField ? 'type' : ''}${isSourceField ? 'source' : ''}${isServiceField ? 'service' : ''})`);
-          return {
-            ...psde,
-            compulsory: true
-          };
-        }
-        
-        return psde;
-      })
-    }));
-  };
+
 
   // Function to determine if a field should use dynamic service dropdown
   const isServiceField = (dataElement) => {
@@ -687,10 +681,10 @@ function FormPage() {
   const calculateFormStats = () => {
     if (!configuration) return { percentage: 0, filled: 0, total: 0 };
 
-    // Prefer currently rendered sections when available; fallback to configuration
+    // Use currently rendered sections when available; fallback to configuration
     const sectionsSource = Array.isArray(serviceSections) && serviceSections.length > 0
       ? serviceSections
-      : makeTypeSourceServiceFieldsMandatory(configuration?.programStage?.sections || []);
+      : configuration?.programStage?.sections || [];
 
     const normalize = (value) => (value || '').toString().trim().toLowerCase();
     const isPreInspection = (section) => normalize(section?.displayName).startsWith('pre-inspection');
@@ -760,6 +754,7 @@ function FormPage() {
 
     // Fetch tracked entity instance when facility is selected
     if (fieldName === 'orgUnit' && value) {
+      console.log('🏥 Facility selected, fetching TEI for:', value);
       fetchTrackedEntityInstance(value);
     }
   };
@@ -827,104 +822,19 @@ function FormPage() {
     }
   }, [configuration, assignmentInspectionId, formData.orgUnit]);
 
-  // Check if all mandatory fields are filled
+  // All fields are now optional
   const areAllMandatoryFieldsFilled = () => {
-    if (!configuration) return false;
-
-    // Check basic required fields
-    if (!formData.orgUnit || !formData.eventDate) {
-      return false;
-    }
-
-    // Check all data elements that are marked as compulsory
-    if (programStage.allDataElements) {
-      // Process data elements to ensure type, source, and service fields are mandatory
-      const processedDataElements = programStage.allDataElements.map(psde => {
-        const dataElement = psde.dataElement;
-        const fieldName = (dataElement.displayName || dataElement.shortName || '').toLowerCase();
-        
-        // Check if this is a type, source, or service field
-        const isTypeField = fieldName.includes('type');
-        const isSourceField = fieldName.includes('source');
-        const isServiceField = fieldName.includes('service');
-        
-        // Make these fields mandatory
-        if (isTypeField || isSourceField || isServiceField) {
-          return {
-            ...psde,
-            compulsory: true
-          };
-        }
-        
-        return psde;
-      });
-
-      // Check if all compulsory fields are filled
-      for (const psde of processedDataElements) {
-        if (psde.compulsory) {
-          const fieldName = `dataElement_${psde.dataElement.id}`;
-          const value = formData[fieldName];
-          
-          if (!value || value.toString().trim() === '') {
-            return false;
-          }
-        }
-      }
-    }
-
     return true;
   };
 
   const validateForm = () => {
     const newErrors = {};
 
-    // Validate required fields
-    if (!formData.orgUnit) {
-      newErrors.orgUnit = 'Organisation unit is required';
-    }
-
-    if (!formData.eventDate) {
-      newErrors.eventDate = 'Event date is required';
-    }
-
-    // Validate data elements using configuration
-    if (programStage.allDataElements) {
-      // Process data elements to ensure type, source, and service fields are mandatory
-      const processedDataElements = programStage.allDataElements.map(psde => {
-        const dataElement = psde.dataElement;
-        const fieldName = (dataElement.displayName || dataElement.shortName || '').toLowerCase();
-        
-        // Check if this is a type, source, or service field
-        const isTypeField = fieldName.includes('type');
-        const isSourceField = fieldName.includes('source');
-        const isServiceField = fieldName.includes('service');
-        
-        // Make these fields mandatory
-        if (isTypeField || isSourceField || isServiceField) {
-          return {
-            ...psde,
-            compulsory: true
-          };
-        }
-        
-        return psde;
-      });
-
-      processedDataElements.forEach(psde => {
-        const fieldName = `dataElement_${psde.dataElement.id}`;
-        const value = formData[fieldName];
-
-        if (psde.compulsory && (!value || value.toString().trim() === '')) {
-          newErrors[fieldName] = `${psde.dataElement.displayName} is required`;
-        }
-
-        // TODO: Add value type validation here
-        // You could use the API validation functions
-      });
-    }
+    // All fields are now optional, so no validation is needed
+    // You can add custom validation logic here if needed in the future
 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return true;
   };
 
   const handleSave = async (saveDraft = false) => {
@@ -944,9 +854,16 @@ function FormPage() {
         orgUnit: formData.orgUnit,
         eventDate: formData.eventDate,
         status: saveDraft ? 'SCHEDULE' : 'COMPLETED',
-        trackedEntityInstance: trackedEntityInstance,
         dataValues: []
       };
+
+      // Only include trackedEntityInstance if it exists
+      if (trackedEntityInstance) {
+        eventData.trackedEntityInstance = trackedEntityInstance;
+        console.log('🔗 Including trackedEntityInstance in event:', trackedEntityInstance);
+      } else {
+        console.log('ℹ️ No trackedEntityInstance available - creating event without TEI link');
+      }
 
       // Add data values
       Object.entries(formData).forEach(([key, value]) => {
@@ -958,6 +875,15 @@ function FormPage() {
           });
         }
       });
+
+      // Clean up event data - remove any undefined or null values
+      Object.keys(eventData).forEach(key => {
+        if (eventData[key] === undefined || eventData[key] === null) {
+          delete eventData[key];
+        }
+      });
+
+      console.log('📝 Final event data for submission:', eventData);
 
       const savedEvent = await saveEvent(eventData, saveDraft);
       setIsDraft(saveDraft);
@@ -1087,265 +1013,85 @@ function FormPage() {
             </button>
           </div>
           
-          {showDebugPanel && (
-            <>
-              {/* Configuration Status */}
-              <div style={{ marginBottom: '12px' }}>
-                <strong>Configuration Status:</strong>
-                <div style={{ marginLeft: '16px' }}>
-                  <div>✅ Configuration Loaded: {configuration ? 'Yes' : 'No'}</div>
-                  {configuration && (
-                    <>
-                      <div>📋 Program: {configuration.program?.name || 'N/A'} (ID: {configuration.program?.id || 'N/A'})</div>
-                      <div>📊 Program Stage: {configuration.programStage?.name || 'N/A'} (ID: {configuration.programStage?.id || 'N/A'})</div>
-                      <div>📁 Total Sections: {configuration.programStage?.sections?.length || 0}</div>
-                      <div>🔢 Total Data Elements: {configuration.programStage?.allDataElements?.length || 0}</div>
-                    </>
-                  )}
-                </div>
-              </div>
-              
-              {/* User Assignments Status */}
-              <div style={{ marginBottom: '12px' }}>
-                <strong>User Assignments:</strong>
-                <div style={{ marginLeft: '16px' }}>
-                  <div>👤 User: {user?.displayName || user?.username || 'N/A'}</div>
-                  <div>📋 Total Assignments: {safeUserAssignments.length}</div>
-                  <div>🏥 Active Facilities: {activeFacilities.length}</div>
-                </div>
-              </div>
-              
-              {/* Timezone and Date Filtering */}
-              <div style={{ marginBottom: '12px' }}>
-                <strong>🌍 Timezone & Date Filtering:</strong>
-                <div style={{ marginLeft: '16px' }}>
-                  <div>🕐 Today in Botswana (UTC+2): {today}</div>
-                  <div>🔄 Facility Filter Mode: {showAllFacilities ? '🔍 Show All' : '✅ Active Only'}</div>
-                  <div>📊 Facilities in Dropdown: {finalFacilities.length}</div>
-                  <div>📅 Date Comparison Method: {showAllFacilities ? 'N/A (showing all)' : 'Strict date range check'}</div>
-                </div>
-              </div>
-              
-              {/* Current Form State */}
-              <div style={{ marginBottom: '12px' }}>
-                <strong>Current Form State:</strong>
-                <div style={{ marginLeft: '16px' }}>
-                  <div>🏥 Selected Facility: {formData.orgUnit || 'None'}</div>
-                  {formData.orgUnit && (
-                    <div>🔍 Facility Name: {
-                      finalFacilities.find(f => f.id === formData.orgUnit)?.name || 'Unknown'
-                    }</div>
-                  )}
-                  <div>📝 Form Data Keys: {Object.keys(formData).join(', ') || 'None'}</div>
-                </div>
-              </div>
-              
-              {/* Assignment Details */}
-              {formData.orgUnit && safeUserAssignments.length > 0 && (
+                     {showDebugPanel && (
+             <>
+               {/* Current Form State */}
+               <div style={{ marginBottom: '12px' }}>
+                 <strong>Current Form State:</strong>
+                 <div style={{ marginLeft: '16px' }}>
+                   <div>🏥 Selected Facility: {formData.orgUnit || 'None'}</div>
+                   {formData.orgUnit && (
+                     <div>🔍 Facility Name: {
+                       finalFacilities.find(f => f.id === formData.orgUnit)?.name || 'Unknown'
+                     }</div>
+                   )}
+                   <div>📅 Inspection Date: {formData.eventDate || 'None'}</div>
+                   <div>📝 Form Data Keys: {Object.keys(formData).join(', ') || 'None'}</div>
+                   <div>✅ Form Valid: {Object.keys(errors).length === 0 ? 'Yes' : 'No'}</div>
+                   {Object.keys(errors).length > 0 && (
+                     <div>❌ Errors: {Object.keys(errors).map(key => `${key}: ${errors[key]}`).join(', ')}</div>
+                   )}
+                 </div>
+               </div>
+               
+                               {/* TEI Debug Information */}
                 <div style={{ marginBottom: '12px' }}>
-                  <strong>Assignment Details for Selected Facility:</strong>
+                  <strong>TEI (Tracked Entity Instance) Debug:</strong>
                   <div style={{ marginLeft: '16px' }}>
-                    {safeUserAssignments
-                      .filter(a => a.facility.id === formData.orgUnit)
-                      .map((assignment, index) => (
-                        <div key={index} style={{ 
-                          backgroundColor: '#fff', 
-                          padding: '8px', 
-                          margin: '4px 0', 
-                          borderRadius: '4px',
-                          border: '1px solid #e0e0e0'
-                        }}>
-                          <div>🏥 Facility: {assignment.facility.name} (ID: {assignment.facility.id})</div>
-                          <div>📋 Type: {assignment.assignment.type || 'N/A'}</div>
-                          <div>🆔 Inspection ID: {assignment.assignment.inspectionId || 'N/A'}</div>
-                          <div>📅 Period: {assignment.assignment.inspectionPeriod?.startDate || 'N/A'} to {assignment.assignment.inspectionPeriod?.endDate || 'N/A'}</div>
-                          <div>📁 Sections: {assignment.assignment.sections?.length || 0}</div>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              )}
-              
-              {/* Service Sections Status */}
-              <div style={{ marginBottom: '12px' }}>
-                <strong>Service Sections:</strong>
-                <div style={{ marginLeft: '16px' }}>
-                  <div>📁 Total Sections: {serviceSections.length}</div>
-                  <div>📝 Section Names: {serviceSections.map(s => s.displayName).join(', ') || 'None'}</div>
-                </div>
-              </div>
-              
-              {/* Mandatory Fields Status */}
-              <div style={{ marginBottom: '12px' }}>
-                <strong>🔒 Mandatory Fields (Type/Source/Service):</strong>
-                <div style={{ marginLeft: '16px' }}>
-                  {(() => {
-                    const mandatoryFields = [];
-                    serviceSections.forEach(section => {
-                      section.dataElements?.forEach(psde => {
-                        const dataElement = psde.dataElement;
-                        const fieldName = (dataElement.displayName || dataElement.shortName || '').toLowerCase();
-                        const isTypeField = fieldName.includes('type');
-                        const isSourceField = fieldName.includes('source');
-                        const isServiceField = fieldName.includes('service');
-                        
-                        if (isTypeField || isSourceField || isServiceField) {
-                          mandatoryFields.push({
-                            name: dataElement.displayName,
-                            type: [isTypeField && 'Type', isSourceField && 'Source', isServiceField && 'Service'].filter(Boolean).join('/'),
-                            compulsory: psde.compulsory
-                          });
-                        }
-                      });
-                    });
+                    <div>🔗 Current TEI: {trackedEntityInstance || 'None'}</div>
+                    <div>🏥 Facility ID: {formData.orgUnit || 'None'}</div>
+                    <div>📊 Program ID: EE8yeLVo6cN</div>
+                    <div>🌐 API Endpoint: /api/trackedEntityInstances</div>
+                    {formData.orgUnit && (
+                      <div>🔗 Full URL: {import.meta.env.VITE_DHIS2_URL}/api/trackedEntityInstances?ou={formData.orgUnit}&program=EE8yeLVo6cN&fields=trackedEntityInstance&ouMode=DESCENDANTS</div>
+                    )}
                     
-                    if (mandatoryFields.length === 0) {
-                      return <div>ℹ️ No type/source/service fields found</div>;
-                    }
-                    
-                    return (
-                      <div>
-                        <div>📊 Total Mandatory Fields: {mandatoryFields.length}</div>
-                        {mandatoryFields.map((field, index) => (
-                          <div key={index} style={{
-                            backgroundColor: field.compulsory ? '#e8f5e8' : '#fff3cd',
-                            padding: '4px 8px',
-                            margin: '2px 0',
-                            borderRadius: '4px',
-                            border: `1px solid ${field.compulsory ? '#4caf50' : '#ffc107'}`,
+                    {/* TEI API Response */}
+                    <div style={{ marginTop: '8px' }}>
+                      <strong>📡 Last API Response:</strong>
+                      <div style={{ marginLeft: '16px', marginTop: '4px' }}>
+                        {trackedEntityInstance ? (
+                          <div style={{ 
+                            backgroundColor: '#e8f5e8', 
+                            padding: '8px', 
+                            borderRadius: '4px', 
+                            border: '1px solid #4caf50',
                             fontSize: '11px'
                           }}>
-                            {field.compulsory ? '✅' : '⚠️'} {field.name} ({field.type})
+                            <div>✅ TEI Found: {trackedEntityInstance}</div>
+                            <div>📊 Response Status: Success</div>
+                            <div>🔍 Response Structure: Has trackedEntityInstances array</div>
                           </div>
-                        ))}
-                      </div>
-                    );
-                  })()}
-                </div>
-              </div>
-              
-              {/* Form Validation Status */}
-              <div style={{ marginBottom: '12px' }}>
-                <strong>Form Validation:</strong>
-                <div style={{ marginLeft: '16px' }}>
-                  <div>✅ Valid: {Object.keys(errors).length === 0 ? 'Yes' : 'No'}</div>
-                  {Object.keys(errors).length > 0 && (
-                    <div>❌ Errors: {Object.keys(errors).map(key => `${key}: ${errors[key]}`).join(', ')}</div>
-                  )}
-                </div>
-              </div>
-
-              {/* Missing Mandatory Fields */}
-              <div style={{ marginBottom: '12px' }}>
-                <strong>🔒 Missing Mandatory Fields:</strong>
-                <div style={{ marginLeft: '16px' }}>
-                  {(() => {
-                    if (!configuration) return <div>ℹ️ Configuration not loaded</div>;
-                    
-                    const missingFields = [];
-                    
-                    // Check basic required fields
-                    if (!formData.orgUnit) {
-                      missingFields.push({ name: 'Organisation Unit', type: 'Basic Field' });
-                    }
-                    if (!formData.eventDate) {
-                      missingFields.push({ name: 'Event Date', type: 'Basic Field' });
-                    }
-                    
-                    // Check data elements that are marked as compulsory
-                    if (programStage.allDataElements) {
-                      const processedDataElements = programStage.allDataElements.map(psde => {
-                        const dataElement = psde.dataElement;
-                        const fieldName = (dataElement.displayName || dataElement.shortName || '').toLowerCase();
-                        
-                        const isTypeField = fieldName.includes('type');
-                        const isSourceField = fieldName.includes('source');
-                        const isServiceField = fieldName.includes('service');
-                        
-                        if (isTypeField || isSourceField || isServiceField) {
-                          return {
-                            ...psde,
-                            compulsory: true
-                          };
-                        }
-                        
-                        return psde;
-                      });
-
-                      processedDataElements.forEach(psde => {
-                        if (psde.compulsory) {
-                          const fieldName = `dataElement_${psde.dataElement.id}`;
-                          const value = formData[fieldName];
-                          
-                          if (!value || value.toString().trim() === '') {
-                            missingFields.push({ 
-                              name: psde.dataElement.displayName, 
-                              type: 'Data Element',
-                              fieldId: fieldName
-                            });
-                          }
-                        }
-                      });
-                    }
-                    
-                    if (missingFields.length === 0) {
-                      return <div style={{ color: '#4caf50' }}>✅ All mandatory fields are filled</div>;
-                    }
-                    
-                    return (
-                      <div>
-                        <div style={{ color: '#f44336', marginBottom: '8px' }}>
-                          ❌ {missingFields.length} mandatory field(s) missing
-                        </div>
-                        {missingFields.map((field, index) => (
-                          <div key={index} style={{
-                            backgroundColor: '#ffebee',
-                            padding: '6px 8px',
-                            margin: '4px 0',
-                            borderRadius: '4px',
-                            border: '1px solid #f44336',
-                            fontSize: '12px',
-                            color: '#c62828'
+                        ) : formData.orgUnit ? (
+                          <div style={{ 
+                            backgroundColor: '#fff3cd', 
+                            padding: '8px', 
+                            borderRadius: '4px', 
+                            border: '1px solid #ffc107',
+                            fontSize: '11px'
                           }}>
-                            ❌ {field.name} ({field.type})
-                            {field.fieldId && <div style={{ fontSize: '10px', opacity: 0.8 }}>Field ID: {field.fieldId}</div>}
+                            <div>ℹ️ No TEI found for this facility</div>
+                            <div>📊 Response Status: Success (but empty)</div>
+                            <div>🔍 Response Structure: Empty trackedEntityInstances array</div>
                           </div>
-                        ))}
+                        ) : (
+                          <div style={{ 
+                            backgroundColor: '#f8d7da', 
+                            padding: '8px', 
+                            borderRadius: '4px', 
+                            border: '1px solid #dc3545',
+                            fontSize: '11px'
+                          }}>
+                            <div>⏳ No facility selected yet</div>
+                            <div>📊 Response Status: Not requested</div>
+                          </div>
+                        )}
                       </div>
-                    );
-                  })()}
-                </div>
-              </div>
-
-              {/* GPS Status */}
-              <div style={{ marginBottom: '12px' }}>
-                <strong>GPS Status:</strong>
-                <div style={{ marginLeft: '16px' }}>
-                  <div>📍 Geolocation Supported: {navigator.geolocation ? 'Yes' : 'No'}</div>
-                  <div>🔒 Permission Status: {navigator.permissions ? 'Available' : 'Not Available'}</div>
-                  {navigator.geolocation && (
-                    <div>📱 GPS Ready: Ready to capture coordinates</div>
-                  )}
-                  {gpsCoordinates && (
-                    <div style={{
-                      backgroundColor: '#e8f5e8',
-                      padding: '8px',
-                      margin: '4px 0',
-                      borderRadius: '4px',
-                      border: '1px solid #4caf50'
-                    }}>
-                      <div>📍 Last Captured Coordinates:</div>
-                      <div>Latitude: {gpsCoordinates.latitude}</div>
-                      <div>Longitude: {gpsCoordinates.longitude}</div>
-                      <div>Accuracy: {gpsCoordinates.accuracy}</div>
-                      <div>Time: {gpsCoordinates.timestamp}</div>
-                      <div>Field: {gpsCoordinates.fieldId}</div>
                     </div>
-                  )}
+                  </div>
                 </div>
-              </div>
-            </>
-          )}
+             </>
+           )}
         </div>
 
         <form onSubmit={handleSubmit} className="inspection-form">
@@ -1383,13 +1129,12 @@ function FormPage() {
                 
                 <div className="form-field">
                   <label htmlFor="orgUnit" className="form-label">
-                    Facility/Organisation Unit <span className="required">*</span>
+                    Facility/Organisation Unit
                   </label>
                   <select
                     id="orgUnit"
                     value={formData.orgUnit}
                     onChange={e => handleFieldChange('orgUnit', e.target.value)}
-                    required
                     className={`form-select ${errors.orgUnit ? 'error' : ''}`}
                   >
                     <option value="">Select Facility</option>
@@ -1401,14 +1146,13 @@ function FormPage() {
                 </div>
                 <div className="form-field">
                   <label htmlFor="eventDate" className="form-label">
-                    Inspection Date <span className="required">*</span>
+                    Inspection Date
                   </label>
                   <input
                     type="date"
                     id="eventDate"
                     value={formData.eventDate}
                     onChange={e => handleFieldChange('eventDate', e.target.value)}
-                    required
                     className={`form-input ${errors.eventDate ? 'error' : ''}`}
                     max={inspectionPeriod ? inspectionPeriod?.endDate : new Date().toISOString().split('T')[0] }
                     min={ inspectionPeriod ? new Date(inspectionPeriod.startDate).toISOString().split('T')[0] : "" }
@@ -1485,21 +1229,7 @@ function FormPage() {
             <span>{isSubmitting ? 'Submitting...' : 'Submit Inspection'}</span>
           </button>
 
-          {/* Validation status indicator */}
-          {!areAllMandatoryFieldsFilled() && (
-            <div className="validation-notice" style={{
-              gridColumn: '1 / -1',
-              textAlign: 'center',
-              padding: '8px',
-              background: 'var(--md-error-container)',
-              borderRadius: '8px',
-              color: 'var(--md-on-error-container)',
-              fontSize: '0.875rem',
-              marginTop: '8px'
-            }}>
-              ⚠️ Please fill in all mandatory fields to enable form submission
-            </div>
-          )}
+
 
           {!isOnline && (
             <div className="offline-notice" style={{

@@ -265,10 +265,7 @@ body {
     box-shadow: 0 0 0 3px rgba(39, 102, 150, 0.1);
 }
 
-.form-group.required label::after {
-    content: ' *';
-    color: var(--danger-color);
-}
+
 
 .form-group input.error,
 .form-group select.error,
@@ -760,11 +757,7 @@ body {
     line-height: 1.2;
 }
 
-.required {
-    color: var(--md-error);
-    font-weight: 700;
-    font-size: 1rem;
-}
+
 
 .field-description {
     color: var(--md-on-surface-variant);

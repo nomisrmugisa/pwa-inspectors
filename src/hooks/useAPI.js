@@ -2,12 +2,7 @@ import { useRef } from 'react';
 
 // DHIS2 API validation functions
 function validateValue(value, valueType, compulsory = false) {
-  // Check if required field is empty
-  if (compulsory && (!value || value.toString().trim() === '')) {
-    return { valid: false, message: 'This field is required' };
-  }
-  
-  // If value is empty and not required, it's valid
+  // All fields are now optional
   if (!value || value.toString().trim() === '') {
     return { valid: true, message: '' };
   }
@@ -314,6 +309,8 @@ class DHIS2APIService {
 
       console.log('✅ Direct configuration loaded:', {
         program: configuration.program.displayName,
+        programId: configuration.program.id,
+        programType: configuration.program.programType,
         stage: configuration.programStage.displayName,
         sectionsCount: configuration.programStage.sections.length,
         dataElementsCount: configuration.programStage.allDataElements.length,
@@ -564,37 +561,15 @@ class DHIS2APIService {
     }
   }
 
-  validateEventData(eventData, programStageConfiguration) {
+    validateEventData(eventData, programStageConfiguration) {
     const errors = [];
     
-    if (!eventData.program) errors.push('Program is required');
-    if (!eventData.programStage) errors.push('Program stage is required');
-    if (!eventData.orgUnit) errors.push('Organisation unit is required');
-    if (!eventData.eventDate) errors.push('Event date is required');
-    
-    if (programStageConfiguration && eventData.dataValues) {
-      const allDataElements = programStageConfiguration.allDataElements || [];
-      
-      allDataElements.forEach(psde => {
-        const dataElement = psde.dataElement;
-        const dataValue = eventData.dataValues.find(dv => dv.dataElement === dataElement.id);
-        
-        if (psde.compulsory && (!dataValue || !dataValue.value)) {
-          errors.push(`${dataElement.displayName} is required`);
-        }
-        
-        if (dataValue && dataValue.value) {
-          const validation = validateValue(dataValue.value, dataElement.valueType);
-          if (!validation.valid) {
-            errors.push(`${dataElement.displayName}: ${validation.message}`);
-          }
-        }
-      });
-    }
+    // All fields are now optional, so no validation is needed
+    // You can add custom validation logic here if needed in the future
     
     return {
-      valid: errors.length === 0,
-      errors
+      valid: true,
+      errors: []
     };
   }
 

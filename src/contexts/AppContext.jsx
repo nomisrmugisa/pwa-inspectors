@@ -721,9 +721,25 @@ export function AppProvider({ children }) {
             orgUnit: event.orgUnit,
             eventDate: event.eventDate,
             status: 'ACTIVE',
-            trackedEntityInstance: event.trackedEntityInstance,
             dataValues: Array.isArray(event.dataValues) ? event.dataValues : []
           };
+
+          // Only include trackedEntityInstance if it exists
+          if (event.trackedEntityInstance) {
+            cleanEvent.trackedEntityInstance = event.trackedEntityInstance;
+            console.log('🔗 Including trackedEntityInstance in sync event:', event.trackedEntityInstance);
+          } else {
+            console.log('ℹ️ No trackedEntityInstance available - syncing event without TEI link');
+          }
+
+          // Clean up event data - remove any undefined or null values
+          Object.keys(cleanEvent).forEach(key => {
+            if (cleanEvent[key] === undefined || cleanEvent[key] === null) {
+              delete cleanEvent[key];
+            }
+          });
+
+          console.log('📝 Final clean event for sync:', cleanEvent);
 
           const response = await api.submitEvent(cleanEvent); // Submit cleaned event
 

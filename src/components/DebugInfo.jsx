@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../contexts/AppContext';
 
 export function DebugInfo() {
@@ -11,6 +11,82 @@ export function DebugInfo() {
     stats,
     lastSyncTime 
   } = useApp();
+
+  const [teiDebugInfo, setTeiDebugInfo] = useState({
+    lastCall: null,
+    lastResponse: null,
+    lastError: null,
+    currentTei: null
+  });
+
+  // Listen for TEI-related console logs to capture debug info
+  useEffect(() => {
+    const originalLog = console.log;
+    const originalError = console.error;
+
+    console.log = (...args) => {
+      originalLog.apply(console, args);
+      
+      // Capture TEI API call info
+      const message = args.join(' ');
+      if (message.includes('🔍 Fetching Tracked Entity Instance for facility:')) {
+        const facilityId = args[1];
+        setTeiDebugInfo(prev => ({
+          ...prev,
+          lastCall: {
+            facilityId,
+            timestamp: new Date().toISOString(),
+            endpoint: '/api/trackedEntityInstances'
+          }
+        }));
+      }
+      
+      if (message.includes('📡 TEI API Response Body:')) {
+        try {
+          const response = args[1];
+          setTeiDebugInfo(prev => ({
+            ...prev,
+            lastResponse: {
+              data: response,
+              timestamp: new Date().toISOString()
+            }
+          }));
+        } catch (e) {
+          // Ignore parsing errors
+        }
+      }
+      
+      if (message.includes('✅ Tracked Entity Instance found:')) {
+        const tei = args[1];
+        setTeiDebugInfo(prev => ({
+          ...prev,
+          currentTei: tei
+        }));
+      }
+    };
+
+    console.error = (...args) => {
+      originalError.apply(console, args);
+      
+      // Capture TEI errors
+      const message = args.join(' ');
+      if (message.includes('❌ Failed to fetch Tracked Entity Instance:')) {
+        const error = args[1];
+        setTeiDebugInfo(prev => ({
+          ...prev,
+          lastError: {
+            message: error.message,
+            timestamp: new Date().toISOString()
+          }
+        }));
+      }
+    };
+
+    return () => {
+      console.log = originalLog;
+      console.error = originalError;
+    };
+  }, []);
 
   // Only show debug info in development
   if (import.meta.env.PROD) {
@@ -52,6 +128,42 @@ export function DebugInfo() {
             <p>Total Events: {stats?.totalEvents || 0}</p>
             <p>Synced Events: {stats?.syncedEvents || 0}</p>
             <p>Error Events: {stats?.errorEvents || 0}</p>
+          </div>
+
+          <div className="debug-section">
+            <h4>TEI (Tracked Entity Instance) Debug</h4>
+            <p>Current TEI: {teiDebugInfo.currentTei || 'None'}</p>
+            
+            {teiDebugInfo.lastCall && (
+              <div>
+                <h5>Last API Call:</h5>
+                <p>Facility ID: {teiDebugInfo.lastCall.facilityId}</p>
+                <p>Endpoint: {teiDebugInfo.lastCall.endpoint}</p>
+                <p>Timestamp: {new Date(teiDebugInfo.lastCall.timestamp).toLocaleString()}</p>
+                <p>Full URL: {import.meta.env.VITE_DHIS2_URL}/api/{teiDebugInfo.lastCall.endpoint}?ou={teiDebugInfo.lastCall.facilityId}&program=EE8yeLVo6cN&fields=trackedEntityInstance&ouMode=DESCENDANTS</p>
+              </div>
+            )}
+            
+            {teiDebugInfo.lastResponse && (
+              <div>
+                <h5>Last API Response:</h5>
+                <p>Timestamp: {new Date(teiDebugInfo.lastResponse.timestamp).toLocaleString()}</p>
+                <details>
+                  <summary>Response Data</summary>
+                  <pre style={{ fontSize: '12px', maxHeight: '200px', overflow: 'auto' }}>
+                    {JSON.stringify(teiDebugInfo.lastResponse.data, null, 2)}
+                  </pre>
+                </details>
+              </div>
+            )}
+            
+            {teiDebugInfo.lastError && (
+              <div>
+                <h5>Last Error:</h5>
+                <p>Message: {teiDebugInfo.lastError.message}</p>
+                <p>Timestamp: {new Date(teiDebugInfo.lastError.timestamp).toLocaleString()}</p>
+              </div>
+            )}
           </div>
         </div>
       </details>
