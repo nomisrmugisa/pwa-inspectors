@@ -809,6 +809,111 @@ export function AppProvider({ children }) {
     }
   };
 
+  // Retry a single failed event
+  const retryEvent = async (eventId) => {
+    if (!state.isOnline) {
+      showToast('Cannot retry while offline', 'warning');
+      return;
+    }
+
+    if (!storage.isReady) {
+      showToast('Storage not ready - please wait and try again', 'warning');
+      return;
+    }
+
+    try {
+      // Get the failed event
+      const event = await storage.getEvent(eventId);
+      if (!event) {
+        showToast('Event not found', 'error');
+        return;
+      }
+
+      if (event.status !== 'error' && event.syncStatus !== 'error') {
+        showToast('Event is not in error state', 'info');
+        return;
+      }
+
+      // Mark as pending to retry
+      await storage.updateEvent(eventId, {
+        ...event,
+        status: 'pending',
+        syncStatus: 'pending',
+        syncError: null
+      });
+
+      // Try to sync this single event
+      const cleanEvent = {
+        program: event.program,
+        programStage: event.programStage,
+        orgUnit: event.orgUnit,
+        eventDate: event.eventDate,
+        status: 'ACTIVE',
+        dataValues: Array.isArray(event.dataValues) ? event.dataValues : []
+      };
+
+      // Only include trackedEntityInstance if it exists
+      if (event.trackedEntityInstance) {
+        cleanEvent.trackedEntityInstance = event.trackedEntityInstance;
+      }
+
+      // Clean up event data - remove any undefined or null values
+      Object.keys(cleanEvent).forEach(key => {
+        if (cleanEvent[key] === undefined || cleanEvent[key] === null) {
+          delete cleanEvent[key];
+        }
+      });
+
+      const response = await api.submitEvent(cleanEvent);
+
+      const topLevelStatus = response?.status || response?.httpStatus || response?.response?.status;
+      const importSummaries = response?.response?.importSummaries || response?.importSummaries || [];
+      const firstSummary = Array.isArray(importSummaries) && importSummaries.length > 0 ? importSummaries[0] : null;
+      const summaryStatus = firstSummary?.status || firstSummary?.httpStatus;
+
+      if (topLevelStatus === 'SUCCESS' || topLevelStatus === 'OK' || summaryStatus === 'SUCCESS') {
+        const serverEventId = firstSummary?.reference || firstSummary?.uid || response?.response?.uid || null;
+        // Mark as synced
+        await storage.updateEvent(eventId, {
+          ...event,
+          status: 'synced',
+          syncStatus: 'synced',
+          syncedAt: new Date().toISOString(),
+          serverEventId
+        });
+        showToast('Event synced successfully', 'success');
+      } else {
+        throw new Error('Server rejected event');
+      }
+
+      // Update stats
+      await updateStats();
+      
+      // Refresh events list
+      const events = await storage.getEvents();
+      dispatch({
+        type: ActionTypes.SET_EVENTS,
+        payload: events
+      });
+
+    } catch (error) {
+      console.error(`Failed to retry event ${eventId}:`, error);
+      
+      // Mark as error again
+      const event = await storage.getEvent(eventId);
+      if (event) {
+        await storage.updateEvent(eventId, {
+          ...event,
+          status: 'error',
+          syncStatus: 'error',
+          syncError: error.message
+        });
+      }
+      
+      showToast(`Retry failed: ${error.message}`, 'error');
+    }
+  };
+
   const updateStats = async () => {
     try {
       if (!storage.isReady) {
@@ -860,6 +965,7 @@ export function AppProvider({ children }) {
     fetchConfiguration,
     saveEvent,
     syncEvents,
+    retryEvent,
     updateStats,
     showToast,
     hideToast,
@@ -878,6 +984,7 @@ export function AppProvider({ children }) {
       fetchUserAssignments,
       saveEvent,
       syncEvents,
+      retryEvent,
       updateStats,
       showToast,
       hideToast,

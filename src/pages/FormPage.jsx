@@ -4,7 +4,7 @@ import { useApp } from '../contexts/AppContext';
 import { useAPI } from '../hooks/useAPI';
 
 // Form field component for individual data elements
-function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoading = false, readOnly = false, getCurrentPosition }) {
+function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoading = false, readOnly = false, getCurrentPosition, formatCoordinatesForDHIS2 }) {
   const { dataElement } = psde;
   const fieldId = `dataElement_${dataElement.id}`;
 
@@ -194,39 +194,78 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
         );
 
       case 'COORDINATE':
+        // Debug logging for coordinate fields
+        console.log(`🔍 COORDINATE field ${fieldId}:`, { 
+          value, 
+          dataElement: dataElement.displayName,
+          valueType: dataElement.valueType,
+          fieldId: fieldId
+        });
+        
         return (
-          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <input
-              type="text"
-              id={fieldId}
-              value={value || ''}
-              onChange={onChange}
-              placeholder="Enter coordinates (latitude,longitude)"
-              className={`form-input ${error ? 'error' : ''}`}
-              pattern="^-?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*-?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$"
-              title="Enter coordinates in format: latitude,longitude (e.g., -24.6282,25.9231)"
-              readOnly={readOnly}
-              disabled={readOnly}
-              style={{ flex: 1 }}
-            />
-            <button
-              type="button"
-              onClick={() => getCurrentPosition(fieldId, onChange)}
-              disabled={readOnly}
-              style={{
-                backgroundColor: '#007bff',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                padding: '8px 12px',
-                fontSize: '12px',
-                cursor: readOnly ? 'not-allowed' : 'pointer',
-                whiteSpace: 'nowrap'
+          <div>
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px' }}>
+              <input
+                type="text"
+                id={fieldId}
+                value={value || ''}
+                onChange={(e) => {
+                  const inputValue = e.target.value;
+                  // If user is typing and it doesn't end with ], allow free input
+                  if (!inputValue.endsWith(']')) {
+                    onChange(e);
+                    return;
+                  }
+                  
+                  // If user finished typing (ends with ]), format it
+                  const formatted = formatCoordinatesForDHIS2(inputValue);
+                  if (formatted) {
+                    onChange({ target: { value: formatted } });
+                  } else {
+                    onChange(e); // Keep original input if formatting fails
+                  }
+                }}
+                onBlur={(e) => {
+                  // When user leaves the field, try to format it
+                  const formatted = formatCoordinatesForDHIS2(e.target.value);
+                  if (formatted && formatted !== e.target.value) {
+                    onChange({ target: { value: formatted } });
+                  }
+                }}
+                placeholder="Enter coordinates (longitude,latitude)"
+                className={`form-input ${error ? 'error' : ''}`}
+                pattern="^\[-?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?),\s*-?([1-8]?\d(\.\d+)?|90(\.0+)?)\]$"
+                title="Enter coordinates in DHIS2 format: longitude,latitude (e.g., 25.9231,-24.6282)"
+                readOnly={readOnly}
+                disabled={readOnly}
+                style={{ flex: 1 }}
+              />
+              <button
+                type="button"
+                onClick={() => {
+                console.log(`📍 GPS button clicked for field: ${fieldId}`);
+                getCurrentPosition(fieldId, onChange);
               }}
-              title="Get current GPS coordinates"
-            >
-              📍 GPS
-            </button>
+                disabled={readOnly}
+                style={{
+                  backgroundColor: '#007bff',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  padding: '8px 12px',
+                  fontSize: '12px',
+                  cursor: readOnly ? 'not-allowed' : 'pointer',
+                  whiteSpace: 'nowrap'
+                }}
+                title="Get current GPS coordinates (DHIS2 compliant format)"
+              >
+                📍 GPS
+              </button>
+            </div>
+            <div style={{ fontSize: '12px', color: '#666' }}>
+              <strong>DHIS2 Format:</strong> Coordinates are automatically formatted as [longitude,latitude] 
+              (e.g., [25.9231,-24.6282]) when using GPS button or when leaving the field.
+            </div>
           </div>
         );
 
@@ -262,7 +301,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 }
 
 // Section component for organizing form fields
-function FormSection({ section, formData, onChange, errors, serviceSections, loadingServiceSections, readOnlyFields = {}, getCurrentPosition }) {
+function FormSection({ section, formData, onChange, errors, serviceSections, loadingServiceSections, readOnlyFields = {}, getCurrentPosition, formatCoordinatesForDHIS2 }) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   // Function to determine if a field should use dynamic service dropdown
@@ -304,6 +343,7 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
                 isLoading={isDynamicServiceField ? loadingServiceSections : false}
                 readOnly={!!readOnlyFields[`dataElement_${psde.dataElement.id}`]}
                 getCurrentPosition={getCurrentPosition}
+                formatCoordinatesForDHIS2={formatCoordinatesForDHIS2}
               />
             );
           })}
@@ -330,6 +370,39 @@ function FormPage() {
     setEventDate
   } = useApp();
 
+  // Helper function to format coordinates in DHIS2 compliant format
+  const formatCoordinatesForDHIS2 = (input) => {
+    // Remove any existing brackets and extra spaces
+    const cleanInput = input.replace(/[\[\]\s]/g, '');
+    
+    // Split by comma
+    const parts = cleanInput.split(',');
+    
+    if (parts.length !== 2) {
+      return null; // Invalid format
+    }
+    
+    const [first, second] = parts;
+    const longitude = parseFloat(first);
+    const latitude = parseFloat(second);
+    
+    // Validate ranges
+    if (isNaN(longitude) || isNaN(latitude)) {
+      return null;
+    }
+    
+    if (longitude < -180 || longitude > 180) {
+      return null; // Invalid longitude
+    }
+    
+    if (latitude < -90 || latitude > 90) {
+      return null; // Invalid latitude
+    }
+    
+    // Return in DHIS2 format: [longitude,latitude]
+    return `[${longitude.toFixed(6)},${latitude.toFixed(6)}]`;
+  };
+
   // GPS coordinate function
   const getCurrentPosition = (fieldId, onChange) => {
     if (!navigator.geolocation) {
@@ -342,7 +415,8 @@ function FormPage() {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
-        const coordinates = `${latitude.toFixed(6)},${longitude.toFixed(6)}`;
+        // DHIS2 compliant format: [longitude,latitude] as a string
+        const coordinates = `[${longitude.toFixed(6)},${latitude.toFixed(6)}]`;
         
         // Update the form field
         onChange({ target: { value: coordinates } });
@@ -356,11 +430,12 @@ function FormPage() {
           fieldId: fieldId
         });
         
-        showToast(`GPS coordinates captured: ${coordinates}`, 'success');
+        showToast(`GPS coordinates captured: ${coordinates} (DHIS2 compliant)`, 'success');
         
         console.log('🔍 GPS coordinates captured:', {
           latitude: latitude.toFixed(6),
           longitude: longitude.toFixed(6),
+          coordinates: coordinates,
           accuracy: position.coords.accuracy ? `${position.coords.accuracy.toFixed(2)}m` : 'Unknown',
           timestamp: new Date(position.timestamp).toLocaleString(),
           fieldId: fieldId
@@ -446,8 +521,8 @@ function FormPage() {
       if (response.trackedEntityInstances && response.trackedEntityInstances.length > 0) {
         const tei = response.trackedEntityInstances[0].trackedEntityInstance;
         if (tei && tei.trim() !== '') {
-          setTrackedEntityInstance(tei);
-          console.log('✅ Tracked Entity Instance found:', tei);
+        setTrackedEntityInstance(tei);
+        console.log('✅ Tracked Entity Instance found:', tei);
         } else {
           console.log('⚠️ TEI found but is empty or invalid:', tei);
           setTrackedEntityInstance(null);
@@ -586,15 +661,15 @@ function FormPage() {
   //   }
   // }, [api]);
 
-  // Pre-select first organization unit if available
+  // Initialize organization unit to empty string when app loads
   useEffect(() => {
-    if (configuration && finalFacilities.length > 0 && !formData.orgUnit) {
+    if (configuration && !formData.orgUnit) {
       setFormData(prev => ({
         ...prev,
-        orgUnit: finalFacilities[0].id
+        orgUnit: ''
       }));
     }
-  }, [configuration, finalFacilities, formData.orgUnit]);
+  }, [configuration, formData.orgUnit]);
 
   // Fetch service sections when facility or user changes
   useEffect(() => {
@@ -822,19 +897,25 @@ function FormPage() {
     }
   }, [configuration, assignmentInspectionId, formData.orgUnit]);
 
-  // All fields are now optional
+  // Check if mandatory fields are filled
   const areAllMandatoryFieldsFilled = () => {
-    return true;
+    // Facility and Inspection Date are mandatory
+    return formData.orgUnit && formData.eventDate;
   };
 
   const validateForm = () => {
     const newErrors = {};
 
-    // All fields are now optional, so no validation is needed
-    // You can add custom validation logic here if needed in the future
+    // Validate mandatory fields
+    if (!formData.orgUnit) {
+      newErrors.orgUnit = 'Facility selection is required';
+    }
+    if (!formData.eventDate) {
+      newErrors.eventDate = 'Inspection date is required';
+    }
 
     setErrors(newErrors);
-    return true;
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSave = async (saveDraft = false) => {
@@ -1013,27 +1094,27 @@ function FormPage() {
             </button>
           </div>
           
-                     {showDebugPanel && (
-             <>
-               {/* Current Form State */}
-               <div style={{ marginBottom: '12px' }}>
-                 <strong>Current Form State:</strong>
-                 <div style={{ marginLeft: '16px' }}>
-                   <div>🏥 Selected Facility: {formData.orgUnit || 'None'}</div>
-                   {formData.orgUnit && (
-                     <div>🔍 Facility Name: {
-                       finalFacilities.find(f => f.id === formData.orgUnit)?.name || 'Unknown'
-                     }</div>
-                   )}
+          {showDebugPanel && (
+            <>
+              {/* Current Form State */}
+              <div style={{ marginBottom: '12px' }}>
+                <strong>Current Form State:</strong>
+                <div style={{ marginLeft: '16px' }}>
+                  <div>🏥 Selected Facility: {formData.orgUnit || 'None'}</div>
+                  {formData.orgUnit && (
+                    <div>🔍 Facility Name: {
+                      finalFacilities.find(f => f.id === formData.orgUnit)?.name || 'Unknown'
+                    }</div>
+                  )}
                    <div>📅 Inspection Date: {formData.eventDate || 'None'}</div>
-                   <div>📝 Form Data Keys: {Object.keys(formData).join(', ') || 'None'}</div>
+                  <div>📝 Form Data Keys: {Object.keys(formData).join(', ') || 'None'}</div>
                    <div>✅ Form Valid: {Object.keys(errors).length === 0 ? 'Yes' : 'No'}</div>
                    {Object.keys(errors).length > 0 && (
                      <div>❌ Errors: {Object.keys(errors).map(key => `${key}: ${errors[key]}`).join(', ')}</div>
                    )}
-                 </div>
-               </div>
-               
+                </div>
+              </div>
+              
                                {/* TEI Debug Information */}
                 <div style={{ marginBottom: '12px' }}>
                   <strong>TEI (Tracked Entity Instance) Debug:</strong>
@@ -1054,7 +1135,7 @@ function FormPage() {
                           <div style={{ 
                             backgroundColor: '#e8f5e8', 
                             padding: '8px', 
-                            borderRadius: '4px', 
+                            borderRadius: '4px',
                             border: '1px solid #4caf50',
                             fontSize: '11px'
                           }}>
@@ -1066,7 +1147,7 @@ function FormPage() {
                           <div style={{ 
                             backgroundColor: '#fff3cd', 
                             padding: '8px', 
-                            borderRadius: '4px', 
+                            borderRadius: '4px',
                             border: '1px solid #ffc107',
                             fontSize: '11px'
                           }}>
@@ -1075,23 +1156,23 @@ function FormPage() {
                             <div>🔍 Response Structure: Empty trackedEntityInstances array</div>
                           </div>
                         ) : (
-                          <div style={{ 
+                    <div style={{
                             backgroundColor: '#f8d7da', 
-                            padding: '8px', 
-                            borderRadius: '4px', 
+                      padding: '8px',
+                      borderRadius: '4px',
                             border: '1px solid #dc3545',
                             fontSize: '11px'
                           }}>
                             <div>⏳ No facility selected yet</div>
                             <div>📊 Response Status: Not requested</div>
-                          </div>
-                        )}
+                    </div>
+                  )}
                       </div>
                     </div>
-                  </div>
                 </div>
-             </>
-           )}
+              </div>
+            </>
+          )}
         </div>
 
         <form onSubmit={handleSubmit} className="inspection-form">
@@ -1107,6 +1188,14 @@ function FormPage() {
 
             <div className="section-content">
               <div className="section-fields">
+                {/* Mandatory fields note */}
+                <div className="form-field" style={{ marginBottom: '15px', padding: '10px', backgroundColor: '#f8f9fa', border: '1px solid #dee2e6', borderRadius: '4px' }}>
+                  <div style={{ fontSize: '14px', color: '#495057', fontWeight: '500' }}>
+                    <span style={{ color: 'red', marginRight: '5px' }}>*</span>
+                    Fields marked with an asterisk (*) are mandatory and must be filled before submitting the form.
+                  </div>
+                </div>
+                
                 {/* Debug toggle for facility filtering */}
                 <div className="form-field" style={{ marginBottom: '10px' }}>
                   <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
@@ -1127,10 +1216,10 @@ function FormPage() {
                   )}
                 </div>
                 
-                <div className="form-field">
-                  <label htmlFor="orgUnit" className="form-label">
-                    Facility/Organisation Unit
-                  </label>
+                                 <div className="form-field">
+                   <label htmlFor="orgUnit" className="form-label">
+                     Facility/Organisation Unit <span style={{ color: 'red' }}>*</span>
+                   </label>
                   <select
                     id="orgUnit"
                     value={formData.orgUnit}
@@ -1144,10 +1233,10 @@ function FormPage() {
                   </select>
                   {errors.orgUnit && <div className="field-error">{errors.orgUnit}</div>}
                 </div>
-                <div className="form-field">
-                  <label htmlFor="eventDate" className="form-label">
-                    Inspection Date
-                  </label>
+                                 <div className="form-field">
+                   <label htmlFor="eventDate" className="form-label">
+                     Inspection Date <span style={{ color: 'red' }}>*</span>
+                   </label>
                   <input
                     type="date"
                     id="eventDate"
@@ -1184,6 +1273,7 @@ function FormPage() {
                 loadingServiceSections={false}
                 readOnlyFields={readOnlyFields}
                 getCurrentPosition={getCurrentPosition}
+                formatCoordinatesForDHIS2={formatCoordinatesForDHIS2}
               />
             ))
           ) : (

@@ -10,6 +10,7 @@ export function HomePage() {
     stats, 
     isOnline, 
     syncEvents, 
+    retryEvent,
     showToast 
   } = useApp();
   
@@ -72,6 +73,18 @@ export function HomePage() {
 
   const handleSync = () => {
     syncEvents();
+  };
+
+  const handleRetryEvent = async (eventId) => {
+    try {
+      await retryEvent(eventId);
+      // Reload events to show updated status
+      const allEvents = await storage.getAllEvents();
+      setEvents(allEvents || []);
+    } catch (error) {
+      console.error('Failed to retry event:', error);
+      showToast('Failed to retry event', 'error');
+    }
   };
 
   const getStatusIcon = (status) => {
@@ -304,6 +317,19 @@ export function HomePage() {
                   </div>
                   
                   <div className="form-actions">
+                    {(event.status === 'error' || event.syncStatus === 'error') && (
+                      <button
+                        className="btn btn-secondary btn-sm retry-btn"
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent triggering the edit form
+                          handleRetryEvent(event.event);
+                        }}
+                        disabled={!isOnline}
+                        title={`Retry sync: ${event.syncError || 'Unknown error'}`}
+                      >
+                        🔄 Retry
+                      </button>
+                    )}
                     <span className="edit-hint">Click to edit</span>
                   </div>
                 </div>
