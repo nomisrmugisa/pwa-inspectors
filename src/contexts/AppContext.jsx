@@ -914,6 +914,54 @@ export function AppProvider({ children }) {
     }
   };
 
+  // Delete a single event
+  const deleteEvent = async (eventId) => {
+    if (!storage.isReady) {
+      showToast('Storage not ready - please wait and try again', 'warning');
+      return;
+    }
+
+    try {
+      // Get the event to check if it exists
+      const event = await storage.getEvent(eventId);
+      if (!event) {
+        showToast('Event not found', 'error');
+        return;
+      }
+
+      // Show confirmation dialog
+      const confirmed = window.confirm(
+        `Are you sure you want to delete this inspection?\n\n` +
+        `Facility: ${event.orgUnit}\n` +
+        `Date: ${event.eventDate}\n\n` +
+        `This action cannot be undone.`
+      );
+
+      if (!confirmed) {
+        return;
+      }
+
+      // Delete the event from storage
+      await storage.deleteEvent(eventId);
+      
+      showToast('Event deleted successfully', 'success');
+      
+      // Update stats
+      await updateStats();
+      
+      // Refresh events list
+      const events = await storage.getAllEvents();
+      dispatch({
+        type: ActionTypes.UPDATE_PENDING_EVENTS,
+        payload: events
+      });
+
+    } catch (error) {
+      console.error(`Failed to delete event ${eventId}:`, error);
+      showToast(`Failed to delete event: ${error.message}`, 'error');
+    }
+  };
+
   const updateStats = async () => {
     try {
       if (!storage.isReady) {
@@ -966,6 +1014,7 @@ export function AppProvider({ children }) {
     saveEvent,
     syncEvents,
     retryEvent,
+    deleteEvent,
     updateStats,
     showToast,
     hideToast,
@@ -985,6 +1034,7 @@ export function AppProvider({ children }) {
       saveEvent,
       syncEvents,
       retryEvent,
+      deleteEvent,
       updateStats,
       showToast,
       hideToast,

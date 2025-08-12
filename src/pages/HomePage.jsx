@@ -11,6 +11,7 @@ export function HomePage() {
     isOnline, 
     syncEvents, 
     retryEvent,
+    deleteEvent,
     showToast 
   } = useApp();
   
@@ -84,6 +85,18 @@ export function HomePage() {
     } catch (error) {
       console.error('Failed to retry event:', error);
       showToast('Failed to retry event', 'error');
+    }
+  };
+
+  const handleDeleteEvent = async (eventId) => {
+    try {
+      await deleteEvent(eventId);
+      // Reload events to show updated list
+      const allEvents = await storage.getAllEvents();
+      setEvents(allEvents || []);
+    } catch (error) {
+      console.error('Failed to delete event:', error);
+      showToast('Failed to delete event', 'error');
     }
   };
 
@@ -330,6 +343,16 @@ export function HomePage() {
                         🔄 Retry
                       </button>
                     )}
+                    <button
+                      className="btn btn-danger btn-sm delete-btn"
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent triggering the edit form
+                        handleDeleteEvent(event.event);
+                      }}
+                      title="Delete this inspection"
+                    >
+                      🗑️ Delete
+                    </button>
                     <span className="edit-hint">Click to edit</span>
                   </div>
                 </div>
