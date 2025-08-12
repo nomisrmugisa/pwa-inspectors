@@ -8,19 +8,71 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
   const { dataElement } = psde;
   const fieldId = `dataElement_${dataElement.id}`;
 
+  // Check if this field is mandatory based on field name or compulsory flag
+  const isMandatoryField = () => {
+    const fieldName = (dataElement.displayName || dataElement.shortName || '').toLowerCase();
+    const isCompulsory = psde.compulsory || false;
+    
+    // Specific fields that should be mandatory
+    const mandatoryFieldNames = ['type', 'service', 'services', 'source', 'coordinates'];
+    
+    // Fields that should NOT be mandatory (exclusions) - using more flexible matching
+    const excludedFieldPatterns = [
+      'counseling service',
+      'independent counseling',
+      'patients can access',
+      'out-reach services',
+      'outreach services',
+      'adequate supplies',
+      'supplies for services'
+    ];
+    
+    // Check if this field should be excluded from mandatory requirements
+    const isExcluded = excludedFieldPatterns.some(pattern => 
+      fieldName.includes(pattern.toLowerCase())
+    );
+    
+    // Specific debugging for counseling service field
+    if (fieldName.includes('counseling') || fieldName.includes('independent')) {
+      console.log(`🔍 Counseling field detected: "${dataElement.displayName}"`);
+      console.log(`   Field name: "${fieldName}", Excluded: ${isExcluded}, Mandatory: ${!isExcluded}`);
+    }
+    
+    // If field is excluded, it's not mandatory regardless of other conditions
+    if (isExcluded) {
+      console.log(`🚫 Field excluded from mandatory: "${dataElement.displayName}"`);
+      console.log(`   Field name: "${fieldName}", Excluded: true`);
+      return false;
+    }
+    
+    const isMandatory = isCompulsory || mandatoryFieldNames.some(name => fieldName.includes(name));
+    
+    // Debug logging for service fields
+    if (fieldName.includes('service')) {
+      console.log(`🔍 Service field detected: "${dataElement.displayName}" - Mandatory: ${isMandatory}`);
+      console.log(`   Field name: "${fieldName}", Compulsory: ${isCompulsory}`);
+    }
+    
+    return isMandatory;
+  };
+
   const renderField = () => {
     // Handle dynamic service dropdown (overrides static optionSet)
     if (dynamicOptions !== null) {
+      const isMandatory = isMandatoryField();
       return (
         <select
           id={fieldId}
           value={value || ''}
           onChange={onChange}
-          className={`form-select ${error ? 'error' : ''}`}
+          className={`form-select ${error ? 'error' : ''} ${isMandatory ? 'mandatory-service-field' : ''}`}
           disabled={readOnly || isLoading}
+          required={isMandatory}
         >
           <option value="">
-            {isLoading ? 'Loading service sections...' : `Select ${dataElement.displayName}`}
+            {isLoading ? 'Loading service sections...' : 
+             isMandatory ? `Select ${dataElement.displayName} *` : 
+             `Select ${dataElement.displayName}`}
           </option>
           {dynamicOptions.map((section, index) => (
             <option key={index} value={section}>
@@ -262,10 +314,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
                 📍 GPS
               </button>
             </div>
-            <div style={{ fontSize: '12px', color: '#666' }}>
-              <strong>DHIS2 Format:</strong> Coordinates are automatically formatted as [longitude,latitude] 
-              (e.g., [25.9231,-24.6282]) when using GPS button or when leaving the field.
-            </div>
+
           </div>
         );
 
@@ -290,9 +339,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
     <div className="form-field">
       <label htmlFor={fieldId} className="form-label">
         {dataElement.displayName}
-        {dataElement.description && (
-          <span className="field-description">{dataElement.description}</span>
-        )}
+        {isMandatoryField() && <span style={{ color: 'red' }}> *</span>}
       </label>
       {renderField()}
       {error && <div className="field-error">{error}</div>}
@@ -311,6 +358,55 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
     return fieldName.includes('service') || fieldName.includes('section');
   };
 
+  // Function to determine if a field is mandatory
+  const isFieldMandatory = (psde) => {
+    const fieldName = (psde.dataElement.displayName || psde.dataElement.shortName || '').toLowerCase();
+    const isCompulsory = psde.compulsory || false;
+    
+    // Specific fields that should be mandatory
+    const mandatoryFieldNames = ['type', 'service', 'services', 'source', 'coordinates'];
+    
+    // Fields that should NOT be mandatory (exclusions) - using more flexible matching
+    const excludedFieldPatterns = [
+      'counseling service',
+      'independent counseling',
+      'patients can access',
+      'out-reach services',
+      'outreach services',
+      'adequate supplies',
+      'supplies for services'
+    ];
+    
+    // Check if this field should be excluded from mandatory requirements
+    const isExcluded = excludedFieldPatterns.some(pattern => 
+      fieldName.includes(pattern.toLowerCase())
+    );
+    
+    // Debug logging for excluded fields
+    if (isExcluded) {
+      console.log(`🚫 Field excluded from mandatory: "${psde.dataElement.displayName}"`);
+      console.log(`   Field name: "${fieldName}", Excluded: true`);
+    }
+    
+    // If field is excluded, it's not mandatory regardless of other conditions
+    if (isExcluded) {
+      return false;
+    }
+    
+    const isMandatory = isCompulsory || mandatoryFieldNames.some(name => fieldName.includes(name));
+    
+    // Debug logging for service fields
+    if (fieldName.includes('service') && !isExcluded) {
+      console.log(`🔍 Service field detected: "${psde.dataElement.displayName}" - Mandatory: ${isMandatory}`);
+      console.log(`   Field name: "${fieldName}", Compulsory: ${isCompulsory}`);
+    }
+    
+    return isMandatory;
+  };
+
+  // Count mandatory fields in this section
+  const mandatoryFieldsCount = (section.dataElements || []).filter(psde => isFieldMandatory(psde)).length;
+
   return (
     <div className="form-section">
       <button 
@@ -318,7 +414,14 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
         className="section-header"
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <h3 className="section-title">{section.displayName}</h3>
+        <h3 className="section-title">
+          {section.displayName}
+          {mandatoryFieldsCount > 0 && (
+            <span className="mandatory-indicator" title={`${mandatoryFieldsCount} mandatory field(s) in this section`}>
+              {' '}({mandatoryFieldsCount} required)
+            </span>
+          )}
+        </h3>
         <span className={`section-toggle ${isExpanded ? 'expanded' : ''}`}>
           ▼
         </span>
@@ -900,7 +1003,72 @@ function FormPage() {
   // Check if mandatory fields are filled
   const areAllMandatoryFieldsFilled = () => {
     // Facility and Inspection Date are mandatory
-    return formData.orgUnit && formData.eventDate;
+    if (!formData.orgUnit || !formData.eventDate) {
+      return false;
+    }
+
+    // Check mandatory data element fields
+    if (configuration && configuration.programStage && configuration.programStage.allDataElements) {
+      for (const psde of configuration.programStage.allDataElements) {
+        const fieldName = `dataElement_${psde.dataElement.id}`;
+        const fieldValue = formData[fieldName];
+        
+        // Check if this is a mandatory field
+        const isMandatory = isFieldMandatory(psde);
+        
+        if (isMandatory && (!fieldValue || fieldValue.toString().trim() === '')) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  };
+
+  // Helper function to determine if a field is mandatory
+  const isFieldMandatory = (psde) => {
+    const fieldName = (psde.dataElement.displayName || psde.dataElement.shortName || '').toLowerCase();
+    const isCompulsory = psde.compulsory || false;
+    
+    // Specific fields that should be mandatory
+    const mandatoryFieldNames = ['type', 'service', 'services', 'source', 'coordinates'];
+    
+    // Fields that should NOT be mandatory (exclusions) - using more flexible matching
+    const excludedFieldPatterns = [
+      'counseling service',
+      'independent counseling',
+      'patients can access',
+      'out-reach services',
+      'outreach services',
+      'adequate supplies',
+      'supplies for services'
+    ];
+    
+    // Check if this field should be excluded from mandatory requirements
+    const isExcluded = excludedFieldPatterns.some(pattern => 
+      fieldName.includes(pattern.toLowerCase())
+    );
+    
+    // Debug logging for excluded fields
+    if (isExcluded) {
+      console.log(`🚫 Field excluded from mandatory: "${psde.dataElement.displayName}"`);
+      console.log(`   Field name: "${fieldName}", Excluded: true`);
+    }
+    
+    // If field is excluded, it's not mandatory regardless of other conditions
+    if (isExcluded) {
+      return false;
+    }
+    
+    const isMandatory = isCompulsory || mandatoryFieldNames.some(name => fieldName.includes(name));
+    
+    // Debug logging for service fields
+    if (fieldName.includes('service') && !isExcluded) {
+      console.log(`🔍 Service field detected: "${psde.dataElement.displayName}" - Mandatory: ${isMandatory}`);
+      console.log(`   Field name: "${fieldName}", Compulsory: ${isCompulsory}`);
+    }
+    
+    return isMandatory;
   };
 
   const validateForm = () => {
@@ -912,6 +1080,35 @@ function FormPage() {
     }
     if (!formData.eventDate) {
       newErrors.eventDate = 'Inspection date is required';
+    }
+
+    // Validate mandatory data element fields
+    if (configuration && configuration.programStage && configuration.programStage.allDataElements) {
+      for (const psde of configuration.programStage.allDataElements) {
+        const fieldName = `dataElement_${psde.dataElement.id}`;
+        const fieldValue = formData[fieldName];
+        
+        // Check if this is a mandatory field
+        const isMandatory = isFieldMandatory(psde);
+        
+        if (isMandatory && (!fieldValue || fieldValue.toString().trim() === '')) {
+          // Provide specific error messages for different field types
+          let errorMessage = `${psde.dataElement.displayName} is required`;
+          
+          const fieldNameLower = (psde.dataElement.displayName || '').toLowerCase();
+          if (fieldNameLower.includes('service')) {
+            errorMessage = `Please select a service section for ${psde.dataElement.displayName}`;
+          } else if (fieldNameLower.includes('type')) {
+            errorMessage = `Please select an inspection type for ${psde.dataElement.displayName}`;
+          } else if (fieldNameLower.includes('source')) {
+            errorMessage = `Please specify the source for ${psde.dataElement.displayName}`;
+          } else if (fieldNameLower.includes('coordinates')) {
+            errorMessage = `Please provide GPS coordinates for ${psde.dataElement.displayName}`;
+          }
+          
+          newErrors[fieldName] = errorMessage;
+        }
+      }
     }
 
     setErrors(newErrors);
@@ -984,12 +1181,68 @@ function FormPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    // Check for missing mandatory fields and provide detailed feedback
+    if (missingMandatoryFields > 0) {
+      const missingFields = [];
+      
+      // Check basic mandatory fields
+      if (!formData.orgUnit) missingFields.push('Facility');
+      if (!formData.eventDate) missingFields.push('Inspection Date');
+      
+      // Check mandatory data element fields
+      if (configuration && configuration.programStage && configuration.programStage.allDataElements) {
+        for (const psde of configuration.programStage.allDataElements) {
+          const fieldName = `dataElement_${psde.dataElement.id}`;
+          const fieldValue = formData[fieldName];
+          
+          const isMandatory = isFieldMandatory(psde);
+          
+          if (isMandatory && (!fieldValue || fieldValue.toString().trim() === '')) {
+            missingFields.push(psde.dataElement.displayName);
+          }
+        }
+      }
+      
+      const missingFieldsList = missingFields.join(', ');
+      showToast(`Please fill all mandatory fields: ${missingFieldsList}`, 'error');
+      return;
+    }
+    
     handleSave(false);
   };
 
   const handleSaveDraft = () => {
     handleSave(true);
   };
+
+  // Helper function to count missing mandatory fields
+  const getMissingMandatoryFieldsCount = () => {
+    let missingCount = 0;
+    
+    // Check basic mandatory fields
+    if (!formData.orgUnit) missingCount++;
+    if (!formData.eventDate) missingCount++;
+    
+    // Check mandatory data element fields
+    if (configuration && configuration.programStage && configuration.programStage.allDataElements) {
+      for (const psde of configuration.programStage.allDataElements) {
+        const fieldName = `dataElement_${psde.dataElement.id}`;
+        const fieldValue = formData[fieldName];
+        
+        const isMandatory = isFieldMandatory(psde);
+        
+        if (isMandatory && (!fieldValue || fieldValue.toString().trim() === '')) {
+          missingCount++;
+        }
+      }
+    }
+    
+    return missingCount;
+  };
+
+  // Get missing mandatory fields count
+  const missingMandatoryFields = getMissingMandatoryFieldsCount();
 
   // Log Inspection Scheduled: Dates for debugging
   if (inspectionPeriod) {
@@ -1175,6 +1428,55 @@ function FormPage() {
           )}
         </div>
 
+        {/* Mandatory fields summary */}
+        {configuration && configuration.programStage && configuration.programStage.allDataElements && (
+          <div className="mandatory-fields-summary">
+            <h4 style={{ margin: '0 0 15px 0', color: '#495057', fontSize: '16px' }}>
+              📋 Mandatory Fields Summary
+            </h4>
+            <div className="mandatory-fields-grid">
+              {/* Basic mandatory fields */}
+              <div className={`mandatory-field-item ${formData.orgUnit ? 'filled' : 'empty'}`}>
+                <span className="field-name">🏥 Facility</span>
+                <span className="field-status">{formData.orgUnit ? '✅ Filled' : '❌ Required'}</span>
+              </div>
+              <div className={`mandatory-field-item ${formData.eventDate ? 'filled' : 'empty'}`}>
+                <span className="field-name">📅 Inspection Date</span>
+                <span className="field-status">{formData.eventDate ? '✅ Filled' : '❌ Required'}</span>
+              </div>
+              
+              {/* Data element mandatory fields */}
+              {configuration.programStage.allDataElements
+                .filter(psde => isFieldMandatory(psde))
+                .map(psde => {
+                  const fieldName = `dataElement_${psde.dataElement.id}`;
+                  const fieldValue = formData[fieldName];
+                  const isFilled = fieldValue && fieldValue.toString().trim() !== '';
+                  
+                  return (
+                    <div key={psde.dataElement.id} className={`mandatory-field-item ${isFilled ? 'filled' : 'empty'}`}>
+                      <span className="field-name">{psde.dataElement.displayName}</span>
+                      <span className="field-status">{isFilled ? '✅ Filled' : '❌ Required'}</span>
+                    </div>
+                  );
+                })}
+            </div>
+            <div className="mandatory-fields-progress">
+              <div className="progress-bar">
+                <div 
+                  className="progress-fill" 
+                  style={{ 
+                    width: `${Math.round(((missingMandatoryFields + 2) - getMissingMandatoryFieldsCount()) / (missingMandatoryFields + 2) * 100)}%` 
+                  }}
+                ></div>
+              </div>
+              <span className="progress-text">
+                {getMissingMandatoryFieldsCount()} of {missingMandatoryFields + 2} mandatory fields completed
+              </span>
+            </div>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="inspection-form">
           {/* Form metadata section */}
           <div className="form-section">
@@ -1189,11 +1491,16 @@ function FormPage() {
             <div className="section-content">
               <div className="section-fields">
                 {/* Mandatory fields note */}
-                <div className="form-field" style={{ marginBottom: '15px', padding: '10px', backgroundColor: '#f8f9fa', border: '1px solid #dee2e6', borderRadius: '4px' }}>
-                  <div style={{ fontSize: '14px', color: '#495057', fontWeight: '500' }}>
-                    <span style={{ color: 'red', marginRight: '5px' }}>*</span>
+                <div className="mandatory-fields-note">
+                  <p style={{ fontSize: '14px', color: '#666', marginBottom: '10px' }}>
                     Fields marked with an asterisk (*) are mandatory and must be filled before submitting the form.
-                  </div>
+                  </p>
+                  <p style={{ fontSize: '12px', color: '#888', marginBottom: '0' }}>
+                    <strong>Mandatory fields:</strong> Facility, Inspection Date, Type, Service(s), Source, and Coordinates.
+                  </p>
+                  <p style={{ fontSize: '11px', color: '#999', marginTop: '8px', marginBottom: '0', fontStyle: 'italic' }}>
+                    Note: Some service-related questions (counseling, outreach services, supplies) are not mandatory.
+                  </p>
                 </div>
                 
                 {/* Debug toggle for facility filtering */}
@@ -1301,22 +1608,22 @@ function FormPage() {
         <div className="form-footer">
           <button
             type="button"
-            onClick={handleSaveDraft}
-            disabled={isSubmitting || !areAllMandatoryFieldsFilled()}
-            className="btn btn-secondary"
+            onClick={handleSubmit}
+            className="btn btn-primary"
+            disabled={isSubmitting || missingMandatoryFields > 0}
+            title={missingMandatoryFields > 0 ? `Please fill ${missingMandatoryFields} mandatory field(s) before submitting` : 'Submit inspection form'}
           >
-            <span>💾</span>
-            <span>{isSubmitting ? 'Saving...' : 'Save Draft'}</span>
+            {isSubmitting ? 'Submitting...' : missingMandatoryFields > 0 ? `Submit (${missingMandatoryFields} required)` : 'Submit Inspection'}
           </button>
-
+          
           <button
             type="button"
-            onClick={handleSubmit}
-            disabled={isSubmitting || (!isOnline && !isDraft) || !areAllMandatoryFieldsFilled()}
-            className="btn btn-primary"
+            onClick={handleSaveDraft}
+            className="btn btn-secondary"
+            disabled={isSubmitting || (!isOnline && !isDraft) || missingMandatoryFields > 0}
+            title={missingMandatoryFields > 0 ? `Please fill ${missingMandatoryFields} mandatory field(s) before saving draft` : 'Save as draft'}
           >
-            <span>📤</span>
-            <span>{isSubmitting ? 'Submitting...' : 'Submit Inspection'}</span>
+            {isSubmitting ? 'Saving...' : missingMandatoryFields > 0 ? `Save Draft (${missingMandatoryFields} required)` : 'Save Draft'}
           </button>
 
 

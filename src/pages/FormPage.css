@@ -215,3 +215,230 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 } 
+
+/* Mandatory fields note styling */
+.mandatory-fields-note {
+  margin-bottom: 15px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  border-left: 4px solid #007bff;
+}
+
+.mandatory-fields-note p {
+  margin: 0;
+  line-height: 1.4;
+}
+
+.mandatory-fields-note p:first-child {
+  font-weight: 500;
+  color: #495057;
+}
+
+.mandatory-fields-note p:last-child {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #6c757d;
+}
+
+/* Enhanced field error styling for mandatory fields */
+.form-field .form-label span[style*="color: red"] {
+  font-weight: bold;
+}
+
+.form-field.error .form-label {
+  color: #dc3545;
+  font-weight: 500;
+}
+
+.form-field.error .form-input,
+.form-field.error .form-select,
+.form-field.error .form-textarea {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.form-field.error .field-error {
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 4px;
+  font-weight: 500;
+} 
+
+/* Mandatory indicator in section headers */
+.section-title .mandatory-indicator {
+  font-size: 14px;
+  font-weight: normal;
+  color: #dc3545;
+  background-color: #f8d7da;
+  padding: 2px 8px;
+  border-radius: 12px;
+  margin-left: 8px;
+  border: 1px solid #f5c6cb;
+}
+
+.section-title .mandatory-indicator:hover {
+  background-color: #f1b0b7;
+  border-color: #ed969e;
+}
+
+/* Enhanced section header styling */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 15px 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border: 1px solid #dee2e6;
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.section-header:hover {
+  background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+  border-color: #adb5bd;
+}
+
+.section-header:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.section-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #495057;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+} 
+
+/* Mandatory fields summary styling */
+.mandatory-fields-summary {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.mandatory-fields-summary h4 {
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.mandatory-fields-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.mandatory-field-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  border-radius: 6px;
+  border: 1px solid #dee2e6;
+  transition: all 0.2s ease;
+}
+
+.mandatory-field-item.filled {
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+  color: #155724;
+}
+
+.mandatory-field-item.empty {
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  color: #721c24;
+}
+
+.mandatory-field-item .field-name {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.mandatory-field-item .field-status {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.mandatory-fields-progress {
+  text-align: center;
+}
+
+.mandatory-fields-progress .progress-bar {
+  width: 100%;
+  height: 8px;
+  background-color: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.mandatory-fields-progress .progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #dc3545 0%, #ffc107 50%, #28a745 100%);
+  transition: width 0.3s ease;
+}
+
+.mandatory-fields-progress .progress-text {
+  font-size: 14px;
+  color: #6c757d;
+  font-weight: 500;
+} 
+
+/* Mandatory service field styling */
+.mandatory-service-field {
+  border: 2px solid #007bff !important;
+  background-color: #f8f9ff;
+  box-shadow: 0 0 0 0.1rem rgba(0, 123, 255, 0.15);
+}
+
+.mandatory-service-field:focus {
+  border-color: #0056b3 !important;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+}
+
+.mandatory-service-field:not(:placeholder-shown) {
+  border-color: #28a745 !important;
+  background-color: #f8fff9;
+}
+
+/* Enhanced mandatory field styling */
+.form-field .form-label span[style*="color: red"] {
+  font-weight: bold;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+/* Service field specific styling */
+.form-field:has(.mandatory-service-field) .form-label {
+  font-weight: 600;
+  color: #007bff;
+}
+
+.form-field:has(.mandatory-service-field) .form-label::after {
+  content: " (Service Selection Required)";
+  font-size: 12px;
+  color: #dc3545;
+  font-weight: normal;
+  margin-left: 5px;
+} 
