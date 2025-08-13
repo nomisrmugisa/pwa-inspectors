@@ -307,6 +307,57 @@
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 
+/* Document Review sections - collapsible and visually distinct */
+.section-header.document-review-section {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  border-color: #2196f3;
+  cursor: pointer;
+}
+
+.section-header.document-review-section:hover {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  border-color: #2196f3;
+}
+
+.section-header.document-review-section:focus {
+  box-shadow: 0 0 0 0.2rem rgba(33, 150, 243, 0.25);
+}
+
+/* Always expanded sections - non-collapsible and visually distinct */
+.section-header.always-expanded-section {
+  background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+  border-color: #9c27b0;
+  cursor: default;
+}
+
+.section-header.always-expanded-section:hover {
+  background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+  border-color: #9c27b0;
+}
+
+.section-header.always-expanded-section:focus {
+  box-shadow: 0 0 0 0.2rem rgba(156, 39, 176, 0.25);
+}
+
+/* Bottom spacing for sections */
+.section-bottom-spacing {
+  height: 40px;
+  margin-bottom: 25px;
+  background-color: #f0f0f0; /* Temporary visible color for debugging */
+  border: 1px dashed #ccc; /* Temporary border for debugging */
+  display: block;
+}
+
+/* Override the last-child margin removal from index.css */
+.form-section:last-child {
+  margin-bottom: 25px !important;
+}
+
+/* Ensure sections have proper spacing */
+.form-section {
+  margin-bottom: 25px !important;
+}
+
 .section-title {
   margin: 0;
   font-size: 18px;
@@ -441,4 +492,39 @@
   color: #dc3545;
   font-weight: normal;
   margin-left: 5px;
+
+
+/* Mandatory fields summary collapsible styles */
+.mandatory-summary-header {
+  transition: all 0.2s ease;
+}
+
+.mandatory-summary-header:hover {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 8px;
+  margin: -8px 0 7px -8px;
+}
+
+.mandatory-summary-toggle {
+  font-size: 12px;
+  color: #6c757d;
+  transition: transform 0.2s ease;
+}
+
+.mandatory-summary-toggle.expanded {
+  transform: rotate(180deg);
+}
+
+.mandatory-fields-content {
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.mandatory-fields-content.collapsed {
+  max-height: 0 !important;
+  opacity: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: none !important;
 } 

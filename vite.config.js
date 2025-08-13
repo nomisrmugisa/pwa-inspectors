@@ -116,6 +116,7 @@ export default defineConfig({
   ],
   server: {
     port: 3000,
+    strictPort: false, // Allow fallback to other ports if 3000 is busy
     host: true,
     allowedHosts: [
       'pwa-inspectors.onrender.com',

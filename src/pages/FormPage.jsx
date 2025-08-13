@@ -4,7 +4,7 @@ import { useApp } from '../contexts/AppContext';
 import { useAPI } from '../hooks/useAPI';
 
 // Form field component for individual data elements
-function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoading = false, readOnly = false, getCurrentPosition, formatCoordinatesForDHIS2 }) {
+function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoading = false, readOnly = false, getCurrentPosition, formatCoordinatesForDHIS2, showDebugPanel = false }) {
   const { dataElement } = psde;
   const fieldId = `dataElement_${dataElement.id}`;
 
@@ -14,7 +14,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
     const isCompulsory = psde.compulsory || false;
     
     // Specific fields that should be mandatory
-    const mandatoryFieldNames = ['type', 'service', 'services', 'source', 'coordinates'];
+    const mandatoryFieldNames = ['type', 'service', 'services', 'coordinates'];
     
     // Fields that should NOT be mandatory (exclusions) - using more flexible matching
     const excludedFieldPatterns = [
@@ -34,21 +34,27 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
     
     // Specific debugging for counseling service field
     if (fieldName.includes('counseling') || fieldName.includes('independent')) {
-      console.log(`🔍 Counseling field detected: "${dataElement.displayName}"`);
-      console.log(`   Field name: "${fieldName}", Excluded: ${isExcluded}, Mandatory: ${!isExcluded}`);
+      // Only log in debug mode
+      if (showDebugPanel) {
+        console.log(`🔍 Counseling field detected: "${dataElement.displayName}"`);
+        console.log(`   Field name: "${fieldName}", Excluded: ${isExcluded}, Mandatory: ${!isExcluded}`);
+      }
     }
     
     // If field is excluded, it's not mandatory regardless of other conditions
     if (isExcluded) {
-      console.log(`🚫 Field excluded from mandatory: "${dataElement.displayName}"`);
-      console.log(`   Field name: "${fieldName}", Excluded: true`);
+      // Only log in debug mode
+      if (showDebugPanel) {
+        console.log(`🚫 Field excluded from mandatory: "${dataElement.displayName}"`);
+        console.log(`   Field name: "${fieldName}", Excluded: true`);
+      }
       return false;
     }
     
     const isMandatory = isCompulsory || mandatoryFieldNames.some(name => fieldName.includes(name));
     
-    // Debug logging for service fields
-    if (fieldName.includes('service')) {
+    // Debug logging for service fields (only in debug mode)
+    if (fieldName.includes('service') && showDebugPanel) {
       console.log(`🔍 Service field detected: "${dataElement.displayName}" - Mandatory: ${isMandatory}`);
       console.log(`   Field name: "${fieldName}", Compulsory: ${isCompulsory}`);
     }
@@ -57,9 +63,24 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
   };
 
   const renderField = () => {
+    // Debug logging for field rendering
+    if (showDebugPanel) {
+      console.log(`🎨 Rendering field "${dataElement.displayName}":`, {
+        valueType: dataElement.valueType,
+        hasOptionSet: !!dataElement.optionSet,
+        optionSetOptions: dataElement.optionSet?.options?.length || 0,
+        dynamicOptions: dynamicOptions,
+        readOnly: readOnly,
+        isLoading: isLoading
+      });
+    }
+    
     // Handle dynamic service dropdown (overrides static optionSet)
     if (dynamicOptions !== null) {
       const isMandatory = isMandatoryField();
+      if (showDebugPanel) {
+        console.log(`🔄 Using dynamic service dropdown for "${dataElement.displayName}"`);
+      }
       return (
         <select
           id={fieldId}
@@ -85,6 +106,19 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
     // First check if field has optionSet (dropdown), regardless of valueType
     if (dataElement.optionSet && dataElement.optionSet.options) {
+      if (showDebugPanel) {
+        console.log(`📋 Dropdown field "${dataElement.displayName}":`, {
+          optionSetId: dataElement.optionSet.id,
+          optionsCount: dataElement.optionSet.options.length,
+          options: dataElement.optionSet.options.map(opt => ({
+            id: opt.id,
+            code: opt.code,
+            displayName: opt.displayName,
+            sortOrder: opt.sortOrder
+          }))
+        });
+      }
+      
       return (
         <select
           id={fieldId}
@@ -104,8 +138,24 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
         </select>
       );
     }
+    
+    // Debug: Check if field should have options but doesn't
+    if (showDebugPanel && (dataElement.displayName || '').toLowerCase().includes('equipped') || 
+        (dataElement.displayName || '').toLowerCase().includes('gloves') || 
+        (dataElement.displayName || '').toLowerCase().includes('sharps')) {
+      console.log(`⚠️ Field "${dataElement.displayName}" might be missing options:`, {
+        hasOptionSet: !!dataElement.optionSet,
+        optionSet: dataElement.optionSet,
+        valueType: dataElement.valueType,
+        dataElement: dataElement
+      });
+    }
 
     // Then handle by valueType
+    if (showDebugPanel) {
+      console.log(`🎯 Field "${dataElement.displayName}" using valueType switch (${dataElement.valueType})`);
+    }
+    
     switch (dataElement.valueType) {
       case 'TEXT':
         return (
@@ -320,6 +370,9 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
       default:
         // Default to text input
+        if (showDebugPanel) {
+          console.log(`⚠️ Field "${dataElement.displayName}" using default text input (valueType: ${dataElement.valueType})`);
+        }
         return (
           <input
             type="text"
@@ -348,61 +401,33 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 }
 
 // Section component for organizing form fields
-function FormSection({ section, formData, onChange, errors, serviceSections, loadingServiceSections, readOnlyFields = {}, getCurrentPosition, formatCoordinatesForDHIS2 }) {
-  const [isExpanded, setIsExpanded] = useState(false);
+function FormSection({ section, formData, onChange, errors, serviceSections, loadingServiceSections, readOnlyFields = {}, getCurrentPosition, formatCoordinatesForDHIS2, showDebugPanel, isFieldMandatory }) {
+  // Check if this is a Document Review section - only these can be collapsible
+  const isDocumentReviewSection = (section.displayName || '').toLowerCase().includes('document review');
+  // All sections start expanded, only Document Review can be collapsed
+  const [isExpanded, setIsExpanded] = useState(true);
+
+  // Ensure Document Review sections can be toggled, others stay expanded
+  useEffect(() => {
+    if (!isDocumentReviewSection && !isExpanded) {
+      setIsExpanded(true);
+    }
+  }, [isDocumentReviewSection, isExpanded]);
 
   // Function to determine if a field should use dynamic service dropdown
   const isServiceField = (dataElement) => {
     // Check if field name/displayName contains 'service' (case-insensitive)
     const fieldName = (dataElement.displayName || dataElement.shortName || '').toLowerCase();
-    return fieldName.includes('service') || fieldName.includes('section');
-  };
-
-  // Function to determine if a field is mandatory
-  const isFieldMandatory = (psde) => {
-    const fieldName = (psde.dataElement.displayName || psde.dataElement.shortName || '').toLowerCase();
-    const isCompulsory = psde.compulsory || false;
     
-    // Specific fields that should be mandatory
-    const mandatoryFieldNames = ['type', 'service', 'services', 'source', 'coordinates'];
-    
-    // Fields that should NOT be mandatory (exclusions) - using more flexible matching
-    const excludedFieldPatterns = [
-      'counseling service',
-      'independent counseling',
-      'patients can access',
-      'out-reach services',
-      'outreach services',
-      'adequate supplies',
-      'supplies for services'
-    ];
-    
-    // Check if this field should be excluded from mandatory requirements
-    const isExcluded = excludedFieldPatterns.some(pattern => 
-      fieldName.includes(pattern.toLowerCase())
-    );
-    
-    // Debug logging for excluded fields
-    if (isExcluded) {
-      console.log(`🚫 Field excluded from mandatory: "${psde.dataElement.displayName}"`);
-      console.log(`   Field name: "${fieldName}", Excluded: true`);
-    }
-    
-    // If field is excluded, it's not mandatory regardless of other conditions
-    if (isExcluded) {
+    // Exclude fields that are about supplies, even if they contain 'service'
+    if (fieldName.includes('supplies') || fieldName.includes('adequate')) {
       return false;
     }
     
-    const isMandatory = isCompulsory || mandatoryFieldNames.some(name => fieldName.includes(name));
-    
-    // Debug logging for service fields
-    if (fieldName.includes('service') && !isExcluded) {
-      console.log(`🔍 Service field detected: "${psde.dataElement.displayName}" - Mandatory: ${isMandatory}`);
-      console.log(`   Field name: "${fieldName}", Compulsory: ${isCompulsory}`);
-    }
-    
-    return isMandatory;
+    return fieldName.includes('service') || fieldName.includes('section');
   };
+
+
 
   // Count mandatory fields in this section
   const mandatoryFieldsCount = (section.dataElements || []).filter(psde => isFieldMandatory(psde)).length;
@@ -411,8 +436,10 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
     <div className="form-section">
       <button 
         type="button"
-        className="section-header"
-        onClick={() => setIsExpanded(!isExpanded)}
+        className={`section-header ${isDocumentReviewSection ? 'document-review-section' : 'always-expanded-section'}`}
+        onClick={() => isDocumentReviewSection && setIsExpanded(!isExpanded)}
+        disabled={!isDocumentReviewSection}
+        style={!isDocumentReviewSection ? { cursor: 'default' } : {}}
       >
         <h3 className="section-title">
           {section.displayName}
@@ -421,10 +448,22 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
               {' '}({mandatoryFieldsCount} required)
             </span>
           )}
+          {!isDocumentReviewSection && (
+            <span style={{ fontSize: '12px', color: '#666', marginLeft: '8px' }}>
+              (Always Expanded)
+            </span>
+          )}
+          {isDocumentReviewSection && (
+            <span style={{ fontSize: '12px', color: '#666', marginLeft: '8px' }}>
+              (Collapsible)
+            </span>
+          )}
         </h3>
-        <span className={`section-toggle ${isExpanded ? 'expanded' : ''}`}>
-          ▼
-        </span>
+        {isDocumentReviewSection && (
+          <span className={`section-toggle ${isExpanded ? 'expanded' : ''}`}>
+            ▼
+          </span>
+        )}
       </button>
       
       <div className={`section-content ${!isExpanded ? 'collapsed' : ''}`}>
@@ -435,6 +474,25 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
         <div className="section-fields">
           {(section.dataElements || []).map(psde => {
             const isDynamicServiceField = isServiceField(psde.dataElement);
+            
+            // Debug logging for all fields when debug panel is enabled
+            if (showDebugPanel) {
+              console.log(`🔍 Rendering field: "${psde.dataElement.displayName}"`, {
+                id: psde.dataElement.id,
+                valueType: psde.dataElement.valueType,
+                hasOptionSet: !!psde.dataElement.optionSet,
+                optionSetOptions: psde.dataElement.optionSet?.options?.length || 0,
+                isDynamicServiceField: isDynamicServiceField,
+                formDataValue: formData[`dataElement_${psde.dataElement.id}`],
+                readOnly: !!readOnlyFields[`dataElement_${psde.dataElement.id}`]
+              });
+            }
+            
+            // Debug logging for supplies fields
+            if (showDebugPanel && (psde.dataElement.displayName || '').toLowerCase().includes('supplies')) {
+              console.log(`🔍 Supplies field detected: "${psde.dataElement.displayName}" - isDynamicServiceField: ${isDynamicServiceField}`);
+            }
+            
             return (
               <FormField
                 key={psde.dataElement.id}
@@ -447,9 +505,13 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
                 readOnly={!!readOnlyFields[`dataElement_${psde.dataElement.id}`]}
                 getCurrentPosition={getCurrentPosition}
                 formatCoordinatesForDHIS2={formatCoordinatesForDHIS2}
+                showDebugPanel={showDebugPanel}
               />
             );
           })}
+          
+          {/* Add bottom spacing after the last data element */}
+          <div className="section-bottom-spacing"></div>
         </div>
       </div>
     </div>
@@ -570,6 +632,93 @@ function FormPage() {
     );
   };
 
+  // Function to automatically assign GPS coordinates to all coordinate fields
+  const autoAssignGPSCoordinates = async () => {
+    if (!navigator.geolocation) {
+      console.log('⚠️ Geolocation not supported by browser');
+      return;
+    }
+
+    if (!configuration?.programStage?.allDataElements) {
+      console.log('⚠️ Configuration not ready yet');
+      return;
+    }
+
+    // Find all coordinate fields
+    const coordinateFields = configuration.programStage.allDataElements.filter(psde => {
+      const fieldName = (psde.dataElement.displayName || psde.dataElement.shortName || '').toLowerCase();
+      return fieldName.includes('coordinates') || fieldName.includes('coordinate') || fieldName.includes('gps') || fieldName.includes('location');
+    });
+
+    if (coordinateFields.length === 0) {
+      console.log('ℹ️ No coordinate fields found in form');
+      return;
+    }
+
+    console.log(`🔍 Found ${coordinateFields.length} coordinate field(s) to auto-fill`);
+
+    return new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          const coordinates = `[${longitude.toFixed(6)},${latitude.toFixed(6)}]`;
+          
+          console.log(`📍 Auto-capturing GPS coordinates: ${coordinates}`);
+          
+          // Update all coordinate fields in formData
+          const updates = {};
+          coordinateFields.forEach(psde => {
+            const fieldName = `dataElement_${psde.dataElement.id}`;
+            updates[fieldName] = coordinates;
+            console.log(`✅ Auto-filled field "${psde.dataElement.displayName}" with coordinates: ${coordinates}`);
+          });
+
+          // Update form data with all coordinate values
+          setFormData(prev => ({
+            ...prev,
+            ...updates
+          }));
+
+          // Update GPS state for debugging
+          setGpsCoordinates({
+            latitude: latitude.toFixed(6),
+            longitude: longitude.toFixed(6),
+            accuracy: position.coords.accuracy ? `${position.coords.accuracy.toFixed(2)}m` : 'Unknown',
+            timestamp: new Date(position.timestamp).toLocaleString(),
+            fieldId: 'auto-assigned'
+          });
+
+          showToast(`Auto-assigned GPS coordinates to ${coordinateFields.length} field(s): ${coordinates}`, 'success');
+          resolve(coordinates);
+        },
+        (error) => {
+          let errorMessage = 'Failed to auto-assign GPS coordinates';
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              errorMessage = 'GPS access denied. Please allow location access.';
+              break;
+            case error.POSITION_UNAVAILABLE:
+              errorMessage = 'GPS location information unavailable.';
+              break;
+            case error.TIMEOUT:
+              errorMessage = 'GPS request timed out.';
+              break;
+            default:
+              errorMessage = `GPS error: ${error.message}`;
+          }
+          console.error('❌ GPS auto-assignment error:', error);
+          showToast(errorMessage, 'error');
+          reject(error);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 60000
+        }
+      );
+    });
+  };
+
   // Add debug effect
   useEffect(() => {
     console.log('FormPage - userAssignments received:', userAssignments);
@@ -595,58 +744,67 @@ function FormPage() {
       const apiEndpoint = `/api/trackedEntityInstances?ou=${facilityId}&program=EE8yeLVo6cN&fields=trackedEntityInstance&ouMode=DESCENDANTS`;
       const fullUrl = `${import.meta.env.VITE_DHIS2_URL}${apiEndpoint}`;
       
-      console.log('🔍 Fetching Tracked Entity Instance for facility:', facilityId);
-      console.log('🌐 API Endpoint:', apiEndpoint);
-      console.log('🔗 Full URL:', fullUrl);
-      console.log('📤 Request Method: GET');
-      console.log('📋 Request Headers:', {
-        'Content-Type': 'application/json',
-        'Authorization': 'Basic ' + btoa(import.meta.env.VITE_DHIS2_USERNAME + ':' + import.meta.env.VITE_DHIS2_PASSWORD)
-      });
-      console.log('📊 Query Parameters:', {
-        ou: facilityId,
-        program: 'EE8yeLVo6cN',
-        fields: 'trackedEntityInstance',
-        ouMode: 'DESCENDANTS'
-      });
+      // Only log detailed information in debug mode
+      if (showDebugPanel) {
+        console.log('🔍 Fetching Tracked Entity Instance for facility:', facilityId);
+        console.log('🌐 API Endpoint:', apiEndpoint);
+        console.log('🔗 Full URL:', fullUrl);
+        console.log('📤 Request Method: GET');
+        console.log('📋 Request Headers:', {
+          'Content-Type': 'application/json',
+          'Authorization': 'Basic ' + btoa(import.meta.env.VITE_DHIS2_USERNAME + ':' + import.meta.env.VITE_DHIS2_PASSWORD)
+        });
+        console.log('📊 Query Parameters:', {
+          ou: facilityId,
+          program: 'EE8yeLVo6cN',
+          fields: 'trackedEntityInstance',
+          ouMode: 'DESCENDANTS'
+        });
+      }
       
       // Use the API service instead of direct fetch
       const response = await api.request(apiEndpoint);
       
-      console.log('📡 TEI API Response Status: Success');
-      console.log('📡 TEI API Response Body:', JSON.stringify(response, null, 2));
-      console.log('📡 TEI API Response Structure:', {
-        hasTrackedEntityInstances: !!response.trackedEntityInstances,
-        trackedEntityInstancesCount: response.trackedEntityInstances?.length || 0,
-        responseKeys: Object.keys(response)
-      });
+      // Only log detailed response information in debug mode
+      if (showDebugPanel) {
+        console.log('📡 TEI API Response Status: Success');
+        console.log('📡 TEI API Response Body:', JSON.stringify(response, null, 2));
+        console.log('📡 TEI API Response Structure:', {
+          hasTrackedEntityInstances: !!response.trackedEntityInstances,
+          trackedEntityInstancesCount: response.trackedEntityInstances?.length || 0,
+          responseKeys: Object.keys(response)
+        });
+      }
       
       if (response.trackedEntityInstances && response.trackedEntityInstances.length > 0) {
         const tei = response.trackedEntityInstances[0].trackedEntityInstance;
         if (tei && tei.trim() !== '') {
         setTrackedEntityInstance(tei);
-        console.log('✅ Tracked Entity Instance found:', tei);
+        if (showDebugPanel) {
+          console.log('✅ Tracked Entity Instance found:', tei);
+        }
         } else {
-          console.log('⚠️ TEI found but is empty or invalid:', tei);
+          if (showDebugPanel) {
+            console.log('⚠️ TEI found but is empty or invalid:', tei);
+          }
           setTrackedEntityInstance(null);
         }
       } else {
-        console.log('ℹ️ No Tracked Entity Instance found for facility');
+        if (showDebugPanel) {
+          console.log('ℹ️ No Tracked Entity Instance found for facility');
+        }
         setTrackedEntityInstance(null);
       }
     } catch (error) {
       console.error('❌ Failed to fetch Tracked Entity Instance:', error);
-      console.log('🔍 Error details:', {
-        message: error.message,
-        status: error.status,
-        response: error.response,
-        name: error.name,
-        stack: error.stack
-      });
-      // Don't set to null on error, keep previous value if available
-      if (!trackedEntityInstance) {
-        setTrackedEntityInstance(null);
+      if (showDebugPanel) {
+        console.log('🔍 Error details:', {
+          message: error.message,
+          status: error.status,
+          url: `/api/trackedEntityInstances?ou=${facilityId}&program=EE8yeLVo6cN&fields=trackedEntityInstance&ouMode=DESCENDANTS`
+        });
       }
+      setTrackedEntityInstance(null);
     }
   };
 
@@ -683,7 +841,9 @@ function FormPage() {
     const { startDate, endDate } = a.assignment.inspectionPeriod || {};
     
     if (!startDate || !endDate) {
-      console.log(`⚠️ Assignment for ${a.facility.name} missing inspection period dates`);
+      if (showDebugPanel) {
+        console.log(`⚠️ Assignment for ${a.facility.name} missing inspection period dates`);
+      }
       return false;
     }
     
@@ -699,7 +859,9 @@ function FormPage() {
     
     const isActive = start <= todayDate && todayDate <= end;
     
-    console.log(`🔍 Facility: ${a.facility.name}, Period: ${startDate} to ${endDate}, Today: ${today}, Active: ${isActive}`);
+    if (showDebugPanel) {
+      console.log(`🔍 Facility: ${a.facility.name}, Period: ${startDate} to ${endDate}, Today: ${today}, Active: ${isActive}`);
+    }
     
     return isActive;
   }).map(a => ({
@@ -707,16 +869,54 @@ function FormPage() {
     name: a.facility.name
   }));
 
-  console.log('✅ Active facilities for today:', activeFacilities);
-  console.log('📅 All assignments:', safeUserAssignments.map(a => ({
-    facility: a.facility.name,
-    period: a.assignment.inspectionPeriod
-  })));
+  if (showDebugPanel) {
+    console.log('✅ Active facilities for today:', activeFacilities);
+    console.log('📅 All assignments:', safeUserAssignments.map(a => ({
+      facility: a.facility.name,
+      period: a.assignment.inspectionPeriod
+    })));
+  }
 
   const uniqueFacilities = activeFacilities; // Only show facilities with active assignments for today
 
   // Toggle for debugging: show all facilities vs only active ones
   const [showAllFacilities, setShowAllFacilities] = useState(false);
+  const [isMandatorySummaryCollapsed, setIsMandatorySummaryCollapsed] = useState(true); // Collapse mandatory summary by default
+  
+  // Helper function to determine if a field is mandatory
+  const isFieldMandatory = (psde) => {
+    const fieldName = (psde.dataElement.displayName || psde.dataElement.shortName || '').toLowerCase();
+    const isCompulsory = psde.compulsory || false;
+    
+    // Specific fields that should be mandatory
+    const mandatoryFieldNames = ['type', 'service', 'services', 'coordinates'];
+    
+    // Fields that should NOT be mandatory (exclusions) - using more flexible matching
+    const excludedFieldPatterns = [
+      'counseling service',
+      'independent counseling',
+      'patients can access',
+      'out-reach services',
+      'outreach services',
+      'adequate supplies',
+      'supplies for services'
+    ];
+    
+    // Check if this field should be excluded from mandatory requirements
+    const isExcluded = excludedFieldPatterns.some(pattern => 
+      fieldName.includes(pattern.toLowerCase())
+    );
+    
+    // If field is excluded, it's not mandatory regardless of other conditions
+    if (isExcluded) {
+      return false;
+    }
+    
+    const isMandatory = isCompulsory || mandatoryFieldNames.some(name => fieldName.includes(name));
+    return isMandatory;
+  };
+
+
   
   const finalFacilities = showAllFacilities 
     ? safeUserAssignments
@@ -774,14 +974,34 @@ function FormPage() {
     }
   }, [configuration, formData.orgUnit]);
 
+  // Auto-assign GPS coordinates when form loads
+  useEffect(() => {
+    if (configuration && configuration.programStage && configuration.programStage.allDataElements) {
+      console.log('🚀 Form loaded, auto-assigning GPS coordinates...');
+      autoAssignGPSCoordinates().catch(error => {
+        console.log('⚠️ GPS auto-assignment failed:', error.message);
+      });
+    }
+  }, [configuration]);
+
   // Fetch service sections when facility or user changes
   useEffect(() => {
     // This useEffect is no longer needed as serviceOptions are now directly available
     const fetchServiceSections = async () => {
       const currentUser = user;
-      console.log("fetch serv sec", formData.orgUnit, currentUser)
+      if (showDebugPanel) {
+        console.log("🔍 fetchServiceSections called with:", {
+          orgUnit: formData.orgUnit,
+          user: currentUser?.username,
+          configSections: configuration?.programStage?.sections?.length || 0
+        });
+      }
+      
       if (!formData.orgUnit || !currentUser?.username) {
-        console.log('⏳ Waiting for facility selection and user data...');
+        if (showDebugPanel) {
+          console.log('⏳ Waiting for facility selection and user data...');
+          console.log('📊 Setting fallback sections:', configuration?.programStage?.sections?.filter((section) => !section.displayName.startsWith("Pre-Inspection:") ).length || 0);
+        }
         setServiceSections(configuration?.programStage?.sections.filter((section) => !section.displayName.startsWith("Pre-Inspection:") ));
         return;
       }
@@ -789,59 +1009,62 @@ function FormPage() {
       // setLoadingServiceSections(true);
       try {
         const facilityId = typeof formData.orgUnit === 'string' ? formData.orgUnit : formData.orgUnit?.id;
-        console.log(`🔍 Fetching service sections for facility: ${facilityId}, inspector: ${currentUser.displayName || currentUser.username}`);
+        if (showDebugPanel) {
+          console.log(`🔍 Fetching service sections for facility: ${facilityId}, inspector: ${currentUser.displayName || currentUser.username}`);
+        }
         const assignedSectionNames = await api.getServiceSectionsForInspector(
           facilityId,
           currentUser.displayName || currentUser.username
         );
         const allProgramSections = configuration?.programStage?.sections || [];
-        if (Array.isArray(assignedSectionNames) && assignedSectionNames.length > 0 && allProgramSections.length > 0) {
-          const normalize = (v) => (v ?? '')
-            .toString()
-            .trim()
-            .toLowerCase()
-            .replace(/[^a-z0-9]/g, '');
-          const filtered = allProgramSections.filter((s) => {
-            const sName = normalize(s.displayName);
-            return assignedSectionNames.some((n) => {
-              const aName = normalize(n);
-              return aName === sName || aName.includes(sName) || sName.includes(aName);
-            });
-          });
-          // If nothing matched (label mismatches), fall back to all non pre-inspection sections
-          if (filtered.length > 0) {
-            setServiceSections(filtered);
-          } else {
-            setServiceSections(allProgramSections.filter((s) => !s.displayName?.startsWith('Pre-Inspection:')));
-          }
-        } else {
-          // Fallback: show all non pre-inspection sections
-          setServiceSections(allProgramSections.filter((s) => !s.displayName?.startsWith('Pre-Inspection:')));
+        
+        if (showDebugPanel) {
+          console.log('📋 All program sections:', allProgramSections.map(s => s.displayName));
+          console.log('👥 Assigned sections for inspector:', assignedSectionNames);
         }
-        console.log('✅ Service sections loaded for render:', {
-          assigned: assignedSectionNames,
-          allProgramSections: allProgramSections.map(s => s.displayName),
-          final: (Array.isArray(assignedSectionNames) && assignedSectionNames.length > 0 && allProgramSections.length > 0)
-            ? allProgramSections.filter((s) => {
-                const norm = (v) => (v ?? '').toString().trim().toLowerCase().replace(/[^a-z0-9]/g, '');
-                const sName = norm(s.displayName);
-                return assignedSectionNames.some((n) => {
-                  const aName = norm(n);
-                  return aName === sName || aName.includes(sName) || sName.includes(aName);
-                });
-              }).map(s => s.displayName)
-            : allProgramSections.filter(s => !s.displayName?.startsWith('Pre-Inspection:')).map(s => s.displayName)
+        
+        // Filter sections based on assigned service sections
+        const filteredSections = allProgramSections.filter(section => {
+          // Always include sections that don't start with "Pre-Inspection:"
+          if (!section.displayName.startsWith("Pre-Inspection:")) {
+            if (showDebugPanel) {
+              console.log(`✅ Including non-Pre-Inspection section: "${section.displayName}"`);
+            }
+            return true;
+          }
+          
+          // For Pre-Inspection sections, check if they're in the assigned sections
+          const isAssigned = assignedSectionNames.includes(section.displayName);
+          if (showDebugPanel) {
+            console.log(`🔍 Pre-Inspection section "${section.displayName}": ${isAssigned ? '✅ Assigned' : '❌ Not assigned'}`);
+          }
+          return isAssigned;
         });
+        
+        setServiceSections(filteredSections);
+        
+        if (showDebugPanel) {
+          console.log('✅ Service sections loaded for render:', {
+            assignedSections: assignedSectionNames,
+            allProgramSections: allProgramSections.length,
+            filteredSections: filteredSections.length,
+            sections: filteredSections.map(s => s.displayName)
+          });
+        }
       } catch (error) {
         console.error('❌ Failed to fetch service sections:', error);
-        setServiceSections([]);
-      } finally {
-        // setLoadingServiceSections(false);
+        // Fallback to showing all non-Pre-Inspection sections
+        const fallbackSections = configuration?.programStage?.sections.filter((section) => !section.displayName.startsWith("Pre-Inspection:") );
+        if (showDebugPanel) {
+          console.log('🔄 Using fallback sections:', fallbackSections.length);
+        }
+        setServiceSections(fallbackSections);
       }
+      // setLoadingServiceSections(false);
     };
 
     fetchServiceSections();
-  }, [formData.orgUnit, api, user]); // Removed currentUser?.username from dependency array
+  }, [formData.orgUnit, user, configuration, api]);
 
 
 
@@ -849,6 +1072,12 @@ function FormPage() {
   const isServiceField = (dataElement) => {
     // Check if field name/displayName contains 'service' (case-insensitive)
     const fieldName = (dataElement.displayName || dataElement.shortName || '').toLowerCase();
+    
+    // Exclude fields that are about supplies, even if they contain 'service'
+    if (fieldName.includes('supplies') || fieldName.includes('adequate')) {
+      return false;
+    }
+    
     return fieldName.includes('service') || fieldName.includes('section');
   };
 
@@ -1025,51 +1254,7 @@ function FormPage() {
     return true;
   };
 
-  // Helper function to determine if a field is mandatory
-  const isFieldMandatory = (psde) => {
-    const fieldName = (psde.dataElement.displayName || psde.dataElement.shortName || '').toLowerCase();
-    const isCompulsory = psde.compulsory || false;
-    
-    // Specific fields that should be mandatory
-    const mandatoryFieldNames = ['type', 'service', 'services', 'source', 'coordinates'];
-    
-    // Fields that should NOT be mandatory (exclusions) - using more flexible matching
-    const excludedFieldPatterns = [
-      'counseling service',
-      'independent counseling',
-      'patients can access',
-      'out-reach services',
-      'outreach services',
-      'adequate supplies',
-      'supplies for services'
-    ];
-    
-    // Check if this field should be excluded from mandatory requirements
-    const isExcluded = excludedFieldPatterns.some(pattern => 
-      fieldName.includes(pattern.toLowerCase())
-    );
-    
-    // Debug logging for excluded fields
-    if (isExcluded) {
-      console.log(`🚫 Field excluded from mandatory: "${psde.dataElement.displayName}"`);
-      console.log(`   Field name: "${fieldName}", Excluded: true`);
-    }
-    
-    // If field is excluded, it's not mandatory regardless of other conditions
-    if (isExcluded) {
-      return false;
-    }
-    
-    const isMandatory = isCompulsory || mandatoryFieldNames.some(name => fieldName.includes(name));
-    
-    // Debug logging for service fields
-    if (fieldName.includes('service') && !isExcluded) {
-      console.log(`🔍 Service field detected: "${psde.dataElement.displayName}" - Mandatory: ${isMandatory}`);
-      console.log(`   Field name: "${fieldName}", Compulsory: ${isCompulsory}`);
-    }
-    
-    return isMandatory;
-  };
+
 
   const validateForm = () => {
     const newErrors = {};
@@ -1100,8 +1285,7 @@ function FormPage() {
             errorMessage = `Please select a service section for ${psde.dataElement.displayName}`;
           } else if (fieldNameLower.includes('type')) {
             errorMessage = `Please select an inspection type for ${psde.dataElement.displayName}`;
-          } else if (fieldNameLower.includes('source')) {
-            errorMessage = `Please specify the source for ${psde.dataElement.displayName}`;
+
           } else if (fieldNameLower.includes('coordinates')) {
             errorMessage = `Please provide GPS coordinates for ${psde.dataElement.displayName}`;
           }
@@ -1244,6 +1428,8 @@ function FormPage() {
   // Get missing mandatory fields count
   const missingMandatoryFields = getMissingMandatoryFieldsCount();
 
+
+
   // Log Inspection Scheduled: Dates for debugging
   if (inspectionPeriod) {
     console.log('Inspection Scheduled: Dates:', inspectionPeriod.startDate, 'to', inspectionPeriod.endDate);
@@ -1313,166 +1499,220 @@ function FormPage() {
           </div>
         </div>
 
-        {/* Debug Panel */}
-        <div className="debug-panel" style={{
-          backgroundColor: '#f5f5f5',
-          border: '1px solid #ddd',
-          borderRadius: '8px',
-          padding: '16px',
-          margin: '16px 0',
-          fontFamily: 'monospace',
-          fontSize: '12px'
-        }}>
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center',
-            marginBottom: '12px'
+        {/* Debug Panel - Collapsed by default */}
+        {showDebugPanel && (
+          <div className="debug-panel" style={{
+            backgroundColor: '#f5f5f5',
+            border: '1px solid #ddd',
+            borderRadius: '8px',
+            padding: '16px',
+            margin: '16px 0',
+            fontFamily: 'monospace',
+            fontSize: '12px'
           }}>
-            <h3 style={{ margin: 0, color: '#333' }}>🔍 Debug Information</h3>
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'space-between', 
+              alignItems: 'center',
+              marginBottom: '12px'
+            }}>
+              <h3 style={{ margin: 0, color: '#333' }}>🔍 Debug Information</h3>
+              <button
+                type="button"
+                onClick={() => setShowDebugPanel(!showDebugPanel)}
+                style={{
+                  backgroundColor: '#007bff',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  padding: '4px 8px',
+                  fontSize: '10px',
+                  cursor: 'pointer'
+                }}
+              >
+                Hide Debug
+              </button>
+            </div>
+            
+            {/* Current Form State */}
+            <div style={{ marginBottom: '12px' }}>
+              <strong>Current Form State:</strong>
+              <div style={{ marginLeft: '16px' }}>
+                <div>🏥 Selected Facility: {formData.orgUnit || 'None'}</div>
+                {formData.orgUnit && (
+                  <div>🔍 Facility Name: {
+                    finalFacilities.find(f => f.id === formData.orgUnit)?.name || 'Unknown'
+                  }</div>
+                )}
+                 <div>📅 Inspection Date: {formData.eventDate || 'None'}</div>
+                <div>📝 Form Data Keys: {Object.keys(formData).join(', ') || 'None'}</div>
+                 <div>✅ Form Valid: {Object.keys(errors).length === 0 ? 'Yes' : 'No'}</div>
+                 {Object.keys(errors).length > 0 && (
+                   <div>❌ Errors: {Object.keys(errors).map(key => `${key}: ${errors[key]}`).join(', ')}</div>
+                 )}
+              </div>
+            </div>
+            
+            {/* TEI Debug Information */}
+            <div style={{ marginBottom: '12px' }}>
+              <strong>TEI (Tracked Entity Instance) Debug:</strong>
+              <div style={{ marginLeft: '16px' }}>
+                <div>🔗 Current TEI: {trackedEntityInstance || 'None'}</div>
+                <div>🏥 Facility ID: {formData.orgUnit || 'None'}</div>
+                <div>📊 Program ID: EE8yeLVo6cN</div>
+                <div>🌐 API Endpoint: /api/trackedEntityInstances</div>
+                {formData.orgUnit && (
+                  <div>🔗 Full URL: {import.meta.env.VITE_DHIS2_URL}/api/trackedEntityInstances?ou={formData.orgUnit}&program=EE8yeLVo6cN&fields=trackedEntityInstance&ouMode=DESCENDANTS</div>
+                )}
+                
+                {/* TEI API Response */}
+                <div style={{ marginTop: '8px' }}>
+                  <strong>📡 Last API Response:</strong>
+                  <div style={{ marginLeft: '16px', marginTop: '4px' }}>
+                    {trackedEntityInstance ? (
+                      <div style={{ 
+                        backgroundColor: '#e8f5e8', 
+                        padding: '8px', 
+                        borderRadius: '4px',
+                        border: '1px solid #4caf50',
+                        fontSize: '11px'
+                      }}>
+                        <div>✅ TEI Found: {trackedEntityInstance}</div>
+                        <div>📊 Response Status: Success</div>
+                        <div>🔍 Response Structure: Has trackedEntityInstances array</div>
+                      </div>
+                    ) : formData.orgUnit ? (
+                      <div style={{ 
+                        backgroundColor: '#fff3cd', 
+                        padding: '8px', 
+                        borderRadius: '4px',
+                        border: '1px solid #ffc107',
+                        fontSize: '11px'
+                      }}>
+                        <div>ℹ️ No TEI found for this facility</div>
+                        <div>📊 Response Status: Success (but empty)</div>
+                        <div>🔍 Response Structure: Empty trackedEntityInstances array</div>
+                      </div>
+                    ) : (
+                      <div style={{
+                        backgroundColor: '#f8d7da', 
+                        padding: '8px',
+                        borderRadius: '4px',
+                        border: '1px solid #dc3545',
+                        fontSize: '11px'
+                      }}>
+                        <div>⏳ No facility selected yet</div>
+                        <div>📊 Response Status: Not requested</div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Show Debug Button - Always visible when debug panel is hidden */}
+        {!showDebugPanel && (
+          <div style={{
+            textAlign: 'center',
+            margin: '16px 0',
+            padding: '8px'
+          }}>
             <button
               type="button"
-              onClick={() => setShowDebugPanel(!showDebugPanel)}
+              onClick={() => setShowDebugPanel(true)}
               style={{
-                backgroundColor: '#007bff',
+                backgroundColor: '#6c757d',
                 color: 'white',
                 border: 'none',
                 borderRadius: '4px',
-                padding: '4px 8px',
-                fontSize: '10px',
-                cursor: 'pointer'
+                padding: '8px 16px',
+                fontSize: '12px',
+                cursor: 'pointer',
+                opacity: 0.7
               }}
+              title="Show debug information for developers"
             >
-              {showDebugPanel ? 'Hide' : 'Show'} Debug
+              🔍 Show Debug
             </button>
           </div>
-          
-          {showDebugPanel && (
-            <>
-              {/* Current Form State */}
-              <div style={{ marginBottom: '12px' }}>
-                <strong>Current Form State:</strong>
-                <div style={{ marginLeft: '16px' }}>
-                  <div>🏥 Selected Facility: {formData.orgUnit || 'None'}</div>
-                  {formData.orgUnit && (
-                    <div>🔍 Facility Name: {
-                      finalFacilities.find(f => f.id === formData.orgUnit)?.name || 'Unknown'
-                    }</div>
-                  )}
-                   <div>📅 Inspection Date: {formData.eventDate || 'None'}</div>
-                  <div>📝 Form Data Keys: {Object.keys(formData).join(', ') || 'None'}</div>
-                   <div>✅ Form Valid: {Object.keys(errors).length === 0 ? 'Yes' : 'No'}</div>
-                   {Object.keys(errors).length > 0 && (
-                     <div>❌ Errors: {Object.keys(errors).map(key => `${key}: ${errors[key]}`).join(', ')}</div>
-                   )}
-                </div>
-              </div>
-              
-                               {/* TEI Debug Information */}
-                <div style={{ marginBottom: '12px' }}>
-                  <strong>TEI (Tracked Entity Instance) Debug:</strong>
-                  <div style={{ marginLeft: '16px' }}>
-                    <div>🔗 Current TEI: {trackedEntityInstance || 'None'}</div>
-                    <div>🏥 Facility ID: {formData.orgUnit || 'None'}</div>
-                    <div>📊 Program ID: EE8yeLVo6cN</div>
-                    <div>🌐 API Endpoint: /api/trackedEntityInstances</div>
-                    {formData.orgUnit && (
-                      <div>🔗 Full URL: {import.meta.env.VITE_DHIS2_URL}/api/trackedEntityInstances?ou={formData.orgUnit}&program=EE8yeLVo6cN&fields=trackedEntityInstance&ouMode=DESCENDANTS</div>
-                    )}
-                    
-                    {/* TEI API Response */}
-                    <div style={{ marginTop: '8px' }}>
-                      <strong>📡 Last API Response:</strong>
-                      <div style={{ marginLeft: '16px', marginTop: '4px' }}>
-                        {trackedEntityInstance ? (
-                          <div style={{ 
-                            backgroundColor: '#e8f5e8', 
-                            padding: '8px', 
-                            borderRadius: '4px',
-                            border: '1px solid #4caf50',
-                            fontSize: '11px'
-                          }}>
-                            <div>✅ TEI Found: {trackedEntityInstance}</div>
-                            <div>📊 Response Status: Success</div>
-                            <div>🔍 Response Structure: Has trackedEntityInstances array</div>
-                          </div>
-                        ) : formData.orgUnit ? (
-                          <div style={{ 
-                            backgroundColor: '#fff3cd', 
-                            padding: '8px', 
-                            borderRadius: '4px',
-                            border: '1px solid #ffc107',
-                            fontSize: '11px'
-                          }}>
-                            <div>ℹ️ No TEI found for this facility</div>
-                            <div>📊 Response Status: Success (but empty)</div>
-                            <div>🔍 Response Structure: Empty trackedEntityInstances array</div>
-                          </div>
-                        ) : (
-                    <div style={{
-                            backgroundColor: '#f8d7da', 
-                      padding: '8px',
-                      borderRadius: '4px',
-                            border: '1px solid #dc3545',
-                            fontSize: '11px'
-                          }}>
-                            <div>⏳ No facility selected yet</div>
-                            <div>📊 Response Status: Not requested</div>
-                    </div>
-                  )}
-                      </div>
-                    </div>
-                </div>
-              </div>
-            </>
-          )}
-        </div>
+        )}
 
         {/* Mandatory fields summary */}
         {configuration && configuration.programStage && configuration.programStage.allDataElements && (
           <div className="mandatory-fields-summary">
-            <h4 style={{ margin: '0 0 15px 0', color: '#495057', fontSize: '16px' }}>
-              📋 Mandatory Fields Summary
-            </h4>
-            <div className="mandatory-fields-grid">
-              {/* Basic mandatory fields */}
-              <div className={`mandatory-field-item ${formData.orgUnit ? 'filled' : 'empty'}`}>
-                <span className="field-name">🏥 Facility</span>
-                <span className="field-status">{formData.orgUnit ? '✅ Filled' : '❌ Required'}</span>
+            <button 
+              type="button"
+              className="mandatory-summary-header"
+              onClick={() => setIsMandatorySummaryCollapsed(!isMandatorySummaryCollapsed)}
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                width: '100%', 
+                textAlign: 'left', 
+                cursor: 'pointer',
+                padding: '0',
+                margin: '0 0 15px 0'
+              }}
+            >
+              <h4 style={{ margin: '0', color: '#495057', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span>
+                  📋 Mandatory Fields Summary
+                  {isMandatorySummaryCollapsed && (
+                    <span style={{ fontSize: '14px', color: '#6c757d', marginLeft: '10px', fontWeight: 'normal' }}>
+                      ({getMissingMandatoryFieldsCount()} of {missingMandatoryFields + 2} completed)
+                    </span>
+                  )}
+                </span>
+                <span className={`mandatory-summary-toggle ${!isMandatorySummaryCollapsed ? 'expanded' : ''}`}>
+                  {isMandatorySummaryCollapsed ? '▼' : '▲'}
+                </span>
+              </h4>
+            </button>
+            <div 
+              className={`mandatory-fields-content ${isMandatorySummaryCollapsed ? 'collapsed' : ''}`}
+            >
+              <div className="mandatory-fields-grid">
+                {/* Basic mandatory fields */}
+                <div className={`mandatory-field-item ${formData.orgUnit ? 'filled' : 'empty'}`}>
+                  <span className="field-name">🏥 Facility</span>
+                  <span className="field-status">{formData.orgUnit ? '✅ Filled' : '❌ Required'}</span>
+                </div>
+                <div className={`mandatory-field-item ${formData.eventDate ? 'filled' : 'empty'}`}>
+                  <span className="field-name">📅 Inspection Date</span>
+                  <span className="field-status">{formData.eventDate ? '✅ Filled' : '❌ Required'}</span>
+                </div>
+                
+                {/* Data element mandatory fields */}
+                {configuration.programStage.allDataElements
+                  .filter(psde => isFieldMandatory(psde))
+                  .map(psde => {
+                    const fieldName = `dataElement_${psde.dataElement.id}`;
+                    const fieldValue = formData[fieldName];
+                    const isFilled = fieldValue && fieldValue.toString().trim() !== '';
+                    
+                    return (
+                      <div key={psde.dataElement.id} className={`mandatory-field-item ${isFilled ? 'filled' : 'empty'}`}>
+                        <span className="field-name">{psde.dataElement.displayName}</span>
+                        <span className="field-status">{isFilled ? '✅ Filled' : '❌ Required'}</span>
+                      </div>
+                    );
+                  })}
               </div>
-              <div className={`mandatory-field-item ${formData.eventDate ? 'filled' : 'empty'}`}>
-                <span className="field-name">📅 Inspection Date</span>
-                <span className="field-status">{formData.eventDate ? '✅ Filled' : '❌ Required'}</span>
+              <div className="mandatory-fields-progress">
+                <div className="progress-bar">
+                  <div 
+                    className="progress-fill" 
+                    style={{ 
+                      width: `${Math.round(((missingMandatoryFields + 2) - getMissingMandatoryFieldsCount()) / (missingMandatoryFields + 2) * 100)}%` 
+                    }}
+                  ></div>
+                </div>
+                <span className="progress-text">
+                  {getMissingMandatoryFieldsCount()} of {missingMandatoryFields + 2} mandatory fields completed
+                </span>
               </div>
-              
-              {/* Data element mandatory fields */}
-              {configuration.programStage.allDataElements
-                .filter(psde => isFieldMandatory(psde))
-                .map(psde => {
-                  const fieldName = `dataElement_${psde.dataElement.id}`;
-                  const fieldValue = formData[fieldName];
-                  const isFilled = fieldValue && fieldValue.toString().trim() !== '';
-                  
-                  return (
-                    <div key={psde.dataElement.id} className={`mandatory-field-item ${isFilled ? 'filled' : 'empty'}`}>
-                      <span className="field-name">{psde.dataElement.displayName}</span>
-                      <span className="field-status">{isFilled ? '✅ Filled' : '❌ Required'}</span>
-                    </div>
-                  );
-                })}
-            </div>
-            <div className="mandatory-fields-progress">
-              <div className="progress-bar">
-                <div 
-                  className="progress-fill" 
-                  style={{ 
-                    width: `${Math.round(((missingMandatoryFields + 2) - getMissingMandatoryFieldsCount()) / (missingMandatoryFields + 2) * 100)}%` 
-                  }}
-                ></div>
-              </div>
-              <span className="progress-text">
-                {getMissingMandatoryFieldsCount()} of {missingMandatoryFields + 2} mandatory fields completed
-              </span>
             </div>
           </div>
         )}
@@ -1496,7 +1736,7 @@ function FormPage() {
                     Fields marked with an asterisk (*) are mandatory and must be filled before submitting the form.
                   </p>
                   <p style={{ fontSize: '12px', color: '#888', marginBottom: '0' }}>
-                    <strong>Mandatory fields:</strong> Facility, Inspection Date, Type, Service(s), Source, and Coordinates.
+                    <strong>Mandatory fields:</strong> Facility, Inspection Date, Type, Service(s), and Coordinates.
                   </p>
                   <p style={{ fontSize: '11px', color: '#999', marginTop: '8px', marginBottom: '0', fontStyle: 'italic' }}>
                     Note: Some service-related questions (counseling, outreach services, supplies) are not mandatory.
@@ -1569,20 +1809,53 @@ function FormPage() {
 
           {/* Program stage sections */}
           { serviceSections && date_valid && serviceSections.length > 0 ? (
-            serviceSections.map(section => (
-              <FormSection
-                key={section.id}
-                section={section}
-                formData={formData}
-                onChange={handleFieldChange}
-                errors={errors}
-                serviceSections={serviceOptions}
-                loadingServiceSections={false}
-                readOnlyFields={readOnlyFields}
-                getCurrentPosition={getCurrentPosition}
-                formatCoordinatesForDHIS2={formatCoordinatesForDHIS2}
-              />
-            ))
+            <>
+              {/* Debug info for sections */}
+              {showDebugPanel && (
+                <div className="debug-panel" style={{
+                  backgroundColor: '#e3f2fd',
+                  border: '1px solid #2196f3',
+                  borderRadius: '8px',
+                  padding: '12px',
+                  margin: '16px 0',
+                  fontSize: '12px'
+                }}>
+                  <strong>🔍 Sections Debug:</strong>
+                  <div>📊 Total sections: {serviceSections.length}</div>
+                  <div>📅 Date valid: {date_valid ? '✅ Yes' : '❌ No'}</div>
+                  <div>🏥 Facility selected: {formData.orgUnit ? '✅ Yes' : '❌ No'}</div>
+                  <div>👤 User: {user?.username || 'None'}</div>
+                  <div>📋 Sections: {serviceSections.map(s => s.displayName).join(', ')}</div>
+                  
+                  {/* Field count summary */}
+                  <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #2196f3' }}>
+                    <strong>📝 Field Counts:</strong>
+                    {serviceSections.map(section => (
+                      <div key={section.id} style={{ marginLeft: '8px', fontSize: '11px' }}>
+                        {section.displayName}: {section.dataElements?.length || 0} fields
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              {serviceSections.map(section => (
+                <FormSection
+                  key={section.id}
+                  section={section}
+                  formData={formData}
+                  onChange={handleFieldChange}
+                  errors={errors}
+                  serviceSections={serviceOptions}
+                  loadingServiceSections={false}
+                  readOnlyFields={readOnlyFields}
+                  getCurrentPosition={getCurrentPosition}
+                  formatCoordinatesForDHIS2={formatCoordinatesForDHIS2}
+                  showDebugPanel={showDebugPanel}
+                  isFieldMandatory={isFieldMandatory}
+                />
+              ))}
+            </>
           ) : (
             <div className="form-section">
               <button
@@ -1598,6 +1871,21 @@ function FormPage() {
                     <p>⚠️ The Inspections program stage doesn&#39;t have any data elements configured.</p>
                     <p>Please contact your DHIS2 administrator to configure the inspection form fields.</p>
                   </div>
+                  
+                  {/* Debug info for why sections aren't showing */}
+                  {showDebugPanel && (
+                    <div style={{ marginTop: '16px', padding: '12px', backgroundColor: '#fff3cd', border: '1px solid #ffc107', borderRadius: '4px' }}>
+                      <strong>🔍 Debug Info:</strong>
+                      <div>📊 serviceSections: {serviceSections ? `${serviceSections.length} sections` : 'null/undefined'}</div>
+                      <div>📅 date_valid: {date_valid ? 'true' : 'false'}</div>
+                      <div>🏥 formData.orgUnit: {formData.orgUnit || 'null/undefined'}</div>
+                      <div>👤 user: {user ? 'loaded' : 'null/undefined'}</div>
+                      <div>⚙️ configuration: {configuration ? 'loaded' : 'null/undefined'}</div>
+                      {configuration && (
+                        <div>📋 Total program sections: {configuration.programStage?.sections?.length || 0}</div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

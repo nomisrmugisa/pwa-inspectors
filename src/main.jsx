@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import { register } from '../public/registerSW';
+// Service worker is automatically registered by vite-plugin-pwa
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -12,10 +12,5 @@ root.render(
     <App />
   </React.StrictMode>
 );
-
-// Register service worker in production
-if (process.env.NODE_ENV === 'production') {
-    register();
-}
 
 reportWebVitals();
