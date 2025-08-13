@@ -4,9 +4,10 @@
 }
 
 .form-container {
-  max-width: 1200px;
+  max-width: 100%; /* Changed from 1200px to allow full width */
   margin: 0 auto;
   padding: 20px;
+  box-sizing: border-box;
 }
 
 /* Tablet Optimizations */
@@ -341,21 +342,108 @@
 
 /* Bottom spacing for sections */
 .section-bottom-spacing {
-  height: 40px;
-  margin-bottom: 25px;
+  height: 60px; /* Increased from 40px */
+  margin-top: 20px; /* Add top margin to separate from content */
+  margin-bottom: 40px; /* Increased from 25px */
   background-color: #f0f0f0; /* Temporary visible color for debugging */
   border: 1px dashed #ccc; /* Temporary border for debugging */
   display: block;
 }
 
+/* Fix horizontal overflow issues in sections */
+.section-content {
+  overflow-x: visible !important;
+  overflow-y: visible !important; /* Force override of index.css overflow: hidden */
+  width: 100%;
+  max-width: 100%;
+  max-height: none !important; /* Remove max-height constraint that could clip content */
+  padding-bottom: 20px; /* Add bottom padding for more space */
+}
+
+.section-fields {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+  word-wrap: break-word;
+  word-break: break-word;
+  padding-bottom: 30px; /* Ensure content doesn't overlap with bottom spacing */
+}
+
+.form-field {
+  width: 100% !important;
+  max-width: none !important; /* Remove max-width constraint */
+  min-width: 100% !important;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+  word-wrap: break-word;
+  word-break: break-word;
+  box-sizing: border-box;
+}
+
+.form-label {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: visible;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Ensure form inputs don't overflow */
+.form-input,
+.form-textarea,
+.form-select {
+  width: 100%;
+  max-width: none !important; /* Remove max-width constraint */
+  min-width: 100%;
+  box-sizing: border-box;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+}
+
+/* Specific fix for textarea overflow issues */
+.form-textarea {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+  resize: both; /* Allow resizing to see full content */
+}
+
+/* Responsive fixes for smaller screens */
+@media (max-width: 768px) {
+  .form-container {
+    padding: 10px;
+    max-width: 100%;
+  }
+  
+  .section-content {
+    padding: 0 10px;
+  }
+  
+  .section-fields {
+    padding: 0 10px 20px 10px;
+  }
+  
+  .form-field {
+    padding: 12px;
+  }
+  
+  .form-label {
+    font-size: 0.875rem;
+    line-height: 1.3;
+  }
+}
+
 /* Override the last-child margin removal from index.css */
 .form-section:last-child {
-  margin-bottom: 25px !important;
+  margin-bottom: 40px !important; /* Increased from 25px */
 }
 
 /* Ensure sections have proper spacing */
 .form-section {
-  margin-bottom: 25px !important;
+  margin-bottom: 40px !important; /* Increased from 25px */
 }
 
 .section-title {

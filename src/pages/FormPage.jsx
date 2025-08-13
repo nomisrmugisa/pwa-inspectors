@@ -426,8 +426,8 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
     
     return fieldName.includes('service') || fieldName.includes('section');
   };
-
-
+    
+    
 
   // Count mandatory fields in this section
   const mandatoryFieldsCount = (section.dataElements || []).filter(psde => isFieldMandatory(psde)).length;
@@ -460,9 +460,9 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
           )}
         </h3>
         {isDocumentReviewSection && (
-          <span className={`section-toggle ${isExpanded ? 'expanded' : ''}`}>
-            ▼
-          </span>
+        <span className={`section-toggle ${isExpanded ? 'expanded' : ''}`}>
+          ▼
+        </span>
         )}
       </button>
       
@@ -534,6 +534,18 @@ function FormPage() {
     api,
     setEventDate
   } = useApp();
+
+  // Function to filter out unwanted sections
+  const filterUnwantedSections = (sections) => {
+    if (!sections || !Array.isArray(sections)) return [];
+    
+    return sections.filter(section => 
+      section.displayName !== "Final_Inspection_Event" && 
+      section.displayName !== "Preliminary-Report" &&
+      section.displayName !== "Inspectors Details" &&
+      !section.displayName.startsWith("Pre-Inspection:")
+    );
+  };
 
   // Helper function to format coordinates in DHIS2 compliant format
   const formatCoordinatesForDHIS2 = (input) => {
@@ -733,7 +745,7 @@ function FormPage() {
   const [showDebugPanel, setShowDebugPanel] = useState(false); // Hide debug panel by default
   const [isDraft, setIsDraft] = useState(false);
   // const [currentUser, setCurrentUser] = useState(null);
-  const [serviceSections, setServiceSections] = useState(configuration?.programStage?.sections);
+  const [serviceSections, setServiceSections] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formStats, setFormStats] = useState({ percentage: 0, filled: 0, total: 0 });
   const [trackedEntityInstance, setTrackedEntityInstance] = useState(null);
@@ -984,6 +996,30 @@ function FormPage() {
     }
   }, [configuration]);
 
+  // Filter and set initial sections when configuration loads
+  useEffect(() => {
+    if (configuration?.programStage?.sections) {
+      const filteredSections = filterUnwantedSections(configuration.programStage.sections);
+      
+              if (showDebugPanel) {
+          console.log('🔍 Initial section filtering:', {
+            totalSections: configuration.programStage.sections.length,
+            filteredSections: filteredSections.length,
+            excludedSections: configuration.programStage.sections
+              .filter(section => 
+                section.displayName === "Final_Inspection_Event" || 
+                section.displayName === "Preliminary-Report" ||
+                section.displayName === "Inspectors Details" ||
+                section.displayName.startsWith("Pre-Inspection:")
+              )
+              .map(s => s.displayName)
+          });
+        }
+      
+      setServiceSections(filteredSections);
+    }
+  }, [configuration, showDebugPanel]);
+
   // Fetch service sections when facility or user changes
   useEffect(() => {
     // This useEffect is no longer needed as serviceOptions are now directly available
@@ -1002,7 +1038,7 @@ function FormPage() {
           console.log('⏳ Waiting for facility selection and user data...');
           console.log('📊 Setting fallback sections:', configuration?.programStage?.sections?.filter((section) => !section.displayName.startsWith("Pre-Inspection:") ).length || 0);
         }
-        setServiceSections(configuration?.programStage?.sections.filter((section) => !section.displayName.startsWith("Pre-Inspection:") ));
+        setServiceSections(filterUnwantedSections(configuration?.programStage?.sections));
         return;
       }
 
@@ -1041,7 +1077,10 @@ function FormPage() {
           return isAssigned;
         });
         
-        setServiceSections(filteredSections);
+        // Apply final filtering to remove unwanted sections
+        const finalFilteredSections = filterUnwantedSections(filteredSections);
+        
+        setServiceSections(finalFilteredSections);
         
         if (showDebugPanel) {
           console.log('✅ Service sections loaded for render:', {
@@ -1053,8 +1092,8 @@ function FormPage() {
         }
       } catch (error) {
         console.error('❌ Failed to fetch service sections:', error);
-        // Fallback to showing all non-Pre-Inspection sections
-        const fallbackSections = configuration?.programStage?.sections.filter((section) => !section.displayName.startsWith("Pre-Inspection:") );
+        // Fallback to showing all non-Pre-Inspection sections, excluding specific unwanted sections
+        const fallbackSections = filterUnwantedSections(configuration?.programStage?.sections);
         if (showDebugPanel) {
           console.log('🔄 Using fallback sections:', fallbackSections.length);
         }
@@ -1658,7 +1697,7 @@ function FormPage() {
             >
               <h4 style={{ margin: '0', color: '#495057', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <span>
-                  📋 Mandatory Fields Summary
+              📋 Mandatory Fields Summary
                   {isMandatorySummaryCollapsed && (
                     <span style={{ fontSize: '14px', color: '#6c757d', marginLeft: '10px', fontWeight: 'normal' }}>
                       ({getMissingMandatoryFieldsCount()} of {missingMandatoryFields + 2} completed)
@@ -1668,50 +1707,50 @@ function FormPage() {
                 <span className={`mandatory-summary-toggle ${!isMandatorySummaryCollapsed ? 'expanded' : ''}`}>
                   {isMandatorySummaryCollapsed ? '▼' : '▲'}
                 </span>
-              </h4>
+            </h4>
             </button>
             <div 
               className={`mandatory-fields-content ${isMandatorySummaryCollapsed ? 'collapsed' : ''}`}
             >
-              <div className="mandatory-fields-grid">
-                {/* Basic mandatory fields */}
-                <div className={`mandatory-field-item ${formData.orgUnit ? 'filled' : 'empty'}`}>
-                  <span className="field-name">🏥 Facility</span>
-                  <span className="field-status">{formData.orgUnit ? '✅ Filled' : '❌ Required'}</span>
-                </div>
-                <div className={`mandatory-field-item ${formData.eventDate ? 'filled' : 'empty'}`}>
-                  <span className="field-name">📅 Inspection Date</span>
-                  <span className="field-status">{formData.eventDate ? '✅ Filled' : '❌ Required'}</span>
-                </div>
-                
-                {/* Data element mandatory fields */}
-                {configuration.programStage.allDataElements
-                  .filter(psde => isFieldMandatory(psde))
-                  .map(psde => {
-                    const fieldName = `dataElement_${psde.dataElement.id}`;
-                    const fieldValue = formData[fieldName];
-                    const isFilled = fieldValue && fieldValue.toString().trim() !== '';
-                    
-                    return (
-                      <div key={psde.dataElement.id} className={`mandatory-field-item ${isFilled ? 'filled' : 'empty'}`}>
-                        <span className="field-name">{psde.dataElement.displayName}</span>
-                        <span className="field-status">{isFilled ? '✅ Filled' : '❌ Required'}</span>
-                      </div>
-                    );
-                  })}
+            <div className="mandatory-fields-grid">
+              {/* Basic mandatory fields */}
+              <div className={`mandatory-field-item ${formData.orgUnit ? 'filled' : 'empty'}`}>
+                <span className="field-name">🏥 Facility</span>
+                <span className="field-status">{formData.orgUnit ? '✅ Filled' : '❌ Required'}</span>
               </div>
-              <div className="mandatory-fields-progress">
-                <div className="progress-bar">
-                  <div 
-                    className="progress-fill" 
-                    style={{ 
-                      width: `${Math.round(((missingMandatoryFields + 2) - getMissingMandatoryFieldsCount()) / (missingMandatoryFields + 2) * 100)}%` 
-                    }}
-                  ></div>
-                </div>
-                <span className="progress-text">
-                  {getMissingMandatoryFieldsCount()} of {missingMandatoryFields + 2} mandatory fields completed
-                </span>
+              <div className={`mandatory-field-item ${formData.eventDate ? 'filled' : 'empty'}`}>
+                <span className="field-name">📅 Inspection Date</span>
+                <span className="field-status">{formData.eventDate ? '✅ Filled' : '❌ Required'}</span>
+              </div>
+              
+              {/* Data element mandatory fields */}
+              {configuration.programStage.allDataElements
+                .filter(psde => isFieldMandatory(psde))
+                .map(psde => {
+                  const fieldName = `dataElement_${psde.dataElement.id}`;
+                  const fieldValue = formData[fieldName];
+                  const isFilled = fieldValue && fieldValue.toString().trim() !== '';
+                  
+                  return (
+                    <div key={psde.dataElement.id} className={`mandatory-field-item ${isFilled ? 'filled' : 'empty'}`}>
+                      <span className="field-name">{psde.dataElement.displayName}</span>
+                      <span className="field-status">{isFilled ? '✅ Filled' : '❌ Required'}</span>
+                    </div>
+                  );
+                })}
+            </div>
+            <div className="mandatory-fields-progress">
+              <div className="progress-bar">
+                <div 
+                  className="progress-fill" 
+                  style={{ 
+                    width: `${Math.round(((missingMandatoryFields + 2) - getMissingMandatoryFieldsCount()) / (missingMandatoryFields + 2) * 100)}%` 
+                  }}
+                ></div>
+              </div>
+              <span className="progress-text">
+                {getMissingMandatoryFieldsCount()} of {missingMandatoryFields + 2} mandatory fields completed
+              </span>
               </div>
             </div>
           </div>
@@ -1840,20 +1879,20 @@ function FormPage() {
               )}
               
               {serviceSections.map(section => (
-                <FormSection
-                  key={section.id}
-                  section={section}
-                  formData={formData}
-                  onChange={handleFieldChange}
-                  errors={errors}
-                  serviceSections={serviceOptions}
-                  loadingServiceSections={false}
-                  readOnlyFields={readOnlyFields}
-                  getCurrentPosition={getCurrentPosition}
-                  formatCoordinatesForDHIS2={formatCoordinatesForDHIS2}
-                  showDebugPanel={showDebugPanel}
+              <FormSection
+                key={section.id}
+                section={section}
+                formData={formData}
+                onChange={handleFieldChange}
+                errors={errors}
+                serviceSections={serviceOptions}
+                loadingServiceSections={false}
+                readOnlyFields={readOnlyFields}
+                getCurrentPosition={getCurrentPosition}
+                formatCoordinatesForDHIS2={formatCoordinatesForDHIS2}
+                showDebugPanel={showDebugPanel}
                   isFieldMandatory={isFieldMandatory}
-                />
+              />
               ))}
             </>
           ) : (
