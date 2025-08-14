@@ -404,8 +404,13 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 function FormSection({ section, formData, onChange, errors, serviceSections, loadingServiceSections, readOnlyFields = {}, getCurrentPosition, formatCoordinatesForDHIS2, showDebugPanel, isFieldMandatory }) {
   // Check if this is a Document Review section - these start collapsed, others start expanded
   const isDocumentReviewSection = (section.displayName || '').toLowerCase().includes('document review');
-  // Document Review sections start collapsed, others start expanded but are still collapsible
-  const [isExpanded, setIsExpanded] = useState(!isDocumentReviewSection);
+  
+  // Check if this is one of the sections that should start expanded
+  const isInspectionInfoSection = (section.displayName || '').toLowerCase().includes('inspection information');
+  const isInspectionTypeSection = (section.displayName || '').toLowerCase().includes('inspection type');
+  
+  // Only Inspection Information and Inspection Type sections start expanded, all others start collapsed
+  const [isExpanded, setIsExpanded] = useState(isInspectionInfoSection || isInspectionTypeSection);
 
   // Function to determine if a field should use dynamic service dropdown
   const isServiceField = (dataElement) => {
@@ -429,7 +434,7 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
     <div className="form-section">
       <button 
         type="button"
-        className={`section-header ${isDocumentReviewSection ? 'document-review-section' : 'collapsible-section'}`}
+        className={`section-header ${isInspectionInfoSection || isInspectionTypeSection ? 'always-expanded-section' : 'collapsible-section'}`}
         onClick={() => setIsExpanded(!isExpanded)}
         style={{ cursor: 'pointer' }}
       >
@@ -455,7 +460,9 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
         )}
 
         <div className="section-fields">
-          {(section.dataElements || []).map(psde => {
+          {(section.dataElements || [])
+            .filter(psde => !(psde.dataElement.displayName || '').toLowerCase().includes('source'))
+            .map(psde => {
             const isDynamicServiceField = isServiceField(psde.dataElement);
             
             // Debug logging for all fields when debug panel is enabled
@@ -950,7 +957,7 @@ function FormPage() {
 
   // Toggle for debugging: show all facilities vs only active ones
   const [showAllFacilities, setShowAllFacilities] = useState(false);
-  const [isMandatorySummaryCollapsed, setIsMandatorySummaryCollapsed] = useState(true); // Collapse mandatory summary by default
+
   
   // Check if we have any active facilities
   const hasActiveFacilities = activeFacilities.length > 0;
@@ -1822,83 +1829,7 @@ function FormPage() {
           </div>
         )}
 
-        {/* Mandatory fields summary */}
-        {configuration && configuration.programStage && configuration.programStage.allDataElements && (
-          <div className="mandatory-fields-summary">
-            <button 
-              type="button"
-              className="mandatory-summary-header"
-              onClick={() => setIsMandatorySummaryCollapsed(!isMandatorySummaryCollapsed)}
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                width: '100%', 
-                textAlign: 'left', 
-                cursor: 'pointer',
-                padding: '0',
-                margin: '0 0 15px 0'
-              }}
-            >
-              <h4 style={{ margin: '0', color: '#495057', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <span>
-              📋 Mandatory Fields Summary
-                  {isMandatorySummaryCollapsed && (
-                    <span style={{ fontSize: '14px', color: '#6c757d', marginLeft: '10px', fontWeight: 'normal' }}>
-                      ({getMissingMandatoryFieldsCount()} of {missingMandatoryFields + 2} completed)
-                    </span>
-                  )}
-                </span>
-                <span className={`mandatory-summary-toggle ${!isMandatorySummaryCollapsed ? 'expanded' : ''}`}>
-                  {isMandatorySummaryCollapsed ? '▼' : '▲'}
-                </span>
-            </h4>
-            </button>
-            <div 
-              className={`mandatory-fields-content ${isMandatorySummaryCollapsed ? 'collapsed' : ''}`}
-            >
-            <div className="mandatory-fields-grid">
-              {/* Basic mandatory fields */}
-              <div className={`mandatory-field-item ${formData.orgUnit ? 'filled' : 'empty'}`}>
-                <span className="field-name">🏥 Facility</span>
-                <span className="field-status">{formData.orgUnit ? '✅ Filled' : '❌ Required'}</span>
-              </div>
-              <div className={`mandatory-field-item ${formData.eventDate ? 'filled' : 'empty'}`}>
-                <span className="field-name">📅 Inspection Date</span>
-                <span className="field-status">{formData.eventDate ? '✅ Filled' : '❌ Required'}</span>
-              </div>
-              
-              {/* Data element mandatory fields */}
-              {configuration.programStage.allDataElements
-                .filter(psde => isFieldMandatory(psde))
-                .map(psde => {
-                  const fieldName = `dataElement_${psde.dataElement.id}`;
-                  const fieldValue = formData[fieldName];
-                  const isFilled = fieldValue && fieldValue.toString().trim() !== '';
-                  
-                  return (
-                    <div key={psde.dataElement.id} className={`mandatory-field-item ${isFilled ? 'filled' : 'empty'}`}>
-                      <span className="field-name">{psde.dataElement.displayName}</span>
-                      <span className="field-status">{isFilled ? '✅ Filled' : '❌ Required'}</span>
-                    </div>
-                  );
-                })}
-            </div>
-            <div className="mandatory-fields-progress">
-              <div className="progress-bar">
-                <div 
-                  className="progress-fill" 
-                  style={{ 
-                    width: `${Math.round(((missingMandatoryFields + 2) - getMissingMandatoryFieldsCount()) / (missingMandatoryFields + 2) * 100)}%` 
-                  }}
-                ></div>
-              </div>
-              <span className="progress-text">
-                {getMissingMandatoryFieldsCount()} of {missingMandatoryFields + 2} mandatory fields completed
-              </span>
-              </div>
-            </div>
-          </div>
-        )}
+
 
         <form onSubmit={handleSubmit} className="inspection-form">
           {/* Form metadata section */}
