@@ -296,6 +296,7 @@
   border-radius: 8px 8px 0 0;
   cursor: pointer;
   transition: all 0.2s ease;
+  margin-top: 15px; /* Add top margin for better spacing */
 }
 
 .section-header:hover {
@@ -313,15 +314,99 @@
   background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
   border-color: #2196f3;
   cursor: pointer;
+  position: relative;
 }
 
 .section-header.document-review-section:hover {
-  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-  border-color: #2196f3;
+  background: linear-gradient(135deg, #bbdefb 0%, #90caf9 100%);
+  border-color: #1976d2;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(33, 150, 243, 0.2);
 }
 
 .section-header.document-review-section:focus {
   box-shadow: 0 0 0 0.2rem rgba(33, 150, 243, 0.25);
+}
+
+/* Collapsible sections - other sections that can be collapsed */
+.section-header.collapsible-section {
+  background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+  border-color: #9c27b0;
+  cursor: pointer;
+  position: relative;
+}
+
+.section-header.collapsible-section:hover {
+  background: linear-gradient(135deg, #e1bee7 0%, #ce93d8 100%);
+  border-color: #7b1fa2;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(156, 39, 176, 0.2);
+}
+
+.section-header.collapsible-section:focus {
+  box-shadow: 0 0 0 0.2rem rgba(156, 39, 176, 0.25);
+}
+
+/* Enhanced toggle indicator for all collapsible sections */
+.section-toggle {
+  font-size: 1.2rem;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+/* Document Review section toggle colors */
+.section-header.document-review-section .section-toggle {
+  color: #2196f3;
+}
+
+.section-header.document-review-section .section-toggle.expanded {
+  color: #1976d2;
+}
+
+.section-header.document-review-section .section-toggle.collapsed {
+  color: #2196f3;
+}
+
+/* Collapsible section toggle colors */
+.section-header.collapsible-section .section-toggle {
+  color: #9c27b0;
+}
+
+.section-header.collapsible-section .section-toggle.expanded {
+  color: #7b1fa2;
+}
+
+.section-header.collapsible-section .section-toggle.collapsed {
+  color: #9c27b0;
+}
+
+.section-toggle:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: scale(1.1);
+}
+
+/* Collapsed section content */
+.section-content.collapsed {
+  max-height: 0;
+  overflow: hidden;
+  padding: 0;
+  border: none;
+  margin: 0;
+  transition: all 0.3s ease;
+}
+
+/* Expanded section content */
+.section-content:not(.collapsed) {
+  max-height: none;
+  overflow: visible;
+  transition: all 0.3s ease;
 }
 
 /* Always expanded sections - non-collapsible and visually distinct */
@@ -444,6 +529,7 @@
 /* Ensure sections have proper spacing */
 .form-section {
   margin-bottom: 40px !important; /* Increased from 25px */
+  margin-top: 20px !important; /* Add top margin for better spacing */
 }
 
 .section-title {

@@ -402,17 +402,10 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
 // Section component for organizing form fields
 function FormSection({ section, formData, onChange, errors, serviceSections, loadingServiceSections, readOnlyFields = {}, getCurrentPosition, formatCoordinatesForDHIS2, showDebugPanel, isFieldMandatory }) {
-  // Check if this is a Document Review section - only these can be collapsible
+  // Check if this is a Document Review section - these start collapsed, others start expanded
   const isDocumentReviewSection = (section.displayName || '').toLowerCase().includes('document review');
-  // All sections start expanded, only Document Review can be collapsed
-  const [isExpanded, setIsExpanded] = useState(true);
-
-  // Ensure Document Review sections can be toggled, others stay expanded
-  useEffect(() => {
-    if (!isDocumentReviewSection && !isExpanded) {
-      setIsExpanded(true);
-    }
-  }, [isDocumentReviewSection, isExpanded]);
+  // Document Review sections start collapsed, others start expanded but are still collapsible
+  const [isExpanded, setIsExpanded] = useState(!isDocumentReviewSection);
 
   // Function to determine if a field should use dynamic service dropdown
   const isServiceField = (dataElement) => {
@@ -436,10 +429,9 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
     <div className="form-section">
       <button 
         type="button"
-        className={`section-header ${isDocumentReviewSection ? 'document-review-section' : 'always-expanded-section'}`}
-        onClick={() => isDocumentReviewSection && setIsExpanded(!isExpanded)}
-        disabled={!isDocumentReviewSection}
-        style={!isDocumentReviewSection ? { cursor: 'default' } : {}}
+        className={`section-header ${isDocumentReviewSection ? 'document-review-section' : 'collapsible-section'}`}
+        onClick={() => setIsExpanded(!isExpanded)}
+        style={{ cursor: 'pointer' }}
       >
         <h3 className="section-title">
           {section.displayName}
@@ -448,22 +440,13 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
               {' '}({mandatoryFieldsCount} required)
             </span>
           )}
-          {!isDocumentReviewSection && (
-            <span style={{ fontSize: '12px', color: '#666', marginLeft: '8px' }}>
-              (Always Expanded)
-            </span>
-          )}
-          {isDocumentReviewSection && (
-            <span style={{ fontSize: '12px', color: '#666', marginLeft: '8px' }}>
-              (Collapsible)
-            </span>
-          )}
+          <span style={{ fontSize: '12px', color: '#666', marginLeft: '8px' }}>
+            {isExpanded ? '(Click to collapse)' : '(Click to expand)'}
+          </span>
         </h3>
-        {isDocumentReviewSection && (
-        <span className={`section-toggle ${isExpanded ? 'expanded' : ''}`}>
-          ▼
+        <span className={`section-toggle ${isExpanded ? 'expanded' : 'collapsed'}`}>
+          {isExpanded ? '▼' : '▶'}
         </span>
-        )}
       </button>
       
       <div className={`section-content ${!isExpanded ? 'collapsed' : ''}`}>
