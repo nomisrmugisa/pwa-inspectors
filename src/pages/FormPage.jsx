@@ -842,6 +842,34 @@ function FormPage() {
     const botswanaTime = new Date(now.getTime() + (2 * 60 * 60 * 1000));
     return botswanaTime.toISOString().split('T')[0];
   };
+
+  // Robust date parsing function to handle different date formats
+  const parseDate = (dateString) => {
+    if (!dateString) return null;
+    
+    // Try parsing as ISO string first
+    let date = new Date(dateString);
+    if (!isNaN(date.getTime())) return date;
+    
+    // Try parsing as DD/MM/YYYY or MM/DD/YYYY
+    const parts = dateString.split(/[\/\-]/);
+    if (parts.length === 3) {
+      // Try different combinations
+      const combinations = [
+        [parts[0], parts[1], parts[2]], // DD/MM/YYYY
+        [parts[1], parts[0], parts[2]], // MM/DD/YYYY
+        [parts[2], parts[0], parts[1]], // YYYY/MM/DD
+        [parts[2], parts[1], parts[0]]  // YYYY/DD/MM
+      ];
+      
+      for (const [day, month, year] of combinations) {
+        date = new Date(year, month - 1, day);
+        if (!isNaN(date.getTime())) return date;
+      }
+    }
+    
+    return null;
+  };
   
   const today = getBotswanaDate();
   console.log('🌍 Today in Botswana timezone:', today);
@@ -859,23 +887,47 @@ function FormPage() {
       return false;
     }
     
-    // Convert assignment dates to Date objects for comparison
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const todayDate = new Date(today);
-    
-    // Reset time to start of day for accurate date comparison
-    start.setHours(0, 0, 0, 0);
-    end.setHours(23, 59, 59, 999); // End of day
-    todayDate.setHours(12, 0, 0, 0); // Middle of day
-    
-    const isActive = start <= todayDate && todayDate <= end;
-    
-    if (showDebugPanel) {
-      console.log(`🔍 Facility: ${a.facility.name}, Period: ${startDate} to ${endDate}, Today: ${today}, Active: ${isActive}`);
+    try {
+      // Use robust date parsing function
+      const start = parseDate(startDate);
+      const end = parseDate(endDate);
+      const todayDate = parseDate(today);
+      
+      // Check if dates are valid
+      if (!start || !end || !todayDate) {
+        if (showDebugPanel) {
+          console.log(`⚠️ Invalid date format for ${a.facility.name}:`, { 
+            startDate, 
+            endDate, 
+            today,
+            parsedStart: start,
+            parsedEnd: end,
+            parsedToday: todayDate
+          });
+        }
+        return false;
+      }
+      
+      // Reset time to start of day for accurate date comparison
+      start.setHours(0, 0, 0, 0);
+      end.setHours(23, 59, 59, 999); // End of day
+      todayDate.setHours(12, 0, 0, 0); // Middle of day
+      
+      const isActive = start <= todayDate && todayDate <= end;
+      
+      if (showDebugPanel) {
+        console.log(`🔍 Facility: ${a.facility.name}, Period: ${startDate} to ${endDate}, Today: ${today}, Active: ${isActive}`);
+        console.log(`   Parsed dates: Start: ${start.toISOString()}, End: ${end.toISOString()}, Today: ${todayDate.toISOString()}`);
+        console.log(`   Date comparison: ${start.toISOString()} <= ${todayDate.toISOString()} <= ${end.toISOString()}`);
+      }
+      
+      return isActive;
+    } catch (error) {
+      if (showDebugPanel) {
+        console.error(`❌ Error processing dates for ${a.facility.name}:`, error);
+      }
+      return false;
     }
-    
-    return isActive;
   }).map(a => ({
     id: a.facility.id,
     name: a.facility.name
@@ -885,8 +937,30 @@ function FormPage() {
     console.log('✅ Active facilities for today:', activeFacilities);
     console.log('📅 All assignments:', safeUserAssignments.map(a => ({
       facility: a.facility.name,
-      period: a.assignment.inspectionPeriod
+      period: a.assignment.inspectionPeriod,
+      hasValidDates: !!(a.assignment.inspectionPeriod?.startDate && a.assignment.inspectionPeriod?.endDate)
     })));
+         console.log('🔍 Date filtering details:', {
+       today,
+       totalAssignments: safeUserAssignments.length,
+       assignmentsWithDates: safeUserAssignments.filter(a => a.assignment.inspectionPeriod?.startDate && a.assignment.inspectionPeriod?.endDate).length,
+       activeFacilitiesCount: activeFacilities.length,
+       hasActiveFacilities
+     });
+    
+         // Additional debugging for data structure issues
+     if (safeUserAssignments.length > 0) {
+       console.log('🔍 Sample assignment structure:', {
+         firstAssignment: safeUserAssignments[0],
+         hasFacility: !!safeUserAssignments[0]?.facility,
+         hasAssignment: !!safeUserAssignments[0]?.assignment,
+         hasInspectionPeriod: !!safeUserAssignments[0]?.assignment?.inspectionPeriod,
+         inspectionPeriodKeys: safeUserAssignments[0]?.assignment?.inspectionPeriod ? Object.keys(safeUserAssignments[0].assignment.inspectionPeriod) : [],
+         startDateType: typeof safeUserAssignments[0]?.assignment?.inspectionPeriod?.startDate,
+         endDateType: typeof safeUserAssignments[0]?.assignment?.inspectionPeriod?.endDate,
+         dateFilteringResult: hasActiveFacilities ? 'Active facilities found' : 'No active facilities'
+       });
+     }
   }
 
   const uniqueFacilities = activeFacilities; // Only show facilities with active assignments for today
@@ -895,6 +969,18 @@ function FormPage() {
   const [showAllFacilities, setShowAllFacilities] = useState(false);
   const [isMandatorySummaryCollapsed, setIsMandatorySummaryCollapsed] = useState(true); // Collapse mandatory summary by default
   
+  // Check if we have any active facilities
+  const hasActiveFacilities = activeFacilities.length > 0;
+
+  if (showDebugPanel) {
+    console.log('🔍 Facility filtering summary:', {
+      totalAssignments: safeUserAssignments.length,
+      activeFacilities: activeFacilities.length,
+      hasActiveFacilities,
+      showAllFacilities
+    });
+  }
+
   // Helper function to determine if a field is mandatory
   const isFieldMandatory = (psde) => {
     const fieldName = (psde.dataElement.displayName || psde.dataElement.shortName || '').toLowerCase();
@@ -937,7 +1023,15 @@ function FormPage() {
           id: assignment.facility.id,
           name: assignment.facility.name
         }))
-    : uniqueFacilities;
+    : uniqueFacilities; // Only show active facilities, no fallback
+
+  if (showDebugPanel) {
+    console.log('🏥 Final facilities for dropdown:', {
+      finalFacilities: finalFacilities.length,
+      source: showAllFacilities ? 'all' : 'active',
+      facilities: finalFacilities.map(f => ({ id: f.id, name: f.name }))
+    });
+  }
 
   // Get the selected assignment for the chosen facility
   const selectedAssignment = safeUserAssignments.find(a => a.facility.id === (typeof formData.orgUnit === 'string' ? formData.orgUnit : formData.orgUnit?.id));
@@ -1499,6 +1593,43 @@ function FormPage() {
     <div className="screen">
       <div className="form-container">
         <div className="form-header">
+          <h2>Inspection Form</h2>
+          
+                     {/* Facility Filtering Status Summary */}
+           <div style={{ 
+             backgroundColor: hasActiveFacilities ? '#d4edda' : '#f8d7da', 
+             border: `1px solid ${hasActiveFacilities ? '#c3e6cb' : '#f5c6cb'}`, 
+             borderRadius: '4px', 
+             padding: '8px 12px',
+             marginBottom: '16px',
+             fontSize: '12px',
+             color: hasActiveFacilities ? '#155724' : '#721c24'
+           }}>
+             <strong>🏥 Facility Status:</strong> {
+               hasActiveFacilities 
+                 ? `✅ ${activeFacilities.length} active facilities found for today (${today})`
+                 : `❌ No active facilities found for today (${today}). Please check inspection period dates.`
+             }
+             {!hasActiveFacilities && (
+               <button
+                 type="button"
+                 onClick={() => setShowDebugPanel(true)}
+                 style={{
+                   backgroundColor: 'transparent',
+                   color: '#721c24',
+                   border: '1px solid #721c24',
+                   borderRadius: '4px',
+                   padding: '2px 6px',
+                   fontSize: '10px',
+                   cursor: 'pointer',
+                   marginLeft: '8px'
+                 }}
+               >
+                 🔍 Debug
+               </button>
+             )}
+           </div>
+
           <div>
             {/* Removed Facility-Registry heading as requested */}
             <p className="form-subtitle">{configuration?.programStage?.displayName}</p>
@@ -1589,6 +1720,36 @@ function FormPage() {
                  {Object.keys(errors).length > 0 && (
                    <div>❌ Errors: {Object.keys(errors).map(key => `${key}: ${errors[key]}`).join(', ')}</div>
                  )}
+              </div>
+            </div>
+
+                         {/* Facility Filtering Debug Information */}
+             <div style={{ marginBottom: '12px' }}>
+               <strong>🏥 Facility Filtering Debug:</strong>
+               <div style={{ marginLeft: '16px' }}>
+                 <div>🌍 Today (Botswana): {today}</div>
+                 <div>📊 Total Assignments: {safeUserAssignments.length}</div>
+                 <div>✅ Active Facilities: {activeFacilities.length}</div>
+                 <div>🎯 Final Facilities: {finalFacilities.length}</div>
+                 <div>🔍 Filtering Source: {showAllFacilities ? 'All (Debug Mode)' : 'Active Only'}</div>
+                
+                {/* Assignment Details */}
+                <div style={{ marginTop: '8px' }}>
+                  <strong>📋 Assignment Details:</strong>
+                  {safeUserAssignments.map((assignment, index) => (
+                    <div key={index} style={{ marginLeft: '8px', fontSize: '11px', marginTop: '4px' }}>
+                      <div>🏥 {assignment.facility.name} (ID: {assignment.facility.id})</div>
+                      <div style={{ marginLeft: '8px' }}>
+                        📅 Period: {assignment.assignment.inspectionPeriod?.startDate || 'Missing'} to {assignment.assignment.inspectionPeriod?.endDate || 'Missing'}
+                        {assignment.assignment.inspectionPeriod?.startDate && assignment.assignment.inspectionPeriod?.endDate ? (
+                          <span style={{ color: '#28a745' }}> ✅</span>
+                        ) : (
+                          <span style={{ color: '#dc3545' }}> ❌</span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
             
@@ -1801,6 +1962,52 @@ function FormPage() {
                     </div>
                   )}
                 </div>
+
+                {/* Manual refresh button for troubleshooting */}
+                <div className="form-field" style={{ marginBottom: '10px' }}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      console.log('🔄 Manual refresh triggered');
+                                             console.log('📊 Current state:', {
+                         userAssignments,
+                         safeUserAssignments: safeUserAssignments.length,
+                         activeFacilities: activeFacilities.length,
+                         today,
+                         finalFacilities: finalFacilities.length,
+                         hasActiveFacilities
+                       });
+                      
+                      // Test date parsing for troubleshooting
+                      if (safeUserAssignments.length > 0) {
+                        const testAssignment = safeUserAssignments[0];
+                        const { startDate, endDate } = testAssignment.assignment.inspectionPeriod || {};
+                        console.log('🧪 Date parsing test:', {
+                          facility: testAssignment.facility.name,
+                          startDate,
+                          endDate,
+                          today,
+                          parsedStart: parseDate(startDate),
+                          parsedEnd: parseDate(endDate),
+                          parsedToday: parseDate(today)
+                        });
+                      }
+                    }}
+                    style={{
+                      backgroundColor: '#6c757d',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      padding: '6px 12px',
+                      fontSize: '12px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    🔄 Debug: Log Current State
+                  </button>
+                </div>
+
+
                 
                                  <div className="form-field">
                    <label htmlFor="orgUnit" className="form-label">

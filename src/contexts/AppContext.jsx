@@ -504,32 +504,45 @@ export function AppProvider({ children }) {
 
             // Step 4: Log Facilities
           if (datastoreResponse && Array.isArray(datastoreResponse)) {
-            const facilities = datastoreResponse.map(inspection => {
-              // Prefer the assignment entry for the current user when present
-              const norm = (v) => (v ?? '').toString().trim().toLowerCase();
-              const inspectorAssignment = (inspection.assignments || []).find(a => {
-                const aName = norm(a.inspectorName);
-                const iName = norm(userResult.displayName || userResult.username);
-                return aName === iName || aName.includes(iName) || iName.includes(aName);
-              });
-              return {
-                facility: {
-                  id: inspection.facilityId,
-                  name: inspection.facilityName
-                },
-                assignment: {
-                  // Sections from the inspector-specific assignment if available; fall back to all
-                  sections: inspectorAssignment?.sections || (inspection.assignments || []).flatMap(a => Array.isArray(a.sections) ? a.sections : []),
-                  inspectionPeriod: {
-                    startDate: inspection.startDate,
-                    endDate: inspection.endDate
+            const facilities = datastoreResponse
+              .map(inspection => {
+                // Prefer the assignment entry for the current user when present
+                const norm = (v) => (v ?? '').toString().trim().toLowerCase();
+                const inspectorAssignment = (inspection.assignments || []).find(a => {
+                  const aName = norm(a.inspectorName);
+                  const iName = norm(userResult.displayName || userResult.username);
+                  return aName === iName || aName.includes(iName) || iName.includes(aName);
+                });
+                
+                return {
+                  inspection,
+                  inspectorAssignment,
+                  hasUserAssignment: !!inspectorAssignment
+                };
+              })
+              // Only include facilities where the current user has assignments
+              .filter(item => item.hasUserAssignment)
+              .map(item => {
+                const { inspection, inspectorAssignment } = item;
+                
+                return {
+                  facility: {
+                    id: inspection.facilityId,
+                    name: inspection.facilityName
                   },
-                  // Prefer per-assignment values, then facility-level fallbacks
-                  type: inspectorAssignment?.type || inspection.type || inspection.Type || inspection.inspectionType || null,
-                  inspectionId: inspectorAssignment?.inspectionId || inspectorAssignment?.inspectionID || inspection.inspectionId || inspection.inspectionID || inspection.id || inspection.Id || null
-                }
-              };
-            });
+                  assignment: {
+                    // Sections from the inspector-specific assignment if available; fall back to all
+                    sections: inspectorAssignment?.sections || (inspection.assignments || []).flatMap(a => Array.isArray(a.sections) ? a.sections : []),
+                    inspectionPeriod: {
+                      startDate: inspection.startDate,
+                      endDate: inspection.endDate
+                    },
+                    // Prefer per-assignment values, then facility-level fallbacks
+                    type: inspectorAssignment?.type || inspection.type || inspection.Type || inspection.inspectionType || null,
+                    inspectionId: inspectorAssignment?.inspectionId || inspectorAssignment?.inspectionID || inspection.inspectionId || inspection.inspectionID || inspection.id || inspection.Id || null
+                  }
+                };
+              });
 
             console.log('Processing facilities:', facilities);
 
@@ -540,6 +553,35 @@ export function AppProvider({ children }) {
               showToast(`Found ${facilities.length} facility assignments`, 'success');
             } else {
               showToast('No facility assignments found', 'warning');
+            }
+            
+            // Debug: Log filtering details
+            console.log('🔍 User assignment filtering details:', {
+              currentUser: userResult.displayName || userResult.username,
+              totalInspections: datastoreResponse.length,
+              userAssignedFacilities: facilities.length,
+              filteredOutFacilities: datastoreResponse.length - facilities.length
+            });
+            
+            // Log which facilities were filtered out
+            if (datastoreResponse.length > facilities.length) {
+              const filteredOut = datastoreResponse.filter(inspection => {
+                const norm = (v) => (v ?? '').toString().trim().toLowerCase();
+                const hasAssignment = (inspection.assignments || []).some(a => {
+                  const aName = norm(a.inspectorName);
+                  const iName = norm(userResult.displayName || userResult.username);
+                  return aName === iName || aName.includes(iName) || iName.includes(aName);
+                });
+                return !hasAssignment;
+              });
+              
+              console.log('❌ Facilities filtered out (user not assigned):', 
+                filteredOut.map(f => ({ 
+                  name: f.facilityName, 
+                  id: f.facilityId,
+                  assignedInspectors: f.assignments?.map(a => a.inspectorName) || []
+                }))
+              );
             }
           } else {
             console.warn('Invalid or empty response from DataStore');
