@@ -401,7 +401,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 }
 
 // Section component for organizing form fields
-function FormSection({ section, formData, onChange, errors, serviceSections, loadingServiceSections, readOnlyFields = {}, getCurrentPosition, formatCoordinatesForDHIS2, showDebugPanel, isFieldMandatory }) {
+function FormSection({ section, formData, onChange, errors, serviceSections, loadingServiceSections, readOnlyFields = {}, getCurrentPosition, formatCoordinatesForDHIS2, showDebugPanel, isFieldMandatory, facilityClassifications = [], loadingFacilityClassifications = false, inspectionInfoConfirmed = false, setInspectionInfoConfirmed = () => {}, areAllInspectionFieldsComplete = () => false }) {
   // Check if this is a Document Review section - these start collapsed, others start expanded
   const isDocumentReviewSection = (section.displayName || '').toLowerCase().includes('document review');
   
@@ -459,54 +459,114 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
           <p className="section-description">{section.description}</p>
         )}
 
-        <div className="section-fields">
-          {(section.dataElements || [])
-            .filter(psde => !(psde.dataElement.displayName || '').toLowerCase().includes('source'))
-            .map(psde => {
-            const isDynamicServiceField = isServiceField(psde.dataElement);
-            
-            // Debug logging for all fields when debug panel is enabled
-            if (showDebugPanel) {
-              console.log(`🔍 Rendering field: "${psde.dataElement.displayName}"`, {
-                id: psde.dataElement.id,
-                valueType: psde.dataElement.valueType,
-                hasOptionSet: !!psde.dataElement.optionSet,
-                optionSetOptions: psde.dataElement.optionSet?.options?.length || 0,
-                isDynamicServiceField: isDynamicServiceField,
-                formDataValue: formData[`dataElement_${psde.dataElement.id}`],
-                readOnly: !!readOnlyFields[`dataElement_${psde.dataElement.id}`]
-              });
-            }
-            
-            // Debug logging for supplies fields
-            if (showDebugPanel && (psde.dataElement.displayName || '').toLowerCase().includes('supplies')) {
-              console.log(`🔍 Supplies field detected: "${psde.dataElement.displayName}" - isDynamicServiceField: ${isDynamicServiceField}`);
-            }
-            
-            return (
-              <FormField
-                key={psde.dataElement.id}
-                psde={psde}
-                value={formData[`dataElement_${psde.dataElement.id}`]}
-                onChange={(e) => onChange(`dataElement_${psde.dataElement.id}`, e.target.value)}
-                error={errors[`dataElement_${psde.dataElement.id}`]}
-                dynamicOptions={isDynamicServiceField ? serviceSections : null}
-                isLoading={isDynamicServiceField ? loadingServiceSections : false}
-                readOnly={!!readOnlyFields[`dataElement_${psde.dataElement.id}`]}
-                getCurrentPosition={getCurrentPosition}
-                formatCoordinatesForDHIS2={formatCoordinatesForDHIS2}
-                showDebugPanel={showDebugPanel}
-              />
-            );
-          })}
+                 <div className="section-fields">
+                       {/* Note: Facility Classification dropdown removed - will auto-populate the DHIS2 text field below */}
+           
+           {(section.dataElements || [])
+             .filter(psde => !(psde.dataElement.displayName || '').toLowerCase().includes('source'))
+             .map(psde => {
+             const isDynamicServiceField = isServiceField(psde.dataElement);
+             
+             // Debug logging for all fields when debug panel is enabled
+             if (showDebugPanel) {
+               console.log(`🔍 Rendering field: "${psde.dataElement.displayName}"`, {
+                 id: psde.dataElement.id,
+                 valueType: psde.dataElement.valueType,
+                 hasOptionSet: !!psde.dataElement.optionSet,
+                 optionSetOptions: psde.dataElement.optionSet?.options?.length || 0,
+                 isDynamicServiceField: isDynamicServiceField,
+                 formDataValue: formData[`dataElement_${psde.dataElement.id}`],
+                 readOnly: !!readOnlyFields[`dataElement_${psde.dataElement.id}`]
+               });
+             }
+             
+             // Debug logging for supplies fields
+             if (showDebugPanel && (psde.dataElement.displayName || '').toLowerCase().includes('supplies')) {
+               console.log(`🔍 Supplies field detected: "${psde.dataElement.displayName}" - isDynamicServiceField: ${isDynamicServiceField}`);
+             }
+             
+             return (
+               <FormField
+                 key={psde.dataElement.id}
+                 psde={psde}
+                 value={formData[`dataElement_${psde.dataElement.id}`]}
+                 onChange={(e) => onChange(`dataElement_${psde.dataElement.id}`, e.target.value)}
+                 error={errors[`dataElement_${psde.dataElement.id}`]}
+                 dynamicOptions={isDynamicServiceField ? serviceSections : null}
+                 isLoading={isDynamicServiceField ? loadingServiceSections : false}
+                 readOnly={!!readOnlyFields[`dataElement_${psde.dataElement.id}`]}
+                 getCurrentPosition={getCurrentPosition}
+                 formatCoordinatesForDHIS2={formatCoordinatesForDHIS2}
+                 showDebugPanel={showDebugPanel}
+               />
+             );
+           })}
           
-          {/* Add bottom spacing after the last data element */}
-          <div className="section-bottom-spacing"></div>
-        </div>
-      </div>
-    </div>
-  );
-}
+                     {/* Add bottom spacing after the last data element */}
+           <div className="section-bottom-spacing"></div>
+           
+           {/* Confirmation Button for Inspection Type Section */}
+           {isInspectionTypeSection && areAllInspectionFieldsComplete && areAllInspectionFieldsComplete() && (
+             <div className="form-section" style={{ 
+               backgroundColor: '#f8f9fa', 
+               border: '2px solid #28a745',
+               borderRadius: '8px',
+               padding: '16px',
+               margin: '16px 0',
+               textAlign: 'center'
+             }}>
+               <div style={{ marginBottom: '12px' }}>
+                 <h4 style={{ color: '#28a745', margin: '0 0 8px 0' }}>
+                   ✅ Inspection Information & Type Complete
+                 </h4>
+                 <p style={{ color: '#666', margin: '0', fontSize: '14px' }}>
+                   Please confirm that all the information above is correct before proceeding
+                 </p>
+               </div>
+               
+               <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', alignItems: 'center' }}>
+                 <label style={{ 
+                   display: 'flex', 
+                   alignItems: 'center', 
+                   gap: '8px', 
+                   cursor: 'pointer',
+                   fontSize: '16px',
+                   color: '#333'
+                 }}>
+                   <input
+                     type="checkbox"
+                     checked={inspectionInfoConfirmed}
+                     onChange={(e) => setInspectionInfoConfirmed(e.target.checked)}
+                     style={{ 
+                       width: '20px', 
+                       height: '20px',
+                       cursor: 'pointer'
+                     }}
+                   />
+                   <span>I confirm that all inspection information and type are correct</span>
+                 </label>
+               </div>
+               
+               {inspectionInfoConfirmed && (
+                 <div style={{ 
+                   marginTop: '12px', 
+                   padding: '8px 16px', 
+                   backgroundColor: '#d4edda', 
+                   color: '#155724', 
+                   borderRadius: '4px',
+                   border: '1px solid #c3e6cb',
+                   fontSize: '14px'
+                 }}>
+                   ✅ Confirmed! You can now proceed with the inspection form.
+                 </div>
+               )}
+             </div>
+           )}
+         </div>
+       </div>
+     </div>
+   );
+ }
 
 // Main FormPage component
 function FormPage() {
@@ -535,6 +595,99 @@ function FormPage() {
       section.displayName !== "Inspectors Details" &&
       !section.displayName.startsWith("Pre-Inspection:")
     );
+  };
+
+  // Function to parse CSV and extract facility classifications
+  const parseCSVClassifications = (csvContent) => {
+    try {
+      // Split CSV content into lines
+      const lines = csvContent.split('\n');
+      if (lines.length < 2) return [];
+      
+      // Get the second line (index 1) which contains the actual facility classification names
+      // Skip the first line which just has numbers
+      const classificationRow = lines[1].split(',');
+      
+      // Extract facility classifications (skip the first empty column)
+      const classifications = classificationRow.slice(1).map(col => col.trim()).filter(col => col.length > 0);
+      
+      console.log('Parsed facility classifications from CSV:', classifications);
+      return classifications;
+    } catch (error) {
+      console.error('Error parsing CSV:', error);
+      return [];
+    }
+  };
+
+  // Function to load facility classifications from CSV
+  const loadFacilityClassifications = async () => {
+    setLoadingFacilityClassifications(true);
+    try {
+      // For now, we'll use the hardcoded CSV content
+      // In a real implementation, you might fetch this from an API or file
+      const csvContent = `,1,2,3,4,5,6,7,8,9,10,11
+,Gynae Clinics,laboratory,Psychology clinic,Eye (opthalmologyoptometry  optician) Clinics,physiotheraphy,dental clinic,ENT clinic,Rehabilitation Centre,Potrait clinic,Radiology,clinic
+SECTION A-ORGANISATION AND MANAGEMENT,,,,,,,,,,,
+Does the clinic have an organisational structure,?,?,?,?,?,?,?,?,?,?,?
+Is the director a medically trained person?,?,?,?,?,?,?,?,?,?,?,?
+Does the facility have statutory requirements?,,,,,,,,,,,
+Business registration,?,?,?,?,?,?,?,?,?,?,?
+Work permits,?,?,?,?,?,?,?,?,?,?,?
+Lease agreement,?,?,?,?,?,?,,?,?,?,?
+Trading license,?,?,?,?,?,?,?,?,?,?,?
+Permission to operate/set up,?,?,,,,,,,,
+Occupancy certificate,?,?,?,?,?,?,?,?,?,?,?
+Patient charter in English & Setswana,?,?,?,?,?,?,?,?,?,?,?
+"Copies of relevant statutory instruments e.g. Public Health Act 2013, Botswana Health Professions Act,2001",?,?,?,?,?,?,?,?,?,?,?
+Is there an indemnity insurance?,?,?,?,?,?,?,?,?,?,?,?
+Have personnel been cleared by police?,?,?,?,?,?,?,?,?,?,?,?
+contracts for staff,?,?,?,?,?,?,?,?,?,?,?
+letter of permission to set up/operate,?,?,?,?,?,?,?,?,?,?,?
+waste collection carrier licence,?,?,?,?,?,?,?,?,?,?,?
+police clearance for employees,?,?,?,?,?,?,?,?,?,?,?
+confidentiality clause,?,?,?,?,?,?,?,?,?,?,?
+proof of change of land use,?,?,?,?,?,?,?,,,,
+tax clearance certificate,?,?,?,?,,?,?,?,?,?
+Practitioner's licence,?,?,?,?,?,?,?,?,?,?,?
+Fire clearance,?,?,?,?,?,?,?,?,?,?,?
+work permits,?,?,?,?,?,?,?,?,?,?,?
+residence permit,?,?,?,,?,?,?,?,?,?
+contracts for staff,?,?,?,?,?,?,?,?,?,?,?
+,,,,,,,,,,,
+,,,,,,,,,,,
+Does the clinic have policies and procedures for the following?,,,,,,,,,,,
+referral systems,?,?,?,?,?,?,?,?,?,?,?
+assessment of patients,?,?,?,?,?,?,?,?,?,?,?
+treatment protocols,?,?,?,?,?,?,?,?,?,?,?
+testing and treatment techniques,?,?,?,?,?,?,?,?,?,?,?
+"high risk patients and procedures, and",?,?,?,?,?,?,?,?,?,?,?
+the confidentiality of patient information,?,?,?,?,?,?,?,?,?,?,?
+incident reporting,?,?,?,?,?,?,?,?,?,?,?
+Induction and orientation,?,?,?,?,?,?,?,?,?,?,?
+patient consent,?,?,?,?,?,?,?,?,?,?,?
+Linen management,?,?,?,?,?,?,?,?,?,?,?
+Equipment maintenance plan/program,?,?,?,?,?,?,?,?,?,?,?
+Testing and commissioning certificates,?,?,?,?,?,?,?,?,?,?,?
+Infection prevention and control,?,?,?,?,?,?,?,?,?,?,?
+Management of patient records and retention times,?,?,?,?,?,?,?,?,?,?,?
+Management of information ,?,?,?,?,?,?,?,?,?,?,?
+Risk management ,?,?,?,?,?,?,?,?,?,?,?
+Management of supplies,?,?,?,?,?,?,?,?,?,?,?
+Patient observation,?,?,?,?,?,?,?,?,?,?,?
+Management of medication,?,?,?,?,?,?,?,?,?,?,?
+Post exposure prophylaxis,?,?,?,?,?,?,?,?,?,?,?
+Complaints procedure,?,?,?,?,?,?,?,?,?,?,?
+Outreach services,?,?,?,?,?,?,?,?,?,?,?
+Waste management,?,?,?,?,?,?,?,?,?,?,?`;
+      
+      const classifications = parseCSVClassifications(csvContent);
+      setFacilityClassifications(classifications);
+    } catch (error) {
+      console.error('Error loading facility classifications:', error);
+      showToast('Failed to load facility classifications', 'error');
+    } finally {
+      setLoadingFacilityClassifications(false);
+    }
   };
 
   // Helper function to format coordinates in DHIS2 compliant format
@@ -740,6 +893,17 @@ function FormPage() {
   const [formStats, setFormStats] = useState({ percentage: 0, filled: 0, total: 0 });
   const [trackedEntityInstance, setTrackedEntityInstance] = useState(null);
   const [gpsCoordinates, setGpsCoordinates] = useState(null);
+
+  // State for organization units (for the dropdown)
+  const [organizationUnits, setOrganizationUnits] = useState([]);
+  const [loadingOrganizationUnits, setLoadingOrganizationUnits] = useState(false);
+
+  // State for facility classifications (from CSV)
+  const [facilityClassifications, setFacilityClassifications] = useState([]);
+  const [loadingFacilityClassifications, setLoadingFacilityClassifications] = useState(false);
+
+  // State for inspection information confirmation
+  const [inspectionInfoConfirmed, setInspectionInfoConfirmed] = useState(false);
 
   const fetchTrackedEntityInstance = async (facilityId) => {
     try {
@@ -1101,6 +1265,9 @@ function FormPage() {
         }
       
       setServiceSections(filteredSections);
+      
+      // Load facility classifications from CSV
+      loadFacilityClassifications();
     }
   }, [configuration, showDebugPanel]);
 
@@ -1286,6 +1453,9 @@ function FormPage() {
     if (fieldName === 'orgUnit' && value) {
       console.log('🏥 Facility selected, fetching TEI for:', value);
       fetchTrackedEntityInstance(value);
+      
+      // Also fetch and set the facility classification
+      fetchFacilityClassification(value);
     }
   };
 
@@ -1579,6 +1749,178 @@ function FormPage() {
   const date_valid = !inspectionPeriod ? true : (_today >= _start && _today <= _end);
   console.log("valid", date_valid, _today >= _start, _today <= _end);
 
+  // Function to fetch facility classification from dataStore
+  const fetchFacilityClassification = async (facilityId) => {
+    if (!facilityId || !api) return;
+    
+    try {
+      if (showDebugPanel) {
+        console.log('🔍 Fetching facility classification for:', facilityId);
+      }
+      
+      // Try multiple approaches to get facility type/classification
+      let classification = null;
+      
+      // Approach 1: Try to get facility type from a generic dataStore key
+      try {
+        const facilityTypeResponse = await api.request('/api/dataStore/facility_types');
+        if (facilityTypeResponse && typeof facilityTypeResponse === 'object') {
+          // Look for a key that contains the facility ID
+          const matchingKey = Object.keys(facilityTypeResponse).find(key => 
+            key.includes(facilityId) || key.includes('facility') || key.includes('type')
+          );
+          
+          if (matchingKey && facilityTypeResponse[matchingKey]) {
+            classification = facilityTypeResponse[matchingKey];
+            if (showDebugPanel) {
+              console.log('✅ Found facility type via facility_types dataStore:', classification);
+            }
+          }
+        }
+      } catch (error) {
+        if (showDebugPanel) {
+          console.log('⚠️ facility_types dataStore not accessible:', error.message);
+        }
+      }
+      
+      // Approach 2: Try to get from a more generic facility dataStore
+      if (!classification) {
+        try {
+          const facilityDataResponse = await api.request('/api/dataStore/facilities');
+          if (facilityDataResponse && typeof facilityDataResponse === 'object') {
+            // Look for facility data that might contain type/classification
+            const facilityData = facilityDataResponse[facilityId] || facilityDataResponse[`facility_${facilityId}`];
+            if (facilityData && facilityData.type) {
+              classification = facilityData.type;
+              if (showDebugPanel) {
+                console.log('✅ Found facility type via facilities dataStore:', classification);
+              }
+            }
+          }
+        } catch (error) {
+          if (showDebugPanel) {
+            console.log('⚠️ facilities dataStore not accessible:', error.message);
+          }
+        }
+      }
+      
+      // Approach 3: Try to get from organization unit metadata
+      if (!classification) {
+        try {
+          const orgUnitResponse = await api.request(`/api/organisationUnits/${facilityId}?fields=id,name,displayName,level,parent,organisationUnitGroups`);
+          if (orgUnitResponse && orgUnitResponse.organisationUnitGroups) {
+            // Look for organization unit groups that might indicate facility type
+            const facilityTypeGroup = orgUnitResponse.organisationUnitGroups.find(group => 
+              group.displayName && (
+                group.displayName.toLowerCase().includes('clinic') ||
+                group.displayName.toLowerCase().includes('hospital') ||
+                group.displayName.toLowerCase().includes('laboratory') ||
+                group.displayName.toLowerCase().includes('pharmacy')
+              )
+            );
+            
+            if (facilityTypeGroup) {
+              classification = facilityTypeGroup.displayName;
+              if (showDebugPanel) {
+                console.log('✅ Found facility type via organisation unit groups:', classification);
+              }
+            }
+          }
+        } catch (error) {
+          if (showDebugPanel) {
+            console.log('⚠️ Organisation unit metadata not accessible:', error.message);
+          }
+        }
+      }
+      
+             // Set the classification if found, otherwise set a default
+       const classificationToSet = classification || 'Gynae Clinics'; // Default to first option from CSV
+       
+       // Find the DHIS2 "Facility Classification" data element and populate it
+       if (configuration?.programStage?.allDataElements) {
+         const facilityClassificationElement = configuration.programStage.allDataElements.find(psde => {
+           const fieldName = (psde.dataElement.displayName || psde.dataElement.shortName || '').toLowerCase();
+           return fieldName.includes('facility classification') || fieldName.includes('facility type');
+         });
+         
+         if (facilityClassificationElement) {
+           const fieldKey = `dataElement_${facilityClassificationElement.dataElement.id}`;
+           setFormData(prev => ({
+             ...prev,
+             [fieldKey]: classificationToSet
+           }));
+           
+           if (showDebugPanel) {
+             console.log(`✅ Auto-populated DHIS2 field "${facilityClassificationElement.dataElement.displayName}" with: ${classificationToSet}`);
+           }
+           
+           showToast(`Facility classification auto-populated: ${classificationToSet}`, 'success');
+         } else {
+           if (showDebugPanel) {
+             console.log('⚠️ No DHIS2 "Facility Classification" field found to populate');
+           }
+         }
+       }
+       
+       // Also keep the custom field for internal use (if needed elsewhere)
+       setFormData(prev => ({
+         ...prev,
+         facilityClassification: classificationToSet
+       }));
+      
+    } catch (error) {
+      if (showDebugPanel) {
+        console.log('❌ Error in facility classification lookup:', error);
+      }
+      
+             // Set a default classification if all attempts fail
+       const defaultClassification = 'Gynae Clinics';
+       
+       // Find and populate the DHIS2 "Facility Classification" field with default
+       if (configuration?.programStage?.allDataElements) {
+         const facilityClassificationElement = configuration.programStage.allDataElements.find(psde => {
+           const fieldName = (psde.dataElement.displayName || psde.dataElement.shortName || '').toLowerCase();
+           return fieldName.includes('facility classification') || fieldName.includes('facility type');
+         });
+         
+         if (facilityClassificationElement) {
+           const fieldKey = `dataElement_${facilityClassificationElement.dataElement.id}`;
+           setFormData(prev => ({
+             ...prev,
+             [fieldKey]: defaultClassification
+           }));
+           
+           if (showDebugPanel) {
+             console.log(`✅ Auto-populated DHIS2 field "${facilityClassificationElement.dataElement.displayName}" with default: ${defaultClassification}`);
+           }
+         }
+       }
+       
+       // Also keep the custom field for internal use
+       setFormData(prev => ({
+         ...prev,
+         facilityClassification: defaultClassification
+       }));
+       
+       showToast(`Facility classification set to default: ${defaultClassification}`, 'info');
+    }
+  };
+
+  // Function to check if all inspection information fields are complete
+  const areAllInspectionFieldsComplete = () => {
+    // Check basic mandatory fields
+    if (!formData.orgUnit || !formData.eventDate) {
+      return false;
+    }
+
+    // Check if facility classification is set (either auto-populated or manually selected)
+    if (!formData.facilityClassification) {
+      return false;
+    }
+
+    return true;
+  };
+
   return (
     <div className="screen">
       <div className="form-container">
@@ -1831,16 +2173,17 @@ function FormPage() {
 
 
 
-        <form onSubmit={handleSubmit} className="inspection-form">
-          {/* Form metadata section */}
-          <div className="form-section">
-            <button
-              type="button"
-              className="section-header"
-              style={{ cursor: 'default' }}
-            >
-              <h3 className="section-title">Inspection Information</h3>
-            </button>
+                 <form onSubmit={handleSubmit} className="inspection-form">
+           {/* Form metadata section - only show when not confirmed */}
+           {!inspectionInfoConfirmed && (
+             <div className="form-section">
+               <button
+                 type="button"
+                 className="section-header"
+                 style={{ cursor: 'default' }}
+               >
+                 <h3 className="section-title">Inspection Information</h3>
+               </button>
 
             <div className="section-content">
               <div className="section-fields">
@@ -1963,60 +2306,151 @@ function FormPage() {
                     </div>
                   </div>
                 )}
-              </div>
-            </div>
-          </div>
+                                 
+                 
+               </div>
+             </div>
+           </div>
+           )}
 
-          {/* Program stage sections */}
-          { serviceSections && date_valid && serviceSections.length > 0 ? (
-            <>
-              {/* Debug info for sections */}
-              {showDebugPanel && (
-                <div className="debug-panel" style={{
-                  backgroundColor: '#e3f2fd',
-                  border: '1px solid #2196f3',
-                  borderRadius: '8px',
-                  padding: '12px',
-                  margin: '16px 0',
-                  fontSize: '12px'
-                }}>
-                  <strong>🔍 Sections Debug:</strong>
-                  <div>📊 Total sections: {serviceSections.length}</div>
-                  <div>📅 Date valid: {date_valid ? '✅ Yes' : '❌ No'}</div>
-                  <div>🏥 Facility selected: {formData.orgUnit ? '✅ Yes' : '❌ No'}</div>
-                  <div>👤 User: {user?.username || 'None'}</div>
-                  <div>📋 Sections: {serviceSections.map(s => s.displayName).join(', ')}</div>
-                  
-                  {/* Field count summary */}
-                  <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #2196f3' }}>
-                    <strong>📝 Field Counts:</strong>
-                    {serviceSections.map(section => (
-                      <div key={section.id} style={{ marginLeft: '8px', fontSize: '11px' }}>
-                        {section.displayName}: {section.dataElements?.length || 0} fields
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-              
-              {serviceSections.map(section => (
-              <FormSection
-                key={section.id}
-                section={section}
-                formData={formData}
-                onChange={handleFieldChange}
-                errors={errors}
-                serviceSections={serviceOptions}
-                loadingServiceSections={false}
-                readOnlyFields={readOnlyFields}
-                getCurrentPosition={getCurrentPosition}
-                formatCoordinatesForDHIS2={formatCoordinatesForDHIS2}
-                showDebugPanel={showDebugPanel}
-                  isFieldMandatory={isFieldMandatory}
-              />
-              ))}
-            </>
-          ) : (
+          
+
+                     {/* Program stage sections */}
+           { serviceSections && date_valid && serviceSections.length > 0 ? (
+             <>
+               {/* Debug info for sections */}
+               {showDebugPanel && (
+                 <div className="debug-panel" style={{
+                   backgroundColor: '#e3f2fd',
+                   border: '1px solid #2196f3',
+                   borderRadius: '8px',
+                   padding: '12px',
+                   margin: '16px 0',
+                   fontSize: '12px'
+                 }}>
+                   <strong>🔍 Sections Debug:</strong>
+                   <div>📊 Total sections: {serviceSections.length}</div>
+                   <div>📅 Date valid: {date_valid ? '✅ Yes' : '❌ No'}</div>
+                   <div>🏥 Facility selected: {formData.orgUnit ? '✅ Yes' : '❌ No'}</div>
+                   <div>👤 User: {user?.username || 'None'}</div>
+                                      <div>📋 Sections: {serviceSections.map(s => s.displayName).join(', ')}</div>
+                    <div>🏷️ Facility Classifications: {facilityClassifications.length}</div>
+                    <div>🏷️ Selected Classification: {formData.facilityClassification || 'None (will auto-populate)'}</div>
+                    <div>✅ Inspection Info Confirmed: {inspectionInfoConfirmed ? 'Yes' : 'No'}</div>
+                   
+                   {/* Field count summary */}
+                   <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #2196f3' }}>
+                     <strong>📝 Field Counts:</strong>
+                     {serviceSections.map(section => (
+                       <div key={section.id} style={{ marginLeft: '8px', fontSize: '11px' }}>
+                         {section.displayName}: {section.dataElements?.length || 0} fields
+                       </div>
+                     ))}
+                   </div>
+                 </div>
+               )}
+               
+                               {/* Show only Inspection Information and Inspection Type sections until confirmation */}
+                {!inspectionInfoConfirmed && serviceSections
+                  .filter(section => {
+                    const sectionName = (section.displayName || '').toLowerCase();
+                    return sectionName.includes('inspection information') || sectionName.includes('inspection type');
+                  })
+                  .map(section => (
+                    <FormSection
+                      key={section.id}
+                      section={section}
+                      formData={formData}
+                      onChange={handleFieldChange}
+                      errors={errors}
+                      serviceSections={serviceOptions}
+                      loadingServiceSections={false}
+                      readOnlyFields={readOnlyFields}
+                      getCurrentPosition={getCurrentPosition}
+                      formatCoordinatesForDHIS2={formatCoordinatesForDHIS2}
+                      showDebugPanel={showDebugPanel}
+                      isFieldMandatory={isFieldMandatory}
+                      facilityClassifications={facilityClassifications}
+                      loadingFacilityClassifications={loadingFacilityClassifications}
+                      inspectionInfoConfirmed={inspectionInfoConfirmed}
+                      setInspectionInfoConfirmed={setInspectionInfoConfirmed}
+                      areAllInspectionFieldsComplete={areAllInspectionFieldsComplete}
+                    />
+                  ))}
+               
+               {/* Show remaining sections only after confirmation */}
+               {inspectionInfoConfirmed && (
+                 <>
+                   {/* Status message */}
+                   <div className="form-section" style={{
+                     backgroundColor: '#d4edda',
+                     border: '2px solid #28a745',
+                     borderRadius: '8px',
+                     padding: '16px',
+                     margin: '16px 0',
+                     textAlign: 'center'
+                   }}>
+                     <h4 style={{ color: '#28a745', margin: '0 0 8px 0' }}>
+                       ✅ Inspection Information & Type Confirmed
+                     </h4>
+                     <p style={{ color: '#155724', margin: '0', fontSize: '14px' }}>
+                       You can now proceed with the remaining inspection sections
+                     </p>
+                   </div>
+                   
+                   {/* Show all other sections */}
+                   {serviceSections
+                     .filter(section => {
+                       const sectionName = (section.displayName || '').toLowerCase();
+                       return !sectionName.includes('inspection information') && !sectionName.includes('inspection type');
+                     })
+                     .map(section => (
+                       <FormSection
+                         key={section.id}
+                         section={section}
+                         formData={formData}
+                         onChange={handleFieldChange}
+                         errors={errors}
+                         serviceSections={serviceOptions}
+                         loadingServiceSections={false}
+                         readOnlyFields={readOnlyFields}
+                         getCurrentPosition={getCurrentPosition}
+                         formatCoordinatesForDHIS2={formatCoordinatesForDHIS2}
+                         showDebugPanel={showDebugPanel}
+                         isFieldMandatory={isFieldMandatory}
+                         facilityClassifications={facilityClassifications}
+                         loadingFacilityClassifications={loadingFacilityClassifications}
+                         inspectionInfoConfirmed={inspectionInfoConfirmed}
+                         setInspectionInfoConfirmed={setInspectionInfoConfirmed}
+                         areAllInspectionFieldsComplete={areAllInspectionFieldsComplete}
+                       />
+                     ))}
+                 </>
+               )}
+               
+               {/* Show locked sections message when not confirmed */}
+               {!inspectionInfoConfirmed && (
+                 <div className="form-section" style={{
+                   backgroundColor: '#fff3cd',
+                   border: '2px solid #ffc107',
+                   borderRadius: '8px',
+                   padding: '16px',
+                   margin: '16px 0',
+                   textAlign: 'center'
+                 }}>
+                   <h4 style={{ color: '#856404', margin: '0 0 8px 0' }}>
+                     🔒 Additional Sections Locked
+                   </h4>
+                   <p style={{ color: '#856404', margin: '0', fontSize: '14px' }}>
+                     Complete and confirm the "Inspection Information" and "Inspection Type" sections above to unlock the remaining {serviceSections.filter(s => {
+                       const sectionName = (s.displayName || '').toLowerCase();
+                       return !sectionName.includes('inspection information') && !sectionName.includes('inspection type');
+                     }).length} inspection sections.
+                   </p>
+                 </div>
+               )}
+             </>
+           ) : (
             <div className="form-section">
               <button
                 type="button"
