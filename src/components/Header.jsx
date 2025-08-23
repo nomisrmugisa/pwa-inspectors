@@ -1,6 +1,6 @@
 import React from 'react';
 import { useApp } from '../contexts/AppContext';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 
 export function Header() {
   const { 
@@ -47,6 +47,15 @@ export function Header() {
         </div>
         
         <div className="header-actions" style={{ color: '#ffffff' }}>
+          <div className="nav-links" style={{ color: '#ffffff' }}>
+            <Link to="/form" className="nav-link" style={{ color: '#ffffff', textDecoration: 'none', marginRight: '20px' }}>
+              📋 Inspections
+            </Link>
+            <Link to="/csv-demo" className="nav-link" style={{ color: '#ffffff', textDecoration: 'none', marginRight: '20px' }}>
+              🔧 CSV Demo
+            </Link>
+          </div>
+          
           <div className="sync-info" style={{ color: '#ffffff' }}>
             {stats.pendingEvents > 0 && (
               <span className="pending-count" style={{ color: '#ffffff' }}>

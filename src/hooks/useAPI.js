@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+
 
 // DHIS2 API validation functions
 function validateValue(value, valueType, compulsory = false) {
@@ -165,7 +165,7 @@ class DHIS2APIService {
       'description',
       'programType',
       'withoutRegistration',
-      'programStages[id,displayName,description,sortOrder,repeatable,generatedByEnrollmentDate,minDaysFromStart,programStageSections[id,displayName,sortOrder,programStageDataElements[id,displayName,sortOrder,compulsory,allowProvidedElsewhere,dataElement[id,displayName,shortName,code,description,valueType,aggregationType,optionSet[id,displayName,options[id,displayName,code,sortOrder]]]]],programStageDataElements[id,displayName,sortOrder,compulsory,allowProvidedElsewhere,dataElement[id,displayName,shortName,code,description,valueType,aggregationType,optionSet[id,displayName,options[id,displayName,code,sortOrder]]]]]'
+      'programStages[id,displayName,description,sortOrder,repeatable,generatedByEnrollmentDate,minDaysFromStart,programStageSections[id,displayName,sortOrder,programStageDataElements[id,displayName,sortOrder,compulsory,allowProvidedElsewhere,dataElement[id,displayName,shortName,code,description,valueType,aggregationType,optionSet[id,displayName,options[id,displayName,code,sortOrder]]]]],programStageDataElements[id,displayName,sortOrder,repeatable,generatedByEnrollmentDate,minDaysFromStart,programStageSections[id,displayName,sortOrder,programStageDataElements[id,displayName,sortOrder,compulsory,allowProvidedElsewhere,dataElement[id,displayName,shortName,code,description,valueType,aggregationType,optionSet[id,displayName,options[id,displayName,code,sortOrder]]]]]]'
     ].join(',');
     
     return this.request(`/api/programs?fields=${fields}&filter=programType:eq:WITHOUT_REGISTRATION&paging=false`);
@@ -173,8 +173,55 @@ class DHIS2APIService {
 
 
 
+
+
   async getOrganisationUnits() {
     return this.request('/api/organisationUnits?fields=id,displayName,level,path,parent[id,displayName]&paging=false');
+  }
+
+  /**
+   * Get Data Elements from DHIS2 for CSV filtering
+   * This will be used to filter which Data Elements to show based on CSV template
+   */
+  async getDataElements(options = {}) {
+    const fields = [
+      'id',
+      'displayName',
+      'shortName',
+      'name',
+      'valueType',
+      'compulsory',
+      'optionSet[id,displayName,options[id,displayName,code,sortOrder]]',
+      'formName',
+      'categoryCombo[id,displayName]',
+      'description'
+    ].join(',');
+
+    const params = new URLSearchParams({
+      fields,
+      paging: 'false',
+      ...options
+    });
+
+    console.log(' Fetching DHIS2 Data Elements for CSV filtering...');
+    const response = await this.request(`/api/dataElements?${params}`);
+    console.log(`✅ Fetched ${response.dataElements?.length || 0} Data Elements from DHIS2`);
+    
+    return response.dataElements || [];
+  }
+
+  /**
+   * Search Data Elements by text for better CSV matching
+   */
+  async searchDataElements(searchTerm, options = {}) {
+    const params = new URLSearchParams({
+      query: searchTerm,
+      fields: 'id,displayName,shortName,valueType',
+      paging: 'false',
+      ...options
+    });
+
+    return this.request(`/api/dataElements?${params}`);
   }
 
   /**
@@ -274,6 +321,14 @@ class DHIS2APIService {
       
       // Only fetch stage metadata - org units now come from DataStore assignments
       const stageMetadata = await this.getInspectionStageMetadata(INSPECTIONS_STAGE_ID);
+      
+      console.log('🏗️ Raw stage metadata received:', {
+        name: stageMetadata.name || stageMetadata.displayName,
+        hasSections: !!stageMetadata.programStageSections?.length,
+        hasStageDataElements: !!stageMetadata.programStageDataElements?.length,
+        sectionsCount: stageMetadata.programStageSections?.length || 0,
+        stageDataElementsCount: stageMetadata.programStageDataElements?.length || 0
+      });
 
       console.log('🏗️ Building configuration (org units from DataStore assignments)');
 
@@ -328,10 +383,36 @@ class DHIS2APIService {
    * Get inspection stage metadata using the direct endpoint
    */
   async getInspectionStageMetadata(stageId) {
-    // Use the exact fields from your endpoint, enhanced with required metadata
-    const fields = 'name,programStageSections[name,dataElements[displayFormName,name,id,valueType,compulsory,optionSet[id,displayName,options[id,displayName,code,sortOrder]]]]';
-    return this.request(`/api/programStages/${stageId}?fields=${fields}`);
+    console.log(`🔍 Fetching comprehensive metadata for program stage: ${stageId}`);
+    
+    // Enhanced fields to get ALL possible Data Elements from the stage
+    const fields = [
+      'id',
+      'name',
+      'displayName',
+      'description',
+      'sortOrder',
+      'repeatable',
+      // Get Data Elements from program stage sections
+      'programStageSections[id,name,displayName,sortOrder,dataElements[id,displayFormName,name,shortName,code,description,valueType,compulsory,allowProvidedElsewhere,optionSet[id,displayName,options[id,displayName,code,sortOrder]]]]',
+      // Get Data Elements directly from program stage
+      'programStageDataElements[id,displayName,sortOrder,compulsory,allowProvidedElsewhere,dataElement[id,displayName,shortName,code,description,valueType,aggregationType,optionSet[id,displayName,options[id,displayName,code,sortOrder]]]]'
+    ].join(',');
+    
+    const metadata = await this.request(`/api/programStages/${stageId}?fields=${fields}`);
+    
+    console.log(`✅ Stage metadata fetched for ${stageId}:`, {
+      name: metadata.name || metadata.displayName,
+      hasSections: !!metadata.programStageSections?.length,
+      hasStageDataElements: !!metadata.programStageDataElements?.length,
+      sectionsCount: metadata.programStageSections?.length || 0,
+      stageDataElementsCount: metadata.programStageDataElements?.length || 0
+    });
+    
+    return metadata;
   }
+
+
 
   /**
    * Process the stage metadata into sections format
@@ -339,13 +420,17 @@ class DHIS2APIService {
   processStageMetadataIntoSections(stageMetadata) {
     const sections = [];
 
+    console.log('🔍 Processing stage metadata into sections...');
+
     if (stageMetadata.programStageSections && stageMetadata.programStageSections.length > 0) {
+      console.log(`📋 Found ${stageMetadata.programStageSections.length} program stage sections`);
+      
       stageMetadata.programStageSections.forEach((section, index) => {
         const processedSection = {
           id: `section_${index}`,
-          displayName: section.name,
+          displayName: section.name || section.displayName,
           description: null,
-          sortOrder: index,
+          sortOrder: section.sortOrder || index,
           dataElements: section.dataElements?.map((de, deIndex) => ({
             id: `psde_${de.id}`,
             displayName: de.displayFormName || de.name || `Field ${deIndex + 1}`,
@@ -362,10 +447,15 @@ class DHIS2APIService {
           })) || []
         };
         
+        console.log(`  📂 Section ${index + 1}: "${processedSection.displayName}" with ${processedSection.dataElements.length} Data Elements`);
+        
         sections.push(processedSection);
       });
+    } else {
+      console.log('📋 No program stage sections found in metadata');
     }
 
+    console.log(`✅ Processed ${sections.length} sections from stage metadata`);
     return sections;
   }
 
@@ -374,28 +464,104 @@ class DHIS2APIService {
    */
   extractAllDataElementsFromMetadata(stageMetadata) {
     const allDataElements = [];
+    let sectionElementsCount = 0;
+    let stageElementsCount = 0;
 
-    if (stageMetadata.programStageSections) {
-      stageMetadata.programStageSections.forEach(section => {
-        if (section.dataElements) {
-          section.dataElements.forEach((de, index) => {
-            allDataElements.push({
+    console.log('🔍 Extracting Data Elements from stage metadata...');
+
+    // Extract Data Elements from program stage sections (if any)
+    if (stageMetadata.programStageSections && stageMetadata.programStageSections.length > 0) {
+      console.log(`📋 Processing ${stageMetadata.programStageSections.length} program stage sections...`);
+      
+      stageMetadata.programStageSections.forEach((section, sectionIndex) => {
+        console.log(`  📂 Section ${sectionIndex + 1}: "${section.name || section.displayName}"`);
+        
+        if (section.dataElements && section.dataElements.length > 0) {
+          console.log(`    📝 Found ${section.dataElements.length} Data Elements in section`);
+          
+          section.dataElements.forEach((de, deIndex) => {
+            const element = {
               id: `psde_${de.id}`,
-              displayName: de.displayFormName || de.name || `Field ${index + 1}`,
-              sortOrder: index,
+              displayName: de.displayFormName || de.name || `Field ${deIndex + 1}`,
+              sortOrder: allDataElements.length,
               compulsory: de.compulsory || false,
               allowProvidedElsewhere: false,
+              sectionName: section.name || section.displayName,
+              sectionIndex: sectionIndex,
               dataElement: {
                 id: de.id,
-                displayName: de.displayFormName || de.name || `Field ${index + 1}`,
-                shortName: de.name || `field_${index + 1}`,
+                displayName: de.displayFormName || de.name || `Field ${deIndex + 1}`,
+                shortName: de.name || `field_${deIndex + 1}`,
                 valueType: de.valueType || 'TEXT',
                 optionSet: de.optionSet
               }
-            });
+            };
+            
+            allDataElements.push(element);
+            sectionElementsCount++;
+            
+            console.log(`      ✅ Added: ${element.displayName} (${de.valueType || 'UNKNOWN'})`);
           });
+        } else {
+          console.log(`    ⚠️ No Data Elements found in section "${section.name || section.displayName}"`);
         }
       });
+    } else {
+      console.log('📋 No program stage sections found');
+    }
+
+    // Extract Data Elements directly from program stage (if no sections or additional elements)
+    if (stageMetadata.programStageDataElements && stageMetadata.programStageDataElements.length > 0) {
+      console.log(`📝 Processing ${stageMetadata.programStageDataElements.length} direct program stage Data Elements...`);
+      
+      stageMetadata.programStageDataElements.forEach((de, index) => {
+        // Check if this element is already included from sections
+        const existingElement = allDataElements.find(elem => elem.dataElement.id === de.id);
+        if (!existingElement) {
+          const element = {
+            id: `psde_${de.id}`,
+            displayName: de.displayName || de.name || `Field ${index + 1}`,
+            sortOrder: allDataElements.length,
+            compulsory: de.compulsory || false,
+            allowProvidedElsewhere: de.allowProvidedElsewhere || false,
+            sectionName: 'Direct Stage Assignment',
+            sectionIndex: -1,
+            dataElement: {
+              id: de.id,
+              displayName: de.displayName || de.name || `Field ${index + 1}`,
+              shortName: de.name || `field_${index + 1}`,
+              valueType: de.valueType || 'TEXT',
+              optionSet: de.optionSet
+            }
+          };
+          
+          allDataElements.push(element);
+          stageElementsCount++;
+          
+          console.log(`  ✅ Added direct stage element: ${element.displayName} (${de.valueType || 'UNKNOWN'})`);
+        } else {
+          console.log(`  ⚠️ Skipped duplicate: ${de.displayName || de.name} (already in sections)`);
+        }
+      });
+    } else {
+      console.log('📝 No direct program stage Data Elements found');
+    }
+
+    console.log(`📊 Data Element extraction summary:`, {
+      fromSections: sectionElementsCount,
+      fromStage: stageElementsCount,
+      total: allDataElements.length,
+      sectionsProcessed: stageMetadata.programStageSections?.length || 0
+    });
+
+    // If no Data Elements found, log a warning
+    if (allDataElements.length === 0) {
+      console.warn('⚠️ No Data Elements found in program stage metadata. This might indicate:');
+      console.warn('   - Program stage has no Data Elements assigned');
+      console.warn('   - Data Elements are assigned at program level, not stage level');
+      console.warn('   - Permission issues accessing the data');
+      console.warn('   - Program stage ID might be incorrect');
+      console.warn('   - API endpoint might not have the right permissions');
     }
 
     return allDataElements;
@@ -597,13 +763,10 @@ class DHIS2APIService {
   }
 }
 
-// Hook for using the API
+// Export a singleton instance for direct use
+export const apiService = new DHIS2APIService();
+
+// Hook for using the API (for components that need it)
 export function useAPI() {
-  const apiRef = useRef(null);
-
-  if (!apiRef.current) {
-    apiRef.current = new DHIS2APIService();
-  }
-
-  return apiRef.current;
+  return apiService;
 } 

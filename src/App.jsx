@@ -8,6 +8,7 @@ import { DebugInfo } from './components/DebugInfo';
 import { LoginPage } from './pages/LoginPage';
 import { HomePage } from './pages/HomePage';
 import { FormPage } from './pages/FormPage';
+import { CSVDemoPage } from './pages/CSVDemoPage';
 
 // Main App Router
 function AppRouter() {
@@ -57,6 +58,7 @@ function AppRouter() {
                 <Route path="/home" element={<HomePage />} />
                 <Route path="/form" element={<FormPage />} />
                 <Route path="/form/:eventId" element={<FormPage />} />
+                <Route path="/csv-demo" element={<CSVDemoPage />} />
                 {/* Default route - go directly to form like Android app */}
                 <Route path="/" element={<Navigate to="/form" replace />} />
                 <Route path="*" element={<Navigate to="/form" replace />} />

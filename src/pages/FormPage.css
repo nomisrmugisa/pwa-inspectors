@@ -445,6 +445,86 @@
   padding-bottom: 20px; /* Add bottom padding for more space */
 }
 
+/* CRITICAL: Force form fields to always be visible */
+.form-field {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 1 !important;
+  overflow: visible !important;
+  max-height: none !important;
+  height: auto !important;
+  min-height: auto !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Ensure form field labels are visible */
+.form-field .form-label {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 1 !important;
+  overflow: visible !important;
+  max-height: none !important;
+  height: auto !important;
+  min-height: auto !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Ensure form inputs are visible */
+.form-field .form-input,
+.form-field .form-select,
+.form-field .form-textarea {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 1 !important;
+  overflow: visible !important;
+  max-height: none !important;
+  height: auto !important;
+  min-height: auto !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* CRITICAL FIX: Override index.css max-height constraint */
+.section-content:not(.collapsed) {
+  max-height: none !important;
+  overflow: visible !important;
+  height: auto !important;
+  min-height: auto !important;
+}
+
+/* CRITICAL: Force sections with data to always be visible */
+.section-content:has(.section-fields) {
+  max-height: none !important;
+  overflow: visible !important;
+  height: auto !important;
+  min-height: auto !important;
+}
+
+/* Ensure collapsed sections are properly hidden */
+.section-content.collapsed {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  border: none !important;
+  margin: 0 !important;
+  height: 0 !important;
+  min-height: 0 !important;
+}
+
 .section-fields {
   width: 100%;
   max-width: 100%;
@@ -453,6 +533,10 @@
   word-wrap: break-word;
   word-break: break-word;
   padding-bottom: 30px; /* Ensure content doesn't overlap with bottom spacing */
+  /* CRITICAL: Ensure no height constraints */
+  max-height: none !important;
+  height: auto !important;
+  min-height: auto !important;
 }
 
 .form-field {
