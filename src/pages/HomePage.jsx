@@ -184,7 +184,7 @@ export function HomePage() {
             className="btn btn-primary btn-large new-form-btn"
             onClick={handleNewForm}
           >
-            📋 New Inspection
+            New Inspection
           </button>
         </div>
       </div>
@@ -247,6 +247,31 @@ export function HomePage() {
           </button>
         </div>
       )}
+
+      {/* CSV Form Demo Section */}
+      <div className="csv-demo-section">
+        <div className="demo-header">
+          <h3>📋 CSV-Based Form Demo</h3>
+          <p>Test the new CSV-based inspection form with section navigation</p>
+        </div>
+        
+        <div className="demo-actions">
+          <button 
+            className="btn btn-info"
+            onClick={() => navigate('/csv-demo')}
+          >
+            🧪 Test CSV Form
+          </button>
+          <p className="demo-description">
+            Experience the improved form with:
+            <br />
+            • Section-by-section navigation
+            • Toggle between single section and all sections view
+            • Clear section indicators
+            • Previous/Next navigation buttons
+          </p>
+        </div>
+      </div>
 
       {/* Forms Section */}
       <div className="forms-section">
@@ -362,4 +387,4 @@ export function HomePage() {
       </div>
     </div>
   );
-} 
+}

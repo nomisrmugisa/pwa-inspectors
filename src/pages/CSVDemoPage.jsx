@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useCSVConfig } from '../hooks/useCSVConfig';
+import { DynamicFormRenderer } from '../components/DynamicFormRenderer';
 import './CSVDemoPage.css';
 
 /**
@@ -16,10 +17,81 @@ export function CSVDemoPage() {
     dhis2Error
   } = useCSVConfig();
 
+  const [csvContent, setCsvContent] = useState('');
+  const [selectedFacilityType, setSelectedFacilityType] = useState('');
+
   // Load DHIS2 data on component mount
   useEffect(() => {
     console.log('🔄 CSVDemoPage: Loading DHIS2 data...');
     loadDHIS2Data();
+    
+    // Load CSV content
+    fetch('/checklist for facilities.csv')
+      .then(response => response.text())
+      .then(content => {
+        setCsvContent(content);
+        console.log('📄 CSV content loaded:', content.length, 'characters');
+      })
+      .catch(error => {
+        console.error('❌ Failed to load CSV:', error);
+        // Fallback to hardcoded CSV content
+        setCsvContent(`,1,2,3,4,5,6,7,8,9,10,11
+,Gynae Clinics,laboratory,Psychology clinic,Eye (opthalmologyoptometry  optician) Clinics,physiotheraphy,dental clinic,ENT clinic,Rehabilitation Centre,Potrait clinic,Radiology,clinic
+SECTION A-ORGANISATION AND MANAGEMENT,,,,,,,,,,,
+Does the clinic have an organisational structure,?,?,?,?,?,?,?,?,?,?,?
+Is the director a medically trained person?,?,?,?,?,?,?,?,?,?,?,?
+SECTION B-STATUTORY REQUIREMENTS,,,,,,,,,,,
+Does the facility have statutory requirements?,,,,,,,,,,,
+Business registration,?,?,?,?,?,?,?,?,?,?,?
+Work permits,?,?,?,?,?,?,?,?,?,?,?
+Lease agreement,?,?,?,?,?,?,,?,?,?,?
+Trading license,?,?,?,?,?,?,?,?,?,?,?
+Permission to operate/set up,?,?,?,,,,,,,,
+Occupancy certificate,?,?,?,?,?,?,?,?,?,?,?
+Patient charter in English & Setswana,?,?,?,?,?,?,?,?,?,?,?
+"Copies of relevant statutory instruments e.g. Public Health Act 2013, Botswana Health Professions Act,2001",?,?,?,?,?,?,?,?,?,?,?
+Is there an indemnity insurance?,?,?,?,?,?,?,?,?,?,?
+Have personnel been cleared by police?,?,?,?,?,?,?,?,?,?,?,?
+contracts for staff,?,?,?,?,?,?,?,?,?,?,?
+letter of permission to set up/operate,?,?,?,?,?,?,?,?,?,?,?
+waste collection carrier licence,?,?,?,?,?,?,?,?,?,?,?
+police clearance for employees,?,?,?,?,?,?,?,?,?,?,?
+confidentiality clause,?,?,?,?,?,?,?,?,?,?,?
+proof of change of land use,?,?,?,?,?,?,?,,,,
+tax clearance certificate,?,?,?,?,?,,?,?,?,?,?
+Practitioners licence,?,?,?,?,?,?,?,?,?,?,?
+Fire clearance,?,?,?,?,?,?,?,?,?,?,?
+work permits,?,?,?,?,?,?,?,?,?,?,?
+residence permit,?,?,?,?,?,,?,?,?,?,?
+contracts for staff,?,?,?,?,?,?,?,?,?,?,?
+,,,,,,,,,,,
+,,,,,,,,,,,
+SECTION C-POLICIES AND PROCEDURES,,,,,,,,,,,
+Does the clinic have policies and procedures for the following?,,,,,,,,,,,
+referral systems,?,?,?,?,?,?,?,?,?,?,?
+assessment of patients,?,?,?,?,?,?,?,?,?,?,?
+treatment protocols,?,?,?,?,?,?,?,?,?,?,?
+testing and treatment techniques,?,?,?,?,?,?,?,?,?,?,?
+"high risk patients and procedures, and",?,?,?,?,?,?,?,?,?,?,?
+the confidentiality of patient information,?,?,?,?,?,?,?,?,?,?,?
+incident reporting,?,?,?,?,?,?,?,?,?,?,?
+Induction and orientation,?,?,?,?,?,?,?,?,?,?,?
+patient consent,?,?,?,?,?,?,?,?,?,?,?
+Linen management,?,?,?,?,?,?,?,?,?,?,?
+Equipment maintenance plan/program,?,?,?,?,?,?,?,?,?,?,?
+Testing and commissioning certificates,?,?,?,?,?,?,?,?,?,?,?
+Infection prevention and control,?,?,?,?,?,?,?,?,?,?,?
+Management of patient records and retention times,?,?,?,?,?,?,?,?,?,?,?
+Management of information ,?,?,?,?,?,?,?,?,?,?,?
+Risk management ,?,?,?,?,?,?,?,?,?,?,?
+Management of supplies,?,?,?,?,?,?,?,?,?,?,?
+Patient observation,?,?,?,?,?,?,?,?,?,?,?
+Management of medication,?,?,?,?,?,?,?,?,?,?,?
+Post exposure prophylaxis,?,?,?,?,?,?,?,?,?,?,?
+Complaints procedure,?,?,?,?,?,?,?,?,?,?,?
+Outreach services,?,?,?,?,?,?,?,?,?,?,?
+Waste management,?,?,?,?,?,?,?,?,?,?,?`);
+      });
   }, [loadDHIS2Data]);
 
   return (
@@ -161,6 +233,49 @@ export function CSVDemoPage() {
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* CSV Form Demo */}
+      {csvContent && (
+        <div className="csv-form-demo">
+          <h3>📄 CSV Form Demo</h3>
+          <p>
+            This section demonstrates the DynamicFormRenderer with a CSV configuration.
+            It will render a form based on the structure of the CSV file.
+          </p>
+          
+          {/* Facility Type Selector */}
+          <div className="facility-type-selector">
+            <label htmlFor="facilityType">Select Facility Type:</label>
+            <select
+              id="facilityType"
+              value={selectedFacilityType}
+              onChange={(e) => setSelectedFacilityType(e.target.value)}
+            >
+              <option value="">Choose a facility type...</option>
+              <option value="Gynae Clinics">Gynae Clinics</option>
+              <option value="laboratory">Laboratory</option>
+              <option value="Psychology clinic">Psychology Clinic</option>
+              <option value="Eye (opthalmologyoptometry  optician) Clinics">Eye Clinics</option>
+              <option value="physiotheraphy">Physiotherapy</option>
+              <option value="dental clinic">Dental Clinic</option>
+              <option value="ENT clinic">ENT Clinic</option>
+              <option value="Rehabilitation Centre">Rehabilitation Centre</option>
+              <option value="Potrait clinic">Potrait Clinic</option>
+              <option value="Radiology">Radiology</option>
+              <option value="clinic">General Clinic</option>
+            </select>
+          </div>
+          
+          {selectedFacilityType && (
+            <DynamicFormRenderer
+              csvContent={csvContent}
+              facilityType={selectedFacilityType}
+              dhis2DataElements={dhis2DataElements}
+              showDebugPanel={true}
+            />
+          )}
         </div>
       )}
 

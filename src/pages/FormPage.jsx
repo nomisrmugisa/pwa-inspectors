@@ -4,7 +4,7 @@ import { useApp } from '../contexts/AppContext';
 import { useAPI } from '../hooks/useAPI';
 
 // Form field component for individual data elements
-function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoading = false, readOnly = false, getCurrentPosition, formatCoordinatesForDHIS2, showDebugPanel = false }) {
+function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoading = false, readOnly = false, getCurrentPosition, formatCoordinatesForDHIS2 }) {
   const { dataElement } = psde;
   const fieldId = `dataElement_${dataElement.id}`;
   
@@ -41,48 +41,19 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       fieldName.includes(pattern.toLowerCase())
     );
     
-    // Specific debugging for counseling service field
-    if (fieldName.includes('counseling') || fieldName.includes('independent')) {
-      // Only log in debug mode
-      if (showDebugPanel) {
-        console.log(`🔍 Counseling field detected: "${dataElement.displayName}"`);
-        console.log(`   Field name: "${fieldName}", Excluded: ${isExcluded}, Mandatory: ${!isExcluded}`);
-      }
-    }
+    // Specific debugging for counseling service field removed
     
     // If field is excluded, it's not mandatory regardless of other conditions
     if (isExcluded) {
-      // Only log in debug mode
-      if (showDebugPanel) {
-        console.log(`🚫 Field excluded from mandatory: "${dataElement.displayName}"`);
-        console.log(`   Field name: "${fieldName}", Excluded: true`);
-      }
       return false;
     }
     
     const isMandatory = isCompulsory || mandatoryFieldNames.some(name => fieldName.includes(name));
     
-    // Debug logging for service fields (only in debug mode)
-    if (fieldName.includes('service') && showDebugPanel) {
-      console.log(`🔍 Service field detected: "${dataElement.displayName}" - Mandatory: ${isMandatory}`);
-      console.log(`   Field name: "${fieldName}", Compulsory: ${isCompulsory}`);
-    }
-    
     return isMandatory;
   };
 
   const renderField = () => {
-    // Debug logging for field rendering
-    if (showDebugPanel) {
-      console.log(`🎨 Rendering field "${dataElement.displayName}":`, {
-        valueType: dataElement.valueType,
-        hasOptionSet: !!dataElement.optionSet,
-        optionSetOptions: dataElement.optionSet?.options?.length || 0,
-        dynamicOptions: dynamicOptions,
-        readOnly: readOnly,
-        isLoading: isLoading
-      });
-    }
     
     // ALWAYS log field rendering for debugging
     console.log(`🎨 ALWAYS LOG: Rendering field "${dataElement.displayName}":`, {
@@ -98,9 +69,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
     // Handle dynamic service dropdown (overrides static optionSet)
     if (dynamicOptions !== null) {
       const isMandatory = isMandatoryField();
-      if (showDebugPanel) {
-        console.log(`🔄 Using dynamic service dropdown for "${dataElement.displayName}"`);
-      }
       console.log(`🔄 ALWAYS LOG: Using dynamic service dropdown for "${dataElement.displayName}"`);
       return (
         <select
@@ -127,18 +95,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
     // First check if field has optionSet (dropdown), regardless of valueType
     if (dataElement.optionSet && dataElement.optionSet.options) {
-      if (showDebugPanel) {
-        console.log(`📋 Dropdown field "${dataElement.displayName}":`, {
-          optionSetId: dataElement.optionSet.id,
-          optionsCount: dataElement.optionSet.options.length,
-          options: dataElement.optionSet.options.map(opt => ({
-            id: opt.id,
-            code: opt.code,
-            displayName: opt.displayName,
-            sortOrder: opt.sortOrder
-          }))
-        });
-      }
       
       console.log(`📋 ALWAYS LOG: Dropdown field "${dataElement.displayName}":`, {
         optionSetId: dataElement.optionSet.id,
@@ -171,22 +127,9 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       );
     }
     
-    // Debug: Check if field should have options but doesn't
-    if (showDebugPanel && (dataElement.displayName || '').toLowerCase().includes('equipped') || 
-        (dataElement.displayName || '').toLowerCase().includes('gloves') || 
-        (dataElement.displayName || '').toLowerCase().includes('sharps')) {
-      console.log(`⚠️ Field "${dataElement.displayName}" might be missing options:`, {
-        hasOptionSet: !!dataElement.optionSet,
-        optionSet: dataElement.optionSet,
-        valueType: dataElement.valueType,
-        dataElement: dataElement
-      });
-    }
+    // Debug: Check if field should have options but doesn't - removed
 
     // Then handle by valueType
-    if (showDebugPanel) {
-      console.log(`🎯 Field "${dataElement.displayName}" using valueType switch (${dataElement.valueType})`);
-    }
     
     console.log(`🎯 ALWAYS LOG: Field "${dataElement.displayName}" using valueType switch (${dataElement.valueType})`);
     
@@ -474,9 +417,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
       default:
         // Default to text input
-        if (showDebugPanel) {
-          console.log(`⚠️ Field "${dataElement.displayName}" using default text input (valueType: ${dataElement.valueType})`);
-        }
         console.log(`⚠️ ALWAYS LOG: Field "${dataElement.displayName}" using default text input (valueType: ${dataElement.valueType})`);
         return (
           <input
@@ -495,36 +435,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
   return (
     <div className="form-field">
-      {/* TEST: Very visible indicator that FormField is rendering */}
-      <div style={{
-        backgroundColor: '#ff0000',
-        border: '3px solid #cc0000',
-        padding: '10px',
-        margin: '10px 0',
-        borderRadius: '8px',
-        fontSize: '16px',
-        color: 'white',
-        fontWeight: 'bold',
-        textAlign: 'center',
-        zIndex: 9999,
-        position: 'relative'
-      }}>
-        🚨 FORM FIELD IS RENDERING: {dataElement.displayName}
-      </div>
-      
-      {/* TEST: Visible indicator that FormField is rendering */}
-      <div style={{
-        backgroundColor: '#ff9800',
-        border: '1px solid #f57c00',
-        padding: '2px 6px',
-        margin: '2px 0',
-        borderRadius: '3px',
-        fontSize: '8px',
-        color: 'white',
-        fontWeight: 'bold'
-      }}>
-        🎯 FormField RENDERED
-      </div>
+      {/* Test indicators removed */}
       
       <label htmlFor={fieldId} className="form-label">
         {dataElement.displayName}
@@ -537,7 +448,13 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 }
 
   // Section component for organizing form fields
-  function FormSection({ section, formData, onChange, errors, serviceSections, loadingServiceSections, readOnlyFields = {}, getCurrentPosition, formatCoordinatesForDHIS2, showDebugPanel, isFieldMandatory, facilityClassifications = [], loadingFacilityClassifications = false, inspectionInfoConfirmed = false, setInspectionInfoConfirmed = () => {}, areAllInspectionFieldsComplete = () => false }) {
+  function FormSection({ section, formData, onChange, errors, serviceSections, loadingServiceSections, readOnlyFields = {}, getCurrentPosition, formatCoordinatesForDHIS2, isFieldMandatory, facilityClassifications = [], loadingFacilityClassifications = false, inspectionInfoConfirmed = false, setInspectionInfoConfirmed = () => {}, areAllInspectionFieldsComplete = () => false, showDebugPanel = false }) {
+    // Safety check - if section is undefined, return null
+    if (!section) {
+      console.warn('🚨 FormSection: section prop is undefined, returning null');
+      return null;
+    }
+
     // IMMEDIATE DEBUGGING - Log everything that comes into this component
     console.log('🚨 FormSection RENDERED with props:', {
       sectionName: section?.displayName,
@@ -547,7 +464,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       formDataKeys: Object.keys(formData || {}),
       errorsKeys: Object.keys(errors || {}),
       readOnlyFieldsKeys: Object.keys(readOnlyFields || {}),
-      showDebugPanel,
       inspectionInfoConfirmed,
       hasDataElements: !!(section?.dataElements && section.dataElements.length > 0)
     });
@@ -561,6 +477,11 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
     // Function to determine if a field should use dynamic service dropdown
     const isServiceField = (dataElement) => {
+      // Safety check
+      if (!dataElement || !dataElement.displayName) {
+        return false;
+      }
+      
       const fieldName = (dataElement.displayName || dataElement.shortName || '').toLowerCase();
       
       // Exclude fields that are about supplies, even if they contain 'service'
@@ -572,7 +493,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
     };
         
     // Count mandatory fields in this section
-    const mandatoryFieldsCount = (section.dataElements || []).filter(psde => isFieldMandatory(psde)).length;
+    const mandatoryFieldsCount = (section.dataElements || []).filter(psde => psde && psde.dataElement && isFieldMandatory(psde)).length;
 
     // Always show sections with data elements
     const hasDataElements = section.dataElements && section.dataElements.length > 0;
@@ -621,168 +542,21 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
           )}
 
           <div className="section-fields">
-            {/* Debug info */}
-            {showDebugPanel && (
-              <div style={{ 
-                backgroundColor: '#e8f5e8', 
-                border: '1px solid #4caf50', 
-                padding: '8px', 
-                margin: '8px 0',
-                borderRadius: '4px',
-                fontSize: '12px'
-              }}>
-                🔍 DEBUG: Section "{section.displayName}" has {section.dataElements?.length || 0} data elements
-              </div>
-            )}
+            {/* Debug info removed */}
 
-            {/* DEBUG: Show raw data elements info */}
-            <div style={{ 
-              backgroundColor: '#fff3cd', 
-              border: '1px solid #ffc107', 
-              padding: '8px', 
-              margin: '8px 0',
-              borderRadius: '4px',
-              fontSize: '10px',
-              fontFamily: 'monospace'
-            }}>
-              🔍 RAW DATA: section.dataElements = {JSON.stringify(section.dataElements?.slice(0, 2), null, 2)}
-              {section.dataElements && section.dataElements.length > 2 && (
-                <span style={{ color: '#666' }}>... and {section.dataElements.length - 2} more</span>
-              )}
-            </div>
+            {/* All debug sections removed */}
 
-            {/* DEBUG: Show formData for this section */}
-            <div style={{ 
-              backgroundColor: '#e1f5fe', 
-              border: '1px solid #03a9f4', 
-              padding: '8px', 
-              margin: '8px 0',
-              borderRadius: '4px',
-              fontSize: '10px',
-              fontFamily: 'monospace'
-            }}>
-              🔍 FORMDATA: Current values for this section:
-              {section.dataElements?.map(psde => {
-                const fieldId = `dataElement_${psde.dataElement.id}`;
-                const value = formData[fieldId];
-                return (
-                  <div key={fieldId} style={{ margin: '2px 0', padding: '2px 4px', backgroundColor: '#fff', borderRadius: '2px' }}>
-                    {fieldId}: {value !== undefined ? `"${value}"` : 'undefined'}
-                  </div>
-                );
-              })}
-            </div>
 
-            {/* DEBUG: Show errors for this section */}
-            <div style={{ 
-              backgroundColor: '#ffebee', 
-              border: '1px solid #f44336', 
-              padding: '8px', 
-              margin: '8px 0',
-              borderRadius: '4px',
-              fontSize: '10px',
-              fontFamily: 'monospace'
-            }}>
-              🔍 ERRORS: Current errors for this section:
-              {section.dataElements?.map(psde => {
-                const fieldId = `dataElement_${psde.dataElement.id}`;
-                const error = errors[fieldId];
-                return (
-                  <div key={fieldId} style={{ margin: '2px 0', padding: '2px 4px', backgroundColor: '#fff', borderRadius: '2px' }}>
-                    {fieldId}: {error || 'no error'}
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* DEBUG: Show readOnlyFields for this section */}
-            <div style={{ 
-              backgroundColor: '#f3e5f5', 
-              border: '1px solid #9c27b0', 
-              padding: '8px', 
-              margin: '8px 0',
-              borderRadius: '4px',
-              fontSize: '10px',
-              fontFamily: 'monospace'
-            }}>
-              🔍 READONLY: Current readOnly status for this section:
-              {section.dataElements?.map(psde => {
-                const fieldId = `dataElement_${psde.dataElement.id}`;
-                const readOnly = readOnlyFields[fieldId];
-                return (
-                  <div key={fieldId} style={{ margin: '2px 0', padding: '2px 4px', backgroundColor: '#fff', borderRadius: '2px' }}>
-                    {fieldId}: {readOnly ? 'READONLY' : 'EDITABLE'}
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* DEBUG: Show service sections info */}
-            <div style={{ 
-              backgroundColor: '#e8f5e8', 
-              border: '1px solid #4caf50', 
-              padding: '8px', 
-              margin: '8px 0',
-              borderRadius: '4px',
-              fontSize: '10px',
-              fontFamily: 'monospace'
-            }}>
-              🔍 SERVICE SECTIONS: 
-              loadingServiceSections: {loadingServiceSections ? 'true' : 'false'}, 
-              serviceSections count: {serviceSections?.length || 0}
-              {serviceSections && serviceSections.length > 0 && (
-                <div style={{ marginTop: '4px' }}>
-                  First few: {serviceSections.slice(0, 3).join(', ')}
-                  {serviceSections.length > 3 && `... and ${serviceSections.length - 3} more`}
-                </div>
-              )}
-            </div>
-
-            {/* DEBUG: Show which fields are service fields */}
-            <div style={{ 
-              backgroundColor: '#fff8e1', 
-              border: '1px solid #ffc107', 
-              padding: '8px', 
-              margin: '8px 0',
-              borderRadius: '4px',
-              fontSize: '10px',
-              fontFamily: 'monospace'
-            }}>
-              🔍 SERVICE FIELD DETECTION:
-              {section.dataElements?.map(psde => {
-                const isDynamicServiceField = isServiceField(psde.dataElement);
-                return (
-                  <div key={psde.dataElement.id} style={{ margin: '2px 0', padding: '2px 4px', backgroundColor: '#fff', borderRadius: '2px' }}>
-                    {psde.dataElement.displayName}: {isDynamicServiceField ? 'SERVICE FIELD' : 'regular field'}
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* DEBUG: Show which fields are mandatory fields */}
-            <div style={{ 
-              backgroundColor: '#ffebee', 
-              border: '1px solid #f44336', 
-              padding: '8px', 
-              margin: '8px 0',
-              borderRadius: '4px',
-              fontSize: '10px',
-              fontFamily: 'monospace'
-            }}>
-              🔍 MANDATORY FIELD DETECTION:
-              {section.dataElements?.map(psde => {
-                const isMandatory = isFieldMandatory(psde);
-                return (
-                  <div key={psde.dataElement.id} style={{ margin: '2px 0', padding: '2px 4px', backgroundColor: '#fff', borderRadius: '2px' }}>
-                    {psde.dataElement.displayName}: {isMandatory ? 'MANDATORY' : 'optional'} (compulsory: {psde.compulsory ? 'true' : 'false'})
-                  </div>
-                );
-              })}
-            </div>
 
             {/* Render all data elements */}
             {section.dataElements && section.dataElements.length > 0 ? (
               section.dataElements.map((psde, index) => {
+                // Safety check for psde and dataElement
+                if (!psde || !psde.dataElement) {
+                  console.warn('🚨 FormSection: Invalid psde or dataElement:', psde);
+                  return null;
+                }
+                
                 const isDynamicServiceField = isServiceField(psde.dataElement);
                 
                 // Log field rendering for debugging
@@ -798,19 +572,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
                 return (
                   <div key={`field-container-${psde.dataElement.id}-${index}`}>
-                    {/* TEST: Simple div to verify the mapping loop is working */}
-                    <div style={{
-                      backgroundColor: '#e8f5e8',
-                      border: '1px solid #4caf50',
-                      padding: '4px 8px',
-                      margin: '4px 0',
-                      borderRadius: '4px',
-                      fontSize: '10px',
-                      color: '#2e7d32'
-                    }}>
-                      🔍 FIELD {index + 1}: "{psde.dataElement.displayName}" (Type: {psde.dataElement.valueType})
-                    </div>
-                    
                     <FormField
                       key={`${psde.dataElement.id}-${index}`}
                       psde={psde}
@@ -829,11 +590,10 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
                       readOnly={!!readOnlyFields[`dataElement_${psde.dataElement.id}`]}
                       getCurrentPosition={getCurrentPosition}
                       formatCoordinatesForDHIS2={formatCoordinatesForDHIS2}
-                      showDebugPanel={showDebugPanel}
                     />
                   </div>
                 );
-              })
+              }).filter(Boolean) // Filter out null values
             ) : (
               <div style={{ 
                 backgroundColor: '#fff3cd', 
@@ -915,6 +675,9 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
   // Main FormPage component
   function FormPage() {
+    // Disable all debug panels (formerly controlled by state)
+    const showDebugPanel = false;
+    
     const { eventId } = useParams();
     const navigate = useNavigate();
     // const api = useAPI();
@@ -990,16 +753,17 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 SECTION A-ORGANISATION AND MANAGEMENT,,,,,,,,,,,
 Does the clinic have an organisational structure,?,?,?,?,?,?,?,?,?,?,?
 Is the director a medically trained person?,?,?,?,?,?,?,?,?,?,?,?
+SECTION B-STATUTORY REQUIREMENTS,,,,,,,,,,,
 Does the facility have statutory requirements?,,,,,,,,,,,
 Business registration,?,?,?,?,?,?,?,?,?,?,?
 Work permits,?,?,?,?,?,?,?,?,?,?,?
 Lease agreement,?,?,?,?,?,?,,?,?,?,?
 Trading license,?,?,?,?,?,?,?,?,?,?,?
-Permission to operate/set up,?,?,,,,,,,,
+Permission to operate/set up,?,?,?,,,,,,,,
 Occupancy certificate,?,?,?,?,?,?,?,?,?,?,?
 Patient charter in English & Setswana,?,?,?,?,?,?,?,?,?,?,?
 "Copies of relevant statutory instruments e.g. Public Health Act 2013, Botswana Health Professions Act,2001",?,?,?,?,?,?,?,?,?,?,?
-Is there an indemnity insurance?,?,?,?,?,?,?,?,?,?,?,?
+Is there an indemnity insurance?,?,?,?,?,?,?,?,?,?,?
 Have personnel been cleared by police?,?,?,?,?,?,?,?,?,?,?,?
 contracts for staff,?,?,?,?,?,?,?,?,?,?,?
 letter of permission to set up/operate,?,?,?,?,?,?,?,?,?,?,?
@@ -1008,13 +772,14 @@ police clearance for employees,?,?,?,?,?,?,?,?,?,?,?
 confidentiality clause,?,?,?,?,?,?,?,?,?,?,?
 proof of change of land use,?,?,?,?,?,?,?,,,,
 tax clearance certificate,?,?,?,?,,?,?,?,?,?
-Practitioner's licence,?,?,?,?,?,?,?,?,?,?,?
+Practitioners licence,?,?,?,?,?,?,?,?,?,?,?
 Fire clearance,?,?,?,?,?,?,?,?,?,?,?
 work permits,?,?,?,?,?,?,?,?,?,?,?
 residence permit,?,?,?,,?,?,?,?,?,?
 contracts for staff,?,?,?,?,?,?,?,?,?,?,?
 ,,,,,,,,,,,
 ,,,,,,,,,,,
+SECTION C-POLICIES AND PROCEDURES,,,,,,,,,,,
 Does the clinic have policies and procedures for the following?,,,,,,,,,,,
 referral systems,?,?,?,?,?,?,?,?,?,?,?
 assessment of patients,?,?,?,?,?,?,?,?,?,?,?
@@ -1200,7 +965,8 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
               longitude: longitude.toFixed(6),
               accuracy: position.coords.accuracy ? `${position.coords.accuracy.toFixed(2)}m` : 'Unknown',
               timestamp: new Date(position.timestamp).toLocaleString(),
-              fieldId: 'auto-assigned'
+              fieldId: 'auto-assigned',
+              dhis2Format: coordinates
             });
 
             showToast(`Auto-assigned GPS coordinates to ${coordinateFields.length} field(s): ${coordinates}`, 'success');
@@ -1253,7 +1019,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
     });
     const [readOnlyFields, setReadOnlyFields] = useState({});
     const [errors, setErrors] = useState({});
-    const [showDebugPanel, setShowDebugPanel] = useState(false); // Hide debug panel by default
+    // Debug panel removed - no longer needed
     const [isDraft, setIsDraft] = useState(false);
     // const [currentUser, setCurrentUser] = useState(null);
     const [serviceSections, setServiceSections] = useState([]);
@@ -1275,69 +1041,23 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     const fetchTrackedEntityInstance = async (facilityId) => {
       try {
-        const apiEndpoint = `/api/trackedEntityInstances?ou=${facilityId}&program=EE8yeLVo6cN&fields=trackedEntityInstance&ouMode=DESCENDANTS`;
-        const fullUrl = `${import.meta.env.VITE_DHIS2_URL}${apiEndpoint}`;
-        
-        // Only log detailed information in debug mode
-        if (showDebugPanel) {
-          console.log('🔍 Fetching Tracked Entity Instance for facility:', facilityId);
-          console.log('🌐 API Endpoint:', apiEndpoint);
-          console.log('🔗 Full URL:', fullUrl);
-          console.log('📤 Request Method: GET');
-          console.log('📋 Request Headers:', {
-            'Content-Type': 'application/json',
-            'Authorization': 'Basic ' + btoa(import.meta.env.VITE_DHIS2_USERNAME + ':' + import.meta.env.VITE_DHIS2_PASSWORD)
-          });
-          console.log('📊 Query Parameters:', {
-            ou: facilityId,
-            program: 'EE8yeLVo6cN',
-            fields: 'trackedEntityInstance',
-            ouMode: 'DESCENDANTS'
-          });
-        }
+        const apiEndpoint = `/api/trackedEntityInstances?ou=${facilityId}&program=EE8yeLVoN&fields=trackedEntityInstance&ouMode=DESCENDANTS`;
         
         // Use the API service instead of direct fetch
         const response = await api.request(apiEndpoint);
-        
-        // Only log detailed response information in debug mode
-        if (showDebugPanel) {
-          console.log('📡 TEI API Response Status: Success');
-          console.log('📡 TEI API Response Body:', JSON.stringify(response, null, 2));
-          console.log('📡 TEI API Response Structure:', {
-            hasTrackedEntityInstances: !!response.trackedEntityInstances,
-            trackedEntityInstancesCount: response.trackedEntityInstances?.length || 0,
-            responseKeys: Object.keys(response)
-          });
-        }
         
         if (response.trackedEntityInstances && response.trackedEntityInstances.length > 0) {
           const tei = response.trackedEntityInstances[0].trackedEntityInstance;
           if (tei && tei.trim() !== '') {
           setTrackedEntityInstance(tei);
-          if (showDebugPanel) {
-            console.log('✅ Tracked Entity Instance found:', tei);
-          }
           } else {
-            if (showDebugPanel) {
-              console.log('⚠️ TEI found but is empty or invalid:', tei);
-            }
             setTrackedEntityInstance(null);
           }
         } else {
-          if (showDebugPanel) {
-            console.log('ℹ️ No Tracked Entity Instance found for facility');
-          }
           setTrackedEntityInstance(null);
         }
       } catch (error) {
         console.error('❌ Failed to fetch Tracked Entity Instance:', error);
-        if (showDebugPanel) {
-          console.log('🔍 Error details:', {
-            message: error.message,
-            status: error.status,
-            url: `/api/trackedEntityInstances?ou=${facilityId}&program=EE8yeLVo6cN&fields=trackedEntityInstance&ouMode=DESCENDANTS`
-          });
-        }
         setTrackedEntityInstance(null);
       }
     };
@@ -1419,9 +1139,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
       const { startDate, endDate } = a.assignment.inspectionPeriod || {};
       
       if (!startDate || !endDate) {
-        if (showDebugPanel) {
-          console.log(`⚠️ Assignment for ${a.facility.name} missing inspection period dates`);
-        }
         return false;
       }
       
@@ -1433,16 +1150,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
         
         // Check if dates are valid
         if (!start || !end || !todayDate) {
-          if (showDebugPanel) {
-            console.log(`⚠️ Invalid date format for ${a.facility.name}:`, { 
-              startDate, 
-              endDate, 
-              today,
-              parsedStart: start,
-              parsedEnd: end,
-              parsedToday: todayDate
-            });
-          }
           return false;
         }
         
@@ -1453,17 +1160,8 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
         
         const isActive = start <= todayDate && todayDate <= end;
         
-        if (showDebugPanel) {
-          console.log(`🔍 Facility: ${a.facility.name}, Period: ${startDate} to ${endDate}, Today: ${today}, Active: ${isActive}`);
-          console.log(`   Parsed dates: Start: ${start.toISOString()}, End: ${end.toISOString()}, Today: ${todayDate.toISOString()}`);
-          console.log(`   Date comparison: ${start.toISOString()} <= ${todayDate.toISOString()} <= ${end.toISOString()}`);
-        }
-        
         return isActive;
       } catch (error) {
-        if (showDebugPanel) {
-          console.error(`❌ Error processing dates for ${a.facility.name}:`, error);
-        }
         return false;
       }
     }).map(a => ({
@@ -1471,35 +1169,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
       name: a.facility.name
     }));
 
-    if (showDebugPanel) {
-      console.log('✅ Active facilities for today:', activeFacilities);
-      console.log('📅 All assignments:', safeUserAssignments.map(a => ({
-        facility: a.facility.name,
-        period: a.assignment.inspectionPeriod,
-        hasValidDates: !!(a.assignment.inspectionPeriod?.startDate && a.assignment.inspectionPeriod?.endDate)
-      })));
-           console.log('🔍 Date filtering details:', {
-         today,
-         totalAssignments: safeUserAssignments.length,
-         assignmentsWithDates: safeUserAssignments.filter(a => a.assignment.inspectionPeriod?.startDate && a.assignment.inspectionPeriod?.endDate).length,
-         activeFacilitiesCount: activeFacilities.length,
-         hasActiveFacilities
-       });
-      
-           // Additional debugging for data structure issues
-       if (safeUserAssignments.length > 0) {
-         console.log('🔍 Sample assignment structure:', {
-           firstAssignment: safeUserAssignments[0],
-           hasFacility: !!safeUserAssignments[0]?.facility,
-           hasAssignment: !!safeUserAssignments[0]?.assignment,
-           hasInspectionPeriod: !!safeUserAssignments[0]?.assignment?.inspectionPeriod,
-           inspectionPeriodKeys: safeUserAssignments[0]?.assignment?.inspectionPeriod ? Object.keys(safeUserAssignments[0].assignment.inspectionPeriod) : [],
-           startDateType: typeof safeUserAssignments[0]?.assignment?.inspectionPeriod?.startDate,
-           endDateType: typeof safeUserAssignments[0]?.assignment?.inspectionPeriod?.endDate,
-           dateFilteringResult: hasActiveFacilities ? 'Active facilities found' : 'No active facilities'
-         });
-       }
-    }
+    // Debug logging removed
 
     const uniqueFacilities = activeFacilities; // Only show facilities with active assignments for today
 
@@ -1563,13 +1233,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
           }))
       : uniqueFacilities; // Only show active facilities, no fallback
 
-    if (showDebugPanel) {
-      console.log('🏥 Final facilities for dropdown:', {
-        finalFacilities: finalFacilities.length,
-        source: showAllFacilities ? 'all' : 'active',
-        facilities: finalFacilities.map(f => ({ id: f.id, name: f.name }))
-      });
-    }
+    // Debug logging removed
 
     // Get the selected assignment for the chosen facility
     const selectedAssignment = safeUserAssignments.find(a => a.facility.id === (typeof formData.orgUnit === 'string' ? formData.orgUnit : formData.orgUnit?.id));
@@ -1617,6 +1281,38 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
         }));
       }
     }, [configuration, formData.orgUnit]);
+
+    // Auto-select first available facility when user assignments load
+    useEffect(() => {
+      if (safeUserAssignments.length > 0 && !formData.orgUnit && activeFacilities.length > 0) {
+        const firstActiveFacility = activeFacilities[0];
+        if (firstActiveFacility && firstActiveFacility.id) {
+          console.log('🏥 Auto-selecting first available facility:', firstActiveFacility.name);
+          setFormData(prev => ({
+            ...prev,
+            orgUnit: firstActiveFacility.id
+          }));
+          
+          // Also auto-set the event date to today if not set
+          if (!formData.eventDate) {
+            const today = new Date().toISOString().split('T')[0];
+            setFormData(prev => ({
+              ...prev,
+              eventDate: today
+            }));
+            console.log('📅 Auto-setting event date to today:', today);
+          }
+          
+          // Trigger facility classification fetch for the auto-selected facility
+          setTimeout(() => {
+            if (api) {
+              console.log('🔍 Auto-triggering facility classification fetch for:', firstActiveFacility.id);
+              fetchFacilityClassification(firstActiveFacility.id);
+            }
+          }, 100); // Small delay to ensure formData is updated
+        }
+      }
+    }, [safeUserAssignments, activeFacilities, formData.orgUnit, formData.eventDate, api]);
 
     // Auto-assign GPS coordinates when form loads
     useEffect(() => {
@@ -2440,175 +2136,9 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
             </div>
           </div>
 
-          {/* Debug Panel - Collapsed by default */}
-          {showDebugPanel && (
-            <div className="debug-panel" style={{
-              backgroundColor: '#f5f5f5',
-              border: '1px solid #ddd',
-              borderRadius: '8px',
-              padding: '16px',
-              margin: '16px 0',
-              fontFamily: 'monospace',
-              fontSize: '12px'
-            }}>
-              <div style={{ 
-                display: 'flex', 
-                justifyContent: 'space-between', 
-                alignItems: 'center',
-                marginBottom: '12px'
-              }}>
-                <h3 style={{ margin: 0, color: '#333' }}>🔍 Debug Information</h3>
-                <button
-                  type="button"
-                  onClick={() => setShowDebugPanel(!showDebugPanel)}
-                  style={{
-                    backgroundColor: '#007bff',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    padding: '4px 8px',
-                    fontSize: '10px',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Hide Debug
-                </button>
-              </div>
-              
-              {/* Current Form State */}
-              <div style={{ marginBottom: '12px' }}>
-                <strong>Current Form State:</strong>
-                <div style={{ marginLeft: '16px' }}>
-                  <div>🏥 Selected Facility: {formData.orgUnit || 'None'}</div>
-                  {formData.orgUnit && (
-                    <div>🔍 Facility Name: {
-                      finalFacilities.find(f => f.id === formData.orgUnit)?.name || 'Unknown'
-                    }</div>
-                  )}
-                   <div>📅 Inspection Date: {formData.eventDate || 'None'}</div>
-                  <div>📝 Form Data Keys: {Object.keys(formData).join(', ') || 'None'}</div>
-                   <div>✅ Form Valid: {Object.keys(errors).length === 0 ? 'Yes' : 'No'}</div>
-                   {Object.keys(errors).length > 0 && (
-                     <div>❌ Errors: {Object.keys(errors).map(key => `${key}: ${errors[key]}`).join(', ')}</div>
-                   )}
-                </div>
-              </div>
+          {/* Debug Panel completely removed */}
 
-                           {/* Facility Filtering Debug Information */}
-               <div style={{ marginBottom: '12px' }}>
-                 <strong>�� Facility Filtering Debug:</strong>
-                 <div style={{ marginLeft: '16px' }}>
-                   <div>🌍 Today (Botswana): {today}</div>
-                   <div>📊 Total Assignments: {safeUserAssignments.length}</div>
-                   <div>✅ Active Facilities: {activeFacilities.length}</div>
-                   <div>🎯 Final Facilities: {finalFacilities.length}</div>
-                   <div>🔍 Filtering Source: {showAllFacilities ? 'All (Debug Mode)' : 'Active Only'}</div>
-                  
-                  {/* Assignment Details */}
-                  <div style={{ marginTop: '8px' }}>
-                    <strong>📋 Assignment Details:</strong>
-                    {safeUserAssignments.map((assignment, index) => (
-                      <div key={index} style={{ marginLeft: '8px', fontSize: '11px', marginTop: '4px' }}>
-                        <div>🏥 {assignment.facility.name} (ID: {assignment.facility.id})</div>
-                        <div style={{ marginLeft: '8px' }}>
-                          📅 Period: {assignment.assignment.inspectionPeriod?.startDate || 'Missing'} to {assignment.assignment.inspectionPeriod?.endDate || 'Missing'}
-                          {assignment.assignment.inspectionPeriod?.startDate && assignment.assignment.inspectionPeriod?.endDate ? (
-                            <span style={{ color: '#28a745' }}> ✅</span>
-                          ) : (
-                            <span style={{ color: '#dc3545' }}> ❌</span>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              
-              {/* TEI Debug Information */}
-              <div style={{ marginBottom: '12px' }}>
-                <strong>TEI (Tracked Entity Instance) Debug:</strong>
-                <div style={{ marginLeft: '16px' }}>
-                  <div>🔗 Current TEI: {trackedEntityInstance || 'None'}</div>
-                  <div>🏥 Facility ID: {formData.orgUnit || 'None'}</div>
-                  <div>📊 Program ID: EE8yeLVo6cN</div>
-                  <div>🌐 API Endpoint: /api/trackedEntityInstances</div>
-                  {formData.orgUnit && (
-                    <div>🔗 Full URL: {import.meta.env.VITE_DHIS2_URL}/api/trackedEntityInstances?ou={formData.orgUnit}&program=EE8yeLVo6cN&fields=trackedEntityInstance&ouMode=DESCENDANTS</div>
-                  )}
-                  
-                  {/* TEI API Response */}
-                  <div style={{ marginTop: '8px' }}>
-                    <strong>📡 Last API Response:</strong>
-                    <div style={{ marginLeft: '16px', marginTop: '4px' }}>
-                      {trackedEntityInstance ? (
-                        <div style={{ 
-                          backgroundColor: '#e8f5e8', 
-                          padding: '8px', 
-                          borderRadius: '4px',
-                          border: '1px solid #4caf50',
-                          fontSize: '11px'
-                        }}>
-                          <div>✅ TEI Found: {trackedEntityInstance}</div>
-                          <div>📊 Response Status: Success</div>
-                          <div>�� Response Structure: Has trackedEntityInstances array</div>
-                        </div>
-                      ) : formData.orgUnit ? (
-                        <div style={{ 
-                          backgroundColor: '#fff3cd', 
-                          padding: '8px', 
-                          borderRadius: '4px',
-                          border: '1px solid #ffc107',
-                          fontSize: '11px'
-                        }}>
-                          <div>ℹ️ No TEI found for this facility</div>
-                          <div>📊 Response Status: Success (but empty)</div>
-                          <div>🔍 Response Structure: Empty trackedEntityInstances array</div>
-                        </div>
-                      ) : (
-                        <div style={{
-                          backgroundColor: '#f8d7da', 
-                          padding: '8px',
-                          borderRadius: '4px',
-                          border: '1px solid #dc3545',
-                          fontSize: '11px'
-                        }}>
-                          <div>⏳ No facility selected yet</div>
-                          <div>📊 Response Status: Not requested</div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
 
-          {/* Show Debug Button - Always visible when debug panel is hidden */}
-          {!showDebugPanel && (
-            <div style={{
-              textAlign: 'center',
-              margin: '16px 0',
-              padding: '8px'
-            }}>
-              <button
-                type="button"
-                onClick={() => setShowDebugPanel(true)}
-                style={{
-                  backgroundColor: '#6c757d',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  padding: '8px 16px',
-                  fontSize: '12px',
-                  cursor: 'pointer',
-                  opacity: 0.7
-                }}
-                title="Show debug information for developers"
-              >
-                🔍 Show Debug
-              </button>
-            </div>
-          )}
 
 
 
@@ -2709,6 +2239,24 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                      <label htmlFor="orgUnit" className="form-label">
                        Facility/Organisation Unit <span style={{ color: 'red' }}>*</span>
                      </label>
+                    
+                    {/* Help message for facility selection */}
+                    {!formData.orgUnit && (
+                      <div style={{
+                        backgroundColor: '#fff3cd',
+                        border: '1px solid #ffeaa7',
+                        borderRadius: '4px',
+                        padding: '8px 12px',
+                        marginBottom: '8px',
+                        fontSize: '14px',
+                        color: '#856404'
+                      }}>
+                        🔓 <strong>Select a facility to unlock the inspection form</strong>
+                        <br />
+                        Choose a facility from the dropdown below to proceed with the inspection
+                      </div>
+                    )}
+                    
                     <select
                       id="orgUnit"
                       value={formData.orgUnit}
@@ -2726,6 +2274,24 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                      <label htmlFor="eventDate" className="form-label">
                        Inspection Date <span style={{ color: 'red' }}>*</span>
                      </label>
+                    
+                    {/* Help message for date selection */}
+                    {!formData.eventDate && (
+                      <div style={{
+                        backgroundColor: '#fff3cd',
+                        border: '1px solid #ffeaa7',
+                        borderRadius: '4px',
+                        padding: '8px 12px',
+                        marginBottom: '8px',
+                        fontSize: '14px',
+                        color: '#856404'
+                      }}>
+                        📅 <strong>Select an inspection date</strong>
+                        <br />
+                        Choose a date within the inspection period to proceed
+                      </div>
+                    )}
+                    
                                      <input
                      type="date"
                      id="eventDate"
@@ -2739,7 +2305,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                            return !isNaN(maxDate.getTime()) ? maxDate.toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
                          }
                          const today = new Date();
-                         return !isNaN(today.getTime()) ? today.toISOString().split('T')[0] : '2025-12-31';
+                          return !isNaN(today.getTime()) ? today.toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
                        } catch (error) {
                          console.warn('⚠️ Error setting max date:', error);
                          return '2025-12-31';
@@ -2749,7 +2315,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                        try {
                          if (inspectionPeriod?.startDate) {
                            const minDate = new Date(inspectionPeriod.startDate);
-                           return !isNaN(minDate.getTime()) ? minDate.toISOString().split('T')[0] : '2025-01-01';
+                            return !isNaN(minDate.getTime()) ? minDate.toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
                          }
                          return '2025-01-01';
                        } catch (error) {
@@ -2760,6 +2326,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                    />
                   {errors.eventDate && <div className="field-error">{errors.eventDate}</div>}
                 </div>
+                  
                 {inspectionPeriod && (
                   <div className="form-field">
                     <label className="form-label">Inspection Scheduled: Dates:</label>
@@ -2769,64 +2336,61 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                   </div>
                 )}
                                  
-                 
-                 </div>
-               </div>
-             </div>
-             )}
+                  {/* GPS Coordinates Display */}
+                  <div className="form-field">
+                    <label className="form-label">📍 GPS Coordinates Status</label>
+                    <div style={{
+                      backgroundColor: gpsCoordinates ? '#d4edda' : '#fff3cd',
+                      border: `1px solid ${gpsCoordinates ? '#c3e6cb' : '#ffeaa7'}`,
+                      borderRadius: '4px',
+                      padding: '12px',
+                      fontSize: '14px',
+                      color: gpsCoordinates ? '#155724' : '#856404'
+                    }}>
+                      {gpsCoordinates ? (
+                        <>
+                          <div style={{ marginBottom: '8px' }}>
+                            <strong>✅ GPS Coordinates Captured</strong>
+                          </div>
+                          <div style={{ fontSize: '12px', marginBottom: '4px' }}>
+                            <strong>Longitude:</strong> {gpsCoordinates.longitude}
+                          </div>
+                          <div style={{ fontSize: '12px', marginBottom: '4px' }}>
+                            <strong>Latitude:</strong> {gpsCoordinates.latitude}
+                          </div>
+                          <div style={{ fontSize: '12px', marginBottom: '4px' }}>
+                            <strong>DHIS2 Format:</strong> {gpsCoordinates.dhis2Format}
+                          </div>
+                          <div style={{ fontSize: '12px', marginBottom: '4px' }}>
+                            <strong>Captured:</strong> {new Date(gpsCoordinates.timestamp).toLocaleTimeString()}
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div style={{ marginBottom: '8px' }}>
+                            <strong>⏳ GPS Coordinates Pending</strong>
+                          </div>
+                          <div style={{ fontSize: '12px' }}>
+                            GPS coordinates will be automatically captured when you proceed with the form.
+                            <br />
+                            <em>Make sure to allow location access in your browser.</em>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
-            
-
-                         {/* Program stage sections */}
+          {/* Program stage sections */}
              { serviceSections && date_valid && serviceSections.length > 0 ? (
                <>
-                 {/* Debug info for sections */}
-                 {showDebugPanel && (
-                   <div className="debug-panel" style={{
-                     backgroundColor: '#e3f2fd',
-                     border: '1px solid #2196f3',
-                     borderRadius: '8px',
-                     padding: '12px',
-                     margin: '16px 0',
-                     fontSize: '12px'
-                   }}>
-                                     <strong>🔍 Sections Debug:</strong>
-                    <div>📊 Total sections: {serviceSections.length}</div>
-                    <div>📅 Date valid: {date_valid ? '✅ Yes' : '❌ No'}</div>
-                    <div>🏥 Facility selected: {formData.orgUnit ? '✅ Yes' : '❌ No'}</div>
-                    <div>👤 User: {user?.username || 'None'}</div>
-                    <div>📋 Sections: {serviceSections.map(s => s.displayName).join(', ')}</div>
-                    <div>🏷️ Facility Classifications: {facilityClassifications.length}</div>
-                    <div>🏷️ Selected Classification: {formData.facilityClassification || 'None (will auto-populate)'}</div>
-                    <div>✅ Inspection Info Confirmed: {inspectionInfoConfirmed ? 'Yes' : 'No'}</div>
-                    
-                    {/* Data Elements Count Debug */}
-                    <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #2196f3' }}>
-                      <strong>📝 Data Elements Count:</strong>
-                      <div>📊 Total in configuration: {configuration?.programStage?.allDataElements?.length || 0}</div>
-                      <div>📊 Total in sections: {serviceSections.reduce((total, section) => total + (section.dataElements?.length || 0), 0)}</div>
-                      <div>📊 Expected vs Actual: {configuration?.programStage?.allDataElements?.length || 0} vs {serviceSections.reduce((total, section) => total + (section.dataElements?.length || 0), 0)}</div>
-                    </div>
-                   
-                                     {/* Field count summary */}
-                    <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #2196f3' }}>
-                      <strong>📝 Field Counts:</strong>
-                      {serviceSections.map(section => (
-                        <div key={section.id} style={{ marginLeft: '8px', fontSize: '11px' }}>
-                          {section.displayName}: {section.dataElements?.length || 0} fields
-                          {section.dataElements && section.dataElements.length > 0 && (
-                            <div style={{ marginLeft: '8px', fontSize: '10px', color: '#666' }}>
-                              Fields: {section.dataElements.map(de => de.dataElement.displayName).join(', ')}
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                 </div>
-               )}
+                 {/* Debug info for sections removed */}
                
                                                                        {/* Show only Inspection Information and Inspection Type sections until confirmation */}
-                 {!inspectionInfoConfirmed && serviceSections
+                 {!inspectionInfoConfirmed && serviceSections && serviceSections.length > 0 && serviceSections
                    .filter(section => {
                      const sectionName = (section.displayName || '').toLowerCase();
                      return sectionName.includes('inspection information') || sectionName.includes('inspection type');
@@ -2874,10 +2438,10 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                    </div>
                    
                                        {/* Show all other sections */}
-                    {serviceSections
+                    {serviceSections && serviceSections.length > 0 && serviceSections
                       .filter(section => {
                         const sectionName = (section.displayName || '').toLowerCase();
-                        return !sectionName.includes('inspection information') && !sectionName.includes('inspection type');
+                        return !sectionName.includes('inspection type') && !sectionName.includes('inspection information');
                       })
                       .map((section, index) => (
                         <FormSection
@@ -2917,10 +2481,10 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                      🔒 Additional Sections Locked
                    </h4>
                    <p style={{ color: '#856404', margin: '0', fontSize: '14px' }}>
-                     Complete and confirm the "Inspection Information" and "Inspection Type" sections above to unlock the remaining {serviceSections.filter(s => {
+                     Complete and confirm the "Inspection Information" and "Inspection Type" sections above to unlock the remaining {serviceSections && serviceSections.length > 0 ? serviceSections.filter(s => {
                        const sectionName = (s.displayName || '').toLowerCase();
                        return !sectionName.includes('inspection information') && !sectionName.includes('inspection type');
-                     }).length} inspection sections.
+                     }).length : 0} inspection sections.
                    </p>
                  </div>
                )}
@@ -2941,20 +2505,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                   <p>Please contact your DHIS2 administrator to configure the inspection form fields.</p>
                 </div>
                 
-                {/* Debug info for why sections aren't showing */}
-                {showDebugPanel && (
-                  <div style={{ marginTop: '16px', padding: '12px', backgroundColor: '#fff3cd', border: '1px solid #ffc107', borderRadius: '4px' }}>
-                    <strong>🔍 Debug Info:</strong>
-                    <div>📊 serviceSections: {serviceSections ? `${serviceSections.length} sections` : 'null/undefined'}</div>
-                    <div>📅 date_valid: {date_valid ? 'true' : 'false'}</div>
-                    <div>🏥 formData.orgUnit: {formData.orgUnit || 'null/undefined'}</div>
-                    <div>👤 user: {user ? 'loaded' : 'null/undefined'}</div>
-                    <div>⚙️ configuration: {configuration ? 'loaded' : 'null/undefined'}</div>
-                    {configuration && (
-                      <div>📋 Total program sections: {configuration.programStage?.sections?.length || 0}</div>
-                    )}
-                  </div>
-                )}
+                {/* Debug info removed */}
               </div>
             </div>
           </div>

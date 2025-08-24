@@ -21,6 +21,8 @@ export function DynamicFormRenderer({
   const [errors, setErrors] = useState({});
   const [mappingValidation, setMappingValidation] = useState(null);
   const [debugInfo, setDebugInfo] = useState(null);
+  const [currentSection, setCurrentSection] = useState(0); // Add section navigation state
+  const [viewAllSections, setViewAllSections] = useState(false); // Add toggle for viewing all sections
 
   // Initialize CSV configuration and DHIS2 mapping
   useEffect(() => {
@@ -647,8 +649,70 @@ export function DynamicFormRenderer({
       {/* Debug Panel */}
       {renderDebugPanel()}
 
+      {/* Section Navigation */}
+      {formConfig.sections.length > 1 && (
+        <div className="section-navigation">
+          <div className="section-navigation-header">
+            <h3>Form Sections</h3>
+            <div className="view-toggle">
+              <button
+                onClick={() => setViewAllSections(!viewAllSections)}
+                className={`toggle-button ${viewAllSections ? 'active' : ''}`}
+              >
+                {viewAllSections ? '📋 View Section by Section' : '📄 View All Sections'}
+              </button>
+            </div>
+          </div>
+          
+          {!viewAllSections && (
+            <>
+              <div className="section-indicators">
+                {formConfig.sections.map((section, index) => (
+                  <button
+                    key={index}
+                    className={`section-indicator ${currentSection === index ? 'active' : ''}`}
+                    onClick={() => setCurrentSection(index)}
+                  >
+                    {section.name.replace('SECTION ', '').replace('-', ' ')}
+                  </button>
+                ))}
+              </div>
+              
+              <div className="section-navigation-controls">
+                {currentSection > 0 && (
+                  <button
+                    onClick={() => setCurrentSection(currentSection - 1)}
+                    className="nav-button prev-button"
+                  >
+                    ← Previous Section
+                  </button>
+                )}
+                
+                <span className="section-counter">
+                  Section {currentSection + 1} of {formConfig.sections.length}
+                </span>
+                
+                {currentSection < formConfig.sections.length - 1 && (
+                  <button
+                    onClick={() => setCurrentSection(currentSection + 1)}
+                    className="nav-button next-button"
+                  >
+                    Next Section →
+                  </button>
+                )}
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="inspection-form">
-        {formConfig.sections.map(renderSection)}
+        {/* Show sections based on toggle */}
+        {formConfig.sections.length > 1 && !viewAllSections ? (
+          renderSection(formConfig.sections[currentSection])
+        ) : (
+          formConfig.sections.map(renderSection)
+        )}
         
         <div className="form-actions">
           <button 

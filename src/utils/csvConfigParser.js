@@ -79,12 +79,13 @@ export class CSVConfigParser {
           type: 'main',
           questions: []
         });
-      } else if (firstColumn && firstColumn.endsWith('?') && firstColumn.length > 20) {
-        // Detect sub-sections (questions that end with ? and are longer than typical questions)
-        console.log('📋 CSVConfigParser: Found sub-section:', firstColumn);
+      } else if (firstColumn && firstColumn.endsWith('?') && firstColumn.length > 25) {
+        // Detect section headers (questions that end with ? and are longer than typical questions)
+        // This catches section headers like "Does the clinic have policies and procedures for the following?"
+        console.log('📋 CSVConfigParser: Found section header:', firstColumn);
         sections.push({
           name: firstColumn,
-          type: 'subsection',
+          type: 'section',
           questions: []
         });
       } else if (firstColumn && sections.length > 0) {

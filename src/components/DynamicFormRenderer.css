@@ -695,3 +695,146 @@
     gap: 2px;
   }
 }
+
+/* Section Navigation Styles */
+.section-navigation {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+.section-navigation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.section-navigation-header h3 {
+  margin: 0;
+  color: #495057;
+  font-size: 18px;
+}
+
+.view-toggle {
+  display: flex;
+  gap: 10px;
+}
+
+.toggle-button {
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.toggle-button:hover {
+  background: #545b62;
+}
+
+.toggle-button.active {
+  background: #28a745;
+}
+
+.toggle-button.active:hover {
+  background: #218838;
+}
+
+.section-indicators {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.section-indicator {
+  background: #e9ecef;
+  border: 2px solid #dee2e6;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6c757d;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.section-indicator:hover {
+  background: #dee2e6;
+  border-color: #adb5bd;
+}
+
+.section-indicator.active {
+  background: #007bff;
+  border-color: #007bff;
+  color: white;
+}
+
+.section-navigation-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.nav-button {
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.nav-button:hover {
+  background: #0056b3;
+}
+
+.nav-button:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+
+.prev-button {
+  background: #6c757d;
+}
+
+.prev-button:hover {
+  background: #545b62;
+}
+
+.section-counter {
+  font-size: 14px;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+/* Responsive design for section navigation */
+@media (max-width: 768px) {
+  .section-navigation-controls {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .section-indicators {
+    justify-content: center;
+  }
+  
+  .section-indicator {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+}

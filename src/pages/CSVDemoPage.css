@@ -1051,3 +1051,61 @@
   color: #495057;
   font-size: 1.1em;
 }
+
+/* CSV Form Demo Section */
+.csv-form-demo {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 30px;
+  margin: 30px 0;
+}
+
+.csv-form-demo h3 {
+  color: #495057;
+  margin-bottom: 15px;
+  font-size: 24px;
+}
+
+.csv-form-demo p {
+  color: #6c757d;
+  margin-bottom: 25px;
+  line-height: 1.6;
+}
+
+.facility-type-selector {
+  margin-bottom: 25px;
+  padding: 20px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #dee2e6;
+}
+
+.facility-type-selector label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #495057;
+}
+
+.facility-type-selector select {
+  width: 100%;
+  max-width: 400px;
+  padding: 12px;
+  border: 2px solid #dee2e6;
+  border-radius: 6px;
+  font-size: 16px;
+  background: white;
+  color: #495057;
+  transition: border-color 0.2s ease;
+}
+
+.facility-type-selector select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.facility-type-selector select option {
+  padding: 8px;
+}
