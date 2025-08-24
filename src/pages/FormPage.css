@@ -445,6 +445,23 @@
   padding-bottom: 20px; /* Add bottom padding for more space */
 }
 
+/* CRITICAL: Override index.css section-content overflow with higher specificity */
+.form-section .section-content {
+  overflow: visible !important;
+  max-height: none !important;
+  height: auto !important;
+  min-height: auto !important;
+}
+
+/* HIGHEST SPECIFICITY: Override index.css section-content rules */
+.form-container .form-section .section-content {
+  overflow: visible !important;
+  max-height: none !important;
+  height: auto !important;
+  min-height: auto !important;
+  padding: 24px !important;
+}
+
 /* CRITICAL: Force form fields to always be visible */
 .form-field {
   display: block !important;
@@ -477,6 +494,23 @@
   max-width: none !important;
   min-width: 100% !important;
   box-sizing: border-box !important;
+  /* CRITICAL: Ensure text is not truncated */
+  text-overflow: clip !important;
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  word-break: break-word !important;
+}
+
+/* Data elements count styling */
+.data-elements-count {
+  font-size: 0.9em;
+  color: #1976d2;
+  font-weight: 500;
+  background-color: #e3f2fd;
+  padding: 2px 8px;
+  border-radius: 12px;
+  margin-left: 8px;
+  border: 1px solid #bbdefb;
 }
 
 /* Ensure form inputs are visible */

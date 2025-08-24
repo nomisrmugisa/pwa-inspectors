@@ -522,6 +522,9 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
         >
           <h3 className="section-title">
             {section.displayName}
+            <span className="data-elements-count" title={`${section.dataElements?.length || 0} data elements in this section`}>
+              {' '}({section.dataElements?.length || 0} fields)
+            </span>
             {mandatoryFieldsCount > 0 && (
               <span className="mandatory-indicator" title={`${mandatoryFieldsCount} mandatory field(s) in this section`}>
                 {' '}({mandatoryFieldsCount} required)
