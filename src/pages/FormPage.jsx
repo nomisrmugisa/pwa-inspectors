@@ -455,6 +455,91 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       return null;
     }
 
+    // Pagination state for dataElements
+    const [currentPage, setCurrentPage] = useState(0);
+    const baseFieldsPerPage = 5;
+    
+    // Function to check if a field is a comment field
+    const isCommentField = (dataElement) => {
+      if (!dataElement || !dataElement.displayName) return false;
+      const name = dataElement.displayName.toLowerCase();
+      return name.includes('comment') || name.includes('remarks') || name.includes('notes') || name.includes('additional');
+    };
+    
+    // Calculate optimal page boundaries to avoid starting with comment fields
+    const calculatePageBoundaries = () => {
+      if (!section.dataElements || section.dataElements.length === 0) {
+        return { pages: [], totalPages: 0 };
+      }
+      
+      const pages = [];
+      let currentIndex = 0;
+      
+      while (currentIndex < section.dataElements.length) {
+        let pageSize = baseFieldsPerPage;
+        let endIndex = currentIndex + pageSize;
+        
+        // Check if the next field after this page would be a comment field
+        if (endIndex < section.dataElements.length) {
+          const nextField = section.dataElements[endIndex];
+          if (isCommentField(nextField.dataElement)) {
+            // Extend this page to include the comment field
+            endIndex++;
+            pageSize++;
+          }
+        }
+        
+        // Ensure we don't exceed total length
+        endIndex = Math.min(endIndex, section.dataElements.length);
+        pageSize = endIndex - currentIndex;
+        
+        pages.push({
+          start: currentIndex,
+          end: endIndex,
+          size: pageSize,
+          fields: section.dataElements.slice(currentIndex, endIndex)
+        });
+        
+        currentIndex = endIndex;
+      }
+      
+      return { pages, totalPages: pages.length };
+    };
+    
+    const { pages, totalPages } = calculatePageBoundaries();
+    const currentPageData = pages[currentPage] || { start: 0, end: 0, size: 0, fields: [] };
+    const visibleFields = currentPageData.fields;
+    const startIndex = currentPageData.start;
+    const endIndex = currentPageData.end;
+    
+    // Navigation functions
+    const goToNextPage = () => {
+      if (currentPage < totalPages - 1) {
+        setCurrentPage(prev => prev + 1);
+      }
+    };
+    
+    const goToPreviousPage = () => {
+      if (currentPage > 0) {
+        setCurrentPage(prev => prev - 1);
+      }
+    };
+    
+    const goToPage = (pageNumber) => {
+      if (pageNumber >= 0 && pageNumber < totalPages) {
+        setCurrentPage(pageNumber);
+      }
+    };
+    
+    // Get current page info for display
+    const getCurrentPageInfo = () => {
+      if (totalPages === 0) return { pageSize: 0, totalFields: 0 };
+      return {
+        pageSize: currentPageData.size,
+        totalFields: section.dataElements?.length || 0
+      };
+    };
+
     // IMMEDIATE DEBUGGING - Log everything that comes into this component
     console.log('🚨 FormSection RENDERED with props:', {
       sectionName: section?.displayName,
@@ -465,7 +550,13 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       errorsKeys: Object.keys(errors || {}),
       readOnlyFieldsKeys: Object.keys(readOnlyFields || {}),
       inspectionInfoConfirmed,
-      hasDataElements: !!(section?.dataElements && section.dataElements.length > 0)
+      hasDataElements: !!(section?.dataElements && section.dataElements.length > 0),
+      currentPage,
+      totalPages,
+      visibleFieldsCount: visibleFields.length,
+      totalFields: section?.dataElements?.length || 0,
+      pageSize: getCurrentPageInfo().pageSize,
+      pageBoundaries: pages.map(p => `${p.start}-${p.end}(${p.size})`)
     });
 
     // Check if this is one of the sections that should start expanded
@@ -524,6 +615,11 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
             {section.displayName}
             <span className="data-elements-count" title={`${section.dataElements?.length || 0} data elements in this section`}>
               {' '}({section.dataElements?.length || 0} fields)
+              {totalPages > 1 && (
+                <span style={{ fontSize: '0.8em', color: '#ff9800', marginLeft: '4px' }}>
+                  • {baseFieldsPerPage}-6 per page
+                </span>
+              )}
             </span>
             {mandatoryFieldsCount > 0 && (
               <span className="mandatory-indicator" title={`${mandatoryFieldsCount} mandatory field(s) in this section`}>
@@ -551,52 +647,159 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
 
 
-            {/* Render all data elements */}
+            {/* Render data elements with pagination */}
             {section.dataElements && section.dataElements.length > 0 ? (
-              section.dataElements.map((psde, index) => {
-                // Safety check for psde and dataElement
-                if (!psde || !psde.dataElement) {
-                  console.warn('🚨 FormSection: Invalid psde or dataElement:', psde);
-                  return null;
-                }
-                
-                const isDynamicServiceField = isServiceField(psde.dataElement);
-                
-                // Log field rendering for debugging
-                if (showDebugPanel) {
-                  console.log(`🔍 RENDERING FIELD: "${psde.dataElement.displayName}"`, {
-                    sectionName: section.displayName,
-                    fieldIndex: index,
-                    totalFields: section.dataElements.length,
-                    id: psde.dataElement.id,
-                    valueType: psde.dataElement.valueType
-                  });
-                }
+              <>
+                {/* Render visible fields for current page */}
+                {visibleFields.map((psde, index) => {
+                  // Safety check for psde and dataElement
+                  if (!psde || !psde.dataElement) {
+                    console.warn('🚨 FormSection: Invalid psde or dataElement:', psde);
+                    return null;
+                  }
+                  
+                  const isDynamicServiceField = isServiceField(psde.dataElement);
+                  const actualIndex = startIndex + index; // Global index for proper field identification
+                  
+                  // Log field rendering for debugging
+                  if (showDebugPanel) {
+                    console.log(`🔍 RENDERING FIELD: "${psde.dataElement.displayName}"`, {
+                      sectionName: section.displayName,
+                      fieldIndex: actualIndex,
+                      totalFields: section.dataElements.length,
+                      id: psde.dataElement.id,
+                      valueType: psde.dataElement.valueType,
+                      currentPage,
+                      pageIndex: index
+                    });
+                  }
 
-                return (
-                  <div key={`field-container-${psde.dataElement.id}-${index}`}>
-                    <FormField
-                      key={`${psde.dataElement.id}-${index}`}
-                      psde={psde}
-                      value={formData[`dataElement_${psde.dataElement.id}`]}
-                      onChange={(e) => {
-                        console.log(`🔍 onChange called for field: ${psde.dataElement.displayName}`, {
-                          fieldId: `dataElement_${psde.dataElement.id}`,
-                          value: e.target.value,
-                          event: e
-                        });
-                        onChange(`dataElement_${psde.dataElement.id}`, e.target.value);
+                  return (
+                    <div key={`field-container-${psde.dataElement.id}-${actualIndex}`}>
+                      <FormField
+                        key={`${psde.dataElement.id}-${actualIndex}`}
+                        psde={psde}
+                        value={formData[`dataElement_${psde.dataElement.id}`]}
+                        onChange={(e) => {
+                          console.log(`🔍 onChange called for field: ${psde.dataElement.displayName}`, {
+                            fieldId: `dataElement_${psde.dataElement.id}`,
+                            value: e.target.value,
+                            event: e
+                          });
+                          onChange(`dataElement_${psde.dataElement.id}`, e.target.value);
+                        }}
+                        error={errors[`dataElement_${psde.dataElement.id}`]}
+                        dynamicOptions={isDynamicServiceField ? serviceSections : null}
+                        isLoading={isDynamicServiceField ? loadingServiceSections : false}
+                        readOnly={!!readOnlyFields[`dataElement_${psde.dataElement.id}`]}
+                        getCurrentPosition={getCurrentPosition}
+                        formatCoordinatesForDHIS2={formatCoordinatesForDHIS2}
+                      />
+                    </div>
+                  );
+                }).filter(Boolean)}
+                
+                {/* Pagination Navigation */}
+                {totalPages > 1 && (
+                  <div className="pagination-container" style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    margin: '24px 0',
+                    padding: '16px',
+                    backgroundColor: '#f8f9fa',
+                    borderRadius: '8px',
+                    border: '1px solid #dee2e6'
+                  }}>
+                    {/* Previous Button */}
+                    <button
+                      type="button"
+                      onClick={goToPreviousPage}
+                      disabled={currentPage === 0}
+                      className="btn btn-outline-secondary"
+                      style={{
+                        padding: '8px 16px',
+                        fontSize: '14px',
+                        opacity: currentPage === 0 ? 0.5 : 1,
+                        cursor: currentPage === 0 ? 'not-allowed' : 'pointer'
                       }}
-                      error={errors[`dataElement_${psde.dataElement.id}`]}
-                      dynamicOptions={isDynamicServiceField ? serviceSections : null}
-                      isLoading={isDynamicServiceField ? loadingServiceSections : false}
-                      readOnly={!!readOnlyFields[`dataElement_${psde.dataElement.id}`]}
-                      getCurrentPosition={getCurrentPosition}
-                      formatCoordinatesForDHIS2={formatCoordinatesForDHIS2}
-                    />
+                    >
+                      ← Previous
+                    </button>
+                    
+                    {/* Page Indicator */}
+                    <div className="page-indicator" style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}>
+                      <span style={{ fontSize: '14px', color: '#666' }}>
+                        Page {currentPage + 1} of {totalPages}
+                      </span>
+                      <span style={{ fontSize: '12px', color: '#999' }}>
+                        ({startIndex + 1}-{endIndex} of {section.dataElements.length} fields)
+                        {getCurrentPageInfo().pageSize !== baseFieldsPerPage && (
+                          <span style={{ color: '#ff9800', fontWeight: '500', marginLeft: '4px' }}>
+                            • {getCurrentPageInfo().pageSize} fields
+                          </span>
+                        )}
+                      </span>
+                    </div>
+                    
+                    {/* Next Button */}
+                    <button
+                      type="button"
+                      onClick={goToNextPage}
+                      disabled={currentPage === totalPages - 1}
+                      className="btn btn-outline-secondary"
+                      style={{
+                        padding: '8px 16px',
+                        fontSize: '14px',
+                        opacity: currentPage === totalPages - 1 ? 0.5 : 1,
+                        cursor: currentPage === totalPages - 1 ? 'not-allowed' : 'pointer'
+                      }}
+                    >
+                      Next →
+                    </button>
                   </div>
-                );
-              }).filter(Boolean) // Filter out null values
+                )}
+                
+                {/* Quick Page Navigation */}
+                {totalPages > 5 && (
+                  <div className="quick-page-nav" style={{
+                    textAlign: 'center',
+                    margin: '16px 0',
+                    padding: '12px',
+                    backgroundColor: '#e3f2fd',
+                    borderRadius: '6px'
+                  }}>
+                    <span style={{ fontSize: '12px', color: '#1976d2', marginRight: '12px' }}>
+                      Jump to page:
+                    </span>
+                    {Array.from({ length: Math.min(10, totalPages) }, (_, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        onClick={() => goToPage(i)}
+                        className={`btn ${currentPage === i ? 'btn-primary' : 'btn-outline-primary'}`}
+                        style={{
+                          padding: '4px 8px',
+                          margin: '0 2px',
+                          fontSize: '11px',
+                          minWidth: '32px'
+                        }}
+                      >
+                        {i + 1}
+                      </button>
+                    ))}
+                    {totalPages > 10 && (
+                      <span style={{ fontSize: '11px', color: '#666', marginLeft: '8px' }}>
+                        ... and {totalPages - 10} more
+                      </span>
+                    )}
+                  </div>
+                )}
+              </>
             ) : (
               <div style={{ 
                 backgroundColor: '#fff3cd', 
