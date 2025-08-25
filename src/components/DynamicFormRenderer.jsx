@@ -126,22 +126,9 @@ export function DynamicFormRenderer({
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    // Validate form
+    // All fields are optional - no validation required
     const newErrors = {};
-    if (formConfig) {
-      formConfig.sections.forEach(section => {
-        section.dataElements.forEach(de => {
-          if (de.mainDataElement.compulsory && !formData[de.mainDataElement.id]) {
-            newErrors[de.mainDataElement.id] = 'This field is required';
-          }
-        });
-      });
-    }
-    
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
+    setErrors(newErrors);
     
     // Submit form data
     if (onFormSubmit) {
@@ -163,7 +150,6 @@ export function DynamicFormRenderer({
         <div className="form-field main-field">
           <label htmlFor={mainDataElement.id} className="form-label">
             {mainDataElement.displayName}
-            {mainDataElement.compulsory && <span className="required">*</span>}
           </label>
           
           {renderDHIS2Field(mainDataElement, mainValue, mainError)}
@@ -176,7 +162,6 @@ export function DynamicFormRenderer({
           <div className="form-field comment-field">
             <label htmlFor={commentDataElement.id} className="form-label">
               {commentDataElement.displayName}
-              {commentDataElement.compulsory && <span className="required">*</span>}
             </label>
             
             {renderDHIS2Field(commentDataElement, commentValue, commentError)}

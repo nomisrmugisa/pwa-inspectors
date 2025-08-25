@@ -217,33 +217,33 @@
   100% { transform: rotate(360deg); }
 } 
 
-/* Mandatory fields note styling */
-.mandatory-fields-note {
+/* Optional fields note styling */
+.optional-fields-note {
   margin-bottom: 15px;
   padding: 15px;
   background-color: #f8f9fa;
   border: 1px solid #dee2e6;
   border-radius: 6px;
-  border-left: 4px solid #007bff;
+  border-left: 4px solid #28a745;
 }
 
-.mandatory-fields-note p {
+.optional-fields-note p {
   margin: 0;
   line-height: 1.4;
 }
 
-.mandatory-fields-note p:first-child {
+.optional-fields-note p:first-child {
   font-weight: 500;
   color: #495057;
 }
 
-.mandatory-fields-note p:last-child {
+.optional-fields-note p:last-child {
   margin-top: 8px;
   font-size: 12px;
   color: #6c757d;
 }
 
-/* Enhanced field error styling for mandatory fields */
+/* Enhanced field error styling */
 .form-field .form-label span[style*="color: red"] {
   font-weight: bold;
 }
@@ -267,22 +267,7 @@
   font-weight: 500;
 } 
 
-/* Mandatory indicator in section headers */
-.section-title .mandatory-indicator {
-  font-size: 14px;
-  font-weight: normal;
-  color: #dc3545;
-  background-color: #f8d7da;
-  padding: 2px 8px;
-  border-radius: 12px;
-  margin-left: 8px;
-  border: 1px solid #f5c6cb;
-}
 
-.section-title .mandatory-indicator:hover {
-  background-color: #f1b0b7;
-  border-color: #ed969e;
-}
 
 /* Enhanced section header styling */
 .section-header {
@@ -572,6 +557,25 @@
   color: white;
 }
 
+/* Missing fields display styling */
+.missing-fields-display {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+.missing-fields-display h4 {
+  border-bottom: 1px solid #ffeaa7;
+  padding-bottom: 8px;
+}
+
+.missing-fields-display .field-item {
+  transition: all 0.2s ease;
+}
+
+.missing-fields-display .field-item:hover {
+  background-color: #fff8e1 !important;
+  transform: translateX(4px);
+}
+
 /* Ensure form inputs are visible */
 .form-field .form-input,
 .form-field .form-select,
@@ -719,239 +723,17 @@
   flex-wrap: wrap;
 } 
 
-/* Mandatory fields summary styling */
-.mandatory-fields-summary {
-  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-  border: 2px solid #e9ecef;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 25px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-top: 20px;
-}
-
-.mandatory-fields-summary h4 {
-  border-bottom: 2px solid #007bff;
-  padding-bottom: 10px;
-  margin-bottom: 20px;
-}
-
-/* Enhanced mandatory summary header styling */
-.mandatory-summary-header {
-  background: linear-gradient(135deg, #e8f4fd 0%, #d1ecf1 100%);
-  border: 1px solid #bee5eb;
-  border-radius: 8px 8px 0 0;
-  padding: 15px 20px;
-  margin: -20px -20px 20px -20px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: calc(100% + 40px);
-}
-
-.mandatory-summary-header:hover {
-  background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
-  border-color: #86cfda;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.15);
-}
-
-.mandatory-summary-header h4 {
-  border: none;
-  padding: 0;
-  margin: 0;
-  color: #0c5460;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-}
-
-/* Enhanced toggle indicator for mandatory summary */
-.mandatory-summary-toggle {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #007bff;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.8);
-}
-
-.mandatory-summary-toggle.expanded {
-  transform: rotate(180deg);
-  color: #0056b3;
-}
-
-.mandatory-summary-toggle:hover {
-  background: rgba(255, 255, 255, 1);
-  transform: scale(1.1);
-}
-
-/* Mandatory fields content with smooth transitions */
-.mandatory-fields-content {
-  transition: all 0.3s ease;
-  overflow: hidden;
-  max-height: 1000px;
-  opacity: 1;
-}
-
-.mandatory-fields-content.collapsed {
-  max-height: 0 !important;
-  opacity: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  overflow: hidden;
-}
-
-.mandatory-fields-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.mandatory-field-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 15px;
-  border-radius: 6px;
-  border: 1px solid #dee2e6;
-  transition: all 0.2s ease;
-}
-
-.mandatory-field-item.filled {
-  background-color: #d4edda;
-  border-color: #c3e6cb;
-  color: #155724;
-}
-
-.mandatory-field-item.empty {
-  background-color: #f8d7da;
-  border-color: #f5c6cb;
-  color: #721c24;
-}
-
-.mandatory-field-item .field-name {
-  font-weight: 500;
-  font-size: 14px;
-}
-
-.mandatory-field-item .field-status {
-  font-size: 12px;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 12px;
-  background-color: rgba(255, 255, 255, 0.8);
-}
-
-.mandatory-fields-progress {
-  text-align: center;
-}
-
-.mandatory-fields-progress .progress-bar {
-  width: 100%;
-  height: 8px;
-  background-color: #e9ecef;
-  border-radius: 4px;
-  overflow: hidden;
-  margin-bottom: 10px;
-}
-
-.mandatory-fields-progress .progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #dc3545 0%, #ffc107 50%, #28a745 100%);
-  transition: width 0.3s ease;
-}
-
-.mandatory-fields-progress .progress-text {
-  font-size: 14px;
-  color: #6c757d;
-  font-weight: 500;
-} 
-
-/* Mandatory service field styling */
-.mandatory-service-field {
-  border: 2px solid #007bff !important;
-  background-color: #f8f9ff;
-  box-shadow: 0 0 0 0.1rem rgba(0, 123, 255, 0.15);
-}
-
-.mandatory-service-field:focus {
-  border-color: #0056b3 !important;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
-}
-
-.mandatory-service-field:not(:placeholder-shown) {
-  border-color: #28a745 !important;
-  background-color: #f8fff9;
-}
-
-/* Enhanced mandatory field styling */
-.form-field .form-label span[style*="color: red"] {
-  font-weight: bold;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.7; }
-  100% { opacity: 1; }
-}
-
-/* Service field specific styling */
-.form-field:has(.mandatory-service-field) .form-label {
-  font-weight: 600;
-  color: #007bff;
-}
-
-.form-field:has(.mandatory-service-field) .form-label::after {
-  content: " (Service Selection Required)";
-  font-size: 12px;
-  color: #dc3545;
-  font-weight: normal;
-  margin-left: 5px;
 
 
-/* Mandatory fields summary collapsible styles */
-.mandatory-summary-header {
-  transition: all 0.2s ease;
-}
+ 
 
-.mandatory-summary-header:hover {
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  padding: 8px;
-  margin: -8px 0 7px -8px;
-}
 
-.mandatory-summary-toggle {
-  font-size: 12px;
-  color: #6c757d;
-  transition: transform 0.2s ease;
-}
 
-.mandatory-summary-toggle.expanded {
-  transform: rotate(180deg);
-}
 
-.mandatory-fields-content {
-  transition: all 0.3s ease;
-  overflow: hidden;
-}
 
-.mandatory-fields-content.collapsed {
-  max-height: 0 !important;
-  opacity: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  display: none !important;
-} 
+
+
+
+
+
+ 

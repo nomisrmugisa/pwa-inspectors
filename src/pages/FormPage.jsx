@@ -19,38 +19,8 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
   // Check if this field is mandatory based on field name or compulsory flag
   const isMandatoryField = () => {
-    const fieldName = (dataElement.displayName || dataElement.shortName || '').toLowerCase();
-    const isCompulsory = psde.compulsory || false;
-    
-    // Specific fields that should be mandatory
-    const mandatoryFieldNames = ['type', 'service', 'services', 'coordinates'];
-    
-    // Fields that should NOT be mandatory (exclusions) - using more flexible matching
-    const excludedFieldPatterns = [
-      'counseling service',
-      'independent counseling',
-      'patients can access',
-      'out-reach services',
-      'outreach services',
-      'adequate supplies',
-      'supplies for services'
-    ];
-    
-    // Check if this field should be excluded from mandatory requirements
-    const isExcluded = excludedFieldPatterns.some(pattern => 
-      fieldName.includes(pattern.toLowerCase())
-    );
-    
-    // Specific debugging for counseling service field removed
-    
-    // If field is excluded, it's not mandatory regardless of other conditions
-    if (isExcluded) {
-      return false;
-    }
-    
-    const isMandatory = isCompulsory || mandatoryFieldNames.some(name => fieldName.includes(name));
-    
-    return isMandatory;
+    // All fields are now optional - no mandatory requirements
+    return false;
   };
 
   const renderField = () => {
@@ -75,13 +45,11 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
           id={fieldId}
           value={value || ''}
           onChange={onChange}
-          className={`form-select ${error ? 'error' : ''} ${isMandatory ? 'mandatory-service-field' : ''}`}
+          className={`form-select ${error ? 'error' : ''}`}
           disabled={readOnly || isLoading}
-          required={isMandatory}
         >
           <option value="">
             {isLoading ? 'Loading service sections...' : 
-             isMandatory ? `Select ${dataElement.displayName} *` : 
              `Select ${dataElement.displayName}`}
           </option>
           {dynamicOptions.map((section, index) => (
@@ -439,7 +407,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       
       <label htmlFor={fieldId} className="form-label">
         {dataElement.displayName}
-        {isMandatoryField() && <span style={{ color: 'red' }}> *</span>}
+        
       </label>
       {renderField()}
       {error && <div className="field-error">{error}</div>}
@@ -448,7 +416,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 }
 
   // Section component for organizing form fields
-  function FormSection({ section, formData, onChange, errors, serviceSections, loadingServiceSections, readOnlyFields = {}, getCurrentPosition, formatCoordinatesForDHIS2, isFieldMandatory, facilityClassifications = [], loadingFacilityClassifications = false, inspectionInfoConfirmed = false, setInspectionInfoConfirmed = () => {}, areAllInspectionFieldsComplete = () => false, showDebugPanel = false }) {
+  function FormSection({ section, formData, onChange, errors, serviceSections, loadingServiceSections, readOnlyFields = {}, getCurrentPosition, formatCoordinatesForDHIS2, facilityClassifications = [], loadingFacilityClassifications = false, inspectionInfoConfirmed = false, setInspectionInfoConfirmed = () => {}, areAllInspectionFieldsComplete = () => false, showDebugPanel = false }) {
     // Safety check - if section is undefined, return null
     if (!section) {
       console.warn('🚨 FormSection: section prop is undefined, returning null');
@@ -580,11 +548,26 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
         return false;
       }
       
-      return fieldName.includes('service') || fieldName.includes('section');
+      // Exclude fields that are about outreach services, special circumstances, etc.
+      if (fieldName.includes('outreach services') || 
+          fieldName.includes('special circumstances') ||
+          fieldName.includes('applications for')) {
+        return false;
+      }
+      
+      // Only identify fields that are specifically about selecting service types/sections
+      // Look for patterns that indicate service selection rather than service-related questions
+      return (fieldName.includes('service type') || 
+              fieldName.includes('service selection') ||
+              fieldName.includes('select service') ||
+              fieldName.includes('service section') ||
+              (fieldName.includes('service') && fieldName.includes('type'))) &&
+             !fieldName.includes('outreach') &&
+             !fieldName.includes('special');
     };
         
-    // Count mandatory fields in this section
-    const mandatoryFieldsCount = (section.dataElements || []).filter(psde => psde && psde.dataElement && isFieldMandatory(psde)).length;
+                    // All fields are optional - no mandatory count needed
+                const mandatoryFieldsCount = 0;
 
     // Always show sections with data elements
     const hasDataElements = section.dataElements && section.dataElements.length > 0;
@@ -621,11 +604,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
                 </span>
               )}
             </span>
-            {mandatoryFieldsCount > 0 && (
-              <span className="mandatory-indicator" title={`${mandatoryFieldsCount} mandatory field(s) in this section`}>
-                {' '}({mandatoryFieldsCount} required)
-              </span>
-            )}
+            
             <span style={{ fontSize: '12px', color: '#666', marginLeft: '8px' }}>
               {isExpanded ? '(Click to collapse)' : '(Click to expand)'}
             </span>
@@ -1247,23 +1226,69 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     const fetchTrackedEntityInstance = async (facilityId) => {
       try {
-        const apiEndpoint = `/api/trackedEntityInstances?ou=${facilityId}&program=EE8yeLVoN&fields=trackedEntityInstance&ouMode=DESCENDANTS`;
+        // Use the same program ID as defined in the API service
+        const FACILITY_REGISTRY_PROGRAM_ID = 'EE8yeLVo6cN';
+        const apiEndpoint = `/api/trackedEntityInstances?ou=${facilityId}&program=${FACILITY_REGISTRY_PROGRAM_ID}&fields=trackedEntityInstance&ouMode=DESCENDANTS`;
+        
+        // Enhanced debugging for API call
+        console.log('🔍 ===== TEI RETRIEVAL DEBUG START =====');
+        console.log('🔍 Facility ID:', facilityId);
+        console.log('🔍 Program ID:', FACILITY_REGISTRY_PROGRAM_ID);
+        console.log('🔍 API Endpoint:', apiEndpoint);
+        console.log('🔍 Full URL:', `${window.location.origin}${apiEndpoint}`);
+        console.log('🔍 API Call Method: GET');
+        console.log('🔍 Expected Response Fields: trackedEntityInstance');
+        console.log('🔍 OU Mode: DESCENDANTS');
+        console.log('🔍 ===== TEI RETRIEVAL DEBUG END =====');
         
         // Use the API service instead of direct fetch
+        console.log('📡 Making API request...');
         const response = await api.request(apiEndpoint);
+        
+        console.log('📡 ===== TEI API RESPONSE DEBUG =====');
+        console.log('📡 Full Response Object:', response);
+        console.log('📡 Response Type:', typeof response);
+        console.log('📡 Response Keys:', Object.keys(response || {}));
+        console.log('📡 Has trackedEntityInstances:', !!response?.trackedEntityInstances);
+        console.log('📡 trackedEntityInstances Length:', response?.trackedEntityInstances?.length || 0);
+        console.log('📡 ===== TEI API RESPONSE DEBUG END =====');
         
         if (response.trackedEntityInstances && response.trackedEntityInstances.length > 0) {
           const tei = response.trackedEntityInstances[0].trackedEntityInstance;
+          console.log('✅ ===== TEI EXTRACTION DEBUG =====');
+          console.log('✅ First TEI Object:', response.trackedEntityInstances[0]);
+          console.log('✅ Extracted TEI Value:', tei);
+          console.log('✅ TEI Type:', typeof tei);
+          console.log('✅ TEI Length:', tei?.length || 0);
+          console.log('✅ TEI Trimmed:', tei?.trim() || 'N/A');
+          console.log('✅ ===== TEI EXTRACTION DEBUG END =====');
+          
           if (tei && tei.trim() !== '') {
-          setTrackedEntityInstance(tei);
+            setTrackedEntityInstance(tei);
+            console.log('🔗 TEI set successfully in state:', tei);
           } else {
+            console.log('⚠️ TEI is empty or whitespace - setting to null');
             setTrackedEntityInstance(null);
           }
         } else {
+          console.log('⚠️ ===== NO TEI FOUND DEBUG =====');
+          console.log('⚠️ Response structure:', {
+            hasTrackedEntityInstances: !!response?.trackedEntityInstances,
+            trackedEntityInstancesType: typeof response?.trackedEntityInstances,
+            trackedEntityInstancesLength: response?.trackedEntityInstances?.length || 0,
+            responseKeys: Object.keys(response || {})
+          });
+          console.log('⚠️ Setting TEI to null');
+          console.log('⚠️ ===== NO TEI FOUND DEBUG END =====');
           setTrackedEntityInstance(null);
         }
       } catch (error) {
-        console.error('❌ Failed to fetch Tracked Entity Instance:', error);
+        console.error('❌ ===== TEI RETRIEVAL ERROR DEBUG =====');
+        console.error('❌ Error Type:', error.constructor.name);
+        console.error('❌ Error Message:', error.message);
+        console.error('❌ Error Stack:', error.stack);
+        console.error('❌ Full Error Object:', error);
+        console.error('❌ ===== TEI RETRIEVAL ERROR DEBUG END =====');
         setTrackedEntityInstance(null);
       }
     };
@@ -1397,35 +1422,8 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     // Helper function to determine if a field is mandatory
     const isFieldMandatory = (psde) => {
-      const fieldName = (psde.dataElement.displayName || psde.dataElement.shortName || '').toLowerCase();
-      const isCompulsory = psde.compulsory || false;
-      
-      // Specific fields that should be mandatory
-      const mandatoryFieldNames = ['type', 'service', 'services', 'coordinates'];
-      
-      // Fields that should NOT be mandatory (exclusions) - using more flexible matching
-      const excludedFieldPatterns = [
-        'counseling service',
-        'independent counseling',
-        'patients can access',
-        'out-reach services',
-        'outreach services',
-        'adequate supplies',
-        'supplies for services'
-      ];
-      
-      // Check if this field should be excluded from mandatory requirements
-      const isExcluded = excludedFieldPatterns.some(pattern => 
-        fieldName.includes(pattern.toLowerCase())
-      );
-      
-      // If field is excluded, it's not mandatory regardless of other conditions
-      if (isExcluded) {
-        return false;
-      }
-      
-      const isMandatory = isCompulsory || mandatoryFieldNames.some(name => fieldName.includes(name));
-      return isMandatory;
+      // All fields are now optional - no mandatory requirements
+      return false;
     };
 
 
@@ -1675,7 +1673,22 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
         return false;
       }
       
-      return fieldName.includes('service') || fieldName.includes('section');
+      // Exclude fields that are about outreach services, special circumstances, etc.
+      if (fieldName.includes('outreach services') || 
+          fieldName.includes('special circumstances') ||
+          fieldName.includes('applications for')) {
+        return false;
+      }
+      
+      // Only identify fields that are specifically about selecting service types/sections
+      // Look for patterns that indicate service selection rather than service-related questions
+      return (fieldName.includes('service type') || 
+              fieldName.includes('service selection') ||
+              fieldName.includes('select service') ||
+              fieldName.includes('service section') ||
+              (fieldName.includes('service') && fieldName.includes('type'))) &&
+             !fieldName.includes('outreach') &&
+             !fieldName.includes('special');
     };
 
     // Move this block after all hooks to avoid conditional hook call error
@@ -1831,26 +1844,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     // Check if mandatory fields are filled
     const areAllMandatoryFieldsFilled = () => {
-      // Facility and Inspection Date are mandatory
-      if (!formData.orgUnit || !formData.eventDate) {
-        return false;
-      }
-
-      // Check mandatory data element fields
-      if (configuration && configuration.programStage && configuration.programStage.allDataElements) {
-        for (const psde of configuration.programStage.allDataElements) {
-          const fieldName = `dataElement_${psde.dataElement.id}`;
-          const fieldValue = formData[fieldName];
-          
-          // Check if this is a mandatory field
-          const isMandatory = isFieldMandatory(psde);
-          
-          if (isMandatory && (!fieldValue || fieldValue.toString().trim() === '')) {
-            return false;
-          }
-        }
-      }
-
+      // All fields are now optional - no mandatory requirements
       return true;
     };
 
@@ -1859,44 +1853,9 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
     const validateForm = () => {
       const newErrors = {};
 
-      // Validate mandatory fields
-      if (!formData.orgUnit) {
-        newErrors.orgUnit = 'Facility selection is required';
-      }
-      if (!formData.eventDate) {
-        newErrors.eventDate = 'Inspection date is required';
-      }
-
-      // Validate mandatory data element fields
-      if (configuration && configuration.programStage && configuration.programStage.allDataElements) {
-        for (const psde of configuration.programStage.allDataElements) {
-          const fieldName = `dataElement_${psde.dataElement.id}`;
-          const fieldValue = formData[fieldName];
-          
-          // Check if this is a mandatory field
-          const isMandatory = isFieldMandatory(psde);
-          
-          if (isMandatory && (!fieldValue || fieldValue.toString().trim() === '')) {
-            // Provide specific error messages for different field types
-            let errorMessage = `${psde.dataElement.displayName} is required`;
-            
-            const fieldNameLower = (psde.dataElement.displayName || '').toLowerCase();
-            if (fieldNameLower.includes('service')) {
-              errorMessage = `Please select a service section for ${psde.dataElement.displayName}`;
-            } else if (fieldNameLower.includes('type')) {
-              errorMessage = `Please select an inspection type for ${psde.dataElement.displayName}`;
-
-            } else if (fieldNameLower.includes('coordinates')) {
-              errorMessage = `Please provide GPS coordinates for ${psde.dataElement.displayName}`;
-            }
-            
-            newErrors[fieldName] = errorMessage;
-          }
-        }
-      }
-
+      // All fields are now optional - no validation required
       setErrors(newErrors);
-      return Object.keys(newErrors).length === 0;
+      return true;
     };
 
     const handleSave = async (saveDraft = false) => {
@@ -1920,12 +1879,20 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
         };
 
         // Only include trackedEntityInstance if it exists
+        console.log('🔍 ===== FORM SUBMISSION TEI DEBUG =====');
+        console.log('🔍 Current trackedEntityInstance state:', trackedEntityInstance);
+        console.log('🔍 trackedEntityInstance type:', typeof trackedEntityInstance);
+        console.log('🔍 trackedEntityInstance truthy check:', !!trackedEntityInstance);
+        
         if (trackedEntityInstance) {
           eventData.trackedEntityInstance = trackedEntityInstance;
           console.log('🔗 Including trackedEntityInstance in event:', trackedEntityInstance);
+          console.log('🔗 Event data now contains TEI:', eventData.trackedEntityInstance);
         } else {
           console.log('ℹ️ No trackedEntityInstance available - creating event without TEI link');
+          console.log('ℹ️ This will cause "Unknown Organisation" in DHIS2');
         }
+        console.log('🔍 ===== FORM SUBMISSION TEI DEBUG END =====');
 
         // Add data values
         Object.entries(formData).forEach(([key, value]) => {
@@ -1966,33 +1933,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
     const handleSubmit = (e) => {
       e.preventDefault();
       
-      // Check for missing mandatory fields and provide detailed feedback
-      if (missingMandatoryFields > 0) {
-        const missingFields = [];
-        
-        // Check basic mandatory fields
-        if (!formData.orgUnit) missingFields.push('Facility');
-        if (!formData.eventDate) missingFields.push('Inspection Date');
-        
-        // Check mandatory data element fields
-        if (configuration && configuration.programStage && configuration.programStage.allDataElements) {
-          for (const psde of configuration.programStage.allDataElements) {
-            const fieldName = `dataElement_${psde.dataElement.id}`;
-            const fieldValue = formData[fieldName];
-            
-            const isMandatory = isFieldMandatory(psde);
-            
-            if (isMandatory && (!fieldValue || fieldValue.toString().trim() === '')) {
-              missingFields.push(psde.dataElement.displayName);
-            }
-          }
-        }
-        
-        const missingFieldsList = missingFields.join(', ');
-        showToast(`Please fill all mandatory fields: ${missingFieldsList}`, 'error');
-        return;
-      }
-      
+      // All fields are optional - proceed with submission
       handleSave(false);
     };
 
@@ -2000,33 +1941,17 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
       handleSave(true);
     };
 
-    // Helper function to count missing mandatory fields
-    const getMissingMandatoryFieldsCount = () => {
-      let missingCount = 0;
-      
-      // Check basic mandatory fields
-      if (!formData.orgUnit) missingCount++;
-      if (!formData.eventDate) missingCount++;
-      
-      // Check mandatory data element fields
-      if (configuration && configuration.programStage && configuration.programStage.allDataElements) {
-        for (const psde of configuration.programStage.allDataElements) {
-          const fieldName = `dataElement_${psde.dataElement.id}`;
-          const fieldValue = formData[fieldName];
-          
-          const isMandatory = isFieldMandatory(psde);
-          
-          if (isMandatory && (!fieldValue || fieldValue.toString().trim() === '')) {
-            missingCount++;
-          }
-        }
-      }
-      
-      return missingCount;
+    // Helper function to get missing mandatory fields details
+    const getMissingMandatoryFields = () => {
+      // All fields are now optional - no missing mandatory fields
+      return {
+        count: 0,
+        fields: []
+      };
     };
 
-    // Get missing mandatory fields count
-    const missingMandatoryFields = getMissingMandatoryFieldsCount();
+    // Get missing mandatory fields details
+    const missingMandatoryFields = getMissingMandatoryFields();
 
 
 
@@ -2249,16 +2174,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     // Function to check if all inspection information fields are complete
     const areAllInspectionFieldsComplete = () => {
-      // Check basic mandatory fields
-      if (!formData.orgUnit || !formData.eventDate) {
-        return false;
-      }
-
-      // Check if facility classification is set (either auto-populated or manually selected)
-      if (!formData.facilityClassification) {
-        return false;
-      }
-
+      // All fields are now optional - no completion requirements
       return true;
     };
 
@@ -2362,16 +2278,13 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
               <div className="section-content">
                 <div className="section-fields">
-                  {/* Mandatory fields note */}
-                  <div className="mandatory-fields-note">
+                  {/* All fields are optional note */}
+                  <div className="optional-fields-note">
                     <p style={{ fontSize: '14px', color: '#666', marginBottom: '10px' }}>
-                      Fields marked with an asterisk (*) are mandatory and must be filled before submitting the form.
+                      All fields are optional. You can submit the form with any combination of filled fields.
                     </p>
                     <p style={{ fontSize: '12px', color: '#888', marginBottom: '0' }}>
-                      <strong>Mandatory fields:</strong> Facility, Inspection Date, Type, Service(s), and Coordinates.
-                    </p>
-                    <p style={{ fontSize: '11px', color: '#999', marginTop: '8px', marginBottom: '0', fontStyle: 'italic' }}>
-                      Note: Some service-related questions (counseling, outreach services, supplies) are not mandatory.
+                      <strong>Note:</strong> Fill in the fields that are relevant to your inspection.
                     </p>
                   </div>
                   
@@ -2542,49 +2455,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                   </div>
                 )}
                                  
-                  {/* GPS Coordinates Display */}
-                  <div className="form-field">
-                    <label className="form-label">📍 GPS Coordinates Status</label>
-                    <div style={{
-                      backgroundColor: gpsCoordinates ? '#d4edda' : '#fff3cd',
-                      border: `1px solid ${gpsCoordinates ? '#c3e6cb' : '#ffeaa7'}`,
-                      borderRadius: '4px',
-                      padding: '12px',
-                      fontSize: '14px',
-                      color: gpsCoordinates ? '#155724' : '#856404'
-                    }}>
-                      {gpsCoordinates ? (
-                        <>
-                          <div style={{ marginBottom: '8px' }}>
-                            <strong>✅ GPS Coordinates Captured</strong>
-                          </div>
-                          <div style={{ fontSize: '12px', marginBottom: '4px' }}>
-                            <strong>Longitude:</strong> {gpsCoordinates.longitude}
-                          </div>
-                          <div style={{ fontSize: '12px', marginBottom: '4px' }}>
-                            <strong>Latitude:</strong> {gpsCoordinates.latitude}
-                          </div>
-                          <div style={{ fontSize: '12px', marginBottom: '4px' }}>
-                            <strong>DHIS2 Format:</strong> {gpsCoordinates.dhis2Format}
-                          </div>
-                          <div style={{ fontSize: '12px', marginBottom: '4px' }}>
-                            <strong>Captured:</strong> {new Date(gpsCoordinates.timestamp).toLocaleTimeString()}
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <div style={{ marginBottom: '8px' }}>
-                            <strong>⏳ GPS Coordinates Pending</strong>
-                          </div>
-                          <div style={{ fontSize: '12px' }}>
-                            GPS coordinates will be automatically captured when you proceed with the form.
-                            <br />
-                            <em>Make sure to allow location access in your browser.</em>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </div>
+
                 </div>
               </div>
             </div>
@@ -2614,7 +2485,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                        getCurrentPosition={getCurrentPosition}
                        formatCoordinatesForDHIS2={formatCoordinatesForDHIS2}
                        showDebugPanel={showDebugPanel}
-                       isFieldMandatory={isFieldMandatory}
                        facilityClassifications={facilityClassifications}
                        loadingFacilityClassifications={loadingFacilityClassifications}
                        inspectionInfoConfirmed={inspectionInfoConfirmed}
@@ -2662,7 +2532,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                           getCurrentPosition={getCurrentPosition}
                           formatCoordinatesForDHIS2={formatCoordinatesForDHIS2}
                           showDebugPanel={showDebugPanel}
-                          isFieldMandatory={isFieldMandatory}
                           facilityClassifications={facilityClassifications}
                           loadingFacilityClassifications={loadingFacilityClassifications}
                           inspectionInfoConfirmed={inspectionInfoConfirmed}
@@ -2724,21 +2593,23 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
           type="button"
           onClick={handleSubmit}
           className="btn btn-primary"
-          disabled={isSubmitting || missingMandatoryFields > 0}
-          title={missingMandatoryFields > 0 ? `Please fill ${missingMandatoryFields} mandatory field(s) before submitting` : 'Submit inspection form'}
+          disabled={isSubmitting}
+          title="Submit inspection form"
         >
-          {isSubmitting ? 'Submitting...' : missingMandatoryFields > 0 ? `Submit (${missingMandatoryFields} required)` : 'Submit Inspection'}
+          {isSubmitting ? 'Submitting...' : 'Submit Inspection'}
         </button>
         
         <button
           type="button"
           onClick={handleSaveDraft}
           className="btn btn-secondary"
-          disabled={isSubmitting || (!isOnline && !isDraft) || missingMandatoryFields > 0}
-          title={missingMandatoryFields > 0 ? `Please fill ${missingMandatoryFields} mandatory field(s) before saving draft` : 'Save as draft'}
+          disabled={isSubmitting || (!isOnline && !isDraft)}
+          title="Save as draft"
         >
-          {isSubmitting ? 'Saving...' : missingMandatoryFields > 0 ? `Save Draft (${missingMandatoryFields} required)` : 'Save Draft'}
+          {isSubmitting ? 'Saving...' : 'Save Draft'}
         </button>
+
+
 
 
 
