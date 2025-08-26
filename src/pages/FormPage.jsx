@@ -2,6 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useApp } from '../contexts/AppContext';
 import { useAPI } from '../hooks/useAPI';
+import { 
+  shouldShowSection, 
+  shouldShowDataElement, 
+  getFilteredDataElementCount, 
+  getSectionDetailsForFacility, 
+  getFacilitySummary 
+} from '../config/sectionVisibilityConfig';
 
 // Form field component for individual data elements
 function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoading = false, readOnly = false, getCurrentPosition, formatCoordinatesForDHIS2 }) {
@@ -20,7 +27,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
   // Check if this field is mandatory based on field name or compulsory flag
   const isMandatoryField = () => {
     // All fields are now optional - no mandatory requirements
-    return false;
+      return false;
   };
 
   const renderField = () => {
@@ -416,7 +423,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 }
 
   // Section component for organizing form fields
-  function FormSection({ section, formData, onChange, errors, serviceSections, loadingServiceSections, readOnlyFields = {}, getCurrentPosition, formatCoordinatesForDHIS2, facilityClassifications = [], loadingFacilityClassifications = false, inspectionInfoConfirmed = false, setInspectionInfoConfirmed = () => {}, areAllInspectionFieldsComplete = () => false, showDebugPanel = false }) {
+  function FormSection({ section, formData, onChange, errors, serviceSections, loadingServiceSections, readOnlyFields = {}, getCurrentPosition, formatCoordinatesForDHIS2, facilityClassifications = [], loadingFacilityClassifications = false, inspectionInfoConfirmed = false, setInspectionInfoConfirmed = () => {}, areAllInspectionFieldsComplete = () => false, showDebugPanel = false, getCurrentFacilityClassification = () => null }) {
     // Safety check - if section is undefined, return null
     if (!section) {
       console.warn('🚨 FormSection: section prop is undefined, returning null');
@@ -604,6 +611,34 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
                 </span>
               )}
             </span>
+            
+            {/* Display filtered DE count if any */}
+            {(() => {
+              const currentFacilityClassification = getCurrentFacilityClassification();
+              if (currentFacilityClassification) {
+                const filteredCount = getFilteredDataElementCount(section.displayName, currentFacilityClassification);
+                if (filteredCount > 0) {
+                  return (
+                    <span 
+                      className="filtered-de-count" 
+                      title={`${filteredCount} data elements filtered out for ${currentFacilityClassification}`}
+                      style={{ 
+                        fontSize: '0.8em', 
+                        color: '#e74c3c', 
+                        marginLeft: '8px',
+                        backgroundColor: '#fdf2f2',
+                        padding: '2px 6px',
+                        borderRadius: '4px',
+                        border: '1px solid #fecaca'
+                      }}
+                    >
+                      🚫 {filteredCount} filtered
+              </span>
+                  );
+                }
+              }
+              return null;
+            })()}
             
             <span style={{ fontSize: '12px', color: '#666', marginLeft: '8px' }}>
               {isExpanded ? '(Click to collapse)' : '(Click to expand)'}
@@ -1224,6 +1259,31 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
     // State for inspection information confirmation
     const [inspectionInfoConfirmed, setInspectionInfoConfirmed] = useState(false);
 
+
+
+    // Function to get current facility classification
+    const getCurrentFacilityClassification = () => {
+      // Try to get from formData first
+      if (formData.facilityClassification) {
+        return formData.facilityClassification;
+      }
+
+      // Try to get from the DHIS2 field if it exists
+      if (configuration?.programStage?.allDataElements) {
+        const facilityClassificationElement = configuration.programStage.allDataElements.find(psde => {
+          const fieldName = (psde.dataElement.displayName || psde.dataElement.shortName || '').toLowerCase();
+          return fieldName.includes('facility classification') || fieldName.includes('facility type');
+        });
+        
+        if (facilityClassificationElement) {
+          const fieldKey = `dataElement_${facilityClassificationElement.dataElement.id}`;
+          return formData[fieldKey];
+        }
+      }
+
+      return null;
+    };
+
     const fetchTrackedEntityInstance = async (facilityId) => {
       try {
         // Use the same program ID as defined in the API service
@@ -1264,7 +1324,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
           console.log('✅ ===== TEI EXTRACTION DEBUG END =====');
           
           if (tei && tei.trim() !== '') {
-            setTrackedEntityInstance(tei);
+          setTrackedEntityInstance(tei);
             console.log('🔗 TEI set successfully in state:', tei);
           } else {
             console.log('⚠️ TEI is empty or whitespace - setting to null');
@@ -1423,7 +1483,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
     // Helper function to determine if a field is mandatory
     const isFieldMandatory = (psde) => {
       // All fields are now optional - no mandatory requirements
-      return false;
+        return false;
     };
 
 
@@ -2350,6 +2410,58 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                       >
                         🔄 Debug: Log Current State
                       </button>
+                      
+                      {/* Facility Classification and Section Visibility Debug Panel */}
+                      {showDebugPanel && (
+                        <div style={{ 
+                          marginTop: '8px',
+                          padding: '8px',
+                          backgroundColor: '#f8f9fa',
+                          border: '1px solid #dee2e6',
+                          borderRadius: '4px',
+                          fontSize: '11px'
+                        }}>
+                          <h6 style={{ margin: '0 0 6px 0', fontSize: '12px', color: '#495057' }}>
+                            🏥 Facility Classification & Section Visibility
+                          </h6>
+                          
+                          {(() => {
+                            const currentClassification = getCurrentFacilityClassification();
+                            if (currentClassification) {
+                              const allSections = serviceSections || [];
+                              const visibleSections = allSections.filter(section => 
+                                shouldShowSection(section.displayName, currentClassification)
+                              );
+                              const hiddenSections = allSections.filter(section => 
+                                !shouldShowSection(section.displayName, currentClassification)
+                              );
+                              
+                              return (
+                                <div>
+                                  <div style={{ marginBottom: '4px' }}>
+                                    <strong>Type:</strong> {currentClassification}
+                  </div>
+
+                                  <div style={{ marginBottom: '4px' }}>
+                                    <strong>Visible:</strong> {visibleSections.length} | <strong>Hidden:</strong> {hiddenSections.length}
+                                  </div>
+                                  
+                                  {hiddenSections.length > 0 && (
+                                    <div style={{ fontSize: '10px', color: '#dc3545' }}>
+                                      <strong>Hidden:</strong> {hiddenSections.map(s => s.displayName).join(', ')}
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            }
+                            return (
+                              <div style={{ color: '#6c757d' }}>
+                                No classification set
+                              </div>
+                            );
+                          })()}
+                        </div>
+                      )}
                   </div>
 
 
@@ -2472,6 +2584,17 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                      const sectionName = (section.displayName || '').toLowerCase();
                      return sectionName.includes('inspection information') || sectionName.includes('inspection type');
                    })
+                   .filter(section => {
+                     // Apply conditional filtering based on facility classification
+                     const currentClassification = getCurrentFacilityClassification();
+                     const shouldShow = shouldShowSection(section.displayName, currentClassification);
+                     
+                     if (!shouldShow) {
+                       console.log(`🚫 Hiding section "${section.displayName}" for facility type "${currentClassification}"`);
+                     }
+                     
+                     return shouldShow;
+                   })
                    .map((section, index) => (
                      <FormSection
                        key={`${section.id}-${index}-${section.displayName}`}
@@ -2490,6 +2613,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                        inspectionInfoConfirmed={inspectionInfoConfirmed}
                        setInspectionInfoConfirmed={setInspectionInfoConfirmed}
                        areAllInspectionFieldsComplete={areAllInspectionFieldsComplete}
+                       getCurrentFacilityClassification={getCurrentFacilityClassification}
                      />
                    ))}
                
@@ -2519,6 +2643,17 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                         const sectionName = (section.displayName || '').toLowerCase();
                         return !sectionName.includes('inspection type') && !sectionName.includes('inspection information');
                       })
+                      .filter(section => {
+                        // Apply conditional filtering based on facility classification
+                        const currentClassification = getCurrentFacilityClassification();
+                        const shouldShow = shouldShowSection(section.displayName, currentClassification);
+                        
+                        if (!shouldShow) {
+                          console.log(`🚫 Hiding section "${section.displayName}" for facility type "${currentClassification}"`);
+                        }
+                        
+                        return shouldShow;
+                      })
                       .map((section, index) => (
                         <FormSection
                           key={`${section.id}-${index}-${section.displayName}`}
@@ -2537,6 +2672,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                           inspectionInfoConfirmed={inspectionInfoConfirmed}
                           setInspectionInfoConfirmed={setInspectionInfoConfirmed}
                           areAllInspectionFieldsComplete={areAllInspectionFieldsComplete}
+                          getCurrentFacilityClassification={getCurrentFacilityClassification}
                         />
                       ))}
                  </>
@@ -2556,11 +2692,89 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                      🔒 Additional Sections Locked
                    </h4>
                    <p style={{ color: '#856404', margin: '0', fontSize: '14px' }}>
-                     Complete and confirm the "Inspection Information" and "Inspection Type" sections above to unlock the remaining {serviceSections && serviceSections.length > 0 ? serviceSections.filter(s => {
+                     Complete and confirm the "Inspection Information" and "Inspection Type" sections above to unlock the remaining inspection sections.
+                   </p>
+                   
+                   {/* Show facility classification info */}
+                   {(() => {
+                     const currentClassification = getCurrentFacilityClassification();
+                     if (currentClassification) {
+                       const visibleSections = serviceSections?.filter(s => {
                        const sectionName = (s.displayName || '').toLowerCase();
                        return !sectionName.includes('inspection information') && !sectionName.includes('inspection type');
-                     }).length : 0} inspection sections.
-                   </p>
+                       }).filter(section => shouldShowSection(section.displayName, currentClassification)) || [];
+                       
+                       const totalSections = serviceSections?.filter(s => {
+                         const sectionName = (s.displayName || '').toLowerCase();
+                         return !sectionName.includes('inspection information') && !sectionName.includes('inspection type');
+                       }).length || 0;
+                       
+                       const hiddenSections = totalSections - visibleSections.length;
+                       
+                       // Get detailed section information including filtered DE counts
+                       const sectionDetails = getSectionDetailsForFacility(currentClassification);
+                       const facilitySummary = getFacilitySummary(currentClassification);
+                       
+                       return (
+                         <div style={{ 
+                           marginTop: '12px', 
+                           padding: '8px', 
+                           backgroundColor: '#fff', 
+                           borderRadius: '4px',
+                           fontSize: '12px'
+                         }}>
+                           <strong>Facility Type:</strong> {currentClassification}<br />
+                           <strong>Available Sections:</strong> {visibleSections.length} of {totalSections}
+                           {hiddenSections > 0 && (
+                             <span style={{ color: '#dc3545' }}>
+                               <br /><strong>Hidden Sections:</strong> {hiddenSections} (not applicable for this facility type)
+                             </span>
+                           )}
+                           
+                           {/* Show filtered DE summary */}
+                           {facilitySummary.totalFilteredDEs > 0 && (
+                             <div style={{ 
+                               marginTop: '8px', 
+                               padding: '6px', 
+                               backgroundColor: '#fdf2f2', 
+                               borderRadius: '4px',
+                               border: '1px solid #fecaca'
+                             }}>
+                               <strong style={{ color: '#dc3545' }}>🚫 Data Elements Filtered:</strong> {facilitySummary.totalFilteredDEs} total
+                               <br />
+                               <span style={{ fontSize: '11px', color: '#666' }}>
+                                 Across {facilitySummary.sectionsWithFilteredDEs} section(s)
+                               </span>
+                             </div>
+                           )}
+                           
+                           {/* Show section-by-section filtered DE breakdown */}
+                           {Object.keys(sectionDetails).length > 0 && (
+                             <div style={{ 
+                               marginTop: '8px', 
+                               padding: '6px', 
+                               backgroundColor: '#f0f9ff', 
+                               borderRadius: '4px',
+                               border: '1px solid #bae6fd'
+                             }}>
+                               <strong style={{ color: '#0369a1' }}>📊 Section Details:</strong>
+                               {Object.entries(sectionDetails).map(([sectionName, details]) => {
+                                 if (details.filteredDECount > 0) {
+                                   return (
+                                     <div key={sectionName} style={{ fontSize: '11px', marginTop: '4px' }}>
+                                       <span style={{ color: '#dc3545' }}>🚫 {sectionName}:</span> {details.filteredDECount} DEs filtered
+                                     </div>
+                                   );
+                                 }
+                                 return null;
+                               }).filter(Boolean)}
+                             </div>
+                           )}
+                         </div>
+                       );
+                     }
+                     return null;
+                   })()}
                  </div>
                )}
              </>
