@@ -9,6 +9,7 @@ import {
   getSectionDetailsForFacility, 
   getFacilitySummary 
 } from '../config/sectionVisibilityConfig';
+import { shouldShowDataElementForService } from '../config/facilityServiceFilters';
 
 
 
@@ -115,11 +116,25 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
         "clinic"
       ];
       
+      // Custom onChange handler to update the selectedFacilityService state
+      const handleFacilityServiceChange = (e) => {
+        // Call the original onChange handler
+        onChange(e);
+        
+        const selectedValue = e.target.value;
+        console.log(`🏥 Selected Facility Service Department: ${selectedValue}`);
+        
+        // Update the global selectedFacilityService state via FormPage component
+        if (window.updateSelectedFacilityService) {
+          window.updateSelectedFacilityService(selectedValue);
+        }
+      };
+      
       return (
         <select
           id={fieldId}
           value={value || ''}
-          onChange={onChange}
+          onChange={handleFacilityServiceChange}
           className={`form-select ${error ? 'error' : ''}`}
           disabled={readOnly}
         >
@@ -162,7 +177,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
             return (
               <option key={index} value={optionValue}>
                 {optionText}
-              </option>
+            </option>
             );
           })}
         </select>
@@ -543,7 +558,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 }
 
   // Section component for organizing form fields
-  function FormSection({ section, formData, onChange, errors, serviceSections, loadingServiceSections, readOnlyFields = {}, getCurrentPosition, formatCoordinatesForDHIS2, facilityClassifications = [], loadingFacilityClassifications = false, inspectionInfoConfirmed = false, setInspectionInfoConfirmed = () => {}, areAllInspectionFieldsComplete = () => false, showDebugPanel = false, getCurrentFacilityClassification = () => null }) {
+  function FormSection({ section, formData, onChange, errors, serviceSections, loadingServiceSections, readOnlyFields = {}, getCurrentPosition, formatCoordinatesForDHIS2, facilityClassifications = [], loadingFacilityClassifications = false, inspectionInfoConfirmed = false, setInspectionInfoConfirmed = () => {}, areAllInspectionFieldsComplete = () => false, showDebugPanel = false, getCurrentFacilityClassification = () => null, selectedFacilityService = null }) {
     // Safety check - if section is undefined, return null
     if (!section) {
       console.warn('🚨 FormSection: section prop is undefined, returning null');
@@ -561,9 +576,37 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       return name.includes('comment') || name.includes('remarks') || name.includes('notes') || name.includes('additional');
     };
     
+    // Filter data elements based on selected facility service
+    const filterDataElements = (dataElements) => {
+      if (!selectedFacilityService || !dataElements || !Array.isArray(dataElements)) {
+        return dataElements;
+      }
+      
+      console.log(`🔍 Pre-pagination filtering for section "${section.displayName}" with service "${selectedFacilityService}"`);
+      
+      return dataElements.filter(psde => {
+        if (!psde || !psde.dataElement) return false;
+        
+        const shouldShow = shouldShowDataElementForService(
+          psde.dataElement.displayName,
+          section.displayName,
+          selectedFacilityService
+        );
+        
+        if (!shouldShow) {
+          console.log(`🔍 Pre-pagination filter: Hiding "${psde.dataElement.displayName}" in section "${section.displayName}"`);
+        }
+        
+        return shouldShow;
+      });
+    };
+    
+    // Get filtered data elements
+    const filteredDataElements = filterDataElements(section.dataElements);
+    
     // Calculate optimal page boundaries to avoid starting with comment fields
     const calculatePageBoundaries = () => {
-      if (!section.dataElements || section.dataElements.length === 0) {
+      if (!filteredDataElements || filteredDataElements.length === 0) {
         return { pages: [], totalPages: 0 };
       }
       
@@ -576,9 +619,9 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
         return { 
           pages: [{ 
             start: 0, 
-            end: section.dataElements.length, 
-            size: section.dataElements.length,
-            fields: section.dataElements 
+            end: filteredDataElements.length, 
+            size: filteredDataElements.length,
+            fields: filteredDataElements 
           }], 
           totalPages: 1 
         };
@@ -587,13 +630,13 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       const pages = [];
       let currentIndex = 0;
       
-      while (currentIndex < section.dataElements.length) {
+      while (currentIndex < filteredDataElements.length) {
         let pageSize = baseFieldsPerPage;
         let endIndex = currentIndex + pageSize;
         
         // Check if the next field after this page would be a comment field
-        if (endIndex < section.dataElements.length) {
-          const nextField = section.dataElements[endIndex];
+        if (endIndex < filteredDataElements.length) {
+          const nextField = filteredDataElements[endIndex];
           if (isCommentField(nextField.dataElement)) {
             // Extend this page to include the comment field
             endIndex++;
@@ -602,14 +645,14 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
         }
         
         // Ensure we don't exceed total length
-        endIndex = Math.min(endIndex, section.dataElements.length);
+        endIndex = Math.min(endIndex, filteredDataElements.length);
         pageSize = endIndex - currentIndex;
         
         pages.push({
           start: currentIndex,
           end: endIndex,
           size: pageSize,
-          fields: section.dataElements.slice(currentIndex, endIndex)
+          fields: filteredDataElements.slice(currentIndex, endIndex)
         });
         
         currentIndex = endIndex;
@@ -779,6 +822,8 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
                     console.warn('🚨 FormSection: Invalid psde or dataElement:', psde);
                     return null;
                   }
+                  
+                  // No need to filter here - already filtered before pagination
                   
                   const serviceFieldType = enhancedServiceFieldDetection(psde.dataElement);
                   // Check if this is a dynamic service field (true or string type indicating special handling)
@@ -1023,6 +1068,22 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       api,
       setEventDate
     } = useApp();
+    
+    // State to track the selected Facility Service Department for filtering
+    const [selectedFacilityService, setSelectedFacilityService] = useState(null);
+    
+    // Set up global handler for updating the selectedFacilityService state
+    useEffect(() => {
+      window.updateSelectedFacilityService = (value) => {
+        console.log(`🏥 Setting selected Facility Service Department: ${value}`);
+        setSelectedFacilityService(value);
+      };
+      
+      // Clean up
+      return () => {
+        delete window.updateSelectedFacilityService;
+      };
+    }, []);
 
     // Function to filter out unwanted sections - DISABLED FOR DEBUGGING
     const filterUnwantedSections = (sections) => {
@@ -1946,10 +2007,10 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
             // Only set value if a matching option is found - no fallback to raw assignmentType
             if (matched) {
               const valueToSet = matched.code || matched.id;
-              setFormData(prev => ({
-                ...prev,
-                [fieldKey]: valueToSet
-              }));
+          setFormData(prev => ({
+            ...prev,
+            [fieldKey]: valueToSet
+          }));
             } else {
               console.warn(`⚠️ No matching option found for assignmentType "${assignmentType}" in Type field optionSet. Field will remain empty.`);
             }
@@ -2189,7 +2250,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
           
           if (facilityInspection && facilityInspection.type) {
             classification = facilityInspection.type;
-            if (showDebugPanel) {
+              if (showDebugPanel) {
               console.log('✅ Found facility type directly from inspection data:', classification);
             }
           }
@@ -2209,7 +2270,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
             
             if (facilityAssignment && facilityAssignment.assignment && facilityAssignment.assignment.type) {
               classification = facilityAssignment.assignment.type;
-              if (showDebugPanel) {
+                if (showDebugPanel) {
                 console.log('✅ Found facility type from user assignments:', classification);
               }
             } else {
@@ -2699,24 +2760,25 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                      return shouldShow;
                    })
                    .map((section, index) => (
-                     <FormSection
-                       key={`${section.id}-${index}-${section.displayName}`}
-                       section={section}
-                       formData={formData}
-                       onChange={handleFieldChange}
-                       errors={errors}
-                       serviceSections={serviceOptions}
-                       loadingServiceSections={false}
-                       readOnlyFields={readOnlyFields}
-                       getCurrentPosition={getCurrentPosition}
-                       formatCoordinatesForDHIS2={formatCoordinatesForDHIS2}
-                       showDebugPanel={showDebugPanel}
-                       facilityClassifications={facilityClassifications}
-                       loadingFacilityClassifications={loadingFacilityClassifications}
-                       inspectionInfoConfirmed={inspectionInfoConfirmed}
-                       setInspectionInfoConfirmed={setInspectionInfoConfirmed}
-                       areAllInspectionFieldsComplete={areAllInspectionFieldsComplete}
-                       getCurrentFacilityClassification={getCurrentFacilityClassification}
+                                         <FormSection
+                      key={`${section.id}-${index}-${section.displayName}`}
+                      section={section}
+                      formData={formData}
+                      onChange={handleFieldChange}
+                      errors={errors}
+                      serviceSections={serviceOptions}
+                      loadingServiceSections={false}
+                      readOnlyFields={readOnlyFields}
+                      getCurrentPosition={getCurrentPosition}
+                      formatCoordinatesForDHIS2={formatCoordinatesForDHIS2}
+                      showDebugPanel={showDebugPanel}
+                      facilityClassifications={facilityClassifications}
+                      loadingFacilityClassifications={loadingFacilityClassifications}
+                      inspectionInfoConfirmed={inspectionInfoConfirmed}
+                      setInspectionInfoConfirmed={setInspectionInfoConfirmed}
+                      areAllInspectionFieldsComplete={areAllInspectionFieldsComplete}
+                      getCurrentFacilityClassification={getCurrentFacilityClassification}
+                      selectedFacilityService={selectedFacilityService}
                      />
                    ))}
                
@@ -2758,24 +2820,25 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                         return shouldShow;
                       })
                       .map((section, index) => (
-                        <FormSection
-                          key={`${section.id}-${index}-${section.displayName}`}
-                          section={section}
-                          formData={formData}
-                          onChange={handleFieldChange}
-                          errors={errors}
-                          serviceSections={serviceOptions}
-                          loadingServiceSections={false}
-                          readOnlyFields={readOnlyFields}
-                          getCurrentPosition={getCurrentPosition}
-                          formatCoordinatesForDHIS2={formatCoordinatesForDHIS2}
-                          showDebugPanel={showDebugPanel}
-                          facilityClassifications={facilityClassifications}
-                          loadingFacilityClassifications={loadingFacilityClassifications}
-                          inspectionInfoConfirmed={inspectionInfoConfirmed}
-                          setInspectionInfoConfirmed={setInspectionInfoConfirmed}
-                          areAllInspectionFieldsComplete={areAllInspectionFieldsComplete}
-                          getCurrentFacilityClassification={getCurrentFacilityClassification}
+                                            <FormSection
+                      key={`${section.id}-${index}-${section.displayName}`}
+                      section={section}
+                      formData={formData}
+                      onChange={handleFieldChange}
+                      errors={errors}
+                      serviceSections={serviceOptions}
+                      loadingServiceSections={false}
+                      readOnlyFields={readOnlyFields}
+                      getCurrentPosition={getCurrentPosition}
+                      formatCoordinatesForDHIS2={formatCoordinatesForDHIS2}
+                      showDebugPanel={showDebugPanel}
+                      facilityClassifications={facilityClassifications}
+                      loadingFacilityClassifications={loadingFacilityClassifications}
+                      inspectionInfoConfirmed={inspectionInfoConfirmed}
+                      setInspectionInfoConfirmed={setInspectionInfoConfirmed}
+                      areAllInspectionFieldsComplete={areAllInspectionFieldsComplete}
+                      getCurrentFacilityClassification={getCurrentFacilityClassification}
+                      selectedFacilityService={selectedFacilityService}
                         />
                       ))}
                  </>
