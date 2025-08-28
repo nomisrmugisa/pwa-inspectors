@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useApp } from '../contexts/AppContext';
 import { useLocation, Link } from 'react-router-dom';
+import './Header.css';
 
 export function Header() {
   const { 
@@ -13,6 +14,21 @@ export function Header() {
     user,
     inspectionDate
   } = useApp();
+  
+  // State to track if header is collapsed, initialized from localStorage if available
+  const [isCollapsed, setIsCollapsed] = useState(() => {
+    const savedState = localStorage.getItem('headerCollapsed');
+    return savedState === 'true';
+  });
+  
+  // Function to toggle header collapse state
+  const toggleCollapse = () => {
+    const newState = !isCollapsed;
+    console.log('Toggle collapse:', { current: isCollapsed, new: newState });
+    setIsCollapsed(newState);
+    // Save state to localStorage
+    localStorage.setItem('headerCollapsed', newState.toString());
+  };
 
   const { pathname } = useLocation();
 
@@ -29,7 +45,7 @@ export function Header() {
   const buttonTextStyle = { color: '#ffffff' };
  
   return (
-    <header className="app-header" style={{ color: '#ffffff' }}>
+    <header className={`app-header ${isCollapsed ? 'collapsed' : ''}`} style={{ color: '#ffffff' }}>
       <div className="header-content" style={{ color: '#ffffff' }}>
         <div className="header-left" style={{ color: '#ffffff' }}>
           <div className="moh-logo-section" style={{ color: '#ffffff' }}>
@@ -44,6 +60,20 @@ export function Header() {
           {user && (
             <span className="user-info" style={{ color: '#ffffff' }}>{user.displayName}</span>
           )}
+        </div>
+        
+        {/* Collapse/Expand Button */}
+        <div className="collapse-button-container">
+          <button 
+            className="btn btn-secondary collapse-btn" 
+            onClick={toggleCollapse}
+            title={isCollapsed ? "Expand header" : "Collapse header"}
+            style={{ color: '#ffffff' }}
+          >
+            <span style={{ color: '#ffffff' }}>
+              {isCollapsed ? '🔽' : '🔼'}
+            </span>
+          </button>
         </div>
         
         <div className="header-actions" style={{ color: '#ffffff' }}>

@@ -229,6 +229,12 @@ export const dataElementFilterConfig = {
  * @returns {boolean} - Whether the section should be shown
  */
 export const shouldShowSection = (sectionName, facilityClassification) => {
+  // Always show the inspection type section
+  if (sectionName && sectionName.toLowerCase().includes('inspection type')) {
+    console.log(`✅ Always showing Inspection Type section`);
+    return true;
+  }
+  
   // If no facility classification is set, show all sections
   if (!facilityClassification) {
     console.log('🔍 No facility classification set - showing all sections');
@@ -236,10 +242,11 @@ export const shouldShowSection = (sectionName, facilityClassification) => {
   }
 
   // Get the visibility config for this facility type
-  const facilityConfig = sectionVisibilityConfig[facilityClassification];
+  // If not found, use the 'clinic' config as default (which shows all sections)
+  const facilityConfig = sectionVisibilityConfig[facilityClassification] || sectionVisibilityConfig['clinic'];
   
   if (!facilityConfig) {
-    console.log(`🔍 No specific config for facility type "${facilityClassification}" - showing all sections`);
+    console.log(`🔍 No specific config for facility type "${facilityClassification}" and no default config - showing all sections`);
     return true;
   }
 
@@ -264,6 +271,12 @@ export const shouldShowSection = (sectionName, facilityClassification) => {
  * @returns {boolean} - Whether the Data Element should be shown
  */
 export const shouldShowDataElement = (dataElementName, sectionName, facilityClassification) => {
+  // Always show all fields in the inspection type section
+  if (sectionName && sectionName.toLowerCase().includes('inspection type')) {
+    console.log(`✅ Always showing Data Element "${dataElementName}" in Inspection Type section`);
+    return true;
+  }
+  
   // If no facility classification is set, show all Data Elements
   if (!facilityClassification) {
     return true;
@@ -357,21 +370,26 @@ export const getSectionDetailsForFacility = (facilityClassification) => {
     return {};
   }
 
-  const facilityConfig = sectionVisibilityConfig[facilityClassification];
-  const facilityDEConfig = dataElementFilterConfig[facilityClassification] || {};
+  // Check if the facility classification exists in our config
+  // If not, use the 'clinic' config as a default (which shows all sections)
+  const facilityConfig = sectionVisibilityConfig[facilityClassification] || sectionVisibilityConfig['clinic'] || {};
+  const facilityDEConfig = dataElementFilterConfig[facilityClassification] || dataElementFilterConfig['clinic'] || {};
   
   const sectionDetails = {};
   
-  Object.keys(facilityConfig).forEach(sectionName => {
-    const isVisible = facilityConfig[sectionName];
-    const filteredDECount = facilityDEConfig[sectionName] ? facilityDEConfig[sectionName].length : 0;
-    
-    sectionDetails[sectionName] = {
-      visible: isVisible,
-      filteredDECount: filteredDECount,
-      hiddenDEs: facilityDEConfig[sectionName] || []
-    };
-  });
+  // Add null check before calling Object.keys
+  if (facilityConfig && typeof facilityConfig === 'object') {
+    Object.keys(facilityConfig).forEach(sectionName => {
+      const isVisible = facilityConfig[sectionName];
+      const filteredDECount = facilityDEConfig[sectionName] ? facilityDEConfig[sectionName].length : 0;
+      
+      sectionDetails[sectionName] = {
+        visible: isVisible,
+        filteredDECount: filteredDECount,
+        hiddenDEs: facilityDEConfig[sectionName] || []
+      };
+    });
+  }
   
   return sectionDetails;
 };
@@ -392,21 +410,29 @@ export const getFacilitySummary = (facilityClassification) => {
     };
   }
 
+  // Get section details with proper fallback handling
   const sectionDetails = getSectionDetailsForFacility(facilityClassification);
-  const sectionNames = Object.keys(sectionDetails);
+  
+  // Ensure sectionDetails is an object before calling Object.keys
+  const sectionNames = sectionDetails && typeof sectionDetails === 'object' ? Object.keys(sectionDetails) : [];
   
   const totalSections = sectionNames.length;
-  const visibleSections = sectionNames.filter(name => sectionDetails[name].visible).length;
+  const visibleSections = sectionNames.filter(name => 
+    sectionDetails[name] && sectionDetails[name].visible
+  ).length;
   const hiddenSections = totalSections - visibleSections;
   
   let totalFilteredDEs = 0;
   let sectionsWithFilteredDEs = 0;
   
   sectionNames.forEach(sectionName => {
-    const filteredCount = sectionDetails[sectionName].filteredDECount;
-    totalFilteredDEs += filteredCount;
-    if (filteredCount > 0) {
-      sectionsWithFilteredDEs++;
+    // Add null check before accessing properties
+    if (sectionDetails[sectionName] && typeof sectionDetails[sectionName] === 'object') {
+      const filteredCount = sectionDetails[sectionName].filteredDECount || 0;
+      totalFilteredDEs += filteredCount;
+      if (filteredCount > 0) {
+        sectionsWithFilteredDEs++;
+      }
     }
   });
   

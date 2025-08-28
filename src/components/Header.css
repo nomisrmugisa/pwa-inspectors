@@ -7,6 +7,44 @@
   top: 0;
   z-index: 100;
   border-bottom: 4px solid #f4e4c1;
+  transition: all 0.3s ease;
+}
+
+/* Collapsed header styles */
+.app-header.collapsed .moh-logo-section {
+  display: none;
+}
+
+.app-header.collapsed .header-status {
+  display: none;
+}
+
+.app-header.collapsed .header-content {
+  padding: 0.5rem 2rem;
+}
+
+.app-header.collapsed .user-info {
+  margin-right: 10px;
+}
+
+/* Collapse button styles */
+.collapse-button-container {
+  display: flex;
+  align-items: center;
+  margin: 0 10px;
+}
+
+.collapse-btn {
+  padding: 0.4rem 0.8rem !important;
+  min-height: 36px !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  cursor: pointer;
+  z-index: 101;
+}
+
+.collapse-btn:hover {
+  background: rgba(255, 255, 255, 0.3) !important;
 }
 
 .app-header * {
@@ -21,6 +59,7 @@
   max-width: 1400px;
   margin: 0 auto;
   color: white !important;
+  position: relative;
 }
 
 .header-left {

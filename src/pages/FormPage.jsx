@@ -10,6 +10,56 @@ import {
   getFacilitySummary 
 } from '../config/sectionVisibilityConfig';
 
+
+
+// Define service field detection function at module level
+const enhancedServiceFieldDetection = (dataElement) => {
+  if (!dataElement || !dataElement.displayName) {
+    return false;
+  }
+  
+  const fieldName = (dataElement.displayName || dataElement.shortName || '').toLowerCase();
+  
+  // Check if this is the Facility Service Departments field
+  const isFacilityServiceDepartments = fieldName === 'facility service departments' || 
+                                      fieldName.includes('facility service department');
+  
+  // If it's the Facility Service Departments field, we want to handle it specially
+  if (isFacilityServiceDepartments) {
+    return 'facility_service_departments';
+  }
+  
+  // Check if this is the main Services field
+  const isMainServicesField = fieldName === 'services' || fieldName === 'service' || fieldName === 'service sections';
+  
+  // If it's the main Services field, we want to treat it as a service field
+  if (isMainServicesField) {
+    return true;
+  }
+  
+  // For other fields, use the standard service field detection logic
+  // Exclude fields that are about supplies, even if they contain 'service'
+  if (fieldName.includes('supplies') || fieldName.includes('adequate')) {
+    return false;
+  }
+  
+  // Exclude fields that are about outreach services, special circumstances, etc.
+  if (fieldName.includes('outreach services') || 
+      fieldName.includes('special circumstances') ||
+      fieldName.includes('applications for')) {
+    return false;
+  }
+  
+  // Only identify fields that are specifically about selecting service types/sections
+  return (fieldName.includes('service type') || 
+          fieldName.includes('service selection') ||
+          fieldName.includes('select service') ||
+          fieldName.includes('service section') ||
+          (fieldName.includes('service') && fieldName.includes('type'))) &&
+         !fieldName.includes('outreach') &&
+         !fieldName.includes('special');
+};
+
 // Form field component for individual data elements
 function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoading = false, readOnly = false, getCurrentPosition, formatCoordinatesForDHIS2 }) {
   const { dataElement } = psde;
@@ -43,6 +93,46 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       fieldId: fieldId
     });
     
+
+    
+    // Handle Facility Service Departments field with specific dropdown options
+    const serviceFieldType = enhancedServiceFieldDetection(dataElement);
+    if (serviceFieldType === 'facility_service_departments') {
+      console.log(`🏥 Rendering Facility Service Departments field: "${dataElement.displayName}"`);
+      
+      // Define the specific options for Facility Service Departments
+      const facilityServiceOptions = [
+        "Gynae Clinics",
+        "laboratory",
+        "Psychology clinic",
+        "Eye (opthalmologyoptometry optician) Clinics",
+        "physiotheraphy",
+        "dental clinic",
+        "ENT clinic",
+        "Rehabilitation Centre",
+        "Potrait clinic",
+        "Radiology",
+        "clinic"
+      ];
+      
+      return (
+        <select
+          id={fieldId}
+          value={value || ''}
+          onChange={onChange}
+          className={`form-select ${error ? 'error' : ''}`}
+          disabled={readOnly}
+        >
+          <option value="">Select {dataElement.displayName}</option>
+          {facilityServiceOptions.map((option, index) => (
+            <option key={index} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      );
+    }
+    
     // Handle dynamic service dropdown (overrides static optionSet)
     if (dynamicOptions !== null) {
       const isMandatory = isMandatoryField();
@@ -59,17 +149,47 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
             {isLoading ? 'Loading service sections...' : 
              `Select ${dataElement.displayName}`}
           </option>
-          {dynamicOptions.map((section, index) => (
-            <option key={index} value={section}>
-              {section}
-            </option>
-          ))}
+          {dynamicOptions.map((section, index) => {
+            // Handle both string and object options
+            const optionValue = typeof section === 'object' && section !== null 
+              ? (section.id || section.code || JSON.stringify(section))
+              : String(section);
+              
+            const optionText = typeof section === 'object' && section !== null
+              ? (section.displayName || section.name || section.id || JSON.stringify(section))
+              : String(section);
+              
+            return (
+              <option key={index} value={optionValue}>
+                {optionText}
+              </option>
+            );
+          })}
         </select>
       );
     }
 
-    // First check if field has optionSet (dropdown), regardless of valueType
-    if (dataElement.optionSet && dataElement.optionSet.options) {
+    // For Service fields without dynamic options, show error message
+    if (serviceFieldType && serviceFieldType !== 'facility_service_departments' && dynamicOptions === null) {
+      console.log(`❌ ALWAYS LOG: Service field "${dataElement.displayName}" has no dynamic options available`);
+      return (
+        <div className="form-field-error">
+          <select
+            id={fieldId}
+            value=""
+            disabled={true}
+            className="form-select error"
+          >
+            <option value="">No service options available</option>
+          </select>
+          <div className="error-message">Service options could not be loaded</div>
+        </div>
+      );
+    }
+
+    // For Service fields, only use dynamic options - no static optionSet fallback
+    // For non-Service fields, check if field has optionSet (dropdown), regardless of valueType
+    if (!serviceFieldType && dataElement.optionSet && dataElement.optionSet.options) {
       
       console.log(`📋 ALWAYS LOG: Dropdown field "${dataElement.displayName}":`, {
         optionSetId: dataElement.optionSet.id,
@@ -447,6 +567,23 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
         return { pages: [], totalPages: 0 };
       }
       
+      // Check if this is one of the sections that should start expanded
+      const isInspectionInfoSection = (section.displayName || '').toLowerCase().includes('inspection information');
+      const isInspectionTypeSection = (section.displayName || '').toLowerCase().includes('inspection type');
+      
+      // For Inspection Type section, show all fields on one page (no pagination)
+      if (isInspectionTypeSection) {
+        return { 
+          pages: [{ 
+            start: 0, 
+            end: section.dataElements.length, 
+            size: section.dataElements.length,
+            fields: section.dataElements 
+          }], 
+          totalPages: 1 
+        };
+      }
+      
       const pages = [];
       let currentIndex = 0;
       
@@ -542,36 +679,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
     const [isExpanded, setIsExpanded] = useState(isInspectionInfoSection || isInspectionTypeSection);
 
     // Function to determine if a field should use dynamic service dropdown
-    const isServiceField = (dataElement) => {
-      // Safety check
-      if (!dataElement || !dataElement.displayName) {
-        return false;
-      }
-      
-      const fieldName = (dataElement.displayName || dataElement.shortName || '').toLowerCase();
-      
-      // Exclude fields that are about supplies, even if they contain 'service'
-      if (fieldName.includes('supplies') || fieldName.includes('adequate')) {
-        return false;
-      }
-      
-      // Exclude fields that are about outreach services, special circumstances, etc.
-      if (fieldName.includes('outreach services') || 
-          fieldName.includes('special circumstances') ||
-          fieldName.includes('applications for')) {
-        return false;
-      }
-      
-      // Only identify fields that are specifically about selecting service types/sections
-      // Look for patterns that indicate service selection rather than service-related questions
-      return (fieldName.includes('service type') || 
-              fieldName.includes('service selection') ||
-              fieldName.includes('select service') ||
-              fieldName.includes('service section') ||
-              (fieldName.includes('service') && fieldName.includes('type'))) &&
-             !fieldName.includes('outreach') &&
-             !fieldName.includes('special');
-    };
+    // (Now defined at component level)
         
                     // All fields are optional - no mandatory count needed
                 const mandatoryFieldsCount = 0;
@@ -672,7 +780,9 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
                     return null;
                   }
                   
-                  const isDynamicServiceField = isServiceField(psde.dataElement);
+                  const serviceFieldType = enhancedServiceFieldDetection(psde.dataElement);
+                  // Check if this is a dynamic service field (true or string type indicating special handling)
+                  const isDynamicServiceField = !!serviceFieldType && serviceFieldType !== 'facility_service_departments';
                   const actualIndex = startIndex + index; // Global index for proper field identification
                   
                   // Log field rendering for debugging
@@ -708,13 +818,14 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
                         readOnly={!!readOnlyFields[`dataElement_${psde.dataElement.id}`]}
                         getCurrentPosition={getCurrentPosition}
                         formatCoordinatesForDHIS2={formatCoordinatesForDHIS2}
+
                       />
                     </div>
                   );
                 }).filter(Boolean)}
                 
-                {/* Pagination Navigation */}
-                {totalPages > 1 && (
+                {/* Pagination Navigation - Hide for Inspection Type section */}
+                {totalPages > 1 && !isInspectionTypeSection && (
                   <div className="pagination-container" style={{
                     display: 'flex',
                     justifyContent: 'space-between',
@@ -1503,6 +1614,19 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
     const selectedAssignment = safeUserAssignments.find(a => a.facility.id === (typeof formData.orgUnit === 'string' ? formData.orgUnit : formData.orgUnit?.id));
     // Get service options from the selected assignment
     const serviceOptions = selectedAssignment ? selectedAssignment.assignment.sections : [];
+    // Enhanced debug log to check the format of serviceOptions
+    console.log('🔍 DEBUG: serviceOptions format:', {
+      serviceOptions,
+      type: Array.isArray(serviceOptions) ? 'array' : typeof serviceOptions,
+      firstItem: serviceOptions[0],
+      firstItemType: serviceOptions[0] ? typeof serviceOptions[0] : 'undefined',
+      firstItemProperties: serviceOptions[0] ? Object.keys(serviceOptions[0]) : [],
+      allItemsAsStrings: serviceOptions.map(item => 
+        typeof item === 'object' ? 
+          (item.displayName || item.name || item.id || JSON.stringify(item)) : 
+          String(item)
+      )
+    });
     const assignmentType = selectedAssignment ? selectedAssignment.assignment.type : null;
     const assignmentInspectionId = selectedAssignment ? selectedAssignment.assignment.inspectionId : null;
     // Get inspection period from the selected assignment
@@ -1697,23 +1821,8 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
           }
         } catch (error) {
           console.error('❌ Failed to fetch service sections:', error);
-          // Fallback to showing all non-Pre-Inspection sections, excluding specific unwanted sections
-          const fallbackSections = filterUnwantedSections(configuration?.programStage?.sections);
-          
-          // ADDITIONAL DEBUGGING: Log fallback sections
-          console.log('🔄 FALLBACK DEBUG: Using fallback sections:', {
-            fallbackSections: fallbackSections.length,
-            sectionNames: fallbackSections.map(s => s.displayName),
-            hasDataElements: fallbackSections.map(s => ({
-              name: s.displayName,
-              dataElementsCount: s.dataElements?.length || 0
-            }))
-          });
-          
-          if (showDebugPanel) {
-            console.log('🔄 Using fallback sections:', fallbackSections.length);
-          }
-          setServiceSections(fallbackSections);
+          // No fallback - set empty service sections when fetch fails
+          setServiceSections([]);
         }
         // setLoadingServiceSections(false);
       };
@@ -1723,33 +1832,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
 
 
-    // Function to determine if a field should use dynamic service dropdown
-    const isServiceField = (dataElement) => {
-      // Check if field name/displayName contains 'service' (case-insensitive)
-      const fieldName = (dataElement.displayName || dataElement.shortName || '').toLowerCase();
-      
-      // Exclude fields that are about supplies, even if they contain 'service'
-      if (fieldName.includes('supplies') || fieldName.includes('adequate')) {
-        return false;
-      }
-      
-      // Exclude fields that are about outreach services, special circumstances, etc.
-      if (fieldName.includes('outreach services') || 
-          fieldName.includes('special circumstances') ||
-          fieldName.includes('applications for')) {
-        return false;
-      }
-      
-      // Only identify fields that are specifically about selecting service types/sections
-      // Look for patterns that indicate service selection rather than service-related questions
-      return (fieldName.includes('service type') || 
-              fieldName.includes('service selection') ||
-              fieldName.includes('select service') ||
-              fieldName.includes('service section') ||
-              (fieldName.includes('service') && fieldName.includes('type'))) &&
-             !fieldName.includes('outreach') &&
-             !fieldName.includes('special');
-    };
+
 
     // Move this block after all hooks to avoid conditional hook call error
     // if (!configuration) { ... }
@@ -1850,8 +1933,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
       if (typeElement) {
         const fieldKey = `dataElement_${typeElement.dataElement.id}`;
         if (assignmentType) {
-          // If the Type field uses an optionSet, map the assignment type to the option value
-          let valueToSet = assignmentType;
+          // Only set Type field if there's a matching option in optionSet - no fallback
           const options = typeElement.dataElement.optionSet?.options || [];
           if (Array.isArray(options) && options.length > 0) {
             const normalized = (v) => (v ?? '').toString().trim().toLowerCase();
@@ -1860,19 +1942,29 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
               normalized(opt.code) === normalized(assignmentType) ||
               normalized(opt.id) === normalized(assignmentType)
             );
+            
+            // Only set value if a matching option is found - no fallback to raw assignmentType
             if (matched) {
-              valueToSet = matched.code || matched.id;
+              const valueToSet = matched.code || matched.id;
+              setFormData(prev => ({
+                ...prev,
+                [fieldKey]: valueToSet
+              }));
+            } else {
+              console.warn(`⚠️ No matching option found for assignmentType "${assignmentType}" in Type field optionSet. Field will remain empty.`);
             }
+          } else {
+            console.warn(`⚠️ Type field has no optionSet options. Cannot set value for assignmentType "${assignmentType}".`);
           }
-          setFormData(prev => ({
-            ...prev,
-            [fieldKey]: valueToSet
-          }));
         }
         // Always lock the field regardless of whether a value exists
         setReadOnlyFields(prev => ({ ...prev, [fieldKey]: true }));
       }
     }, [configuration, assignmentType, formData.orgUnit]);
+    
+    // Service field detection is now handled by the module-level enhancedServiceFieldDetection function
+    
+
 
     // Set Inspection-id from assignment and lock field when facility/orgUnit changes
     useEffect(() => {
@@ -2087,45 +2179,56 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
         // Try multiple approaches to get facility type/classification
         let classification = null;
         
-        // Approach 1: Try to get facility type from a generic dataStore key
+        // Approach 1: Try to get facility type directly from inspection data
         try {
-          const facilityTypeResponse = await api.request('/api/dataStore/facility_types');
-          if (facilityTypeResponse && typeof facilityTypeResponse === 'object') {
-            // Look for a key that contains the facility ID
-            const matchingKey = Object.keys(facilityTypeResponse).find(key => 
-              key.includes(facilityId) || key.includes('facility') || key.includes('type')
-            );
-            
-            if (matchingKey && facilityTypeResponse[matchingKey]) {
-              classification = facilityTypeResponse[matchingKey];
-              if (showDebugPanel) {
-                console.log('✅ Found facility type via facility_types dataStore:', classification);
-              }
+          // Fetch from inspection dataStore directly - this is the authoritative source
+          const inspectionData = await api.getInspectionAssignments();
+          const facilityInspection = inspectionData.inspections?.find(
+            inspection => inspection.facilityId === facilityId
+          );
+          
+          if (facilityInspection && facilityInspection.type) {
+            classification = facilityInspection.type;
+            if (showDebugPanel) {
+              console.log('✅ Found facility type directly from inspection data:', classification);
             }
           }
         } catch (error) {
           if (showDebugPanel) {
-            console.log('⚠️ facility_types dataStore not accessible:', error.message);
+            console.log('⚠️ Inspection data not accessible:', error.message);
           }
         }
         
-        // Approach 2: Try to get from a more generic facility dataStore
+        // Approach 2: Try to get from inspection assignments data (which we already have)
         if (!classification) {
           try {
-            const facilityDataResponse = await api.request('/api/dataStore/facilities');
-            if (facilityDataResponse && typeof facilityDataResponse === 'object') {
-              // Look for facility data that might contain type/classification
-              const facilityData = facilityDataResponse[facilityId] || facilityDataResponse[`facility_${facilityId}`];
-              if (facilityData && facilityData.type) {
-                classification = facilityData.type;
+            // First check if we already have the facility in our assignments
+            const facilityAssignment = safeUserAssignments.find(a => 
+              a.facility.id === facilityId
+            );
+            
+            if (facilityAssignment && facilityAssignment.assignment && facilityAssignment.assignment.type) {
+              classification = facilityAssignment.assignment.type;
+              if (showDebugPanel) {
+                console.log('✅ Found facility type from user assignments:', classification);
+              }
+            } else {
+              // If not in our assignments, try to fetch from inspection dataStore
+              const inspectionData = await api.getInspectionAssignments();
+              const facilityInspection = inspectionData.inspections?.find(
+                inspection => inspection.facilityId === facilityId
+              );
+              
+              if (facilityInspection && facilityInspection.type) {
+                classification = facilityInspection.type;
                 if (showDebugPanel) {
-                  console.log('✅ Found facility type via facilities dataStore:', classification);
+                  console.log('✅ Found facility type via inspection dataStore:', classification);
                 }
               }
             }
           } catch (error) {
             if (showDebugPanel) {
-              console.log('⚠️ facilities dataStore not accessible:', error.message);
+              console.log('⚠️ Error accessing inspection data:', error.message);
             }
           }
         }
