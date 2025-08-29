@@ -602,8 +602,34 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
     };
     
     // Get filtered data elements
-    const filteredDataElements = filterDataElements(section.dataElements);
-    
+    // const filteredDataElements = filterDataElements(section.dataElements);
+
+    const [filteredDataElements, setFilteredDataElements] = useState([]);
+
+
+    useEffect(() => {
+      const filterAsync = async () => {
+        if (!selectedFacilityService || !section.dataElements) {
+          setFilteredDataElements(section.dataElements || []);
+          return;
+        }
+        const results = await Promise.all(
+            section.dataElements.map(async (psde) => {
+              if (!psde || !psde.dataElement) return false;
+              return await shouldShowDataElementForService(
+                  psde.dataElement.displayName,
+                  section.displayName,
+                  selectedFacilityService
+              );
+            })
+        );
+        setFilteredDataElements(
+            section.dataElements.filter((_, idx) => results[idx])
+        );
+      };
+      filterAsync();
+    }, [section.dataElements, section.displayName, selectedFacilityService]);
+
     // Calculate optimal page boundaries to avoid starting with comment fields
     const calculatePageBoundaries = () => {
       if (!filteredDataElements || filteredDataElements.length === 0) {

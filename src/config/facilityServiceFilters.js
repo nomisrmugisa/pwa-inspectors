@@ -17,56 +17,70 @@
  * - Keywords are matched case-insensitive and can be partial matches
  */
 
-const facilityServiceFilters = {
-  // Gynae Clinics - specialized women's health services
-  'Gynae Clinics': {
-    'ORGANISATION AND MANAGEMENT: Inspection': {
-      showOnly: [
-        'facility',
-        'service',
-        'type',
-        'medication',
-        'complaints',
-        'waste'
-      ]
-    },
-    'SECTION B-STATUTORY REQUIREMENTS': {
-      showOnly: [
-        'permit',
-        'work'
-      ]
-    }
-  },
+// const facilityServiceFilters = {
+//   // Gynae Clinics - specialized women's health services
+//   'Gynae Clinics': {
+//     'ORGANISATION AND MANAGEMENT: Inspection': {
+//       showOnly: [
+//         'facility',
+//         'service',
+//         'type',
+//         'medication',
+//         'complaints',
+//         'waste'
+//       ]
+//     },
+//     'SECTION B-STATUTORY REQUIREMENTS': {
+//       showOnly: [
+//         'permit',
+//         'work'
+//       ]
+//     }
+//   },
+//
+//   // Laboratory - focus on lab-specific elements
+//   'laboratory': {
+//     'ORGANISATION AND MANAGEMENT: Inspection': {
+//       showOnly: [
+//         'facility',
+//         'service',
+//         'type',
+//         'laboratory',
+//         'quality',
+//         'waste'
+//       ]
+//     }
+//   },
+//
+//   // Default configuration for any facility service not specifically defined
+//   'default': {
+//     // All sections and elements will be shown by default
+//   }
+// };
 
-  // Laboratory - focus on lab-specific elements
-  'laboratory': {
-    'ORGANISATION AND MANAGEMENT: Inspection': {
-      showOnly: [
-        'facility',
-        'service',
-        'type',
-        'laboratory',
-        'quality',
-        'waste'
-      ]
-    }
-  },
 
-  // Default configuration for any facility service not specifically defined
-  'default': {
-    // All sections and elements will be shown by default
-  }
+// src/config/facilityServiceFilters.js
+export const facilityServiceFilters = async (facilityService) => {
+    switch ((facilityService || '').toLowerCase()) {
+        case 'gynae clinics':
+            return (await import('./gynaeClinics.js')).default;
+        case 'laboratory':
+            return (await import('./laboratory.js')).default;
+        case 'clinic':
+            return (await import('./clinic.js')).default;
+        default:
+            return (await import('./default.js')).default;
+    }
 };
-
 /**
  * Get the filter configuration for a specific facility service department
  * @param {string} facilityService - The selected facility service department
  * @returns {Object} - The filter configuration for the facility service
  */
-export const getFilterConfig = (facilityService) => {
-  if (!facilityService) return facilityServiceFilters['default'];
-  
-  return facilityServiceFilters[facilityService] || facilityServiceFilters['default'];
+
+
+export const getFilterConfig = async (facilityService) => {
+    return await facilityServiceFilters(facilityService) || facilityServiceFilters['default'];
 };
 
 /**
@@ -76,11 +90,12 @@ export const getFilterConfig = (facilityService) => {
  * @param {string} facilityService - The selected facility service department
  * @returns {boolean} - Whether the data element should be shown
  */
-export const shouldShowDataElementForService = (dataElementName, sectionName, facilityService) => {
+export const shouldShowDataElementForService = async (dataElementName, sectionName, facilityService) => {
   if (!dataElementName || !sectionName || !facilityService) return true;
   
-  const filterConfig = getFilterConfig(facilityService);
-  
+  // const filterConfig = getFilterConfig(facilityService);
+    const filterConfig = await getFilterConfig(facilityService);
+
   // If no config for this section, show all elements in this section
   if (!filterConfig[sectionName]) {
     console.log(`📋 No filter for section "${sectionName}" - showing all elements`);
