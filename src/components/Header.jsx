@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Navbar, Container, Nav, Button, Badge, Collapse } from 'react-bootstrap';
 import { useApp } from '../contexts/AppContext';
 import { useLocation, Link } from 'react-router-dom';
 import './Header.css';
@@ -40,116 +41,72 @@ export function Header() {
     logout();
   };
 
-  // Inline styles to ensure white text
-  const whiteTextStyle = { color: '#ffffff', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.3)' };
-  const buttonTextStyle = { color: '#ffffff' };
- 
   return (
-    <header className={`app-header ${isCollapsed ? 'collapsed' : ''}`} style={{ color: '#ffffff' }}>
-      <div className="header-content" style={{ color: '#ffffff' }}>
-        <div className="header-left" style={{ color: '#ffffff' }}>
-          <div className="moh-logo-section" style={{ color: '#ffffff' }}>
-            <div className="moh-logo" style={{ color: '#ffffff' }}>
-              <div className="logo-text" style={{ color: '#ffffff' }}>
-                <h1 className="moh-title" style={whiteTextStyle}>REPUBLIC OF BOTSWANA</h1>
-                <h2 className="ministry-title" style={whiteTextStyle}>Ministry of Health</h2>
-                <h3 className="app-subtitle" style={whiteTextStyle}>Facility Inspections</h3>
+    <Navbar bg="primary" variant="dark" expand="lg" expanded={!isCollapsed} onToggle={toggleCollapse}>
+      <Container fluid>
+        <Navbar.Brand>
+          <div className="moh-logo-section">
+            <div className="moh-logo">
+              <div className="logo-text">
+                <h1 className="moh-title">REPUBLIC OF BOTSWANA</h1>
+                <h2 className="ministry-title">Ministry of Health</h2>
+                <h3 className="app-subtitle">Facility Inspections</h3>
               </div>
             </div>
           </div>
           {user && (
-            <span className="user-info" style={{ color: '#ffffff' }}>{user.displayName}</span>
+            <span className="ms-3 text-white">{user.displayName}</span>
           )}
-        </div>
-        
-        {/* Collapse/Expand Button */}
-        <div className="collapse-button-container">
-          <button 
-            className="btn btn-secondary collapse-btn" 
-            onClick={toggleCollapse}
-            title={isCollapsed ? "Expand header" : "Collapse header"}
-            style={{ color: '#ffffff' }}
-          >
-            <span style={{ color: '#ffffff' }}>
-              {isCollapsed ? '🔽' : '🔼'}
-            </span>
-          </button>
-        </div>
-        
-        <div className="header-actions" style={{ color: '#ffffff' }}>
-          <div className="nav-links" style={{ color: '#ffffff' }}>
-            <Link to="/form" className="nav-link" style={{ color: '#ffffff', textDecoration: 'none', marginRight: '20px' }}>
-              📋 Inspections
-            </Link>
-            <Link to="/csv-demo" className="nav-link" style={{ color: '#ffffff', textDecoration: 'none', marginRight: '20px' }}>
-              🔧 CSV Demo
-            </Link>
-          </div>
-          
-          <div className="sync-info" style={{ color: '#ffffff' }}>
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="me-auto">
+            <Nav.Link as={Link} to="/form">📋 Inspections</Nav.Link>
+            <Nav.Link as={Link} to="/csv-demo">🔧 CSV Demo</Nav.Link>
+          </Nav>
+          <Nav>
             {stats.pendingEvents > 0 && (
-              <span className="pending-count" style={{ color: '#ffffff' }}>
+              <Badge bg="warning" text="dark" className="align-self-center me-2">
                 {stats.pendingEvents} pending
-              </span>
+              </Badge>
             )}
-          </div>
-          
-          <button 
-            className="btn btn-secondary sync-btn" 
-            onClick={handleSync}
-            disabled={loading || syncInProgress || !isOnline || stats.pendingEvents === 0}
-            title={`Sync ${stats.pendingEvents} pending inspections`}
-            style={{ color: '#ffffff' }}
-          >
-            <span className={`sync-icon ${syncInProgress ? 'spinning' : ''}`} style={{ color: '#ffffff' }}>
-              🔄
-            </span>
-            <span className="btn-text" style={{ color: '#ffffff' }}>
-              {syncInProgress ? 'Syncing...' : 'Sync'}
-            </span>
-          </button>
-          
-          <button 
-            className="btn btn-secondary logout-btn" 
-            onClick={handleLogout}
-            title="Logout"
-            style={{ color: '#ffffff' }}
-          >
-            <span style={{ color: '#ffffff' }}>🚪</span>
-            <span style={{ color: '#ffffff' }}> Logout</span>
-          </button>
+            <Button
+              variant="light"
+              onClick={handleSync}
+              disabled={loading || syncInProgress || !isOnline || stats.pendingEvents === 0}
+              className="me-2"
+            >
+              <span className={`sync-icon ${syncInProgress ? 'spinning' : ''}`}>🔄</span>
+              <span className="ms-2">{syncInProgress ? 'Syncing...' : 'Sync'}</span>
+            </Button>
+            <Button variant="danger" onClick={handleLogout}>
+              <span>🚪</span>
+              <span className="ms-2">Logout</span>
+            </Button>
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+      <Collapse in={!isCollapsed}>
+        <div className="navbar-collapse">
+          <Container fluid className="py-2 bg-dark text-white">
+            <div className="d-flex justify-content-between align-items-center">
+              <div>
+                <Badge bg={isOnline ? "success" : "danger"} className="me-2">
+                  {isOnline ? '🌐 Online' : '📴 Offline'}
+                </Badge>
+                <Badge bg="info" className="me-1">📋 {stats.totalEvents} total</Badge>
+                <Badge bg="success" className="me-1">✅ {stats.syncedEvents} synced</Badge>
+                {stats.errorEvents > 0 && (
+                  <Badge bg="danger" className="me-1">❌ {stats.errorEvents} errors</Badge>
+                )}
+              </div>
+              {pathname?.startsWith("/form") && (
+                <Badge bg="secondary">Inspection Date: {inspectionDate}</Badge>
+              )}
+            </div>
+          </Container>
         </div>
-      </div>
-      
-      <div className="header-status" style={{ color: '#ffffff' }}>
-        <div className="connection-status" style={{ color: '#ffffff' }}>
-          <span className={`status-indicator ${isOnline ? 'online' : 'offline'}`} style={{ color: '#ffffff' }}>
-            {isOnline ? '🌐 Online' : '📴 Offline'}
-          </span>
-        </div>
-        <div className="header-row" style={{ color: '#ffffff' }}>
-          <div className="stats-summary" style={{ color: '#ffffff' }}>
-            <span className="stat-item" style={{ color: '#ffffff' }}>
-              📋 {stats.totalEvents} total
-            </span>
-            <span className="stat-item" style={{ color: '#ffffff' }}>
-              ✅ {stats.syncedEvents} synced
-            </span>
-            {stats.errorEvents > 0 && (
-              <span className="stat-item error" style={{ color: '#ffffff' }}>
-                ❌ {stats.errorEvents} errors
-              </span>
-            )}
-          </div>
-          {pathname?.startsWith("/form") && (
-          <div className='inspect-date' style={{ color: '#ffffff' }}>
-            <span className="stat-item" style={{ color: '#ffffff' }}>
-              Inspection Date: { inspectionDate }
-            </span>
-          </div>
-          )}
-        </div>
-      </div>
-    </header>
+      </Collapse>
+    </Navbar>
   );
 } 

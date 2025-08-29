@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { CSVConfigParser, DHIS2DataElementMapper } from '../utils/csvConfigParser';
+import { Form, Button, Container, Row, Col, Spinner, Alert, Accordion, Nav, Badge, Card, Table } from 'react-bootstrap';
 
 /**
  * Dynamic Form Renderer Component
@@ -145,91 +146,84 @@ export function DynamicFormRenderer({
     const commentError = errors[commentDataElement?.id];
 
     return (
-      <div key={pairId} className="form-field-group">
-        {/* Main DHIS2 Data Element Field */}
-        <div className="form-field main-field">
-          <label htmlFor={mainDataElement.id} className="form-label">
-            {mainDataElement.displayName}
-          </label>
-          
+      <Form.Group as={Row} key={pairId} className="mb-3">
+        <Col md={commentDataElement ? 6 : 12}>
+          <Form.Label htmlFor={mainDataElement.id}>{mainDataElement.displayName}</Form.Label>
           {renderDHIS2Field(mainDataElement, mainValue, mainError)}
-          
-          {mainError && <div className="error-message">{mainError}</div>}
-        </div>
+          {mainError && <Form.Text className="text-danger">{mainError}</Form.Text>}
+        </Col>
 
-        {/* Comment DHIS2 Data Element Field - Automatically Rendered */}
         {commentDataElement && (
-          <div className="form-field comment-field">
-            <label htmlFor={commentDataElement.id} className="form-label">
-              {commentDataElement.displayName}
-            </label>
-            
+          <Col md={6}>
+            <Form.Label htmlFor={commentDataElement.id}>{commentDataElement.displayName}</Form.Label>
             {renderDHIS2Field(commentDataElement, commentValue, commentError)}
-            
-            {commentError && <div className="error-message">{commentError}</div>}
-          </div>
+            {commentError && <Form.Text className="text-danger">{commentError}</Form.Text>}
+          </Col>
         )}
-      </div>
+      </Form.Group>
     );
   };
 
   // Render DHIS2 Data Element based on its valueType
   const renderDHIS2Field = (dataElement, value, error) => {
     const fieldId = dataElement.id;
-    const fieldClass = `form-field-input ${error ? 'error' : ''}`;
+    const isInvalid = !!error;
 
     switch (dataElement.valueType) {
       case 'BOOLEAN':
         return (
-          <div className="boolean-field">
-            <label className="radio-label">
-              <input
-                type="radio"
-                name={fieldId}
-                value="true"
-                checked={value === 'true'}
-                onChange={(e) => handleFieldChange(fieldId, e.target.value)}
-                disabled={readOnly}
-              />
-              Yes
-            </label>
-            <label className="radio-label">
-              <input
-                type="radio"
-                name={fieldId}
-                value="false"
-                checked={value === 'false'}
-                onChange={(e) => handleFieldChange(fieldId, e.target.value)}
-                disabled={readOnly}
-              />
-              No
-            </label>
+          <div>
+            <Form.Check
+              inline
+              type="radio"
+              id={`${fieldId}-yes`}
+              name={fieldId}
+              label="Yes"
+              value="true"
+              checked={value === 'true'}
+              onChange={(e) => handleFieldChange(fieldId, e.target.value)}
+              disabled={readOnly}
+              isInvalid={isInvalid}
+            />
+            <Form.Check
+              inline
+              type="radio"
+              id={`${fieldId}-no`}
+              name={fieldId}
+              label="No"
+              value="false"
+              checked={value === 'false'}
+              onChange={(e) => handleFieldChange(fieldId, e.target.value)}
+              disabled={readOnly}
+              isInvalid={isInvalid}
+            />
           </div>
         );
 
       case 'TEXT':
         return (
-          <input
+          <Form.Control
             type="text"
             id={fieldId}
             value={value}
             onChange={(e) => handleFieldChange(fieldId, e.target.value)}
-            className={fieldClass}
             disabled={readOnly}
             placeholder={`Enter ${dataElement.displayName}`}
+            isInvalid={isInvalid}
           />
         );
 
       case 'LONG_TEXT':
         return (
-          <textarea
+          <Form.Control
+            as="textarea"
             id={fieldId}
             value={value}
             onChange={(e) => handleFieldChange(fieldId, e.target.value)}
-            className={fieldClass}
             rows={3}
             disabled={readOnly}
             placeholder={`Enter ${dataElement.displayName}`}
+            isInvalid={isInvalid}
           />
         );
 
@@ -240,51 +234,50 @@ export function DynamicFormRenderer({
       case 'NUMBER':
       case 'PERCENTAGE':
         return (
-          <input
+          <Form.Control
             type="number"
             id={fieldId}
             value={value}
             onChange={(e) => handleFieldChange(fieldId, e.target.value)}
-            className={fieldClass}
             disabled={readOnly}
             placeholder={`Enter ${dataElement.displayName}`}
+            isInvalid={isInvalid}
           />
         );
 
       case 'DATE':
         return (
-          <input
+          <Form.Control
             type="date"
             id={fieldId}
             value={value}
             onChange={(e) => handleFieldChange(fieldId, e.target.value)}
-            className={fieldClass}
             disabled={readOnly}
+            isInvalid={isInvalid}
           />
         );
 
       case 'DATETIME':
         return (
-          <input
+          <Form.Control
             type="datetime-local"
             id={fieldId}
             value={value}
             onChange={(e) => handleFieldChange(fieldId, e.target.value)}
-            className={fieldClass}
             disabled={readOnly}
+            isInvalid={isInvalid}
           />
         );
 
       default:
-        // Handle option sets (dropdowns)
         if (dataElement.optionSet && dataElement.optionSet.options) {
           return (
-            <select
+            <Form.Select
               id={fieldId}
               value={value}
               onChange={(e) => handleFieldChange(fieldId, e.target.value)}
-              className={fieldClass}
               disabled={readOnly}
+              isInvalid={isInvalid}
             >
               <option value="">Select {dataElement.displayName}</option>
               {dataElement.optionSet.options
@@ -294,20 +287,19 @@ export function DynamicFormRenderer({
                     {option.displayName}
                   </option>
                 ))}
-            </select>
+            </Form.Select>
           );
         }
 
-        // Default to text input for unknown types
         return (
-          <input
+          <Form.Control
             type="text"
             id={fieldId}
             value={value}
             onChange={(e) => handleFieldChange(fieldId, e.target.value)}
-            className={fieldClass}
             disabled={readOnly}
             placeholder={`Enter ${dataElement.displayName}`}
+            isInvalid={isInvalid}
           />
         );
     }
@@ -316,12 +308,12 @@ export function DynamicFormRenderer({
   // Render form section
   const renderSection = (section) => {
     return (
-      <div key={section.name} className="form-section">
-        <h3 className="section-title">{section.name}</h3>
-        <div className="section-content">
+      <Card key={section.name} className="mb-3">
+        <Card.Header as="h3">{section.name}</Card.Header>
+        <Card.Body>
           {section.dataElements.map(renderFieldPair)}
-        </div>
-      </div>
+        </Card.Body>
+      </Card>
     );
   };
 
@@ -330,386 +322,406 @@ export function DynamicFormRenderer({
     if (!showDebugPanel || !debugInfo) return null;
 
     return (
-      <div className="debug-panel">
-        <h3>🔍 Debug Information</h3>
-        
-        {/* CSV Structure */}
-        <details className="debug-section">
-          <summary>📋 CSV Structure ({debugInfo.csvStructure.totalQuestions} questions)</summary>
-          <div className="debug-content">
-            <h4>Facility Types:</h4>
-            <ul>
-              {debugInfo.csvStructure.facilityTypes.map(type => (
-                <li key={type}>{type}</li>
-              ))}
-            </ul>
-            
-            <h4>Sections:</h4>
-            {debugInfo.csvStructure.sections.map(section => (
-              <div key={section.name} className="debug-section-item">
-                <strong>{section.name}</strong> ({section.questionCount} questions)
-                <ul>
-                  {section.questions.map((question, index) => (
-                    <li key={index}>{question}</li>
+      <Accordion defaultActiveKey="0" className="mb-3">
+        <Card>
+          <Accordion.Header as="h3" className="debug-panel-header">🔍 Debug Information</Accordion.Header>
+          <Accordion.Body>
+            <Accordion>
+              <Card>
+                <Accordion.Header as="h4" eventKey="0">📋 CSV Structure ({debugInfo.csvStructure.totalQuestions} questions)</Accordion.Header>
+                <Accordion.Body>
+                  <h5>Facility Types:</h5>
+                  <ul>
+                    {debugInfo.csvStructure.facilityTypes.map(type => (
+                      <li key={type}>{type}</li>
+                    ))}
+                  </ul>
+
+                  <h5>Sections:</h5>
+                  {debugInfo.csvStructure.sections.map(section => (
+                    <div key={section.name} className="mb-2">
+                      <strong>{section.name}</strong> ({section.questionCount} questions)
+                      <ul>
+                        {section.questions.map((question, index) => (
+                          <li key={index}>{question}</li>
+                        ))}
+                      </ul>
+                    </div>
                   ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </details>
+                </Accordion.Body>
+              </Card>
 
-        {/* DHIS2 Elements */}
-        <details className="debug-section">
-          <summary>🏥 DHIS2 Data Elements ({debugInfo.dhis2Elements.total} total)</summary>
-          <div className="debug-content">
-            <h4>Element Types:</h4>
-            <ul>
-              {Object.entries(debugInfo.dhis2Elements.elementTypes).map(([type, count]) => (
-                <li key={type}>{type}: {count}</li>
-              ))}
-            </ul>
-            
-            <h4>Main Elements ({debugInfo.dhis2Elements.mainElements.length}):</h4>
-            <ul>
-              {debugInfo.dhis2Elements.mainElements.slice(0, 5).map(de => (
-                <li key={de.id}>{de.displayName} ({de.valueType})</li>
-              ))}
-              {debugInfo.dhis2Elements.mainElements.length > 5 && (
-                <li>... and {debugInfo.dhis2Elements.mainElements.length - 5} more</li>
+              <Card>
+                <Accordion.Header as="h4" eventKey="1">🏥 DHIS2 Data Elements ({debugInfo.dhis2Elements.total} total)</Accordion.Header>
+                <Accordion.Body>
+                  <h5>Element Types:</h5>
+                  <ul>
+                    {Object.entries(debugInfo.dhis2Elements.elementTypes).map(([type, count]) => (
+                      <li key={type}>{type}: {count}</li>
+                    ))}
+                  </ul>
+
+                  <h5>Main Elements ({debugInfo.dhis2Elements.mainElements.length}):</h5>
+                  <ul>
+                    {debugInfo.dhis2Elements.mainElements.slice(0, 5).map(de => (
+                      <li key={de.id}>{de.displayName} ({de.valueType})</li>
+                    ))}
+                    {debugInfo.dhis2Elements.mainElements.length > 5 && (
+                      <li>... and {debugInfo.dhis2Elements.mainElements.length - 5} more</li>
+                    )}
+                  </ul>
+
+                  <h5>Comment Elements ({debugInfo.dhis2Elements.commentElements.length}):</h5>
+                  <ul>
+                    {debugInfo.dhis2Elements.commentElements.slice(0, 5).map(de => (
+                      <li key={de.id}>{de.displayName} ({de.valueType})</li>
+                    ))}
+                    {debugInfo.dhis2Elements.commentElements.length > 5 && (
+                      <li>... and {debugInfo.dhis2Elements.commentElements.length - 5} more</li>
+                    )}
+                  </ul>
+                </Accordion.Body>
+              </Card>
+
+              <Card>
+                <Accordion.Header as="h4" eventKey="2">🔗 CSV to DHIS2 Mapping</Accordion.Header>
+                <Accordion.Body>
+                  {debugInfo.mapping.summary.map(section => (
+                    <div key={section.sectionName} className="mb-2">
+                      <h5>{section.sectionName}</h5>
+                      <p>
+                        <strong>Mapped:</strong> <Badge bg="success">{section.mappedCount}</Badge> |
+                        <strong>Unmapped:</strong> <Badge bg="danger">{section.unmappedCount}</Badge>
+                      </p>
+
+                      <Accordion>
+                        <Card>
+                          <Accordion.Header eventKey="0">View Mapping Details</Accordion.Header>
+                          <Accordion.Body>
+                            <Table striped bordered hover responsive size="sm">
+                              <thead>
+                                <tr>
+                                  <th>CSV Question</th>
+                                  <th>Main DE</th>
+                                  <th>Comment DE</th>
+                                  <th>Status</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {section.mappedPairs.map((pair, index) => (
+                                  <tr key={index} className={pair.mainDE === 'NOT FOUND' ? 'table-danger' : ''}>
+                                    <td>{pair.csvQuestion}</td>
+                                    <td>{pair.mainDE}</td>
+                                    <td>{pair.commentDE}</td>
+                                    <td>
+                                      {pair.mainDE === 'NOT FOUND' ? <Badge bg="danger">❌ Unmapped</Badge> :
+                                       pair.commentDE === 'NOT FOUND' ? <Badge bg="warning">⚠️ No Comment</Badge> : <Badge bg="success">✅ Complete</Badge>}
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </Table>
+                          </Accordion.Body>
+                        </Card>
+                      </Accordion>
+                    </div>
+                  ))}
+                </Accordion.Body>
+              </Card>
+
+              {debugInfo.formConfig && (
+                <Card>
+                  <Accordion.Header as="h4" eventKey="3">📝 Form Configuration ({debugInfo.formConfig.facilityType})</Accordion.Header>
+                  <Accordion.Body>
+                    {debugInfo.formConfig.sections.map(section => (
+                      <div key={section.name} className="mb-2">
+                        <h5>{section.name}</h5>
+                        <p><strong>Data Elements:</strong> <Badge bg="info">{section.dataElementCount}</Badge></p>
+
+                        <Accordion>
+                          <Card>
+                            <Accordion.Header eventKey="0">View Form Fields</Accordion.Header>
+                            <Accordion.Body>
+                              <ul>
+                                {section.dataElements.map((de, index) => (
+                                  <li key={index}>
+                                    <strong>Main:</strong> {de.mainDE} |
+                                    <strong>Comment:</strong> {de.commentDE}
+                                  </li>
+                                ))}
+                              </ul>
+                            </Accordion.Body>
+                          </Card>
+                        </Accordion>
+                      </div>
+                    ))}
+                  </Accordion.Body>
+                </Card>
               )}
-            </ul>
-            
-            <h4>Comment Elements ({debugInfo.dhis2Elements.commentElements.length}):</h4>
-            <ul>
-              {debugInfo.dhis2Elements.commentElements.slice(0, 5).map(de => (
-                <li key={de.id}>{de.displayName} ({de.valueType})</li>
-              ))}
-              {debugInfo.dhis2Elements.commentElements.length > 5 && (
-                <li>... and {debugInfo.dhis2Elements.commentElements.length - 5} more</li>
-              )}
-            </ul>
-          </div>
-        </details>
+            </Accordion>
 
-        {/* Mapping Details */}
-        <details className="debug-section">
-          <summary>🔗 CSV to DHIS2 Mapping</summary>
-          <div className="debug-content">
-            {debugInfo.mapping.summary.map(section => (
-              <div key={section.sectionName} className="debug-mapping-section">
-                <h4>{section.sectionName}</h4>
-                <p>
-                  <strong>Mapped:</strong> {section.mappedCount} | 
-                  <strong>Unmapped:</strong> {section.unmappedCount}
-                </p>
-                
-                <details>
-                  <summary>View Mapping Details</summary>
-                  <table className="debug-mapping-table">
-                    <thead>
-                      <tr>
-                        <th>CSV Question</th>
-                        <th>Main DE</th>
-                        <th>Comment DE</th>
-                        <th>Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {section.mappedPairs.map((pair, index) => (
-                        <tr key={index} className={pair.mainDE === 'NOT FOUND' ? 'unmapped' : 'mapped'}>
-                          <td>{pair.csvQuestion}</td>
-                          <td>{pair.mainDE}</td>
-                          <td>{pair.commentDE}</td>
-                          <td>
-                            {pair.mainDE === 'NOT FOUND' ? '❌ Unmapped' : 
-                             pair.commentDE === 'NOT FOUND' ? '⚠️ No Comment' : '✅ Complete'}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </details>
-              </div>
-            ))}
-          </div>
-        </details>
-
-        {/* Form Configuration */}
-        {debugInfo.formConfig && (
-          <details className="debug-section">
-            <summary>📝 Form Configuration ({debugInfo.formConfig.facilityType})</summary>
-            <div className="debug-content">
-              {debugInfo.formConfig.sections.map(section => (
-                <div key={section.name} className="debug-form-section">
-                  <h4>{section.name}</h4>
-                  <p><strong>Data Elements:</strong> {section.dataElementCount}</p>
-                  
-                  <details>
-                    <summary>View Form Fields</summary>
-                    <ul>
-                      {section.dataElements.map((de, index) => (
-                        <li key={index}>
-                          <strong>Main:</strong> {de.mainDE} | 
-                          <strong>Comment:</strong> {de.commentDE}
-                        </li>
-                      ))}
-                    </ul>
-                  </details>
-                </div>
-              ))}
+            <div className="d-flex justify-content-end mt-3">
+              <Button
+                variant="info"
+                onClick={() => console.log('Debug Info:', debugInfo)}
+                className="me-2"
+              >
+                Log to Console
+              </Button>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  const blob = new Blob([JSON.stringify(debugInfo, null, 2)], {
+                    type: 'application/json'
+                  });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = `debug_${facilityType}_${new Date().toISOString().split('T')[0]}.json`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                }}
+              >
+                Download Debug JSON
+              </Button>
             </div>
-          </details>
-        )}
-
-        {/* Quick Actions */}
-        <div className="debug-actions">
-          <button 
-            onClick={() => console.log('Debug Info:', debugInfo)}
-            className="debug-button"
-          >
-            Log to Console
-          </button>
-          <button 
-            onClick={() => {
-              const blob = new Blob([JSON.stringify(debugInfo, null, 2)], {
-                type: 'application/json'
-              });
-              const url = URL.createObjectURL(blob);
-              const a = document.createElement('a');
-              a.href = url;
-              a.download = `debug_${facilityType}_${new Date().toISOString().split('T')[0]}.json`;
-              a.click();
-              URL.revokeObjectURL(url);
-            }}
-            className="debug-button"
-          >
-            Download Debug JSON
-          </button>
-        </div>
-      </div>
+          </Accordion.Body>
+        </Card>
+      </Accordion>
     );
   };
 
   // Show mapping validation errors
   if (mappingValidation && !mappingValidation.isValid) {
     return (
-      <div className="mapping-error">
-        <h3>Configuration Mapping Errors</h3>
+      <Alert variant="danger" className="m-3">
+        <Alert.Heading>Configuration Mapping Errors</Alert.Heading>
         <p>The CSV configuration could not be properly mapped to DHIS2 Data Elements.</p>
-        
-        <div className="error-details">
-          <h4>Errors:</h4>
-          <ul>
-            {mappingValidation.errors.map((error, index) => (
-              <li key={index} className="error-item">{error}</li>
-            ))}
-          </ul>
-          
-          {mappingValidation.warnings.length > 0 && (
-            <>
-              <h4>Warnings:</h4>
-              <ul>
-                {mappingValidation.warnings.map((warning, index) => (
-                  <li key={index} className="warning-item">{warning}</li>
-                ))}
-              </ul>
-            </>
-          )}
-        </div>
-        
-        <div className="mapping-stats">
-          <h4>Mapping Statistics:</h4>
-          <p>Total CSV Questions: {csvConfig?.totalQuestions || 0}</p>
-          <p>Mapped Data Elements: {Object.values(mappingValidation.mapping).reduce((sum, section) => 
+
+        <h5>Errors:</h5>
+        <ul>
+          {mappingValidation.errors.map((error, index) => (
+            <li key={index}>{error}</li>
+          ))}
+        </ul>
+
+        {mappingValidation.warnings.length > 0 && (
+          <>
+            <h5>Warnings:</h5>
+            <ul>
+              {mappingValidation.warnings.map((warning, index) => (
+                <li key={index}>{warning}</li>
+              ))}
+            </ul>
+          </>
+        )}
+
+        <hr />
+        <h5>Mapping Statistics:</h5>
+        <p>
+          Total CSV Questions: <Badge bg="secondary">{csvConfig?.totalQuestions || 0}</Badge><br />
+          Mapped Data Elements: <Badge bg="success">{Object.values(mappingValidation.mapping).reduce((sum, section) =>
             sum + (section.dataElements?.length || 0), 0
-          )}</p>
-        </div>
-      </div>
+          )}</Badge>
+        </p>
+      </Alert>
     );
   }
 
   if (!csvConfig || !formConfig) {
     return (
-      <div className="loading-container">
-        <div className="loading-content">
-          <div className="spinner"></div>
-          <p>Loading form configuration...</p>
-          {!dhis2DataElements.length && (
-            <p className="warning">No DHIS2 Data Elements provided</p>
-          )}
-        </div>
-      </div>
+      <Container className="text-center my-5">
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+        <p className="mt-3">Loading form configuration...</p>
+        {!dhis2DataElements.length && (
+          <Alert variant="warning" className="mt-3">
+            No DHIS2 Data Elements provided
+          </Alert>
+        )}
+      </Container>
     );
   }
 
   return (
-    <div className="dynamic-form">
-      <div className="form-header">
-        <h2>Facility Inspection Form</h2>
-        <p className="facility-type">Facility Type: {formConfig.facilityType}</p>
-        <p className="form-description">
-          This form is based on the {formConfig.facilityType} checklist configuration.
-          Each question automatically includes its corresponding comment field from DHIS2.
-        </p>
-        
-        {/* Show mapping statistics */}
-        <div className="mapping-info">
-          <p>
-            <strong>DHIS2 Data Elements:</strong> {dhis2DataElements.length} | 
-            <strong>Mapped Pairs:</strong> {Object.values(formConfig.sections).reduce((sum, section) => 
-              sum + (section.dataElements?.length || 0), 0
-            )}
+    <Container className="dynamic-form py-3">
+      <Card className="mb-3">
+        <Card.Header>
+          <h2>Facility Inspection Form</h2>
+          <p className="text-muted">Facility Type: {formConfig.facilityType}</p>
+          <p className="form-description">
+            This form is based on the {formConfig.facilityType} checklist configuration.
+            Each question automatically includes its corresponding comment field from DHIS2.
           </p>
-        </div>
-      </div>
 
-      {/* Real-time Debug Information */}
-      <div className="form-debug-info">
-        <h3>🔍 Form Debug Information</h3>
-        <div className="debug-info-grid">
-          <div className="debug-info-item">
-            <span className="debug-label">CSV Config:</span>
-            <span className="debug-value success">✅ Loaded</span>
-          </div>
-          <div className="debug-info-item">
-            <span className="debug-label">DHIS2 Elements:</span>
-            <span className="debug-value success">{dhis2DataElements.length}</span>
-          </div>
-          <div className="debug-info-item">
-            <span className="debug-label">Form Sections:</span>
-            <span className="debug-value success">{formConfig.sections.length}</span>
-          </div>
-          <div className="debug-info-item">
-            <span className="debug-label">Total Form Fields:</span>
-            <span className="debug-value success">
-              {formConfig.sections.reduce((sum, section) => 
+          <div className="mapping-info">
+            <p>
+              <strong>DHIS2 Data Elements:</strong> <Badge bg="primary">{dhis2DataElements.length}</Badge> |
+              <strong>Mapped Pairs:</strong> <Badge bg="success">{Object.values(formConfig.sections).reduce((sum, section) =>
                 sum + (section.dataElements?.length || 0), 0
-              )}
-            </span>
+              )}</Badge>
+            </p>
           </div>
-          <div className="debug-info-item">
-            <span className="debug-label">Mapping Coverage:</span>
-            <span className="debug-value success">
-              {csvConfig ? 
-                `${((Object.values(formConfig.sections).reduce((sum, section) => 
-                  sum + (section.dataElements?.length || 0), 0
-                ) / csvConfig.totalQuestions * 100).toFixed(1))}%` : 'N/A'
-              }
-            </span>
-          </div>
-          <div className="debug-info-item">
-            <span className="debug-label">Form Data Fields:</span>
-            <span className="debug-value success">{Object.keys(formData).length}</span>
-          </div>
-        </div>
-        
-        {/* Section-by-Section Debug Info */}
-        <div className="section-debug-info">
-          <h4>📋 Section Details</h4>
-          <div className="section-debug-grid">
-            {formConfig.sections.map((section, index) => (
-              <div key={index} className="section-debug-item">
-                <h5>{section.name}</h5>
-                <div className="section-stats">
-                  <span className="stat">
-                    <strong>Questions:</strong> {csvConfig?.sections.find(s => s.name === section.name)?.questions?.length || 0}
-                  </span>
-                  <span className="stat">
-                    <strong>Mapped:</strong> {section.dataElements?.length || 0}
-                  </span>
-                  <span className="stat">
-                    <strong>Coverage:</strong> {
-                      csvConfig?.sections.find(s => s.name === section.name)?.questions?.length > 0 ?
-                      `${((section.dataElements?.length || 0) / csvConfig.sections.find(s => s.name === section.name)?.questions?.length * 100).toFixed(1)}%` :
-                      'N/A'
-                    }
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+        </Card.Header>
+        <Card.Body>
+          <Row className="mb-3">
+            <Col>
+              <h3>🔍 Form Debug Information</h3>
+              <Row className="g-2">
+                <Col md={4}>
+                  <Card bg="light">
+                    <Card.Body>
+                      <Card.Text><strong>CSV Config:</strong> <Badge bg="success">✅ Loaded</Badge></Card.Text>
+                    </Card.Body>
+                  </Card>
+                </Col>
+                <Col md={4}>
+                  <Card bg="light">
+                    <Card.Body>
+                      <Card.Text><strong>DHIS2 Elements:</strong> <Badge bg="success">{dhis2DataElements.length}</Badge></Card.Text>
+                    </Card.Body>
+                  </Card>
+                </Col>
+                <Col md={4}>
+                  <Card bg="light">
+                    <Card.Body>
+                      <Card.Text><strong>Form Sections:</strong> <Badge bg="success">{formConfig.sections.length}</Badge></Card.Text>
+                    </Card.Body>
+                  </Card>
+                </Col>
+                <Col md={4}>
+                  <Card bg="light">
+                    <Card.Body>
+                      <Card.Text><strong>Total Form Fields:</strong> <Badge bg="success">
+                        {formConfig.sections.reduce((sum, section) =>
+                          sum + (section.dataElements?.length || 0), 0
+                        )}
+                      </Badge></Card.Text>
+                    </Card.Body>
+                  </Card>
+                </Col>
+                <Col md={4}>
+                  <Card bg="light">
+                    <Card.Body>
+                      <Card.Text><strong>Mapping Coverage:</strong> <Badge bg="success">
+                        {csvConfig ?
+                          `${((Object.values(formConfig.sections).reduce((sum, section) =>
+                            sum + (section.dataElements?.length || 0), 0
+                          ) / csvConfig.totalQuestions * 100).toFixed(1))}%` : 'N/A'
+                        }
+                      </Badge></Card.Text>
+                    </Card.Body>
+                  </Card>
+                </Col>
+                <Col md={4}>
+                  <Card bg="light">
+                    <Card.Body>
+                      <Card.Text><strong>Form Data Fields:</strong> <Badge bg="success">{Object.keys(formData).length}</Badge></Card.Text>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              </Row>
+              <h4 className="mt-3">📋 Section Details</h4>
+              <Row className="g-2">
+                {formConfig.sections.map((section, index) => (
+                  <Col md={4} key={index}>
+                    <Card bg="light">
+                      <Card.Body>
+                        <Card.Title as="h5">{section.name}</Card.Title>
+                        <Card.Text>
+                          <strong>Questions:</strong> <Badge bg="secondary">{csvConfig?.sections.find(s => s.name === section.name)?.questions?.length || 0}</Badge><br />
+                          <strong>Mapped:</strong> <Badge bg="success">{section.dataElements?.length || 0}</Badge><br />
+                          <strong>Coverage:</strong> <Badge bg="info">
+                            {csvConfig?.sections.find(s => s.name === section.name)?.questions?.length > 0 ?
+                            `${((section.dataElements?.length || 0) / csvConfig.sections.find(s => s.name === section.name)?.questions?.length * 100).toFixed(1)}%` :
+                            'N/A'
+                            }
+                          </Badge>
+                        </Card.Text>
+                      </Card.Body>
+                    </Card>
+                  </Col>
+                ))}
+              </Row>
+            </Col>
+          </Row>
+        </Card.Body>
+      </Card>
 
-      {/* Debug Panel */}
       {renderDebugPanel()}
 
-      {/* Section Navigation */}
       {formConfig.sections.length > 1 && (
-        <div className="section-navigation">
-          <div className="section-navigation-header">
+        <Card className="mb-3">
+          <Card.Header>
             <h3>Form Sections</h3>
-            <div className="view-toggle">
-              <button
+            <div className="d-flex justify-content-end">
+              <Button
+                variant={viewAllSections ? "secondary" : "primary"}
                 onClick={() => setViewAllSections(!viewAllSections)}
-                className={`toggle-button ${viewAllSections ? 'active' : ''}`}
               >
                 {viewAllSections ? '📋 View Section by Section' : '📄 View All Sections'}
-              </button>
+              </Button>
             </div>
-          </div>
-          
-          {!viewAllSections && (
-            <>
-              <div className="section-indicators">
-                {formConfig.sections.map((section, index) => (
-                  <button
-                    key={index}
-                    className={`section-indicator ${currentSection === index ? 'active' : ''}`}
-                    onClick={() => setCurrentSection(index)}
-                  >
-                    {section.name.replace('SECTION ', '').replace('-', ' ')}
-                  </button>
-                ))}
-              </div>
-              
-              <div className="section-navigation-controls">
-                {currentSection > 0 && (
-                  <button
+          </Card.Header>
+          <Card.Body>
+            {!viewAllSections && (
+              <>
+                <Nav variant="pills" className="mb-3">
+                  {formConfig.sections.map((section, index) => (
+                    <Nav.Item key={index}>
+                      <Nav.Link
+                        active={currentSection === index}
+                        onClick={() => setCurrentSection(index)}
+                      >
+                        {section.name.replace('SECTION ', '').replace('-', ' ')}
+                      </Nav.Link>
+                    </Nav.Item>
+                  ))}
+                </Nav>
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                  <Button
+                    variant="outline-primary"
                     onClick={() => setCurrentSection(currentSection - 1)}
-                    className="nav-button prev-button"
+                    disabled={currentSection === 0}
                   >
                     ← Previous Section
-                  </button>
-                )}
-                
-                <span className="section-counter">
-                  Section {currentSection + 1} of {formConfig.sections.length}
-                </span>
-                
-                {currentSection < formConfig.sections.length - 1 && (
-                  <button
+                  </Button>
+                  <span>
+                    Section {currentSection + 1} of {formConfig.sections.length}
+                  </span>
+                  <Button
+                    variant="outline-primary"
                     onClick={() => setCurrentSection(currentSection + 1)}
-                    className="nav-button next-button"
+                    disabled={currentSection === formConfig.sections.length - 1}
                   >
                     Next Section →
-                  </button>
-                )}
-              </div>
-            </>
-          )}
-        </div>
+                  </Button>
+                </div>
+              </>
+            )}
+          </Card.Body>
+        </Card>
       )}
 
-      <form onSubmit={handleSubmit} className="inspection-form">
-        {/* Show sections based on toggle */}
+      <Form onSubmit={handleSubmit} className="inspection-form">
         {formConfig.sections.length > 1 && !viewAllSections ? (
           renderSection(formConfig.sections[currentSection])
         ) : (
           formConfig.sections.map(renderSection)
         )}
-        
-        <div className="form-actions">
-          <button 
-            type="submit" 
-            className="submit-button"
+
+        <div className="d-grid gap-2">
+          <Button
+            variant="success"
+            type="submit"
             disabled={readOnly}
           >
             {readOnly ? 'View Only' : 'Submit Inspection'}
-          </button>
+          </Button>
         </div>
-      </form>
-    </div>
+      </Form>
+    </Container>
   );
 }
 
@@ -731,41 +743,47 @@ export function FacilityTypeSelector({ csvContent, onFacilityTypeSelect, selecte
   }, [csvContent]);
 
   if (!csvConfig) {
-    return <div>Loading facility types...</div>;
+    return (
+      <div className="text-center my-3">
+        <Spinner animation="border" size="sm" role="status">
+          <span className="visually-hidden">Loading facility types...</span>
+        </Spinner>
+        <p className="mt-2">Loading facility types...</p>
+      </div>
+    );
   }
 
   return (
-    <div className="facility-type-selector">
-      <label htmlFor="facilityType" className="form-label">
-        Select Facility Type:
-      </label>
-      <select
-        id="facilityType"
-        value={selectedType || ''}
-        onChange={(e) => onFacilityTypeSelect(e.target.value)}
-        className="form-select"
-      >
-        <option value="">Choose a facility type...</option>
-        {csvConfig.getAvailableFacilityTypes().map(type => (
-          <option key={type} value={type}>
-            {type}
-          </option>
-        ))}
-      </select>
-      
-      {selectedType && (
-        <div className="facility-info">
-          <p>
-            <strong>Selected:</strong> {selectedType}
-          </p>
-          <p>
-            <strong>Total Sections:</strong> {csvConfig.sections.length}
-          </p>
-          <p>
-            <strong>Total Questions:</strong> {csvConfig.totalQuestions}
-          </p>
-        </div>
-      )}
-    </div>
+    <Card className="mb-3">
+      <Card.Body>
+        <Form.Group className="mb-3">
+          <Form.Label htmlFor="facilityType">Select Facility Type:</Form.Label>
+          <Form.Select
+            id="facilityType"
+            value={selectedType || ''}
+            onChange={(e) => onFacilityTypeSelect(e.target.value)}
+          >
+            <option value="">Choose a facility type...</option>
+            {csvConfig.getAvailableFacilityTypes().map(type => (
+              <option key={type} value={type}>
+                {type}
+              </option>
+            ))}
+          </Form.Select>
+        </Form.Group>
+
+        {selectedType && (
+          <Card className="mt-3">
+            <Card.Body>
+              <Card.Text>
+                <strong>Selected:</strong> <Badge bg="primary">{selectedType}</Badge><br />
+                <strong>Total Sections:</strong> <Badge bg="info">{csvConfig.sections.length}</Badge><br />
+                <strong>Total Questions:</strong> <Badge bg="info">{csvConfig.totalQuestions}</Badge>
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        )}
+      </Card.Body>
+    </Card>
   );
 }
