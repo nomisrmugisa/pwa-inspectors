@@ -90,11 +90,19 @@ export const getFilterConfig = async (facilityService) => {
  * @param {string} facilityService - The selected facility service department
  * @returns {boolean} - Whether the data element should be shown
  */
-export const shouldShowDataElementForService = async (dataElementName, sectionName, facilityService) => {
+export const shouldShowDataElementForService = async (dataElementName, sectionName, facilityService, isComment = false, mainDataElementName = null) => {
   if (!dataElementName || !sectionName || !facilityService) return true;
-  
-  // const filterConfig = getFilterConfig(facilityService);
-    const filterConfig = await getFilterConfig(facilityService);
+
+  const filterConfig = await getFilterConfig(facilityService);
+
+  // If the data element is a comment and its main data element is shown, always show the comment
+  if (isComment && mainDataElementName) {
+    const shouldShowMain = await shouldShowDataElementForService(mainDataElementName, sectionName, facilityService, false);
+    if (shouldShowMain) {
+      console.log(`💬 Showing comment "${dataElementName}" because its main element "${mainDataElementName}" is shown.`);
+      return true;
+    }
+  }
 
   // If no config for this section, show all elements in this section
   if (!filterConfig[sectionName]) {

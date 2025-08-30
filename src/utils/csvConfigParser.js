@@ -7,6 +7,8 @@
  * (including comment pairs) come from DHIS2
  */
 
+import { shouldShowDataElementForService } from '../config/facilityServiceFilters';
+
 export class CSVConfigParser {
   constructor(csvContent) {
     this.csvContent = csvContent;
@@ -222,10 +224,10 @@ export class DHIS2DataElementMapper {
    * This method pairs main Data Elements with their comment Data Elements
    */
   mapDHIS2DataElements(dhis2DataElements) {
-    // Debug logging
     if (process.env.NODE_ENV === 'development') {
       console.log('🔄 Starting DHIS2 Data Element mapping...', {
-        totalDHIS2Elements: dhis2DataElements.length
+        totalDHIS2Elements: dhis2DataElements.length,
+        dhis2DataElements: dhis2DataElements.map(de => de.displayName) // Log display names
       });
     }
     
@@ -239,7 +241,8 @@ export class DHIS2DataElementMapper {
       console.log('📦 Grouped DHIS2 Elements:', {
         totalGroups: Object.keys(groupedElements).length,
         groupsWithComments: Object.values(groupedElements).filter(g => g.commentElement).length,
-        groupsWithoutComments: Object.values(groupedElements).filter(g => !g.commentElement).length
+        groupsWithoutComments: Object.values(groupedElements).filter(g => !g.commentElement).length,
+        details: groupedElements // Log the full grouped structure
       });
     }
     
@@ -271,10 +274,11 @@ export class DHIS2DataElementMapper {
       const totalMapped = Object.values(mappedElements).reduce((sum, section) => 
         sum + (section.dataElements?.length || 0), 0
       );
-      console.log('✅ Mapping complete:', {
+      console.log(`✅ Mapping complete:`, {
         totalMapped,
         totalCSVQuestions: this.csvConfig.totalQuestions,
-        mappingCoverage: `${((totalMapped / this.csvConfig.totalQuestions) * 100).toFixed(1)}%`
+        mappingCoverage: `${((totalMapped / this.csvConfig.totalQuestions) * 100).toFixed(1)}%`,
+        finalMappedElements: mappedElements // Log the final mapped elements
       });
     }
     
@@ -292,9 +296,15 @@ export class DHIS2DataElementMapper {
       
       // Check if this is a comment Data Element
       if (this.isCommentDataElement(displayName)) {
+        if (process.env.NODE_ENV === 'development') {
+          console.log(`🔍 Processing DHIS2 element: "${displayName}" (potential comment)`);
+        }
         // Find the main Data Element this comment belongs to
         const mainElementName = this.extractMainElementName(displayName);
         if (mainElementName) {
+          if (process.env.NODE_ENV === 'development') {
+            console.log(`  -> Extracted main element name: "${mainElementName}"`);
+          }
           if (!grouped[mainElementName]) {
             grouped[mainElementName] = {};
           }
@@ -307,6 +317,9 @@ export class DHIS2DataElementMapper {
         }
       } else {
         // This is a main Data Element
+        if (process.env.NODE_ENV === 'development') {
+          console.log(`🔍 Processing DHIS2 element: "${displayName}" (main element)`);
+        }
         if (!grouped[displayName]) {
           grouped[displayName] = {};
         }
@@ -327,10 +340,15 @@ export class DHIS2DataElementMapper {
       /observations/i,
       /additional/i,
       /remarks/i,
-      /explanation/i
+      /explanation/i,
+      /response/i // Added 'response' as a potential comment pattern
     ];
     
-    return commentPatterns.some(pattern => pattern.test(displayName));
+    const isComment = commentPatterns.some(pattern => pattern.test(displayName));
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`  -> isCommentDataElement("${displayName}"): ${isComment}`);
+    }
+    return isComment;
   }
 
   /**
@@ -339,23 +357,35 @@ export class DHIS2DataElementMapper {
   extractMainElementName(commentDisplayName) {
     // Common patterns for comment fields
     const patterns = [
-      /comment\s+(?:for|on|about)?\s*:?\s*(.+)/i,
-      /notes?\s+(?:for|on|about)?\s*:?\s*(.+)/i,
-      /observations?\s+(?:for|on|about)?\s*:?\s*(.+)/i,
-      /additional\s+(?:notes?|comments?)\s+(?:for|on|about)?\s*:?\s*(.+)/i
+      /(.+)\s+comment/i, // e.g., "Question Text Comment"
+      /(.+)\s+notes?/i,
+      /(.+)\s+observations?/i,
+      /(.+)\s+additional/i,
+      /(.+)\s+remarks?/i,
+      /(.+)\s+explanation/i,
+      /(.+)\s+response/i // Added 'response' pattern
     ];
     
     for (const pattern of patterns) {
       const match = commentDisplayName.match(pattern);
-      if (match) {
-        return match[1].trim();
+      if (match && match[1]) {
+        const extractedName = match[1].trim();
+        if (process.env.NODE_ENV === 'development') {
+          console.log(`  -> extractMainElementName("${commentDisplayName}"): Matched pattern, extracted: "${extractedName}"`);
+        }
+        return extractedName;
       }
     }
     
     // If no pattern matches, try to extract by removing common comment prefixes
-    return commentDisplayName
-      .replace(/^(comment|notes?|observations?|additional\s+notes?)\s*:?\s*/i, '')
+    const cleanedName = commentDisplayName
+      .replace(/^(comment|notes?|observations?|additional\s+notes?|remarks?|explanation|response)\s*:?\s*/i, '')
       .trim();
+      
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`  -> extractMainElementName("${commentDisplayName}"): No pattern match, cleaned: "${cleanedName}"`);
+    }
+    return cleanedName;
   }
 
   /**
@@ -435,16 +465,24 @@ export class DHIS2DataElementMapper {
   /**
    * Get form configuration for a specific facility type
    */
-  getFormConfig(facilityType, dhis2DataElements) {
+  async getFormConfig(facilityType, dhis2DataElements) {
     const facilityConfig = this.csvConfig.getConfigForFacilityType(facilityType);
     const mappedElements = this.mapDHIS2DataElements(dhis2DataElements);
     
     const result = {
       facilityType,
-      sections: facilityConfig.sections.map(section => ({
+      sections: await Promise.all(facilityConfig.sections.map(async section => ({
         name: section.name,
-        dataElements: mappedElements[section.name]?.dataElements || []
-      }))
+        dataElements: (await Promise.all(mappedElements[section.name]?.dataElements.map(async pair => {
+          const showMain = await shouldShowDataElementForService(pair.mainDataElement.displayName, section.name, facilityType, false);
+          const showComment = pair.commentDataElement ? await shouldShowDataElementForService(pair.commentDataElement.displayName, section.name, facilityType, true, pair.mainDataElement.displayName) : false;
+
+          if (showMain || showComment) {
+            return pair;
+          }
+          return null;
+        }) || [])).filter(Boolean)
+      })))
     };
     
     // Debug logging

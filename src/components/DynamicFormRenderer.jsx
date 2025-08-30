@@ -27,31 +27,35 @@ export function DynamicFormRenderer({
 
   // Initialize CSV configuration and DHIS2 mapping
   useEffect(() => {
-    if (csvContent && dhis2DataElements.length > 0) {
-      try {
-        const parser = new CSVConfigParser(csvContent);
-        const mapper = new DHIS2DataElementMapper(parser);
-        
-        setCsvConfig(parser);
-        
-        // Validate mapping between CSV and DHIS2 Data Elements
-        const validation = mapper.validateMapping(dhis2DataElements);
-        setMappingValidation(validation);
-        
-        if (facilityType && validation.isValid) {
-          const config = mapper.getFormConfig(facilityType, dhis2DataElements);
-          setFormConfig(config);
+    const initializeForm = async () => {
+      if (csvContent && dhis2DataElements.length > 0) {
+        try {
+          const parser = new CSVConfigParser(csvContent);
+          const mapper = new DHIS2DataElementMapper(parser);
           
-          // Generate debug information
-          if (showDebugPanel) {
-            const debug = generateDebugInfo(parser, mapper, dhis2DataElements, config);
-            setDebugInfo(debug);
+          setCsvConfig(parser);
+          
+          // Validate mapping between CSV and DHIS2 Data Elements
+          const validation = mapper.validateMapping(dhis2DataElements);
+          setMappingValidation(validation);
+          
+          if (facilityType && validation.isValid) {
+            const config = await mapper.getFormConfig(facilityType, dhis2DataElements); // Await the async call
+            setFormConfig(config);
+            console.log('🔗 [DynamicFormRenderer] Final Form Config:', config);
+            
+            // Generate debug information
+            if (showDebugPanel) {
+              const debug = generateDebugInfo(parser, mapper, dhis2DataElements, config);
+              setDebugInfo(debug);
+            }
           }
+        } catch (error) {
+          console.error('Error parsing CSV configuration or mapping DHIS2 Data Elements:', error);
         }
-      } catch (error) {
-        console.error('Error parsing CSV configuration or mapping DHIS2 Data Elements:', error);
       }
-    }
+    };
+    initializeForm();
   }, [csvContent, facilityType, dhis2DataElements, showDebugPanel]);
 
   // Generate comprehensive debug information
@@ -153,13 +157,25 @@ export function DynamicFormRenderer({
           {mainError && <Form.Text className="text-danger">{mainError}</Form.Text>}
         </Col>
 
-        {commentDataElement && (
-          <Col md={6}>
-            <Form.Label htmlFor={commentDataElement.id}>{commentDataElement.displayName}</Form.Label>
-            {renderDHIS2Field(commentDataElement, commentValue, commentError)}
-            {commentError && <Form.Text className="text-danger">{commentError}</Form.Text>}
-          </Col>
-        )}
+        <Col md={6}>
+          {commentDataElement ? (
+            <>
+              <Form.Label htmlFor={commentDataElement.id}>{commentDataElement.displayName}</Form.Label>
+              {renderDHIS2Field(commentDataElement, commentValue, commentError)}
+              {commentError && <Form.Text className="text-danger">{commentError}</Form.Text>}
+            </>
+          ) : (
+            <>
+              <Form.Label>Comment (Not Available)</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                placeholder="No specific comment field from DHIS2 available for this item."
+                disabled
+              />
+            </>
+          )}
+        </Col>
       </Form.Group>
     );
   };

@@ -87,7 +87,7 @@ export function LoginPage() {
           
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <label htmlFor="serverUrl">DHIS2 Server URL</label>
+              <label htmlFor="serverUrl">QIMS Server URL</label>
               <input 
                 type="url" 
                 id="serverUrl" 

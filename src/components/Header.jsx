@@ -3,6 +3,7 @@ import { Navbar, Container, Nav, Button, Badge, Collapse } from 'react-bootstrap
 import { useApp } from '../contexts/AppContext';
 import { useLocation, Link } from 'react-router-dom';
 import './Header.css';
+import logo from '../assets/logo.png'; // Import the logo
 
 export function Header() {
   const { 
@@ -45,7 +46,13 @@ export function Header() {
     <Navbar bg="primary" variant="dark" expand="lg" expanded={!isCollapsed} onToggle={toggleCollapse}>
       <Container fluid>
         <Navbar.Brand>
-          <div className="moh-logo-section">
+          <div className="moh-logo-section d-flex align-items-center">
+            <img
+              src={logo}
+              alt="QIMS Logo"
+              height="80"
+              className="me-2"
+            />
             <div className="moh-logo">
               <div className="logo-text">
                 <h1 className="moh-title">REPUBLIC OF BOTSWANA</h1>
