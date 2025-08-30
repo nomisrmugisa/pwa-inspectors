@@ -22,7 +22,7 @@ const enhancedServiceFieldDetection = (dataElement) => {
   const fieldName = (dataElement.displayName || dataElement.shortName || '').toLowerCase();
   
   // Check if this is the Facility Service Departments field
-  const isFacilityServiceDepartments = fieldName === 'facility service departments' || 
+  const isFacilityServiceDepartments = fieldName === 'facility service departments' ||
                                       fieldName.includes('facility service department');
   
   // If it's the Facility Service Departments field, we want to handle it specially
@@ -1623,6 +1623,23 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     const safeUserAssignments = Array.isArray(userAssignments) ? userAssignments : [];
 
+    //get services
+      // 1. Collect and flatten all sections
+      const allSections = safeUserAssignments
+          .flatMap(a => Array.isArray(a.assignment.sections) ? a.assignment.sections : []);
+      // console.log("allSections", allSections);
+
+      // 2. Map to names (handle both string and object)
+      const sectionNames = allSections.map(section =>
+          typeof section === 'object' && section !== null
+              ? section.name
+              : section
+      );
+
+      // 3. Remove duplicates
+      const uniqueServices = Array.from(new Set(sectionNames.filter(Boolean)));
+      console.log("uniqueServices", uniqueServices);
+
     // Get facilities with today's date in inspection period
     const activeFacilities = safeUserAssignments.filter(a => {
       const { startDate, endDate } = a.assignment.inspectionPeriod || {};
@@ -1696,8 +1713,9 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
       : uniqueFacilities; // Only show active facilities, no fallback
 
     // Debug logging removed
+    // console.log("fac",safeUserAssignments)
 
-    // Get the selected assignment for the chosen facility
+      // Get the selected assignment for the chosen facility
     const selectedAssignment = safeUserAssignments.find(a => a.facility.id === (typeof formData.orgUnit === 'string' ? formData.orgUnit : formData.orgUnit?.id));
     // Get service options from the selected assignment
     const serviceOptions = selectedAssignment ? selectedAssignment.assignment.sections : [];
