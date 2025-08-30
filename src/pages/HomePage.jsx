@@ -60,6 +60,7 @@ export function HomePage() {
     });
   }, [events, searchTerm, configuration]);
 
+
   const handleNewForm = () => {
     if (!configuration) {
       showToast('Configuration not loaded yet', 'warning');
@@ -351,6 +352,18 @@ export function HomePage() {
                           📊 {event.dataValues.length} field(s) completed
                         </p>
                       )}
+
+                        {/* Show submitted value for facility service */}
+                        {event.dataValues && (
+                            (() => {
+                                const field = event.dataValues.find(dv => dv.dataElement === 'jpcDY2i8ZDE');
+                                return field ? (
+                                    <p className="submitted-value">
+                                        ⚙️Facility Service Department: {field.value}
+                                    </p>
+                                ) : null;
+                            })()
+                        )}
                     </div>
                   </div>
                   
