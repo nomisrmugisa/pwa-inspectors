@@ -1496,9 +1496,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
     
 
-    // Start expanded for important sections, collapsed for others
 
-    const [isExpanded, setIsExpanded] = useState(isInspectionInfoSection || isInspectionTypeSection);
 
 
 
@@ -1552,17 +1550,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
       <div className="form-section">
 
-        <button 
-
-          type="button"
-
-          className={`section-header ${isInspectionInfoSection || isInspectionTypeSection ? 'always-expanded-section' : 'collapsible-section'}`}
-
-          onClick={() => setIsExpanded(!isExpanded)}
-
-          style={{ cursor: 'pointer' }}
-
-        >
+        <div className={`section-header ${isInspectionInfoSection || isInspectionTypeSection ? 'always-expanded-section' : 'collapsible-section'}`}>
 
           <h3 className="section-title">
 
@@ -1628,25 +1616,15 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
             
 
-            <span style={{ fontSize: '12px', color: '#666', marginLeft: '8px' }}>
 
-              {isExpanded ? '(Click to collapse)' : '(Click to expand)'}
-
-            </span>
 
           </h3>
 
-          <span className={`section-toggle ${isExpanded ? 'expanded' : 'collapsed'}`}>
-
-            {isExpanded ? '▼' : '▶'}
-
-          </span>
-
-        </button>
+        </div>
 
         
 
-        <div className={`section-content ${!isExpanded ? 'collapsed' : ''}`}>
+        <div className="section-content">
 
           {section.description && (
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../contexts/AppContext';
 import { useLocation, Link } from 'react-router-dom';
+import logo from '../assets/logo.png';
 import './Header.css';
 
 export function Header() {
@@ -48,6 +49,33 @@ export function Header() {
   return (
     <header className={`app-header ${isCollapsed ? 'collapsed' : ''}`} style={{ color: '#ffffff' }}>
       <div className="header-content" style={{ color: '#ffffff' }}>
+        {/* Logo and Collapse/Expand Button */}
+        <div className="header-left-controls">
+          <img 
+            src={logo} 
+            alt="Ministry of Health Logo" 
+            className="header-logo"
+            style={{ 
+              height: '40px', 
+              width: 'auto', 
+              marginRight: '12px',
+              objectFit: 'contain'
+            }}
+          />
+          <div className="collapse-button-container">
+            <button 
+              className="btn btn-secondary collapse-btn" 
+              onClick={toggleCollapse}
+              title={isCollapsed ? "Expand header" : "Collapse header"}
+              style={{ color: '#ffffff' }}
+            >
+              <span style={{ color: '#ffffff' }}>
+                {isCollapsed ? '🔽' : '🔼'}
+              </span>
+            </button>
+          </div>
+        </div>
+        
         <div className="header-left" style={{ color: '#ffffff' }}>
           <div className="moh-logo-section" style={{ color: '#ffffff' }}>
             <div className="moh-logo" style={{ color: '#ffffff' }}>
@@ -63,28 +91,12 @@ export function Header() {
           )}
         </div>
         
-        {/* Collapse/Expand Button */}
-        <div className="collapse-button-container">
-          <button 
-            className="btn btn-secondary collapse-btn" 
-            onClick={toggleCollapse}
-            title={isCollapsed ? "Expand header" : "Collapse header"}
-            style={{ color: '#ffffff' }}
-          >
-            <span style={{ color: '#ffffff' }}>
-              {isCollapsed ? '🔽' : '🔼'}
-            </span>
-          </button>
-        </div>
-        
         <div className="header-actions" style={{ color: '#ffffff' }}>
           <div className="nav-links" style={{ color: '#ffffff' }}>
             <Link to="/form" className="nav-link" style={{ color: '#ffffff', textDecoration: 'none', marginRight: '20px' }}>
               📋 Inspections
             </Link>
-            <Link to="/csv-demo" className="nav-link" style={{ color: '#ffffff', textDecoration: 'none', marginRight: '20px' }}>
-              🔧 CSV Demo
-            </Link>
+
             <Link to="/home" className="nav-link" style={{ color: '#ffffff', textDecoration: 'none', marginRight: '20px' }}>
               📊 Dashboard
             </Link>
@@ -132,19 +144,7 @@ export function Header() {
           </span>
         </div>
         <div className="header-row" style={{ color: '#ffffff' }}>
-          <div className="stats-summary" style={{ color: '#ffffff' }}>
-            <span className="stat-item" style={{ color: '#ffffff' }}>
-              📋 {stats.totalEvents} total
-            </span>
-            <span className="stat-item" style={{ color: '#ffffff' }}>
-              ✅ {stats.syncedEvents} synced
-            </span>
-            {stats.errorEvents > 0 && (
-              <span className="stat-item error" style={{ color: '#ffffff' }}>
-                ❌ {stats.errorEvents} errors
-              </span>
-            )}
-          </div>
+
           {pathname?.startsWith("/form") && (
           <div className='inspect-date' style={{ color: '#ffffff' }}>
             <span className="stat-item" style={{ color: '#ffffff' }}>

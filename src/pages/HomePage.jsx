@@ -101,6 +101,8 @@ export function HomePage() {
     }
   };
 
+
+
   const getStatusIcon = (status) => {
     switch (status) {
       case 'synced':
@@ -368,7 +370,7 @@ export function HomePage() {
                     >
                       🗑️ Delete
                     </button>
-                    <span className="edit-hint">Click to edit</span>
+
                   </div>
                 </div>
               ))

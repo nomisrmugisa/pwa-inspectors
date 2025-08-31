@@ -69,6 +69,26 @@
   color: white !important;
 }
 
+/* Header left controls (logo + collapse button) */
+.header-left-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: white !important;
+}
+
+.header-logo {
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 4px;
+}
+
+.header-logo:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
 /* MOH Logo Section */
 .moh-logo-section {
   display: flex;
