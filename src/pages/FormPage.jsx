@@ -22,6 +22,8 @@ import {
 
 import { shouldShowDataElementForService } from '../config/facilityServiceFilters';
 
+import './FormPage.css'; // Import FormPage specific styles
+
 
 
 
@@ -1119,7 +1121,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
   // Section component for organizing form fields
 
   function FormSection({ section, formData, onChange, errors, serviceSections, loadingServiceSections, readOnlyFields = {}, getCurrentPosition, formatCoordinatesForDHIS2, facilityClassifications = [], loadingFacilityClassifications = false, inspectionInfoConfirmed = false, setInspectionInfoConfirmed = () => {}, areAllInspectionFieldsComplete = () => false, showDebugPanel = false, getCurrentFacilityClassification = () => null, selectedFacilityService = null }) {
-
+    console.log(`📝 Rendering FormSection: ${section.displayName}, Facility Service: ${selectedFacilityService}`);
     // Safety check - if section is undefined, return null
 
     if (!section) {
@@ -1176,6 +1178,8 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
         
 
+        console.log(`🔎 Filtering Data Element: ${psde.dataElement.displayName}, Section: ${section.displayName}, Facility Service: ${selectedFacilityService}`);
+
         const shouldShow = shouldShowDataElementForService(
 
           psde.dataElement.displayName,
@@ -1217,11 +1221,12 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
 
     useEffect(() => {
+      console.log(`🔄 useEffect triggered for section: ${section.displayName}, selectedFacilityService: ${selectedFacilityService}, dataElements count: ${section.dataElements?.length || 0}`);
 
       const filterAsync = async () => {
 
         if (!selectedFacilityService || !section.dataElements) {
-
+          console.log(`⚠️ Early return: selectedFacilityService=${selectedFacilityService}, dataElements=${section.dataElements?.length || 0}`);
           setFilteredDataElements(section.dataElements || []);
 
           return;
@@ -1234,7 +1239,8 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
               if (!psde || !psde.dataElement) return false;
 
-              return await shouldShowDataElementForService(
+              console.log(`🔎 Async Filtering Data Element: ${psde.dataElement.displayName}, Section: ${section.displayName}, Facility Service: ${selectedFacilityService}`);
+              const shouldShow = await shouldShowDataElementForService(
 
                   psde.dataElement.displayName,
 
@@ -1243,16 +1249,16 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
                   selectedFacilityService
 
               );
+              console.log(`🔎 Async Filter Result: ${psde.dataElement.displayName} -> ${shouldShow}`);
+              return shouldShow;
 
             })
 
         );
 
-        setFilteredDataElements(
-
-            section.dataElements.filter((_, idx) => results[idx])
-
-        );
+        const filtered = section.dataElements.filter((_, idx) => results[idx]);
+        console.log(`✅ Filtering complete: ${filtered.length} elements shown out of ${section.dataElements.length} total`);
+        setFilteredDataElements(filtered);
 
       };
 
@@ -1276,9 +1282,9 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
       // Check if this is one of the sections that should start expanded
 
-      const isInspectionInfoSection = (section.displayName || '').toLowerCase().includes('inspection information');
-
-      const isInspectionTypeSection = (section.displayName || '').toLowerCase().includes('inspection type');
+         const isInspectionInfoSection = (section.displayName || '').toLowerCase() === 'inspection information';
+      
+         const isInspectionTypeSection = (section.displayName || '').toLowerCase() === 'inspection type';
 
       
 
@@ -1562,21 +1568,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
             {section.displayName}
 
-            <span className="data-elements-count" title={`${section.dataElements?.length || 0} data elements in this section`}>
 
-              {' '}({section.dataElements?.length || 0} fields)
-
-              {totalPages > 1 && (
-
-                <span style={{ fontSize: '0.8em', color: '#ff9800', marginLeft: '4px' }}>
-
-                  • {baseFieldsPerPage}-6 per page
-
-                </span>
-
-              )}
-
-            </span>
 
             
 
@@ -4876,29 +4868,29 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
              <div style={{ 
 
-               backgroundColor: hasActiveFacilities ? '#d4edda' : '#f8d7da', 
+              //  backgroundColor: hasActiveFacilities ? '#d4edda' : '#f8d7da', 
 
-               border: `1px solid ${hasActiveFacilities ? '#c3e6cb' : '#f5c6cb'}`, 
+              //  border: `1px solid ${hasActiveFacilities ? '#c3e6cb' : '#f5c6cb'}`, 
 
-               borderRadius: '4px', 
+              //  borderRadius: '4px', 
 
-               padding: '8px 12px',
+              //  padding: '8px 12px',
 
-               marginBottom: '16px',
+              //  marginBottom: '16px',
 
-               fontSize: '12px',
+              //  fontSize: '12px',
 
-               color: hasActiveFacilities ? '#155724' : '#721c24'
+              //  color: hasActiveFacilities ? '#155724' : '#721c24'
 
              }}>
 
-               <strong>�� Facility Status:</strong> {
+               <strong></strong> {
 
-                 hasActiveFacilities 
+                //  hasActiveFacilities 
 
-                   ? `✅ ${activeFacilities.length} active facilities found for today (${today})`
+                //    ? `✅ ${activeFacilities.length} active facilities found for today (${today})`
 
-                   : `❌ No active facilities found for today (${today}). Please check inspection period dates.`
+                //    : `❌ No active facilities found for today (${today}). Please check inspection period dates.`
 
                }
 
@@ -4997,30 +4989,10 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
 
             <div className="form-actions">
-
-              <button
-
-                type="button"
-
-                onClick={() => navigate('/home')}
-
-                className="btn btn-secondary"
-
-              >
-
-                <span>📊</span>
-
-                <span className="btn-text">Dashboard</span>
-
-              </button>
-
+              
             </div>
 
           </div>
-
-
-
-
 
 
 
@@ -5086,127 +5058,13 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                   {/* Debug toggle for facility filtering */}
 
-                  <div className="form-field" style={{ marginBottom: '10px' }}>
 
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
-
-                      <input
-
-                        type="checkbox"
-
-                        checked={showAllFacilities}
-
-                        onChange={(e) => setShowAllFacilities(e.target.checked)}
-
-                        style={{ margin: 0 }}
-
-                      />
-
-                      <span style={{ fontSize: '14px', color: '#666' }}>
-
-                        {showAllFacilities ? '🔍 Show all assigned facilities' : '✅ Show only active facilities for today'}
-
-                      </span>
-
-                    </label>
-
-                    {showAllFacilities && (
-
-                      <div style={{ fontSize: '12px', color: '#888', marginTop: '5px' }}>
-
-                        Debug mode: Showing all facilities regardless of inspection period
-
-                      </div>
-
-                    )}
-
-                  </div>
 
 
 
                   {/* Manual refresh button for troubleshooting */}
 
-                  <div className="form-field" style={{ marginBottom: '10px' }}>
 
-                    <button
-
-                      type="button"
-
-                      onClick={() => {
-
-                        console.log('🔄 Manual refresh triggered');
-
-                                         console.log('📊 Current state:', {
-
-                             userAssignments,
-
-                             safeUserAssignments: safeUserAssignments.length,
-
-                             activeFacilities: activeFacilities.length,
-
-                             today,
-
-                             finalFacilities: finalFacilities.length,
-
-                             hasActiveFacilities
-
-                           });
-
-                          
-
-                          // Test date parsing for troubleshooting
-
-                          if (safeUserAssignments.length > 0) {
-
-                            const testAssignment = safeUserAssignments[0];
-
-                            const { startDate, endDate } = testAssignment.assignment.inspectionPeriod || {};
-
-                            console.log('🧪 Date parsing test:', {
-
-                              facility: testAssignment.facility.name,
-
-                              startDate,
-
-                              endDate,
-
-                              today,
-
-                              parsedStart: parseDate(startDate),
-
-                              parsedEnd: parseDate(endDate),
-
-                              parsedToday: parseDate(today)
-
-                            });
-
-                          }
-
-                        }}
-
-                        style={{
-
-                          backgroundColor: '#6c757d',
-
-                          color: 'white',
-
-                          border: 'none',
-
-                          borderRadius: '4px',
-
-                          padding: '6px 12px',
-
-                          fontSize: '12px',
-
-                          cursor: 'pointer'
-
-                        }}
-
-                      >
-
-                        🔄 Debug: Log Current State
-
-                      </button>
 
                       
 
@@ -5328,7 +5186,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                      </label>
 
-                    
 
                     {/* Help message for facility selection */}
 
@@ -5362,7 +5219,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                     )}
 
-                    
 
                     <select
 
@@ -5519,12 +5375,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                   </div>
 
                 )}
-
-                                 
-
-
-
-                </div>
 
               </div>
 

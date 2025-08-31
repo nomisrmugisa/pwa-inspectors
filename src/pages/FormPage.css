@@ -542,6 +542,19 @@
   opacity: 0.5;
 }
 
+/* Darken Next and Previous buttons */
+.pagination-container .btn-outline-secondary {
+  background-color: #343a40 !important;
+  border-color: #343a40 !important;
+  color: #ffffff !important;
+}
+
+.pagination-container .btn-outline-secondary:hover:not(:disabled) {
+  background-color: #23272b !important;
+  border-color: #23272b !important;
+  color: #ffffff !important;
+}
+
 .page-indicator {
   font-weight: 500;
 }
@@ -561,20 +574,27 @@
 }
 
 .quick-page-nav .btn-primary {
-  background-color: #1976d2;
-  border-color: #1976d2;
-  color: white;
+  background-color: #343a40 !important;
+  border-color: #343a40 !important;
+  color: white !important;
 }
 
 .quick-page-nav .btn-outline-primary {
-  background-color: transparent;
-  border-color: #1976d2;
-  color: #1976d2;
+  background-color: #343a40 !important;
+  border-color: #343a40 !important;
+  color: white !important;
 }
 
 .quick-page-nav .btn-outline-primary:hover {
-  background-color: #1976d2;
-  color: white;
+  background-color: #23272b !important;
+  border-color: #23272b !important;
+  color: white !important;
+}
+
+/* Darken the "Jump to page:" text */
+.quick-page-nav span {
+  color: #343a40 !important;
+  font-weight: 500 !important;
 }
 
 /* Missing fields display styling */

@@ -235,7 +235,7 @@ export function HomePage() {
               <p>📤 {stats.pendingEvents} inspections waiting to sync</p>
             )}
             {stats.errorEvents > 0 && (
-              <p>❌ {stats.errorEvents} inspections failed to sync</p>
+              <p style={{ color: '#000000' }}>❌ {stats.errorEvents} inspections failed to sync</p>
             )}
           </div>
           
@@ -249,30 +249,7 @@ export function HomePage() {
         </div>
       )}
 
-      {/* CSV Form Demo Section */}
-      <div className="csv-demo-section">
-        <div className="demo-header">
-          <h3>📋 CSV-Based Form Demo</h3>
-          <p>Test the new CSV-based inspection form with section navigation</p>
-        </div>
-        
-        <div className="demo-actions">
-          <button 
-            className="btn btn-info"
-            onClick={() => navigate('/csv-demo')}
-          >
-            🧪 Test CSV Form
-          </button>
-          <p className="demo-description">
-            Experience the improved form with:
-            <br />
-            • Section-by-section navigation
-            • Toggle between single section and all sections view
-            • Clear section indicators
-            • Previous/Next navigation buttons
-          </p>
-        </div>
-      </div>
+
 
       {/* Forms Section */}
       <div className="forms-section">

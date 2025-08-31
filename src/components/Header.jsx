@@ -85,6 +85,9 @@ export function Header() {
             <Link to="/csv-demo" className="nav-link" style={{ color: '#ffffff', textDecoration: 'none', marginRight: '20px' }}>
               🔧 CSV Demo
             </Link>
+            <Link to="/home" className="nav-link" style={{ color: '#ffffff', textDecoration: 'none', marginRight: '20px' }}>
+              📊 Dashboard
+            </Link>
           </div>
           
           <div className="sync-info" style={{ color: '#ffffff' }}>

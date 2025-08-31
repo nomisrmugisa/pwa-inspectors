@@ -805,6 +805,19 @@
   cursor: not-allowed;
 }
 
+/* Darken section navigation buttons */
+.d-flex .btn-outline-primary {
+  background-color: #343a40 !important;
+  border-color: #343a40 !important;
+  color: #ffffff !important;
+}
+
+.d-flex .btn-outline-primary:hover:not(:disabled) {
+  background-color: #23272b !important;
+  border-color: #23272b !important;
+  color: #ffffff !important;
+}
+
 .prev-button {
   background: #6c757d;
 }
