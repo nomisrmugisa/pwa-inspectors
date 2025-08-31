@@ -667,7 +667,7 @@ export function DynamicFormRenderer({
 
       {renderDebugPanel()}
 
-      {formConfig.sections.length > 1 && (
+      {formConfig && formConfig.sections && formConfig.sections.length > 1 && (
         <Card className="mb-3">
           <Card.Header>
             <h3>Form Sections</h3>
@@ -695,36 +695,63 @@ export function DynamicFormRenderer({
                     </Nav.Item>
                   ))}
                 </Nav>
-                <div className="d-flex justify-content-between align-items-center mb-3">
-                  <Button
-                    variant="outline-primary"
-                    onClick={() => setCurrentSection(currentSection - 1)}
-                    disabled={currentSection === 0}
-                  >
-                    ← Previous Section
-                  </Button>
-                  <span>
-                    Section {currentSection + 1} of {formConfig.sections.length}
-                  </span>
-                  <Button
-                    variant="outline-primary"
-                    onClick={() => setCurrentSection(currentSection + 1)}
-                    disabled={currentSection === formConfig.sections.length - 1}
-                  >
-                    Next Section →
-                  </Button>
-                </div>
               </>
             )}
           </Card.Body>
         </Card>
       )}
 
+      {/* Navigation buttons - always show when there are multiple sections */}
+      {formConfig && formConfig.sections && formConfig.sections.length > 1 && !viewAllSections && (
+        <div className="d-flex justify-content-between align-items-center mb-3">
+          <Button
+            variant="outline-primary"
+            onClick={() => setCurrentSection(currentSection - 1)}
+            disabled={currentSection === 0}
+          >
+            ← Previous Section
+          </Button>
+          <span>
+            Section {currentSection + 1} of {formConfig.sections.length}
+          </span>
+          <Button
+            variant="outline-primary"
+            onClick={() => setCurrentSection(currentSection + 1)}
+            disabled={currentSection === formConfig.sections.length - 1}
+          >
+            Next Section →
+          </Button>
+        </div>
+      )}
+
       <Form onSubmit={handleSubmit} className="inspection-form">
-        {formConfig.sections.length > 1 && !viewAllSections ? (
+        {formConfig && formConfig.sections && formConfig.sections.length > 1 && !viewAllSections ? (
           renderSection(formConfig.sections[currentSection])
         ) : (
-          formConfig.sections.map(renderSection)
+          formConfig && formConfig.sections ? formConfig.sections.map(renderSection) : null
+        )}
+
+        {/* Bottom navigation buttons */}
+        {formConfig && formConfig.sections && formConfig.sections.length > 1 && !viewAllSections && (
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <Button
+              variant="outline-primary"
+              onClick={() => setCurrentSection(currentSection - 1)}
+              disabled={currentSection === 0}
+            >
+              ← Previous Section
+            </Button>
+            <span>
+              Section {currentSection + 1} of {formConfig.sections.length}
+            </span>
+            <Button
+              variant="outline-primary"
+              onClick={() => setCurrentSection(currentSection + 1)}
+              disabled={currentSection === formConfig.sections.length - 1}
+            >
+              Next Section →
+            </Button>
+          </div>
         )}
 
         <div className="d-grid gap-2">

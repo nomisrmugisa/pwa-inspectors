@@ -17,8 +17,9 @@ export function Header() {
   
   // State to track if header is collapsed, initialized from localStorage if available
   const [isCollapsed, setIsCollapsed] = useState(() => {
-    const savedState = localStorage.getItem('headerCollapsed');
-    return savedState === 'true';
+    // Always default to collapsed on initial load.
+    // The localStorage will still be used to persist the state if the user toggles it during the session.
+    return true;
   });
   
   // Function to toggle header collapse state
