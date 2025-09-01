@@ -2,6 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useCSVConfig } from '../hooks/useCSVConfig';
 import { DynamicFormRenderer } from '../components/DynamicFormRenderer';
 import './CSVDemoPage.css';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import WarningIcon from '@mui/icons-material/Warning';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import InfoIcon from '@mui/icons-material/Info';
+import LinkIcon from '@mui/icons-material/Link';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import LoadingIcon from '@mui/icons-material/HourglassEmpty';
 
 /**
  * DHIS2 Program Stage Data Viewer
@@ -97,7 +104,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`);
   return (
     <div className="csv-demo-page">
       <div className="page-header">
-        <h1>🏥 DHIS2 Program Stage Data Viewer</h1>
+        <h1>DHIS2 Program Stage Data Viewer</h1>
         <p>
           <strong>DISABLED CSV FILTERING</strong> - Showing ALL sections and Data Elements directly from DHIS2 API
         </p>
@@ -105,21 +112,57 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`);
         {/* Quick Status Summary */}
         <div className="status-summary">
           <div className="status-badge dhis2-status-badge">
-            <span className="status-icon">🏥</span>
+            <span className="status-icon">
+              <InfoIcon style={{ fontSize: '20px' }} />
+            </span>
             <span className="status-text">
-              DHIS2: {dhis2DataElements.length > 0 ? '✅ Connected' : dhis2Loading ? '🔄 Loading...' : '⚠️ Loading...'}
+              DHIS2: {dhis2DataElements.length > 0 ? (
+                <>
+                  <CheckCircleIcon style={{ fontSize: '16px', marginRight: '4px' }} />
+                  Connected
+                </>
+              ) : dhis2Loading ? (
+                <>
+                  <LoadingIcon style={{ fontSize: '16px', marginRight: '4px' }} />
+                  Loading...
+                </>
+              ) : (
+                <>
+                  <WarningIcon style={{ fontSize: '16px', marginRight: '4px' }} />
+                  Loading...
+                </>
+              )}
             </span>
           </div>
           <div className="status-badge data-status">
-            <span className="status-icon">📊</span>
+            <span className="status-icon">
+              <BarChartIcon style={{ fontSize: '20px' }} />
+            </span>
             <span className="status-text">
-              Data: {dhis2DataElements.length > 0 ? `${dhis2DataElements.length} Elements` : '⏳ Loading...'}
+              Data: {dhis2DataElements.length > 0 ? `${dhis2DataElements.length} Elements` : (
+                <>
+                  <LoadingIcon style={{ fontSize: '16px', marginRight: '4px' }} />
+                  Loading...
+                </>
+              )}
             </span>
           </div>
           <div className="status-badge api-status">
-            <span className="status-icon">🔗</span>
+            <span className="status-icon">
+              <LinkIcon style={{ fontSize: '20px' }} />
+            </span>
             <span className="status-text">
-              API: {dhis2Loading ? '🔄 Fetching...' : '✅ Ready'}
+              API: {dhis2Loading ? (
+                <>
+                  <LoadingIcon style={{ fontSize: '16px', marginRight: '4px' }} />
+                  Fetching...
+                </>
+              ) : (
+                <>
+                  <CheckCircleIcon style={{ fontSize: '16px', marginRight: '4px' }} />
+                  Ready
+                </>
+              )}
             </span>
           </div>
         </div>
@@ -127,12 +170,22 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`);
 
       {/* DHIS2 Connection Status */}
       <div className="dhis2-status">
-        <h3>🏥 DHIS2 Connection Status</h3>
+        <h3>DHIS2 Connection Status</h3>
         <div className="dhis2-status-grid">
           <div className="status-item">
             <span className="status-label">Connection:</span>
             <span className={`status-value ${dhis2DataElements.length > 0 ? 'success' : 'warning'}`}>
-              {dhis2DataElements.length > 0 ? '✅ Connected' : '⚠️ Loading...'}
+              {dhis2DataElements.length > 0 ? (
+                <>
+                  <CheckCircleIcon style={{ fontSize: '16px', marginRight: '4px' }} />
+                  Connected
+                </>
+              ) : (
+                <>
+                  <WarningIcon style={{ fontSize: '16px', marginRight: '4px' }} />
+                  Loading...
+                </>
+              )}
             </span>
           </div>
           <div className="status-item">
@@ -150,16 +203,30 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`);
           <div className="status-item">
             <span className="status-label">API Status:</span>
             <span className="status-value">
-              {dhis2Loading ? '🔄 Fetching...' : '✅ Ready'}
+              {dhis2Loading ? (
+                <>
+                  <LoadingIcon style={{ fontSize: '16px', marginRight: '4px' }} />
+                  Fetching...
+                </>
+              ) : (
+                <>
+                  <CheckCircleIcon style={{ fontSize: '16px', marginRight: '4px' }} />
+                  Ready
+                </>
+              )}
             </span>
           </div>
         </div>
         
         {dhis2Error && (
           <div className="dhis2-error">
-            <p>⚠️ DHIS2 Error: {dhis2Error}</p>
+            <p>
+              <WarningIcon style={{ fontSize: '16px', marginRight: '4px' }} />
+              DHIS2 Error: {dhis2Error}
+            </p>
             <button onClick={refreshDHIS2Data} className="retry-button">
-              🔄 Retry DHIS2 Connection
+              <RefreshIcon style={{ fontSize: '16px', marginRight: '4px' }} />
+              Retry DHIS2 Connection
             </button>
           </div>
         )}
@@ -167,16 +234,23 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`);
         {dhis2Loading && (
           <div className="dhis2-loading">
             <div className="spinner"></div>
-            <p>🔄 Loading DHIS2 Data Elements...</p>
+            <p>
+              <LoadingIcon style={{ fontSize: '16px', marginRight: '4px' }} />
+              Loading DHIS2 Data Elements...
+            </p>
           </div>
         )}
         
         {dhis2DataElements.length === 0 && !dhis2Loading && !dhis2Error && (
           <div className="dhis2-info">
-            <p>ℹ️ No DHIS2 connection configured. Using mock data for demonstration.</p>
+            <p>
+              <InfoIcon style={{ fontSize: '16px', marginRight: '4px' }} />
+              No DHIS2 connection configured. Using mock data for demonstration.
+            </p>
             <p>To connect to DHIS2, ensure your Vite proxy is configured and DHIS2 is accessible.</p>
             <button onClick={loadDHIS2Data} className="connect-button">
-              🔗 Try Connect to DHIS2
+              <LinkIcon style={{ fontSize: '16px', marginRight: '4px' }} />
+              Try Connect to DHIS2
             </button>
           </div>
         )}
@@ -185,7 +259,8 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`);
         {dhis2DataElements.length > 0 && (
           <div className="dhis2-actions">
             <button onClick={refreshDHIS2Data} className="refresh-button">
-              🔄 Refresh DHIS2 Data
+              <RefreshIcon style={{ fontSize: '16px', marginRight: '4px' }} />
+              Refresh DHIS2 Data
             </button>
             <p className="dhis2-actions-help">
               Click to refresh Data Elements from DHIS2 (useful if data has changed)
@@ -197,7 +272,10 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`);
       {/* DHIS2 Raw Data Viewer (No CSV Filtering) */}
       {dhis2DataElements.length > 0 && (
         <div className="dhis2-raw-data">
-          <h3>📊 Raw DHIS2 Data Elements (No CSV Filtering)</h3>
+          <h3>
+            <BarChartIcon style={{ marginRight: '8px', fontSize: '24px', verticalAlign: 'middle' }} />
+            Raw DHIS2 Data Elements (No CSV Filtering)
+          </h3>
           <p className="raw-data-description">
             Showing ALL Data Elements returned directly from DHIS2 API endpoint: <code>/api/programStages/Eupjm3J0dt2</code>
           </p>

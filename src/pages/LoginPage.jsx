@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import { useApp } from '../contexts/AppContext';
+import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import SignalCellularConnectedNoInternet0BarIcon from '@mui/icons-material/SignalCellularConnectedNoInternet0Bar';
 
 export function LoginPage() {
   const { login, loading, error } = useApp();
@@ -66,21 +70,14 @@ export function LoginPage() {
     }
   };
 
-  const fillQimsCredentials = () => {
-    setFormData({
-      serverUrl: 'https://qimsdev.5am.co.bw/qims',
-      username: 'admin',
-      password: 'district'
-    });
-    setFormErrors({});
-  };
-
   return (
     <div className="login-page">
       <div className="login-container">
         <div className="login-form">
           <div className="login-header">
-            <div className="app-logo">🏥</div>
+            <div className="app-logo">
+              <LocalHospitalIcon style={{ fontSize: '48px', color: '#0369a1' }} />
+            </div>
             <h1>Inspections</h1>
             <p>Mobile data capture for facility inspections</p>
           </div>
@@ -148,35 +145,32 @@ export function LoginPage() {
                   Configuring inspections...
                 </>
               ) : (
-                <>
-                  🚀 Login & Configure
-                </>
+                'Login & Configure'
               )}
             </button>
           </form>
           
-          <div className="demo-section">
-            <p className="demo-text">Use QIMS server:</p>
-            <button 
-              type="button"
-              className="btn btn-secondary btn-small"
-              onClick={fillQimsCredentials}
-            >
-              📝 Use QIMS Credentials
-            </button>
-          </div>
-          
           {error && (
             <div className="error-message">
-              ❌ {error}
+              <CheckCircleIcon style={{ fontSize: '16px', marginRight: '8px' }} />
+              {error}
             </div>
           )}
         </div>
         
         <div className="login-footer">
-          <p>🏥 Built for QIMS program</p>
-          <p>📋 Automated inspection data collection</p>
-          <p>📴 Works offline with automatic sync</p>
+          <p>
+            <LocalHospitalIcon style={{ fontSize: '16px', marginRight: '8px', verticalAlign: 'middle' }} />
+            Built for QIMS program
+          </p>
+          <p>
+            <AssignmentIcon style={{ fontSize: '16px', marginRight: '8px', verticalAlign: 'middle' }} />
+            Automated inspection data collection
+          </p>
+          <p>
+            <SignalCellularConnectedNoInternet0BarIcon style={{ fontSize: '16px', marginRight: '8px', verticalAlign: 'middle' }} />
+            Works offline with automatic sync
+          </p>
         </div>
       </div>
     </div>

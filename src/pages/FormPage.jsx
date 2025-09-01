@@ -4842,7 +4842,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
           <div className="form-header">
 
-            <h2>Inspection Form</h2>
+            <h2>Facility Inspection Form</h2>
 
             
 
@@ -4926,45 +4926,9 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
 
 
-              {/* Progress Bar */}
 
-              <div className="progress-section">
 
-                <div className="progress-info">
 
-                  <span className="progress-label">
-
-                    Form Completion ({formStats.filled}/{formStats.total} fields)
-
-                  </span>
-
-                  <span className="progress-percentage">{formStats.percentage}%</span>
-
-                </div>
-
-                <div className="progress-bar">
-
-                  <div
-
-                    className="progress-fill"
-
-                    style={{ width: `${formStats.percentage}%` }}
-
-                    data-progress={
-
-                      formStats.percentage === 100 ? 'complete' :
-
-                      formStats.percentage >= 75 ? 'high' :
-
-                      formStats.percentage >= 50 ? 'medium' : 'low'
-
-                    }
-
-                  ></div>
-
-                </div>
-
-              </div>
 
             </div>
 
@@ -5260,7 +5224,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                       }}>
 
-                        📅 <strong>Select an inspection date</strong>
+                        <strong>Select an inspection date</strong>
 
                         <br />
 
@@ -5742,7 +5706,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                              }}>
 
-                               <strong style={{ color: '#0369a1' }}>📊 Section Details:</strong>
+                               <strong style={{ color: '#0369a1' }}>Section Details:</strong>
 
                                {Object.entries(sectionDetails).map(([sectionName, details]) => {
 

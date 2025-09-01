@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { CSVConfigParser, DHIS2DataElementMapper } from '../utils/csvConfigParser';
 import { Form, Button, Container, Row, Col, Spinner, Alert, Accordion, Nav, Badge, Card, Table } from 'react-bootstrap';
+import SearchIcon from '@mui/icons-material/Search';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import ViewListIcon from '@mui/icons-material/ViewList';
+import DescriptionIcon from '@mui/icons-material/Description';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import WarningIcon from '@mui/icons-material/Warning';
+import ErrorIcon from '@mui/icons-material/Error';
 
 /**
  * Dynamic Form Renderer Component
@@ -340,11 +347,17 @@ export function DynamicFormRenderer({
     return (
       <Accordion defaultActiveKey="0" className="mb-3">
         <Card>
-          <Accordion.Header as="h3" className="debug-panel-header">🔍 Debug Information</Accordion.Header>
+          <Accordion.Header as="h3" className="debug-panel-header">
+            <SearchIcon style={{ marginRight: '8px', fontSize: '20px' }} />
+            Debug Information
+          </Accordion.Header>
           <Accordion.Body>
             <Accordion>
               <Card>
-                <Accordion.Header as="h4" eventKey="0">📋 CSV Structure ({debugInfo.csvStructure.totalQuestions} questions)</Accordion.Header>
+                <Accordion.Header as="h4" eventKey="0">
+                  <AssignmentIcon style={{ marginRight: '8px', fontSize: '18px' }} />
+                  CSV Structure ({debugInfo.csvStructure.totalQuestions} questions)
+                </Accordion.Header>
                 <Accordion.Body>
                   <h5>Facility Types:</h5>
                   <ul>
@@ -430,8 +443,22 @@ export function DynamicFormRenderer({
                                     <td>{pair.mainDE}</td>
                                     <td>{pair.commentDE}</td>
                                     <td>
-                                      {pair.mainDE === 'NOT FOUND' ? <Badge bg="danger">❌ Unmapped</Badge> :
-                                       pair.commentDE === 'NOT FOUND' ? <Badge bg="warning">⚠️ No Comment</Badge> : <Badge bg="success">✅ Complete</Badge>}
+                                      {pair.mainDE === 'NOT FOUND' ? (
+                                        <Badge bg="danger">
+                                          <ErrorIcon style={{ fontSize: '14px', marginRight: '4px' }} />
+                                          Unmapped
+                                        </Badge>
+                                      ) : pair.commentDE === 'NOT FOUND' ? (
+                                        <Badge bg="warning">
+                                          <WarningIcon style={{ fontSize: '14px', marginRight: '4px' }} />
+                                          No Comment
+                                        </Badge>
+                                      ) : (
+                                        <Badge bg="success">
+                                          <CheckCircleIcon style={{ fontSize: '14px', marginRight: '4px' }} />
+                                          Complete
+                                        </Badge>
+                                      )}
                                     </td>
                                   </tr>
                                 ))}
@@ -447,7 +474,10 @@ export function DynamicFormRenderer({
 
               {debugInfo.formConfig && (
                 <Card>
-                  <Accordion.Header as="h4" eventKey="3">📝 Form Configuration ({debugInfo.formConfig.facilityType})</Accordion.Header>
+                  <Accordion.Header as="h4" eventKey="3">
+                  <DescriptionIcon style={{ marginRight: '8px', fontSize: '18px' }} />
+                  Form Configuration ({debugInfo.formConfig.facilityType})
+                </Accordion.Header>
                   <Accordion.Body>
                     {debugInfo.formConfig.sections.map(section => (
                       <div key={section.name} className="mb-2">
@@ -583,7 +613,10 @@ export function DynamicFormRenderer({
         <Card.Body>
           <Row className="mb-3">
             <Col>
-              <h3>🔍 Form Debug Information</h3>
+              <h3>
+                <SearchIcon style={{ marginRight: '8px', fontSize: '24px', verticalAlign: 'middle' }} />
+                Form Debug Information
+              </h3>
               <Row className="g-2">
                 <Col md={4}>
                   <Card bg="light">
@@ -638,7 +671,10 @@ export function DynamicFormRenderer({
                   </Card>
                 </Col>
               </Row>
-              <h4 className="mt-3">📋 Section Details</h4>
+              <h4 className="mt-3">
+                <AssignmentIcon style={{ marginRight: '8px', fontSize: '20px', verticalAlign: 'middle' }} />
+                Section Details
+              </h4>
               <Row className="g-2">
                 {formConfig.sections.map((section, index) => (
                   <Col md={4} key={index}>
@@ -676,7 +712,17 @@ export function DynamicFormRenderer({
                 variant={viewAllSections ? "secondary" : "primary"}
                 onClick={() => setViewAllSections(!viewAllSections)}
               >
-                {viewAllSections ? '📋 View Section by Section' : '📄 View All Sections'}
+                {viewAllSections ? (
+                  <>
+                    <ViewListIcon style={{ marginRight: '8px', fontSize: '16px' }} />
+                    View Section by Section
+                  </>
+                ) : (
+                  <>
+                    <DescriptionIcon style={{ marginRight: '8px', fontSize: '16px' }} />
+                    View All Sections
+                  </>
+                )}
               </Button>
             </div>
           </Card.Header>
