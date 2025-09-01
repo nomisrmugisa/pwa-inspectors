@@ -37,14 +37,14 @@
 .collapse-btn {
   padding: 0.4rem 0.8rem !important;
   min-height: 36px !important;
-  background: rgba(255, 255, 255, 0.2) !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  background: linear-gradient(135deg, #001a3d 0%, #002a5a 100%) !important;
+  border: 1px solid #001a3d !important;
   cursor: pointer;
   z-index: 101;
 }
 
 .collapse-btn:hover {
-  background: rgba(255, 255, 255, 0.3) !important;
+  background: linear-gradient(135deg, #002a5a 0%, #001a3d 100%) !important;
 }
 
 .app-header * {
@@ -218,17 +218,17 @@
 }
 
 .btn-secondary {
-  background: rgba(255, 255, 255, 0.15);
+  background: linear-gradient(135deg, #001a3d 0%, #002a5a 100%) !important;
   color: #ffffff !important;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid #001a3d !important;
   backdrop-filter: blur(10px);
 }
 
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.25);
-  border-color: rgba(255, 255, 255, 0.5);
+  background: linear-gradient(135deg, #002a5a 0%, #001a3d 100%) !important;
+  border-color: #001a3d !important;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
   color: #ffffff !important;
 }
 
@@ -249,26 +249,26 @@
 }
 
 .sync-btn {
-  background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
-  border-color: #27ae60;
+  background: linear-gradient(135deg, #001433 0%, #001a3d 100%) !important;
+  border-color: #001433 !important;
   color: #ffffff !important;
 }
 
 .sync-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
-  border-color: #2ecc71;
+  background: linear-gradient(135deg, #001a3d 0%, #001433 100%) !important;
+  border-color: #001a3d !important;
   color: #ffffff !important;
 }
 
 .logout-btn {
-  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-  border-color: #e74c3c;
+  background: linear-gradient(135deg, #000d26 0%, #001433 100%) !important;
+  border-color: #000d26 !important;
   color: #ffffff !important;
 }
 
 .logout-btn:hover {
-  background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
-  border-color: #c0392b;
+  background: linear-gradient(135deg, #001433 0%, #000d26 100%) !important;
+  border-color: #001433 !important;
   color: #ffffff !important;
 }
 

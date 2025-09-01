@@ -106,15 +106,15 @@ export function HomePage() {
   const getStatusIcon = (status) => {
     switch (status) {
       case 'synced':
-        return '✅';
+        return '✓';
       case 'pending':
-        return '⏳';
+        return '⏱';
       case 'error':
-        return '❌';
+        return '✗';
       case 'draft':
-        return '📝';
+        return '📄';
       default:
-        return '❓';
+        return '?';
     }
   };
 
@@ -195,7 +195,7 @@ export function HomePage() {
       {/* Stats Dashboard */}
       <div className="stats-dashboard">
         <div className="stat-card total">
-          <div className="stat-icon">📋</div>
+          <div className="stat-icon">[T]</div>
           <div className="stat-content">
             <h3>{stats.totalEvents}</h3>
             <p>Total Inspections</p>
@@ -203,7 +203,7 @@ export function HomePage() {
         </div>
         
         <div className="stat-card pending">
-          <div className="stat-icon">⏳</div>
+          <div className="stat-icon">⏱</div>
           <div className="stat-content">
             <h3>{stats.pendingEvents}</h3>
             <p>Pending Sync</p>
@@ -211,7 +211,7 @@ export function HomePage() {
         </div>
         
         <div className="stat-card synced">
-          <div className="stat-icon">✅</div>
+          <div className="stat-icon">✓</div>
           <div className="stat-content">
             <h3>{stats.syncedEvents}</h3>
             <p>Synced</p>
@@ -220,7 +220,7 @@ export function HomePage() {
 
         {stats.errorEvents > 0 && (
           <div className="stat-card error">
-            <div className="stat-icon">❌</div>
+            <div className="stat-icon">✗</div>
             <div className="stat-content">
               <h3>{stats.errorEvents}</h3>
               <p>Errors</p>
@@ -234,10 +234,10 @@ export function HomePage() {
         <div className="sync-section">
           <div className="sync-info">
             {stats.pendingEvents > 0 && (
-              <p>📤 {stats.pendingEvents} inspections waiting to sync</p>
+              <p>Upload: {stats.pendingEvents} inspections waiting to sync</p>
             )}
             {stats.errorEvents > 0 && (
-              <p style={{ color: '#000000' }}>❌ {stats.errorEvents} inspections failed to sync</p>
+              <p style={{ color: '#000000' }}>✗ {stats.errorEvents} inspections failed to sync</p>
             )}
           </div>
           
@@ -246,7 +246,7 @@ export function HomePage() {
             onClick={handleSync}
             disabled={!isOnline}
           >
-            🔄 Sync Now
+            ↻ Sync Now
           </button>
         </div>
       )}
@@ -265,7 +265,7 @@ export function HomePage() {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="search-input"
             />
-            <span className="search-icon">🔍</span>
+            <span className="search-icon">[S]</span>
           </div>
         </div>
         
@@ -279,13 +279,13 @@ export function HomePage() {
             <div className="empty-state">
               {events.length === 0 ? (
                 <>
-                  <div className="empty-icon">📋</div>
+                  <div className="empty-icon">[T]</div>
                   <h4>No inspections yet</h4>
                   <p>Click "New Inspection" to start your first facility inspection</p>
                 </>
               ) : (
                 <>
-                  <div className="empty-icon">🔍</div>
+                  <div className="empty-icon">[S]</div>
                   <h4>No inspections found</h4>
                   <p>Try adjusting your search terms</p>
                 </>
@@ -317,10 +317,10 @@ export function HomePage() {
                     
                     <div className="form-details">
                       <p className="org-unit">
-                        🏢 {getOrganisationUnitName(event.orgUnit)}
+                        Building: {getOrganisationUnitName(event.orgUnit)}
                       </p>
                       <p className="timestamps">
-                        📅 Created: {formatDateTime(event.createdAt)}
+                        Date: Created: {formatDateTime(event.createdAt)}
                         {event.updatedAt && event.updatedAt !== event.createdAt && (
                           <span> • Updated: {formatDateTime(event.updatedAt)}</span>
                         )}
@@ -328,7 +328,7 @@ export function HomePage() {
                       
                       {event.dataValues && event.dataValues.length > 0 && (
                         <p className="data-summary">
-                          📊 {event.dataValues.length} field(s) completed
+                          Data: {event.dataValues.length} field(s) completed
                         </p>
                       )}
 
@@ -338,7 +338,7 @@ export function HomePage() {
                                 const field = event.dataValues.find(dv => dv.dataElement === 'jpcDY2i8ZDE');
                                 return field ? (
                                     <p className="submitted-value">
-                                        ⚙️Facility Service Department: {field.value}
+                                        Settings: Facility Service Department: {field.value}
                                     </p>
                                 ) : null;
                             })()
@@ -357,7 +357,7 @@ export function HomePage() {
                         disabled={!isOnline}
                         title={`Retry sync: ${event.syncError || 'Unknown error'}`}
                       >
-                        🔄 Retry
+                        ↻ Retry
                       </button>
                     )}
                     <button
@@ -368,7 +368,7 @@ export function HomePage() {
                       }}
                       title="Delete this inspection"
                     >
-                      🗑️ Delete
+                      Delete
                     </button>
 
                   </div>

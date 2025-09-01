@@ -2850,6 +2850,10 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     const [inspectionInfoConfirmed, setInspectionInfoConfirmed] = useState(false);
 
+    // State for form submission confirmation
+
+    const [isConfirmed, setIsConfirmed] = useState(false);
+
 
 
 
@@ -5830,43 +5834,59 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
       <div className="form-footer">
 
-        <button
+        {/* Confirmation Checkbox */}
+        <div className="confirmation-checkbox" style={{
+          gridColumn: '1 / -1',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '8px',
+          padding: '12px',
+          background: 'var(--md-surface-variant)',
+          borderRadius: '8px',
+          marginBottom: '16px'
+        }}>
+          <input
+            type="checkbox"
+            id="confirmation-checkbox"
+            checked={isConfirmed}
+            onChange={(e) => setIsConfirmed(e.target.checked)}
+            style={{ width: '18px', height: '18px' }}
+          />
+          <label htmlFor="confirmation-checkbox" style={{ 
+            margin: 0, 
+            fontSize: '0.9rem',
+            color: 'var(--md-on-surface-variant)',
+            cursor: 'pointer'
+          }}>
+            I confirm that I have completed the inspection and reviewed all information
+          </label>
+        </div>
 
-          type="button"
-
-          onClick={handleSubmit}
-
-          className="btn btn-primary"
-
-          disabled={isSubmitting}
-
-          title="Submit inspection form"
-
-        >
-
-          {isSubmitting ? 'Submitting...' : 'Submit Inspection'}
-
-        </button>
-
-        
-
-        <button
-
-          type="button"
-
-          onClick={handleSaveDraft}
-
-          className="btn btn-secondary"
-
-          disabled={isSubmitting || (!isOnline && !isDraft)}
-
-          title="Save as draft"
-
-        >
-
-          {isSubmitting ? 'Saving...' : 'Save Draft'}
-
-        </button>
+        {/* Submit and Save buttons - only show when confirmed */}
+        {isConfirmed && (
+          <>
+            <button
+              type="button"
+              onClick={handleSubmit}
+              className="btn btn-primary"
+              disabled={isSubmitting}
+              title="Submit inspection form"
+            >
+              {isSubmitting ? 'Submitting...' : 'Submit Inspection'}
+            </button>
+            
+            <button
+              type="button"
+              onClick={handleSaveDraft}
+              className="btn btn-secondary"
+              disabled={isSubmitting || (!isOnline && !isDraft)}
+              title="Save as draft"
+            >
+              {isSubmitting ? 'Saving...' : 'Save Draft'}
+            </button>
+          </>
+        )}
 
 
 

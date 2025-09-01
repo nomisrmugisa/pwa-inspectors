@@ -56,7 +56,7 @@ export function Header() {
             alt="Ministry of Health Logo" 
             className="header-logo"
             style={{ 
-              height: '40px', 
+              height: '80px', 
               width: 'auto', 
               marginRight: '12px',
               objectFit: 'contain'
@@ -70,7 +70,7 @@ export function Header() {
               style={{ color: '#ffffff' }}
             >
               <span style={{ color: '#ffffff' }}>
-                {isCollapsed ? '🔽' : '🔼'}
+                {isCollapsed ? '▼' : '▲'}
               </span>
             </button>
           </div>
@@ -94,11 +94,11 @@ export function Header() {
         <div className="header-actions" style={{ color: '#ffffff' }}>
           <div className="nav-links" style={{ color: '#ffffff' }}>
             <Link to="/form" className="nav-link" style={{ color: '#ffffff', textDecoration: 'none', marginRight: '20px' }}>
-              📋 Inspections
+              Inspections
             </Link>
 
             <Link to="/home" className="nav-link" style={{ color: '#ffffff', textDecoration: 'none', marginRight: '20px' }}>
-              📊 Dashboard
+              Dashboard
             </Link>
           </div>
           
@@ -118,7 +118,7 @@ export function Header() {
             style={{ color: '#ffffff' }}
           >
             <span className={`sync-icon ${syncInProgress ? 'spinning' : ''}`} style={{ color: '#ffffff' }}>
-              🔄
+              ↻
             </span>
             <span className="btn-text" style={{ color: '#ffffff' }}>
               {syncInProgress ? 'Syncing...' : 'Sync'}
@@ -131,7 +131,6 @@ export function Header() {
             title="Logout"
             style={{ color: '#ffffff' }}
           >
-            <span style={{ color: '#ffffff' }}>🚪</span>
             <span style={{ color: '#ffffff' }}> Logout</span>
           </button>
         </div>
@@ -140,7 +139,7 @@ export function Header() {
       <div className="header-status" style={{ color: '#ffffff' }}>
         <div className="connection-status" style={{ color: '#ffffff' }}>
           <span className={`status-indicator ${isOnline ? 'online' : 'offline'}`} style={{ color: '#ffffff' }}>
-            {isOnline ? '🌐 Online' : '📴 Offline'}
+            {isOnline ? '● Online' : '○ Offline'}
           </span>
         </div>
         <div className="header-row" style={{ color: '#ffffff' }}>
