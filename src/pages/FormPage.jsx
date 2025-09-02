@@ -210,27 +210,49 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
       const facilityServiceOptions = [
 
-        "Gynae Clinics",
+        "ORGANISATION AND MANAGEMENT",
 
-        "laboratory",
+        "SERVICES PROVIDED",
 
-        "Psychology clinic",
+        "PERSONNEL",
 
-        "Eye (opthalmologyoptometry optician) Clinics",
+        "ENVIRONMENT",
 
-        "physiotheraphy",
+        "RECEPTION WAITING AREA",
 
-        "dental clinic",
+        "SCREENING ROOM",
 
-        "ENT clinic",
+        "CONSULTATION ROOM",
 
-        "Rehabilitation Centre",
+        "PROCEDURE ROOM",
 
-        "Potrait clinic",
+        "SLUICE ROOM",
 
-        "Radiology",
+        "BLEEDING ROOM",
 
-        "clinic"
+        "INSPECTION OF TOILET FACILITIES",
+
+        "PHARMACY DISPENSARY",
+
+        "SUPPLIES INSPECTION",
+
+        "RECORDS INFORMATION MANAGEMENT",
+
+        "CUSTOMER SATISFACTION",
+
+        "SPECIMEN RECEPTION ROOM",
+
+        "LABORATORY TESTING AREAS CHEMISTRY",
+
+        "LABORATORY TESTING AREAS HAEMATOLOGY",
+
+        "MICROBIOLOGY",
+
+        "HIV SCREENING",
+
+        "INSTRUMENT WASHING STERILISING ROOM",
+
+        "OTHER"
 
       ];
 
@@ -5000,7 +5022,15 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                   </div>
 
-                  
+                  {/* Inspection Scheduled Dates */}
+                  {inspectionPeriod && (
+                    <div className="form-field">
+                      <label className="form-label">Inspection Scheduled: Dates:</label>
+                      <div>
+                        {inspectionPeriod.startDate} to {inspectionPeriod.endDate}
+                      </div>
+                    </div>
+                  )}
 
                   {/* Debug toggle for facility filtering */}
 

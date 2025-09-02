@@ -1,8 +1,7 @@
-// src/config/facilityServiceFilters/laboratory.js
-const Laboratory = {
+// src/config/facilityServiceFilters/potraitclinic.js
+const Potraitclinic = {
     "ORGANISATION AND MANAGEMENT": {
         "showOnly": [
-            "?",
             "?",
             "?",
             "?",
@@ -391,11 +390,17 @@ const Laboratory = {
             "?",
             "?",
             "?",
+            "?",
+            "?",
             "?"
         ]
     },
     "ENVIRONMENT": {
         "showOnly": [
+            "?",
+            "?",
+            "?",
+            "?",
             "?",
             "?",
             "?",
@@ -585,11 +590,19 @@ const Laboratory = {
             "?",
             "?",
             "?",
+            "?",
+            "?",
+            "?",
+            "?",
             "?"
         ]
     },
     "SCREENING ROOM INSPECTION": {
         "showOnly": [
+            "?",
+            "?",
+            "?",
+            "?",
             "?",
             "?",
             "?",
@@ -728,6 +741,10 @@ const Laboratory = {
             "?",
             "?",
             "?",
+            "?",
+            "?",
+            "?",
+            "?",
             "?"
         ]
     },
@@ -785,11 +802,26 @@ const Laboratory = {
             "?",
             "?",
             "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
             "?"
         ]
     },
     "SLUICE ROOM INSPECTION": {
         "showOnly": [
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
             "?",
             "?",
             "?",
@@ -1057,4 +1089,4 @@ const Laboratory = {
     }
 };
 
-export default Laboratory;
+export default Potraitclinic;

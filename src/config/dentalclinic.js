@@ -1,7 +1,14 @@
-// src/config/facilityServiceFilters/laboratory.js
-const Laboratory = {
+// src/config/facilityServiceFilters/dentalclinic.js
+const dentalclinic = {
     "ORGANISATION AND MANAGEMENT": {
         "showOnly": [
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
             "?",
             "?",
             "?",
@@ -391,11 +398,30 @@ const Laboratory = {
             "?",
             "?",
             "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
             "?"
         ]
     },
     "ENVIRONMENT": {
         "showOnly": [
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
             "?",
             "?",
             "?",
@@ -585,11 +611,31 @@ const Laboratory = {
             "?",
             "?",
             "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
             "?"
         ]
     },
     "SCREENING ROOM INSPECTION": {
         "showOnly": [
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
             "?",
             "?",
             "?",
@@ -728,11 +774,33 @@ const Laboratory = {
             "?",
             "?",
             "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
             "?"
         ]
     },
     "PROCEDURE ROOM INSPECTION": {
         "showOnly": [
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
+            "?",
             "?",
             "?",
             "?",
@@ -1057,4 +1125,4 @@ const Laboratory = {
     }
 };
 
-export default Laboratory;
+export default dentalclinic;
