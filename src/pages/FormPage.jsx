@@ -3998,13 +3998,91 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
 
 
-      // Fetch tracked entity instance when facility is selected
+      // Set tracked entity instance from dataStore when facility is selected
 
       if (fieldName === 'orgUnit' && value) {
 
-        console.log('🏥 Facility selected, fetching TEI for:', value);
+        console.log('🏥 ===== FACILITY SELECTION DEBUG START =====');
 
-        fetchTrackedEntityInstance(value);
+        console.log('🏥 Selected facility ID:', value);
+
+        console.log('🏥 Total userAssignments available:', userAssignments.length);
+
+        console.log('🏥 All userAssignments:', userAssignments);
+
+        
+
+        // Find the selected facility in userAssignments to get its trackedEntityInstance
+
+        const selectedFacility = userAssignments.find(assignment => 
+
+          assignment.facility.id === value
+
+        );
+
+        
+
+        console.log('🔍 ===== SELECTED FACILITY DEBUG =====');
+
+        console.log('🔍 Selected facility found:', !!selectedFacility);
+
+        console.log('🔍 Selected facility object:', selectedFacility);
+
+        
+
+        if (selectedFacility) {
+
+          console.log('🔍 Facility ID:', selectedFacility.facility.id);
+
+          console.log('🔍 Facility Name:', selectedFacility.facility.name);
+
+          console.log('🔍 Facility trackedEntityInstance:', selectedFacility.facility.trackedEntityInstance);
+
+          console.log('🔍 Facility trackedEntityInstance type:', typeof selectedFacility.facility.trackedEntityInstance);
+
+          console.log('🔍 Facility trackedEntityInstance truthy:', !!selectedFacility.facility.trackedEntityInstance);
+
+          console.log('🔍 Complete facility object:', selectedFacility.facility);
+
+          console.log('🔍 Complete assignment object:', selectedFacility.assignment);
+
+          console.log('🔍 ===== SELECTED FACILITY DEBUG END =====');
+
+          
+
+          if (selectedFacility.facility.trackedEntityInstance) {
+
+            console.log('🔗 Found trackedEntityInstance in dataStore:', selectedFacility.facility.trackedEntityInstance);
+
+            setTrackedEntityInstance(selectedFacility.facility.trackedEntityInstance);
+
+          } else {
+
+            console.log('⚠️ No trackedEntityInstance found in dataStore for facility:', value);
+
+            console.log('🔄 Falling back to API call to fetch TEI');
+
+            fetchTrackedEntityInstance(value);
+
+          }
+
+        } else {
+
+          console.log('❌ Selected facility not found in userAssignments!');
+
+          console.log('❌ Available facility IDs:', userAssignments.map(a => a.facility.id));
+
+          console.log('❌ Looking for facility ID:', value);
+
+          console.log('🔄 Falling back to API call to fetch TEI');
+
+          fetchTrackedEntityInstance(value);
+
+        }
+
+        
+
+        console.log('🏥 ===== FACILITY SELECTION DEBUG END =====');
 
         
 
@@ -4259,6 +4337,20 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
           console.log('ℹ️ No trackedEntityInstance available - creating event without TEI link');
 
           console.log('ℹ️ This will cause "Unknown Organisation" in DHIS2');
+
+          // Show warning to user about missing TEI
+          if (!saveDraft) {
+            const userConfirmed = window.confirm(
+              '⚠️ WARNING: No facility registry link found for this facility.\n\n' +
+              'This inspection will be submitted without a facility link, which may cause "Unknown Organisation" in DHIS2.\n\n' +
+              'Do you want to continue with the submission?'
+            );
+            
+            if (!userConfirmed) {
+              setIsSubmitting(false);
+              return;
+            }
+          }
 
         }
 

@@ -502,6 +502,38 @@ export function AppProvider({ children }) {
           const assignmentsData = datastoreResponse;
           console.log('Step 3: 📋 Processing assignments data:', assignmentsData);
 
+          
+
+          // Debug: Log each facility's trackedEntityInstance availability
+
+          if (Array.isArray(datastoreResponse)) {
+
+            console.log('🔍 ===== DATASTORE FACILITIES DEBUG =====');
+
+            datastoreResponse.forEach((inspection, index) => {
+
+              console.log(`🔍 Facility ${index + 1}:`, {
+
+                facilityId: inspection.facilityId,
+
+                facilityName: inspection.facilityName,
+
+                hasTrackedEntityInstance: !!inspection.trackedEntityInstance,
+
+                trackedEntityInstance: inspection.trackedEntityInstance,
+
+                trackedEntityInstanceType: typeof inspection.trackedEntityInstance,
+
+                allKeys: Object.keys(inspection)
+
+              });
+
+            });
+
+            console.log('🔍 ===== DATASTORE FACILITIES DEBUG END =====');
+
+          }
+
             // Step 4: Log Facilities
           if (datastoreResponse && Array.isArray(datastoreResponse)) {
             const facilities = datastoreResponse
@@ -528,7 +560,8 @@ export function AppProvider({ children }) {
                 return {
                   facility: {
                     id: inspection.facilityId,
-                    name: inspection.facilityName
+                    name: inspection.facilityName,
+                    trackedEntityInstance: inspection.trackedEntityInstance || null
                   },
                   assignment: {
                     // Sections from the inspector-specific assignment if available; fall back to all
@@ -545,6 +578,17 @@ export function AppProvider({ children }) {
               });
 
             console.log('Processing facilities:', facilities);
+            
+            // Log trackedEntityInstance availability for debugging
+            const facilitiesWithTEI = facilities.filter(f => f.facility.trackedEntityInstance);
+            console.log(`📊 Facilities with trackedEntityInstance: ${facilitiesWithTEI.length}/${facilities.length}`);
+            if (facilitiesWithTEI.length > 0) {
+              console.log('🔗 Facilities with TEI:', facilitiesWithTEI.map(f => ({
+                name: f.facility.name,
+                id: f.facility.id,
+                tei: f.facility.trackedEntityInstance
+              })));
+            }
 
             // Update the state with facilities
             dispatch({ type: ActionTypes.UPDATE_USER_ASSIGNMENTS, payload: facilities });
