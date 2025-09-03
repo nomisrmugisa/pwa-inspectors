@@ -1,59 +1,15 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist for facilities2.0.csv
- * Generated on: 2025-09-02 21:08:01
- * Facility Type: Eye (opthalmologyoptometry  optician) Clinics
+ * Generated on: 2025-09-02 20:50:40
+ * Facility Type: 11
  *
  * To regenerate this file, run: python src/config/generateFilters.py
  */
 
-const EyeopthalmologyoptometryopticianClinics = {
-    "ORGANISATION AND MANAGEMENT": {
+const 11 = {
+    "Does the Facility have policies and procedures for Waste management?": {
         "showOnly": [
-            "Does the Facility have an organisational structure?",
-            "Is the director a medically trained person?",
-            "Does the facility comply with regulatory requirements for Business registration?",
-            "Does the facility comply with regulatory requirements for Work permits?",
-            "Does the facility comply with regulatory requirements for Lease agreement?",
-            "Does the facility comply with regulatory requirements for Trading license?",
-            "Does the facility comply with regulatory requirements for Occupancy certificate?",
-            "Does the facility comply with regulatory requirements for Patient charter in English & Setswana?",
-            "Does the facility comply with regulatory requirements for Copies of relevant statutory instruments e.g. Public Health Act 2013, Botswana Health Professions Act,2001?",
-            "Does the facility comply with regulatory requirements for Is there an indemnity insurance??",
-            "Does the facility comply with regulatory requirements for Have personnel been cleared by police??",
-            "Does the facility comply with regulatory requirements for contracts for staff?",
-            "Does the facility comply with regulatory requirements for letter of permission to set up/operate?",
-            "Does the facility comply with regulatory requirements for waste collection carrier licence?",
-            "Does the facility comply with regulatory requirements for confidentiality clause?",
-            "Does the facility comply with regulatory requirements for proof of change of land use?",
-            "Does the facility comply with regulatory requirements for tax clearance certificate?",
-            "Does the facility comply with regulatory requirements for Practitioner?s licence?",
-            "Does the facility comply with regulatory requirements for Fire clearance?",
-            "Does the facility comply with regulatory requirements for work permits?",
-            "Does the facility comply with regulatory requirements for residence permit?",
-            "Does the Facility have policies and procedures for referral systems?",
-            "Does the Facility have policies and procedures for assessment of patients?",
-            "Does the Facility have policies and procedures for treatment protocols?",
-            "Does the Facility have policies and procedures for testing and treatment techniques?",
-            "Does the Facility have policies and procedures for high risk patients and procedures, and?",
-            "Does the Facility have policies and procedures for the confidentiality of patient information?",
-            "Does the Facility have policies and procedures for incident reporting?",
-            "Does the Facility have policies and procedures for Induction and orientation?",
-            "Does the Facility have policies and procedures for patient consent?",
-            "Does the Facility have policies and procedures for Linen management?",
-            "Does the Facility have policies and procedures for Equipment maintenance plan/program?",
-            "Does the Facility have policies and procedures for Testing and commissioning certificates?",
-            "Does the Facility have policies and procedures for Infection prevention and control?",
-            "Does the Facility have policies and procedures for Management of patient records and retention times?",
-            "Does the Facility have policies and procedures for Management of information ?",
-            "Does the Facility have policies and procedures for Risk management ?",
-            "Does the Facility have policies and procedures for Management of supplies?",
-            "Does the Facility have policies and procedures for Patient observation?",
-            "Does the Facility have policies and procedures for Management of medication?",
-            "Does the Facility have policies and procedures for Post exposure prophylaxis?",
-            "Does the Facility have policies and procedures for Complaints procedure?",
-            "Does the Facility have policies and procedures for Outreach services?",
-            "Does the Facility have policies and procedures for Waste management?",
             "Clinic provide Gynaecology services?",
             "Clinic provide Fertility?",
             "Clinic provide Sexual reproductive health?",
@@ -95,10 +51,6 @@ const EyeopthalmologyoptometryopticianClinics = {
             "Any outreach services?",
             "Agreement letter with a doctor where services will be offered from?",
             "Is there provision of emergency contact numbers?",
-        ]
-    },
-    "PERSONNEL": {
-        "showOnly": [
             "What is the intended total number of staff?",
             "What is the current number of staff?",
             "How many will be Gynaecologists ?",
@@ -109,7 +61,6 @@ const EyeopthalmologyoptometryopticianClinics = {
             "How many will be Administrative staff?",
             "How many will be Support staff?",
             "How many will be Other professionals (specify)?",
-            "How many will be Specialist doctors?",
             "How many will be Ophthalmologists?",
             "How many will be Opticians?",
             "How many will be Optometrists?",
@@ -138,10 +89,6 @@ const EyeopthalmologyoptometryopticianClinics = {
             "Did personnel files have Evidence of continued education?",
             "Did personnel files have Signed contracts or offer letters?",
             "Did personnel files have Medical examination certificates?",
-        ]
-    },
-    "ENVIRONMENT": {
-        "showOnly": [
             "Does the facility have wheelchair accessibility?",
             "Inspection_fac: Is it fenced, secure and easily accessible?",
             "Is there adequate space for parking?",
@@ -155,10 +102,6 @@ const EyeopthalmologyoptometryopticianClinics = {
             "Is there parking space designated for people living with disability?",
             "Is there directional signage within and outside the facility?",
             "Is there backup system for electricity and water?",
-        ]
-    },
-    "RECEPTION/WAITING AREA INSPECTION": {
-        "showOnly": [
             "Does reception area have adequate space?",
             "Is the telephone/ cell phone available?",
             "Is a reception desk with chair available?",
@@ -166,10 +109,6 @@ const EyeopthalmologyoptometryopticianClinics = {
             "Is there an organized patient registration, screening and booking system?",
             "Are there adequate patient benches / chairs in the waiting area?",
             "Is there a computer?",
-        ]
-    },
-    "SCREENING ROOM INSPECTION": {
-        "showOnly": [
             "Does the screening room have adequate space?",
             "Does the screening room have wheelchair accessibility?",
             "Is screening room equipped with chairs and table?",
@@ -185,26 +124,25 @@ const EyeopthalmologyoptometryopticianClinics = {
             "Is screening room equipped with sharps container?",
             "Is screening room equipped with hand wash facilities?",
             "Is screening room equipped with appropriate hand drying facilities?",
-        ]
-    },
-    "CONSULTATION ROOM INSPECTION": {
-        "showOnly": [
             "Does the consultation room have adequate space?",
             "Does the consultation room have wheelchair accessibility?",
+            "Does the consultation room have at least 3 chairs?",
+            "Does the consultation room have alcohol swabs?",
             "Does the consultation room have appropriate hand drying facilities?",
-            "Does the consultation room have an autorefractor?",
-            "Does the consultation room have a binocular indirect ophthalmoscope?",
-            "Does the consultation room have a bead bath heater?",
-            "Does the consultation room have a direct ophthalmoscope?",
-            "Does the consultation room have an emergency tray?",
-        ]
-    },
-    "PROCEDURE ROOM INSPECTION": {
-        "showOnly": [
+            "Does the consultation room have a cabinet/storage space?",
+            "Does the consultation room have a clinical waste bin with a lid?",
+            "Does the consultation room have a diagnostic set?",
+            "Does the consultation room have a domestic waste bin with a lid?",
+            "Does the consultation room have an examination couch with a tiltable headrest, covered with linen?",
+            "Does the consultation room have an examination lamp?",
+            "Does the Procedure Room have Glucometer and strips?",
+            "Does the consultation room have height measuring device?",
+            "Does the consultation room have is the couch behind a curtain or located within a screened off alcove to provide privacy?",
             "Room have Cotton swabs soaked in alcohol?",
+            "Does the procedure room have Antiseptic ointments, creams, solutions etc.?",
         ]
     },
 
 };
 
-export default EyeopthalmologyoptometryopticianClinics;
+export default 11;

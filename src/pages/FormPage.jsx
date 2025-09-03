@@ -4,19 +4,15 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 import { useApp } from '../contexts/AppContext';
 
-import { useAPI } from '../hooks/useAPI';
+import {
 
-import { 
+  shouldShowSection,
 
-  shouldShowSection, 
+  getFilteredDataElementCount,
 
-  shouldShowDataElement, 
+  getSectionDetailsForFacility,
 
-  getFilteredDataElementCount, 
-
-  getSectionDetailsForFacility, 
-
-  getFacilitySummary 
+  getFacilitySummary
 
 } from '../config/sectionVisibilityConfig';
 
@@ -270,11 +266,11 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
         const selectedValue = e.target.value;
 
-        console.log(`🏥 Selected Facility Service Department: ${selectedValue}`);
+        console.log(`🏥 Selected Facility Type: ${selectedValue}`);
 
         
 
-        // Update the global selectedFacilityService state via FormPage component
+        // Update the global facilityType state via FormPage component
 
         if (window.updateSelectedFacilityService) {
 
@@ -1142,8 +1138,8 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
   // Section component for organizing form fields
 
-  function FormSection({ section, formData, onChange, errors, serviceSections, loadingServiceSections, readOnlyFields = {}, getCurrentPosition, formatCoordinatesForDHIS2, facilityClassifications = [], loadingFacilityClassifications = false, inspectionInfoConfirmed = false, setInspectionInfoConfirmed = () => {}, areAllInspectionFieldsComplete = () => false, showDebugPanel = false, getCurrentFacilityClassification = () => null, selectedFacilityService = null }) {
-    console.log(`📝 Rendering FormSection: ${section.displayName}, Facility Service: ${selectedFacilityService}`);
+  function FormSection({ section, formData, onChange, errors, serviceSections, loadingServiceSections, readOnlyFields = {}, getCurrentPosition, formatCoordinatesForDHIS2, facilityClassifications = [], loadingFacilityClassifications = false, inspectionInfoConfirmed = false, setInspectionInfoConfirmed = () => {}, areAllInspectionFieldsComplete = () => false, showDebugPanel = false, getCurrentFacilityClassification = () => null, facilityType = null }) {
+    console.log(`📝 Rendering FormSection: ${section.displayName}, Facility Type: ${facilityType}`);
     // Safety check - if section is undefined, return null
 
     if (!section) {
@@ -1182,25 +1178,25 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
     const filterDataElements = (dataElements) => {
 
-      if (!selectedFacilityService || !dataElements || !Array.isArray(dataElements)) {
+      if (!facilityType || !dataElements || !Array.isArray(dataElements)) {
 
         return dataElements;
 
       }
 
-      
 
-      console.log(`🔍 Pre-pagination filtering for section "${section.displayName}" with service "${selectedFacilityService}"`);
 
-      
+      console.log(`🔍 Pre-pagination filtering for section "${section.displayName}" with facility type "${facilityType}"`);
+
+
 
       return dataElements.filter(psde => {
 
         if (!psde || !psde.dataElement) return false;
 
-        
 
-        console.log(`🔎 Filtering Data Element: ${psde.dataElement.displayName}, Section: ${section.displayName}, Facility Service: ${selectedFacilityService}`);
+
+        console.log(`🔎 Filtering Data Element: ${psde.dataElement.displayName}, Section: ${section.displayName}, Facility Type: ${facilityType}`);
 
         const shouldShow = shouldShowDataElementForService(
 
@@ -1208,7 +1204,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
           section.displayName,
 
-          selectedFacilityService
+          facilityType
 
         );
 
@@ -1243,12 +1239,12 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
 
     useEffect(() => {
-      console.log(`🔄 useEffect triggered for section: ${section.displayName}, selectedFacilityService: ${selectedFacilityService}, dataElements count: ${section.dataElements?.length || 0}`);
+      console.log(`🔄 useEffect triggered for section: ${section.displayName}, facilityType: ${facilityType}, dataElements count: ${section.dataElements?.length || 0}`);
 
       const filterAsync = async () => {
 
-        if (!selectedFacilityService || !section.dataElements) {
-          console.log(`⚠️ Early return: selectedFacilityService=${selectedFacilityService}, dataElements=${section.dataElements?.length || 0}`);
+        if (!facilityType || !section.dataElements) {
+          console.log(`⚠️ Early return: facilityType=${facilityType}, dataElements=${section.dataElements?.length || 0}`);
           setFilteredDataElements(section.dataElements || []);
 
           return;
@@ -1261,14 +1257,14 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
               if (!psde || !psde.dataElement) return false;
 
-              console.log(`🔎 Async Filtering Data Element: ${psde.dataElement.displayName}, Section: ${section.displayName}, Facility Service: ${selectedFacilityService}`);
+              console.log(`🔎 Async Filtering Data Element: ${psde.dataElement.displayName}, Section: ${section.displayName}, Facility Type: ${facilityType}`);
               const shouldShow = await shouldShowDataElementForService(
 
                   psde.dataElement.displayName,
 
                   section.displayName,
 
-                  selectedFacilityService
+                  facilityType
 
               );
               console.log(`🔎 Async Filter Result: ${psde.dataElement.displayName} -> ${shouldShow}`);
@@ -1286,7 +1282,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
       filterAsync();
 
-    }, [section.dataElements, section.displayName, selectedFacilityService]);
+    }, [section.dataElements, section.displayName, facilityType]);
 
 
 
@@ -2110,6 +2106,24 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
 
 
+  // Function to generate DHIS2 standard ID (11 characters alphanumeric)
+  const generateDHIS2Id = () => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+
+    // First character must be a letter (DHIS2 requirement)
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    result += letters.charAt(Math.floor(Math.random() * letters.length));
+
+    // Remaining 10 characters can be letters or numbers
+    for (let i = 1; i < 11; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+
+    console.log('🆔 Generated DHIS2 ID:', result, `(length: ${result.length})`);
+    return result;
+  };
+
   // Main FormPage component
 
   function FormPage() {
@@ -2150,21 +2164,25 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
     
 
-    // State to track the selected Facility Service Department for filtering
+    // State to track the facility type for filtering (from dataStore)
 
-    const [selectedFacilityService, setSelectedFacilityService] = useState(null);
+    const [facilityType, setFacilityType] = useState(null);
+
+    // State to track facility information from dataStore
+    const [facilityInfo, setFacilityInfo] = useState(null);
+    const [loadingFacilityInfo, setLoadingFacilityInfo] = useState(false);
 
     
 
-    // Set up global handler for updating the selectedFacilityService state
+    // Set up global handler for updating the facilityType state
 
     useEffect(() => {
 
       window.updateSelectedFacilityService = (value) => {
 
-        console.log(`🏥 Setting selected Facility Service Department: ${value}`);
+        console.log(`🏥 Setting facility type: ${value}`);
 
-        setSelectedFacilityService(value);
+        setFacilityType(value);
 
       };
 
@@ -2179,6 +2197,8 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       };
 
     }, []);
+
+
 
 
 
@@ -2830,6 +2850,151 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     });
 
+    // Get facility information from dataStore when form loads
+    useEffect(() => {
+      const getFacilityInfoFromDataStore = async () => {
+        // Wait for all required dependencies to be available
+        if (!formData.orgUnit || !api || !configuration) {
+          console.log('⏳ Waiting for form dependencies to load...');
+          setFacilityInfo(null);
+          return;
+        }
+
+        setLoadingFacilityInfo(true);
+        setFacilityInfo(null); // Clear previous facility info
+
+        try {
+          console.log('🔍 Getting facility information from dataStore for:', formData.orgUnit);
+
+          // First try to get from userAssignments (which may have more complete info)
+          let facilityData = null;
+
+          if (userAssignments && userAssignments.length > 0) {
+            const userAssignment = userAssignments.find(assignment =>
+              assignment.facility && assignment.facility.id === formData.orgUnit
+            );
+
+            if (userAssignment && userAssignment.facility) {
+              console.log('🔍 DETAILED userAssignment.facility structure:', userAssignment.facility);
+              console.log('🔍 All keys in facility object:', Object.keys(userAssignment.facility));
+              console.log('🔍 facility.facilityType value:', userAssignment.facility.facilityType);
+              console.log('🔍 facility.type value:', userAssignment.facility.type);
+              console.log('🔍 facility.facilityType type:', typeof userAssignment.facility.facilityType);
+
+              const extractedType = userAssignment.facility.facilityType || userAssignment.facility.type;
+              console.log('🔍 EXTRACTED TYPE:', extractedType);
+              console.log('🔍 facilityType exists:', !!userAssignment.facility.facilityType);
+              console.log('🔍 type exists:', !!userAssignment.facility.type);
+
+              facilityData = {
+                facilityId: userAssignment.facility.id,
+                facilityName: userAssignment.facility.displayName || userAssignment.facility.name,
+                type: extractedType,
+                trackedEntityInstance: userAssignment.facility.trackedEntityInstance
+              };
+              console.log('✅ Found facility in userAssignments:', facilityData);
+              console.log('✅ Final facilityData.type:', facilityData.type);
+            }
+          }
+
+          // If not found in userAssignments, try inspection dataStore
+          if (!facilityData) {
+            const inspectionData = await api.getInspectionAssignments();
+
+            if (inspectionData && inspectionData.inspections) {
+              const facilityInspection = inspectionData.inspections.find(
+                inspection => inspection.facilityId === formData.orgUnit
+              );
+
+              if (facilityInspection) {
+                console.log('🔍 DETAILED facilityInspection structure:', facilityInspection);
+                console.log('🔍 All keys in inspection object:', Object.keys(facilityInspection));
+                console.log('🔍 inspection.facilityType value:', facilityInspection.facilityType);
+                console.log('🔍 inspection.type value:', facilityInspection.type);
+                console.log('🔍 inspection.facilityType type:', typeof facilityInspection.facilityType);
+
+                const extractedType = facilityInspection.facilityType || facilityInspection.type;
+                console.log('🔍 EXTRACTED TYPE from dataStore:', extractedType);
+                console.log('🔍 facilityType exists:', !!facilityInspection.facilityType);
+                console.log('🔍 type exists:', !!facilityInspection.type);
+
+                facilityData = {
+                  facilityId: facilityInspection.facilityId,
+                  facilityName: facilityInspection.facilityName,
+                  type: extractedType,
+                  trackedEntityInstance: facilityInspection.trackedEntityInstance
+                };
+                console.log('✅ Found facility in inspection dataStore:', facilityData);
+                console.log('✅ Final facilityData.type:', facilityData.type);
+              } else {
+                console.log('❌ No facility found in inspection dataStore with facilityId:', formData.orgUnit);
+                console.log('🔍 Available facilities in dataStore:', inspectionData.inspections?.map(i => ({
+                  facilityId: i.facilityId,
+                  facilityName: i.facilityName,
+                  facilityType: i.facilityType,
+                  type: i.type
+                })));
+              }
+            }
+          }
+
+          if (facilityData) {
+            // Store complete facility information for UI display
+            setFacilityInfo(facilityData);
+
+            // Set the facility type to use for filtering
+            if (facilityData.type) {
+              setFacilityType(facilityData.type);
+              console.log('✅ Set facility type for filtering:', facilityData.type);
+            }
+
+            // Also update form data if there's a facility classification field
+            if (facilityData.type && configuration.programStage?.allDataElements) {
+              const facilityClassificationElement = configuration.programStage.allDataElements.find(psde => {
+                const fieldName = (psde.dataElement.displayName || '').toLowerCase();
+                return fieldName.includes('facility classification') || fieldName.includes('facility type');
+              });
+
+              if (facilityClassificationElement) {
+                const fieldKey = `dataElement_${facilityClassificationElement.dataElement.id}`;
+                setFormData(prev => ({
+                  ...prev,
+                  [fieldKey]: facilityData.type
+                }));
+                console.log(`✅ Auto-populated facility type field with: ${facilityData.type}`);
+              }
+            }
+          } else {
+            console.log('⚠️ No facility found in dataStore for facility:', formData.orgUnit);
+            setFacilityInfo(null);
+          }
+        } catch (error) {
+          console.error('❌ Error getting facility information from dataStore:', error);
+          setFacilityInfo(null);
+        } finally {
+          setLoadingFacilityInfo(false);
+        }
+      };
+
+      // Add a small delay to ensure all components are initialized
+      const timeoutId = setTimeout(getFacilityInfoFromDataStore, 100);
+
+      return () => clearTimeout(timeoutId);
+    }, [formData.orgUnit, api, configuration, userAssignments]);
+
+    // Debug logging for facility info state
+    useEffect(() => {
+      console.log('🔍 DEBUG - Current state:', {
+        'formData.orgUnit': formData.orgUnit,
+        'facilityInfo': facilityInfo,
+        'facilityType': facilityType,
+        'loadingFacilityInfo': loadingFacilityInfo,
+        'userAssignments length': userAssignments?.length || 0,
+        'api available': !!api,
+        'configuration available': !!configuration
+      });
+    }, [formData.orgUnit, facilityInfo, facilityType, loadingFacilityInfo, userAssignments, api, configuration]);
+
     const [readOnlyFields, setReadOnlyFields] = useState({});
 
     const [errors, setErrors] = useState({});
@@ -2875,6 +3040,10 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
     // State for form submission confirmation
 
     const [isConfirmed, setIsConfirmed] = useState(false);
+
+    // State for payload dialog
+    const [showPayloadDialog, setShowPayloadDialog] = useState(false);
+    const [payloadData, setPayloadData] = useState(null);
 
 
 
@@ -4291,10 +4460,13 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
       try {
 
         // Prepare event data
+        // Always ensure we have a proper DHIS2 event ID
+        const finalEventId = eventId || generateDHIS2Id();
+        console.log('🆔 Event ID for submission:', finalEventId, eventId ? '(existing)' : '(generated)');
 
         const eventData = {
 
-          event: eventId || undefined, // Will be generated if new
+          event: finalEventId,
 
           program: program.id,
 
@@ -4312,7 +4484,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
 
 
-        // Only include trackedEntityInstance if it exists
+        // Always ensure trackedEntityInstance is included
 
         console.log('🔍 ===== FORM SUBMISSION TEI DEBUG =====');
 
@@ -4322,19 +4494,39 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
         console.log('🔍 trackedEntityInstance truthy check:', !!trackedEntityInstance);
 
-        
 
-        if (trackedEntityInstance) {
 
-          eventData.trackedEntityInstance = trackedEntityInstance;
+        // Try to get trackedEntityInstance from multiple sources
+        let teiToUse = trackedEntityInstance;
 
-          console.log('🔗 Including trackedEntityInstance in event:', trackedEntityInstance);
+        // If trackedEntityInstance is not set, try to get it from facilityInfo
+        if (!teiToUse && facilityInfo && facilityInfo.trackedEntityInstance) {
+          teiToUse = facilityInfo.trackedEntityInstance;
+          console.log('🔗 Using trackedEntityInstance from facilityInfo:', teiToUse);
+        }
+
+        // If still no TEI, try to get it from userAssignments
+        if (!teiToUse && formData.orgUnit) {
+          const userAssignment = userAssignments?.find(assignment =>
+            assignment.facility && assignment.facility.id === formData.orgUnit
+          );
+          if (userAssignment && userAssignment.facility.trackedEntityInstance) {
+            teiToUse = userAssignment.facility.trackedEntityInstance;
+            console.log('🔗 Using trackedEntityInstance from userAssignments:', teiToUse);
+          }
+        }
+
+        if (teiToUse) {
+
+          eventData.trackedEntityInstance = teiToUse;
+
+          console.log('🔗 Including trackedEntityInstance in event:', teiToUse);
 
           console.log('🔗 Event data now contains TEI:', eventData.trackedEntityInstance);
 
         } else {
 
-          console.log('ℹ️ No trackedEntityInstance available - creating event without TEI link');
+          console.log('ℹ️ No trackedEntityInstance available from any source - creating event without TEI link');
 
           console.log('ℹ️ This will cause "Unknown Organisation" in DHIS2');
 
@@ -4345,7 +4537,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
               'This inspection will be submitted without a facility link, which may cause "Unknown Organisation" in DHIS2.\n\n' +
               'Do you want to continue with the submission?'
             );
-            
+
             if (!userConfirmed) {
               setIsSubmitting(false);
               return;
@@ -4434,12 +4626,75 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
       e.preventDefault();
 
-      
 
-      // All fields are optional - proceed with submission
 
+      // Create payload data to show in dialog
+      // Always ensure we have a proper DHIS2 event ID
+      const finalEventId = eventId || generateDHIS2Id();
+      console.log('🆔 Event ID for payload:', finalEventId, eventId ? '(existing)' : '(generated)');
+
+      const eventData = {
+        event: finalEventId,
+        program: program.id,
+        programStage: programStage.id,
+        orgUnit: formData.orgUnit,
+        eventDate: formData.eventDate,
+        status: 'COMPLETED',
+        dataValues: []
+      };
+
+      // Always ensure trackedEntityInstance is included
+      let teiToUse = trackedEntityInstance;
+
+      // If trackedEntityInstance is not set, try to get it from facilityInfo
+      if (!teiToUse && facilityInfo && facilityInfo.trackedEntityInstance) {
+        teiToUse = facilityInfo.trackedEntityInstance;
+        console.log('🔗 Using trackedEntityInstance from facilityInfo:', teiToUse);
+      }
+
+      // If still no TEI, try to get it from userAssignments
+      if (!teiToUse && formData.orgUnit) {
+        const userAssignment = userAssignments?.find(assignment =>
+          assignment.facility && assignment.facility.id === formData.orgUnit
+        );
+        if (userAssignment && userAssignment.facility.trackedEntityInstance) {
+          teiToUse = userAssignment.facility.trackedEntityInstance;
+          console.log('🔗 Using trackedEntityInstance from userAssignments:', teiToUse);
+        }
+      }
+
+      // Always add trackedEntityInstance to payload (even if null/undefined for debugging)
+      eventData.trackedEntityInstance = teiToUse;
+      console.log('🔗 Final trackedEntityInstance in payload:', teiToUse);
+
+      // Add data values
+      Object.entries(formData).forEach(([key, value]) => {
+        if (key.startsWith('dataElement_') && value !== '') {
+          const dataElementId = key.replace('dataElement_', '');
+          eventData.dataValues.push({
+            dataElement: dataElementId,
+            value: value.toString()
+          });
+        }
+      });
+
+      // Clean up event data - remove any undefined or null values
+      Object.keys(eventData).forEach(key => {
+        if (eventData[key] === undefined || eventData[key] === null) {
+          delete eventData[key];
+        }
+      });
+
+      // Show payload dialog
+      setPayloadData(eventData);
+      setShowPayloadDialog(true);
+
+    };
+
+    // Function to actually submit the inspection (called from dialog)
+    const handleActualSubmit = () => {
+      setShowPayloadDialog(false);
       handleSave(false);
-
     };
 
 
@@ -5070,6 +5325,61 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                    <form onSubmit={handleSubmit} className="inspection-form">
 
+             {/* Facility Information Display - Always show */}
+             <div className="facility-info-display">
+               <div className="facility-info-header">
+                 🏥 Facility Information
+               </div>
+
+               <div className="facility-info-content">
+                 {loadingFacilityInfo ? (
+                   <div style={{
+                     display: 'flex',
+                     alignItems: 'center',
+                     justifyContent: 'center',
+                     padding: '20px',
+                     color: '#6c757d'
+                   }}>
+                     <div style={{ marginRight: '12px' }}>⏳</div>
+                     <span>Loading facility information...</span>
+                   </div>
+                 ) : facilityInfo ? (
+                   <div className="facility-info-grid">
+                     <div className="facility-info-row">
+                       <span className="facility-info-label">Facility Name:</span>
+                       <span className="facility-info-value facility-name">{facilityInfo.facilityName}</span>
+                     </div>
+
+                     <div className="facility-info-row">
+                       <span className="facility-info-label">Specialisation:</span>
+                       <span className="facility-info-value facility-type">
+                         {facilityInfo.type || 'Not specified'}
+                       </span>
+                     </div>
+
+                     <div className="facility-info-row">
+                       <span className="facility-info-label">Tracked Entity Instance:</span>
+                       <span className={`facility-info-value ${facilityInfo.trackedEntityInstance ? 'tracked-entity' : 'not-available'}`}>
+                         {facilityInfo.trackedEntityInstance || 'Not available'}
+                       </span>
+                     </div>
+                   </div>
+                 ) : (
+                   <div style={{
+                     display: 'flex',
+                     alignItems: 'center',
+                     justifyContent: 'center',
+                     padding: '20px',
+                     color: '#6c757d',
+                     fontStyle: 'italic'
+                   }}>
+                     <div style={{ marginRight: '12px' }}>📋</div>
+                     <span>Please select a facility to view information</span>
+                   </div>
+                 )}
+               </div>
+             </div>
+
              {/* Form metadata section - only show when not confirmed */}
 
              {!inspectionInfoConfirmed && (
@@ -5534,7 +5844,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                       getCurrentFacilityClassification={getCurrentFacilityClassification}
 
-                      selectedFacilityService={selectedFacilityService}
+                      facilityType={facilityType}
 
                      />
 
@@ -5654,7 +5964,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                           getCurrentFacilityClassification={getCurrentFacilityClassification}
 
-                          selectedFacilityService={selectedFacilityService}
+                          facilityType={facilityType}
 
                         />
 
@@ -6039,6 +6349,144 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
         )}
 
       </div>
+
+      {/* Payload Dialog */}
+      {showPayloadDialog && (
+        <div className="payload-dialog-overlay" style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000
+        }}>
+          <div className="payload-dialog" style={{
+            backgroundColor: 'white',
+            borderRadius: '8px',
+            padding: '24px',
+            maxWidth: '800px',
+            maxHeight: '80vh',
+            overflow: 'auto',
+            margin: '20px',
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)'
+          }}>
+            <div className="payload-dialog-header" style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '20px',
+              borderBottom: '2px solid #e9ecef',
+              paddingBottom: '16px'
+            }}>
+              <h3 style={{ margin: 0, color: '#2c3e50' }}>📋 Inspection Payload</h3>
+              <button
+                onClick={() => setShowPayloadDialog(false)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '24px',
+                  cursor: 'pointer',
+                  color: '#6c757d'
+                }}
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="payload-content" style={{
+              marginBottom: '24px'
+            }}>
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '16px'
+              }}>
+                <p style={{
+                  color: '#495057',
+                  margin: 0,
+                  fontSize: '14px'
+                }}>
+                  This is the data that will be submitted to DHIS2:
+                </p>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(JSON.stringify(payloadData, null, 2));
+                    showToast('Payload copied to clipboard!', 'success');
+                  }}
+                  style={{
+                    padding: '4px 8px',
+                    border: '1px solid #007bff',
+                    backgroundColor: 'white',
+                    color: '#007bff',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    fontSize: '12px'
+                  }}
+                >
+                  📋 Copy
+                </button>
+              </div>
+
+              <pre style={{
+                backgroundColor: '#f8f9fa',
+                border: '1px solid #dee2e6',
+                borderRadius: '4px',
+                padding: '16px',
+                fontSize: '12px',
+                fontFamily: 'Monaco, Consolas, "Courier New", monospace',
+                overflow: 'auto',
+                maxHeight: '400px',
+                whiteSpace: 'pre-wrap',
+                wordBreak: 'break-word'
+              }}>
+                {JSON.stringify(payloadData, null, 2)}
+              </pre>
+            </div>
+
+            <div className="payload-dialog-actions" style={{
+              display: 'flex',
+              gap: '12px',
+              justifyContent: 'flex-end',
+              borderTop: '1px solid #e9ecef',
+              paddingTop: '16px'
+            }}>
+              <button
+                onClick={() => setShowPayloadDialog(false)}
+                style={{
+                  padding: '8px 16px',
+                  border: '1px solid #6c757d',
+                  backgroundColor: 'white',
+                  color: '#6c757d',
+                  borderRadius: '4px',
+                  cursor: 'pointer'
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleActualSubmit}
+                disabled={isSubmitting}
+                style={{
+                  padding: '8px 16px',
+                  border: 'none',
+                  backgroundColor: '#28a745',
+                  color: 'white',
+                  borderRadius: '4px',
+                  cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                  opacity: isSubmitting ? 0.6 : 1
+                }}
+              >
+                {isSubmitting ? 'Submitting...' : 'Confirm & Submit'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
 

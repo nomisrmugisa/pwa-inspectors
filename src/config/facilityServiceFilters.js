@@ -1,5 +1,11 @@
-// Main facility service filters file
-// This file imports all individual clinic filter files and combines them
+/**
+ * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
+ * Generated from: checklist for facilities2.0.csv
+ * Generated on: 2025-09-02 21:08:01
+ *
+ * This file imports all individual clinic filter files and combines them
+ * To regenerate this file, run: python src/config/generateFilters.py
+ */
 
 import GynaeClinics from './gynaeclinics.js';
 import Laboratory from './laboratory.js';
@@ -31,16 +37,16 @@ export function shouldShowDataElementForService(dataElementName, selectedService
     if (!selectedService || !facilityServiceFilters[selectedService]) {
         return true; // Show all if no service selected or service not found
     }
-    
+
     const serviceFilters = facilityServiceFilters[selectedService];
-    
+
     // Check if the data element should be shown for this service
     for (const section in serviceFilters) {
         if (serviceFilters[section].showOnly && serviceFilters[section].showOnly.includes(dataElementName)) {
             return true;
         }
     }
-    
+
     return false; // Hide if not in showOnly lists
 }
 

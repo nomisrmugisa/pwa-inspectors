@@ -561,6 +561,7 @@ export function AppProvider({ children }) {
                   facility: {
                     id: inspection.facilityId,
                     name: inspection.facilityName,
+                    facilityType: inspection.facilityType,
                     trackedEntityInstance: inspection.trackedEntityInstance || null
                   },
                   assignment: {
@@ -724,6 +725,24 @@ export function AppProvider({ children }) {
     }
   };
 
+  // Function to generate DHIS2 standard ID (11 characters alphanumeric)
+  const generateDHIS2Id = () => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+
+    // First character must be a letter (DHIS2 requirement)
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    result += letters.charAt(Math.floor(Math.random() * letters.length));
+
+    // Remaining 10 characters can be letters or numbers
+    for (let i = 1; i < 11; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+
+    console.log('🆔 Generated DHIS2 ID in AppContext:', result, `(length: ${result.length})`);
+    return result;
+  };
+
   // Event management functions
   const saveEvent = async (eventData, isDraft = false) => {
     try {
@@ -731,8 +750,10 @@ export function AppProvider({ children }) {
         throw new Error('Storage not ready - please wait and try again');
       }
 
-      const eventId = eventData.event || `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      
+      // Always ensure we have a proper DHIS2 event ID
+      const eventId = eventData.event || generateDHIS2Id();
+      console.log('🆔 Event ID for saveEvent:', eventId, eventData.event ? '(provided)' : '(generated)');
+
       const event = {
         ...eventData,
         event: eventId,
@@ -800,8 +821,12 @@ export function AppProvider({ children }) {
           // }
 
           // Clean payload before submission
-          // DHIS2 will generate the event UID on create; omit local temp ID to avoid 409 conflicts
+          // Always ensure we have a proper DHIS2 event ID
+          const eventId = event.event || generateDHIS2Id();
+          console.log('🆔 Event ID for sync:', eventId, event.event ? '(existing)' : '(generated)');
+
           const cleanEvent = {
+            event: eventId,
             program: event.program,
             programStage: event.programStage,
             orgUnit: event.orgUnit,
@@ -929,7 +954,12 @@ export function AppProvider({ children }) {
       });
 
       // Try to sync this single event
+      // Always ensure we have a proper DHIS2 event ID
+      const finalEventId = event.event || generateDHIS2Id();
+      console.log('🆔 Event ID for retry:', finalEventId, event.event ? '(existing)' : '(generated)');
+
       const cleanEvent = {
+        event: finalEventId,
         program: event.program,
         programStage: event.programStage,
         orgUnit: event.orgUnit,

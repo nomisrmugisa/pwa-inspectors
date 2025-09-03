@@ -739,8 +739,30 @@ class DHIS2APIService {
     };
   }
 
-  formatEventData(formData, configuration) {
+  formatEventData(formData, configuration, eventId = null) {
+    // Function to generate DHIS2 standard ID (11 characters alphanumeric)
+    const generateDHIS2Id = () => {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let result = '';
+
+      // First character must be a letter (DHIS2 requirement)
+      const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+      result += letters.charAt(Math.floor(Math.random() * letters.length));
+
+      // Remaining 10 characters can be letters or numbers
+      for (let i = 1; i < 11; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+
+      return result;
+    };
+
+    // Always ensure we have a proper DHIS2 event ID
+    const finalEventId = eventId || generateDHIS2Id();
+    console.log('🆔 Event ID for formatEventData:', finalEventId, eventId ? '(provided)' : '(generated)');
+
     const eventData = {
+      event: finalEventId,
       program: configuration.program.id,
       programStage: configuration.programStage.id,
       orgUnit: formData.orgUnit,

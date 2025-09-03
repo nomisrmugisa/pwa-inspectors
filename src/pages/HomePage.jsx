@@ -5,14 +5,15 @@ import { useStorage } from '../hooks/useStorage';
 
 export function HomePage() {
   const navigate = useNavigate();
-  const { 
-    configuration, 
-    stats, 
-    isOnline, 
-    syncEvents, 
+  const {
+    configuration,
+    stats,
+    isOnline,
+    syncEvents,
     retryEvent,
     deleteEvent,
-    showToast 
+    showToast,
+    userAssignments
   } = useApp();
   
   const storage = useStorage();
@@ -149,9 +150,19 @@ export function HomePage() {
     }
   };
 
-  const getOrganisationUnitName = (orgUnitId) => {
+  const getFacilityName = (orgUnitId) => {
+    // First try to get facility name from userAssignments (dataStore)
+    const userAssignment = userAssignments?.find(assignment =>
+      assignment.facility && assignment.facility.id === orgUnitId
+    );
+
+    if (userAssignment && userAssignment.facility.name) {
+      return userAssignment.facility.name;
+    }
+
+    // Fallback to organization unit name from configuration
     const orgUnit = configuration?.organisationUnits?.find(ou => ou.id === orgUnitId);
-    return orgUnit?.displayName || 'Unknown Organisation';
+    return orgUnit?.displayName || 'Unknown Facility';
   };
 
   const getStatusText = (event) => {
@@ -317,7 +328,7 @@ export function HomePage() {
                     
                     <div className="form-details">
                       <p className="org-unit">
-                        Building: {getOrganisationUnitName(event.orgUnit)}
+                        Building: {getFacilityName(event.orgUnit)}
                       </p>
                       <p className="timestamps">
                         Date: Created: {formatDateTime(event.createdAt)}
