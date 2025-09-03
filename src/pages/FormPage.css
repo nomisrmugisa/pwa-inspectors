@@ -883,4 +883,105 @@
   }
 }
 
- 
+/* Multiselect Component Styles */
+.multiselect-container {
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  padding: 8px;
+  background-color: white;
+  max-height: 200px;
+  overflow-y: auto;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.multiselect-container:focus-within {
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.multiselect-container.readonly {
+  background-color: #f8f9fa;
+  cursor: not-allowed;
+}
+
+.multiselect-header {
+  font-size: 12px;
+  color: #6c757d;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.multiselect-option {
+  display: flex;
+  align-items: center;
+  padding: 4px 0;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.multiselect-option:hover {
+  background-color: #f8f9fa;
+  border-radius: 2px;
+}
+
+.multiselect-option.readonly {
+  cursor: not-allowed;
+}
+
+.multiselect-checkbox {
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+.multiselect-checkbox:disabled {
+  cursor: not-allowed;
+}
+
+.multiselect-label {
+  margin: 0;
+  cursor: pointer;
+  font-size: 14px;
+  color: #212529;
+  flex: 1;
+}
+
+.multiselect-label.readonly {
+  cursor: not-allowed;
+  color: #6c757d;
+}
+
+.multiselect-summary {
+  margin-top: 8px;
+  padding: 6px;
+  background-color: #e7f3ff;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #0066cc;
+  border-left: 3px solid #007bff;
+}
+
+.multiselect-summary strong {
+  font-weight: 600;
+}
+
+/* Responsive adjustments for multiselect */
+@media (max-width: 768px) {
+  .multiselect-container {
+    max-height: 150px;
+    font-size: 14px;
+  }
+
+  .multiselect-label {
+    font-size: 13px;
+  }
+
+  .multiselect-summary {
+    font-size: 11px;
+  }
+}
+
+/* Spinning animation for loading indicators */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

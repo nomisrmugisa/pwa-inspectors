@@ -105,6 +105,11 @@ export function HomePage() {
 
 
   const getStatusIcon = (status) => {
+    // If offline and status is error, show as pending
+    if (!isOnline && status === 'error') {
+      return '⏱';
+    }
+
     switch (status) {
       case 'synced':
         return '✓';
@@ -120,6 +125,11 @@ export function HomePage() {
   };
 
   const getStatusColor = (status) => {
+    // If offline and status is error, show as pending (warning color)
+    if (!isOnline && status === 'error') {
+      return 'warning';
+    }
+
     switch (status) {
       case 'synced':
         return 'success';
@@ -167,6 +177,12 @@ export function HomePage() {
 
   const getStatusText = (event) => {
     const status = event.status || event.syncStatus || 'unknown';
+
+    // If offline and status is error, show as pending submission
+    if (!isOnline && status === 'error') {
+      return 'Pending Submission';
+    }
+
     return status.charAt(0).toUpperCase() + status.slice(1);
   };
 
@@ -230,11 +246,11 @@ export function HomePage() {
         </div>
 
         {stats.errorEvents > 0 && (
-          <div className="stat-card error">
-            <div className="stat-icon">✗</div>
+          <div className={`stat-card ${isOnline ? 'error' : 'pending'}`}>
+            <div className="stat-icon">{isOnline ? '✗' : '⏱'}</div>
             <div className="stat-content">
               <h3>{stats.errorEvents}</h3>
-              <p>Errors</p>
+              <p>{isOnline ? 'Errors' : 'Pending Submission'}</p>
             </div>
           </div>
         )}
@@ -248,7 +264,9 @@ export function HomePage() {
               <p>Upload: {stats.pendingEvents} inspections waiting to sync</p>
             )}
             {stats.errorEvents > 0 && (
-              <p style={{ color: '#000000' }}>✗ {stats.errorEvents} inspections failed to sync</p>
+              <p style={{ color: '#000000' }}>
+                {isOnline ? '✗' : '⏱'} {stats.errorEvents} inspections {isOnline ? 'failed to sync' : 'pending submission (offline)'}
+              </p>
             )}
           </div>
           
@@ -343,15 +361,30 @@ export function HomePage() {
                         </p>
                       )}
 
-                        {/* Show submitted value for facility service */}
+                        {/* Show submitted value for facility service departments */}
                         {event.dataValues && (
                             (() => {
                                 const field = event.dataValues.find(dv => dv.dataElement === 'jpcDY2i8ZDE');
-                                return field ? (
+                                if (!field) return null;
+
+                                // Try to parse as JSON array, fallback to string display
+                                let displayValue = field.value;
+                                try {
+                                  const parsedValue = JSON.parse(field.value);
+                                  if (Array.isArray(parsedValue)) {
+                                    displayValue = parsedValue.length > 0
+                                      ? `${parsedValue.length} selected: ${parsedValue.join(', ')}`
+                                      : 'None selected';
+                                  }
+                                } catch (e) {
+                                  // Keep original value if not valid JSON
+                                }
+
+                                return (
                                     <p className="submitted-value">
-                                        Settings: Facility Service Department: {field.value}
+                                        Settings: Facility Service Departments: {displayValue}
                                     </p>
-                                ) : null;
+                                );
                             })()
                         )}
                     </div>
@@ -366,9 +399,12 @@ export function HomePage() {
                           handleRetryEvent(event.event);
                         }}
                         disabled={!isOnline}
-                        title={`Retry sync: ${event.syncError || 'Unknown error'}`}
+                        title={isOnline
+                          ? `Retry sync: ${event.syncError || 'Unknown error'}`
+                          : 'Cannot retry while offline - will sync when connection is restored'
+                        }
                       >
-                        ↻ Retry
+                        {isOnline ? '↻ Retry' : '⏱ Pending'}
                       </button>
                     )}
                     <button
