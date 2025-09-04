@@ -1338,7 +1338,8 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
         // Exclude certain sections from filtering: show all their fields
         const sectionName = (section.displayName || '');
-        if (sectionName === 'Inspection Type' || sectionName === 'Document Review Stage') {
+        const lowerName = sectionName.toLowerCase();
+        if (sectionName === 'Inspection Type' || lowerName.includes('document review')) {
           console.log('🔍 FILTER BYPASS: Special section - showing all data elements');
           setFilteredDataElements(section.dataElements || []);
           return;
@@ -1620,9 +1621,10 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
     const isInspectionInfoSection = (section.displayName || '') === 'Inspection Information';
 
-    const isInspectionTypeSection = (section.displayName || '') === 'Inspection Type';
+    const sectionDisplayName = (section.displayName || '');
+    const isInspectionTypeSection = sectionDisplayName === 'Inspection Type';
 
-    const isDocumentReviewSection = (section.displayName || '') === 'Document Review Stage';
+    const isDocumentReviewSection = sectionDisplayName.toLowerCase().includes('document review');
     
 
 
@@ -1645,11 +1647,11 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
     const hasDataElements = section.dataElements && section.dataElements.length > 0;
 
-    const shouldShow = hasDataElements || isInspectionInfoSection || isInspectionTypeSection;
+    const shouldShow = hasDataElements || isInspectionInfoSection || isInspectionTypeSection || isDocumentReviewSection;
 
     // Helper to decide visibility consistent with filter logic, including Comments pairing
     const shouldShowForName = (name) => {
-      if (isInspectionTypeSection || isDocumentReviewSection) return true; // Exclude these sections from filters
+      if (isInspectionTypeSection || isDocumentReviewSection) return true; // Exclude from filters
       if (!name) return false;
       const lower = name.toLowerCase();
       const isComment = lower.includes('comments') || lower.includes('comment') || lower.includes('remarks');
