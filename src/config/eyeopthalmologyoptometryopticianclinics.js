@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist for facilities2.0.csv
- * Generated on: 2025-09-02 21:08:01
+ * Generated on: 2025-09-04 06:59:14
  * Facility Type: Eye (opthalmologyoptometry  optician) Clinics
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -54,6 +54,10 @@ const EyeopthalmologyoptometryopticianClinics = {
             "Does the Facility have policies and procedures for Complaints procedure?",
             "Does the Facility have policies and procedures for Outreach services?",
             "Does the Facility have policies and procedures for Waste management?",
+        ]
+    },
+    "SERVICES PROVIDED": {
+        "showOnly": [
             "Clinic provide Gynaecology services?",
             "Clinic provide Fertility?",
             "Clinic provide Sexual reproductive health?",

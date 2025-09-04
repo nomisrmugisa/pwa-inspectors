@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist for facilities2.0.csv
- * Generated on: 2025-09-02 21:08:01
+ * Generated on: 2025-09-04 06:59:14
  *
  * This file imports all individual clinic filter files and combines them
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -33,35 +33,21 @@ const facilityServiceFilters = {
     'clinic': clinic,
 };
 
-export function shouldShowDataElementForService(dataElementName, sectionName, facilityType) {
-    console.log(`🔍 FILTER FUNCTION DEBUG: DataElement="${dataElementName}", Section="${sectionName}", FacilityType="${facilityType}"`);
-
-    // If no facility type is provided, show all elements
-    if (!facilityType) {
-        console.log(`🔍 No facility type provided - showing all elements`);
-        return true;
+export function shouldShowDataElementForService(dataElementName, selectedService) {
+    if (!selectedService || !facilityServiceFilters[selectedService]) {
+        return true; // Show all if no service selected or service not found
     }
 
-    // Check if we have filters for this facility type
-    if (!facilityServiceFilters[facilityType]) {
-        console.log(`🔍 No filters found for facility type "${facilityType}" - showing all elements`);
-        console.log(`🔍 Available facility types:`, Object.keys(facilityServiceFilters));
-        return true;
+    const serviceFilters = facilityServiceFilters[selectedService];
+
+    // Check if the data element should be shown for this service
+    for (const section in serviceFilters) {
+        if (serviceFilters[section].showOnly && serviceFilters[section].showOnly.includes(dataElementName)) {
+            return true;
+        }
     }
 
-    const serviceFilters = facilityServiceFilters[facilityType];
-    console.log(`🔍 Found filters for "${facilityType}":`, serviceFilters);
-
-    // Check if the data element should be shown for this facility type and section
-    if (serviceFilters[sectionName] && serviceFilters[sectionName].showOnly) {
-        const shouldShow = serviceFilters[sectionName].showOnly.includes(dataElementName);
-        console.log(`🔍 Section "${sectionName}" has showOnly filter. Element "${dataElementName}" should show: ${shouldShow}`);
-        return shouldShow;
-    }
-
-    // If no specific section filter, show the element
-    console.log(`🔍 No specific filter for section "${sectionName}" - showing element "${dataElementName}"`);
-    return true;
+    return false; // Hide if not in showOnly lists
 }
 
 export default facilityServiceFilters;

@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "extract:questions": "node ./scripts/extract-questions.js",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0"
   },
   "keywords": [
@@ -36,9 +37,11 @@
     "@hookform/resolvers": "^3.3.2",
     "@mui/icons-material": "^7.3.1",
     "@mui/material": "^7.3.1",
+    "cheerio": "^1.1.2",
     "clsx": "^2.0.0",
     "date-fns": "^2.30.0",
     "lucide-react": "^0.294.0",
+    "mammoth": "^1.10.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.48.2",

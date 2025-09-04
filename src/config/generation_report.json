@@ -1,5 +1,5 @@
 {
-  "generated_on": "2025-09-02T21:08:01.821909",
+  "generated_on": "2025-09-04T06:59:14.487464",
   "source_file": "src/config/checklist for facilities2.0.csv",
   "facility_types": [
     "Gynae Clinics",
@@ -16,6 +16,7 @@
   ],
   "sections": [
     "ORGANISATION AND MANAGEMENT",
+    "SERVICES PROVIDED",
     "PERSONNEL",
     "ENVIRONMENT",
     "RECEPTION/WAITING AREA INSPECTION",
@@ -38,7 +39,7 @@
   ],
   "statistics": {
     "total_facility_types": 11,
-    "total_sections": 20,
+    "total_sections": 21,
     "total_questions": 208
   },
   "facility_statistics": {

@@ -124,7 +124,7 @@ const enhancedServiceFieldDetection = (dataElement) => {
 
 // Form field component for individual data elements
 
-function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoading = false, readOnly = false, getCurrentPosition, formatCoordinatesForDHIS2 }) {
+function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoading = false, readOnly = false, getCurrentPosition, formatCoordinatesForDHIS2, staticText }) {
 
   const { dataElement } = psde;
 
@@ -144,7 +144,9 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
     readOnly,
 
-    value
+    value,
+
+    staticText
 
   });
 
@@ -188,7 +190,20 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
     
 
+    // If staticText is provided, render a disabled text input showing the text
+    if (typeof staticText === 'string') {
+      return (
+        <input
+          id={fieldId}
+          value={staticText}
+          readOnly
+          disabled
+          className="form-control"
+        />
+      );
+    }
 
+    
 
     
 
@@ -1222,9 +1237,9 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
       if (!dataElement || !dataElement.displayName) return false;
 
-      const name = dataElement.displayName.toLowerCase();
+      const name = dataElement.displayName;
 
-      return name.includes('comment') || name.includes('remarks') || name.includes('notes') || name.includes('additional');
+      return name.endsWith(' Comments');
 
     };
 
@@ -1250,32 +1265,44 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
         if (!psde || !psde.dataElement) return false;
 
+        const displayName = psde.dataElement.displayName;
+        console.log(`🔎 Filtering Data Element: ${displayName}, Section: ${section.displayName}, Facility Type: ${facilityType}`);
+        console.log(`🔍 EXACT VALUES: DataElement="${displayName}", Section="${section.displayName}", FacilityType="${facilityType}"`);
 
-
-        console.log(`🔎 Filtering Data Element: ${psde.dataElement.displayName}, Section: ${section.displayName}, Facility Type: ${facilityType}`);
-        console.log(`🔍 EXACT VALUES: DataElement="${psde.dataElement.displayName}", Section="${section.displayName}", FacilityType="${facilityType}"`);
-
-        const shouldShow = shouldShowDataElementForService(
-
-          psde.dataElement.displayName,
-
-          section.displayName,
-
+        // Check if this is a Comments data element
+        const isComment = displayName.endsWith(' Comments');
+        
+        if (isComment) {
+          // For Comments elements, check if the main element would pass the filter
+          // Extract main element name by removing " Comments" suffix
+          const mainElementName = displayName.replace(/\sComments$/,'');
+          
+          console.log(`💬 Comment element detected: "${displayName}" -> Main: "${mainElementName}"`);
+          
+          // Check if the main element passes the filter
+          const mainElementPasses = shouldShowDataElementForService(
+            mainElementName,
+            facilityType
+          );
+          
+          if (!mainElementPasses) {
+            console.log(`🔍 Hiding comment element "${displayName}" because main element doesn't pass filter`);
+          }
+          
+          return mainElementPasses;
+        } else {
+          // For main elements, use the standard filter
+          const shouldShow = shouldShowDataElementForService(
+            displayName,
           facilityType
-
         );
 
-        
-
         if (!shouldShow) {
-
-          console.log(`🔍 Pre-pagination filter: Hiding "${psde.dataElement.displayName}" in section "${section.displayName}"`);
-
+            console.log(`🔍 Pre-pagination filter: Hiding "${displayName}" in section "${section.displayName}"`);
         }
 
-        
-
         return shouldShow;
+        }
 
       });
 
@@ -1309,6 +1336,14 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
         }
 
+        // Exclude certain sections from filtering: show all their fields
+        const sectionName = (section.displayName || '');
+        if (sectionName === 'Inspection Type' || sectionName === 'Document Review Stage') {
+          console.log('🔍 FILTER BYPASS: Special section - showing all data elements');
+          setFilteredDataElements(section.dataElements || []);
+          return;
+        }
+
         console.log(`🔍 FILTER DEBUG: Starting filtering for Section="${section.displayName}", FacilityType="${facilityType}", Elements=${section.dataElements.length}`);
 
         const results = await Promise.all(
@@ -1317,18 +1352,33 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
               if (!psde || !psde.dataElement) return false;
 
-              console.log(`🔎 Async Filtering Data Element: ${psde.dataElement.displayName}, Section: ${section.displayName}, Facility Type: ${facilityType}`);
-              const shouldShow = await shouldShowDataElementForService(
-
-                  psde.dataElement.displayName,
-
-                  section.displayName,
-
-                  facilityType
-
-              );
-              console.log(`🔎 Async Filter Result: ${psde.dataElement.displayName} -> ${shouldShow}`);
+              const displayName = psde.dataElement.displayName;
+              console.log(`🔎 Async Filtering Data Element: ${displayName}, Section: ${section.displayName}, Facility Type: ${facilityType}`);
+              
+              // Check if this is a Comments data element
+              const isComment = displayName.endsWith(' Comments');
+              
+              if (isComment) {
+                // For Comments elements, check if the main element would pass the filter
+                const mainElementName = displayName.replace(/\sComments$/,'');
+                
+                console.log(`💬 Async: Comment element detected: "${displayName}" -> Main: "${mainElementName}"`);
+                
+                const mainElementPasses = await shouldShowDataElementForService(
+                    mainElementName,
+                    facilityType
+                );
+                console.log(`🔎 Async Filter Result for comment: ${displayName} -> ${mainElementPasses} (based on main element)`);
+                return mainElementPasses;
+              } else {
+                // For main elements, use the standard filter
+                const shouldShow = await shouldShowDataElementForService(
+                    displayName,
+                    facilityType
+                );
+                console.log(`🔎 Async Filter Result: ${displayName} -> ${shouldShow}`);
               return shouldShow;
+              }
 
             })
 
@@ -1568,10 +1618,11 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
     // Check if this is one of the sections that should start expanded
 
-    const isInspectionInfoSection = (section.displayName || '').toLowerCase().includes('inspection information');
+    const isInspectionInfoSection = (section.displayName || '') === 'Inspection Information';
 
-    const isInspectionTypeSection = (section.displayName || '').toLowerCase().includes('inspection type');
+    const isInspectionTypeSection = (section.displayName || '') === 'Inspection Type';
 
+    const isDocumentReviewSection = (section.displayName || '') === 'Document Review Stage';
     
 
 
@@ -1596,6 +1647,26 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
     const shouldShow = hasDataElements || isInspectionInfoSection || isInspectionTypeSection;
 
+    // Helper to decide visibility consistent with filter logic, including Comments pairing
+    const shouldShowForName = (name) => {
+      if (isInspectionTypeSection || isDocumentReviewSection) return true; // Exclude these sections from filters
+      if (!name) return false;
+      const lower = name.toLowerCase();
+      const isComment = lower.includes('comments') || lower.includes('comment') || lower.includes('remarks');
+      if (isComment) {
+        const mainElementName = name
+          .replace(/\s*Comments?\s*$/i, '')
+          .replace(/\s*Remarks?\s*$/i, '')
+          .trim();
+        return shouldShowDataElementForService(mainElementName, facilityType);
+      }
+      return shouldShowDataElementForService(name, facilityType);
+    };
+
+    // Compute unmatched (hidden) DEs for debug vis
+    const unmatchedDEs = (isInspectionTypeSection || isDocumentReviewSection) ? [] : ((section.dataElements || [])
+      .filter(psde => psde?.dataElement && !shouldShowForName(psde.dataElement.displayName))
+      .map(psde => psde.dataElement.displayName));
 
 
     console.log('🚨 FormSection logic check:', {
@@ -1642,6 +1713,47 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
           <strong>Facility Type:</strong> {facilityType || 'null'} |
           <strong>Elements:</strong> {filteredDataElements.length}/{section.dataElements?.length || 0} |
           <strong>Page:</strong> {currentPage + 1}/{Math.ceil(filteredDataElements.length / baseFieldsPerPage)}
+
+          {/* Unmatched (hidden) Data Elements list */}
+          {showDebugPanel && unmatchedDEs && unmatchedDEs.length > 0 && (
+            <div style={{
+              marginTop: '6px',
+              backgroundColor: '#fff3cd',
+              border: '1px solid #ffeeba',
+              borderRadius: '4px',
+              padding: '6px'
+            }}>
+              <strong style={{ color: '#8a6d3b' }}>Unmatched (hidden) DEs:</strong> {unmatchedDEs.length}
+              <div style={{ maxHeight: '90px', overflow: 'auto', marginTop: '4px' }}>
+                {unmatchedDEs.slice(0, 12).map((name, idx) => (
+                  <div key={`${section.id}-unmatched-${idx}`}>{name}</div>
+                ))}
+                {unmatchedDEs.length > 12 && (
+                  <div>... and {unmatchedDEs.length - 12} more</div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* DHIS2 DEs returned for Inspection Type section */}
+          {showDebugPanel && isInspectionTypeSection && section.dataElements && section.dataElements.length > 0 && (
+            <div style={{
+              marginTop: '6px',
+              backgroundColor: '#f8f9fa',
+              border: '1px solid #e2e3e5',
+              borderRadius: '4px',
+              padding: '6px'
+            }}>
+              <strong>DHIS2 Data Elements (Inspection Type):</strong> {section.dataElements.length}
+              <div style={{ maxHeight: '140px', overflow: 'auto', marginTop: '4px' }}>
+                {section.dataElements.map((psde, idx) => (
+                  <div key={`${section.id}-dhis2-${psde?.dataElement?.id || idx}`}>
+                    {psde?.dataElement?.displayName || 'UNKNOWN'}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         <div className={`section-header ${isInspectionInfoSection || isInspectionTypeSection ? 'always-expanded-section' : 'collapsible-section'}`}>
@@ -1650,9 +1762,22 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
             {section.displayName}
 
-
-
-            
+            {/* Visible DE count badge */}
+            <span
+              className="visible-de-count"
+              title={`${filteredDataElements.length} data elements visible in this section`}
+              style={{
+                fontSize: '0.8em',
+                color: '#0c5460',
+                marginLeft: '8px',
+                backgroundColor: '#d1ecf1',
+                padding: '2px 6px',
+                borderRadius: '4px',
+                border: '1px solid #bee5eb'
+              }}
+            >
+              📄 {filteredDataElements.length} shown
+            </span>
 
             {/* Display filtered DE count if any */}
 
@@ -1849,14 +1974,16 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
                         error={errors[`dataElement_${psde.dataElement.id}`]}
 
                         dynamicOptions={isDynamicServiceField ? serviceSections : null}
+                        staticText={(isInspectionTypeSection && psde.dataElement.displayName === 'Source') ? 'MOH' : undefined}
 
                         isLoading={isDynamicServiceField ? loadingServiceSections : false}
 
-                        readOnly={!!readOnlyFields[`dataElement_${psde.dataElement.id}`]}
+                        readOnly={ (isInspectionTypeSection && psde.dataElement.displayName === 'Source') ? true : !!readOnlyFields[`dataElement_${psde.dataElement.id}`] }
 
                         getCurrentPosition={getCurrentPosition}
 
                         formatCoordinatesForDHIS2={formatCoordinatesForDHIS2}
+
 
 
 
@@ -2218,9 +2345,9 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
   function FormPage() {
 
-    // Disable all debug panels (formerly controlled by state)
+    // Enable debug panel to show data element counts
 
-    const showDebugPanel = false;
+    const showDebugPanel = true;
 
     
 
@@ -2380,7 +2507,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
     //   }
     // }, [formData]);
 
-    // Function to filter out unwanted sections - DISABLED FOR DEBUGGING
+    // Function to filter out unwanted sections (including those starting with "Pre")
 
     const filterUnwantedSections = (sections) => {
 
@@ -2388,47 +2515,38 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
       
 
-      // DISABLED: Return all sections for debugging
+      // Filter out unwanted sections including those starting with "Pre"
 
-      console.log('🔍 filterUnwantedSections: Returning ALL sections (filtering disabled)');
-
-      console.log('📋 Available sections:', sections.map(s => s.displayName));
-
-      
-
-      // ADDITIONAL DEBUGGING: Log data elements count for each section
-
-      sections.forEach(section => {
-
-        console.log(`🔍 Section "${section.displayName}": ${section.dataElements?.length || 0} data elements`);
-
-        if (section.dataElements && section.dataElements.length > 0) {
-
-          console.log(`   Data Elements: ${section.dataElements.map(de => de.dataElement.displayName).join(', ')}`);
-
+      const filtered = sections.filter(section => {
+        const displayName = section.displayName || '';
+        
+        // Check if section starts with "Pre" (case-insensitive)
+        if (displayName.toLowerCase().startsWith('pre')) {
+          console.log(`🚫 Filtering out section starting with "Pre": "${displayName}"`);
+          return false;
         }
-
+        
+        // Also filter out these specific sections
+        if (displayName === "Final_Inspection_Event" || 
+            displayName === "Preliminary-Report" ||
+            displayName === "Inspectors Details") {
+          console.log(`🚫 Filtering out specific section: "${displayName}"`);
+          return false;
+        }
+        
+        return true;
       });
 
-      
+      console.log('🔍 filterUnwantedSections: Filtered sections:', {
+        original: sections.length,
+        filtered: filtered.length,
+        removed: sections.length - filtered.length,
+        removedSections: sections
+          .filter(s => !filtered.includes(s))
+          .map(s => s.displayName)
+      });
 
-      return sections;
-
-      
-
-      // ORIGINAL FILTERING LOGIC (commented out):
-
-      // return sections.filter(section => 
-
-      //   section.displayName !== "Final_Inspection_Event" && 
-
-      //   section.displayName !== "Preliminary-Report" &&
-
-      //   section.displayName !== "Inspectors Details" &&
-
-      //   !section.displayName.startsWith("Pre-Inspection:")
-
-      // );
+      return filtered;
 
     };
 
@@ -5389,8 +5507,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     };
 
-
-
     return (
 
       <div className="screen">
@@ -5570,11 +5686,29 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                <div style={{ marginTop: '12px' }}>
                  <strong>Available Sections:</strong>
                  <div style={{ backgroundColor: '#fff', padding: '8px', borderRadius: '4px', marginTop: '4px', maxHeight: '100px', overflow: 'auto' }}>
-                   {serviceSections?.map((section, index) => (
+                                     {serviceSections?.map((section, index) => {
+                   const total = section?.dataElements?.length || 0;
+                   const shown = (section?.dataElements || []).filter(psde => {
+                     if (!psde?.dataElement) return false;
+                     const displayName = psde.dataElement.displayName;
+                     
+                     // Check if this is a Comments element
+                     const isComment = displayName.endsWith(' Comments');
+                     
+                     if (isComment) {
+                       // For Comments, check if main element passes
+                       const mainElementName = displayName.replace(/\sComments$/,'');
+                       return shouldShowDataElementForService(mainElementName, facilityType);
+                     }
+                     
+                     return shouldShowDataElementForService(displayName, facilityType);
+                   }).length;
+                   return (
                      <div key={index} style={{ fontSize: '11px', padding: '2px 0' }}>
-                       {index + 1}. "{section.displayName}" (ID: {section.id})
+                       {index + 1}. {section.displayName} (ID: {section.id}) — {shown}/{total} shown
                      </div>
-                   )) || 'No sections loaded'}
+                   );
+                 }) || 'No sections loaded'}
                  </div>
                </div>
              </div>
