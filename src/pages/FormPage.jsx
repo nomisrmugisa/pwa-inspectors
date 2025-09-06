@@ -18,6 +18,8 @@ import {
 
 import { shouldShowDataElementForService } from '../config/facilityServiceFilters';
 
+import CustomSignatureCanvas from '../components/CustomSignatureCanvas';
+
 import './FormPage.css'; // Import FormPage specific styles
 
 
@@ -3434,6 +3436,8 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     const [fieldComments, setFieldComments] = useState({});
 
+    const [intervieweeSignature, setIntervieweeSignature] = useState(null);
+
     // Handle comment changes for data elements
     const handleCommentChange = (dataElementId, comment) => {
       setFieldComments(prev => {
@@ -3516,6 +3520,12 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
         }
       }
     }, [formData, configuration]);
+
+    // Handle signature changes
+    const handleSignatureChange = (signatureDataURL) => {
+      setIntervieweeSignature(signatureDataURL);
+      console.log('📝 Signature captured:', signatureDataURL ? 'Yes' : 'No');
+    };
 
     // Debug panel removed - no longer needed
 
@@ -5144,7 +5154,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
       e.preventDefault();
 
-
+      // Check if signature is provided
+      if (!intervieweeSignature) {
+        showToast('Please provide the interviewee signature before submitting the inspection.', 'error');
+        return;
+      }
 
       // Create payload data to show in dialog
       // Always ensure we have a proper DHIS2 event ID
@@ -5195,6 +5209,16 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
           });
         }
       });
+
+      // Add signature to payload if provided
+      if (intervieweeSignature) {
+        const SIGNATURE_DATA_ELEMENT_ID = "FCdfyqKxzx6";
+        eventData.dataValues.push({
+          dataElement: SIGNATURE_DATA_ELEMENT_ID,
+          value: intervieweeSignature
+        });
+        console.log('📝 Added signature to payload for data element:', SIGNATURE_DATA_ELEMENT_ID);
+      }
 
       // Clean up event data - remove any undefined or null values
       Object.keys(eventData).forEach(key => {
@@ -6854,59 +6878,82 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
       <div className="form-footer">
 
-        {/* Confirmation Checkbox */}
-        <div className="confirmation-checkbox" style={{
+        {/* Signature Capture Section */}
+        <div style={{
           gridColumn: '1 / -1',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '8px',
-          padding: '12px',
-          background: 'var(--md-surface-variant)',
-          borderRadius: '8px',
-          marginBottom: '16px'
+          padding: '20px',
+          backgroundColor: '#f8f9fa',
+          border: '2px solid #e9ecef',
+          borderRadius: '12px',
+          marginBottom: '20px'
         }}>
-          <input
-            type="checkbox"
-            id="confirmation-checkbox"
-            checked={isConfirmed}
-            onChange={(e) => setIsConfirmed(e.target.checked)}
-            style={{ width: '18px', height: '18px' }}
+          <CustomSignatureCanvas
+            onSignatureChange={handleSignatureChange}
+            existingSignature={intervieweeSignature}
+            disabled={false}
           />
-          <label htmlFor="confirmation-checkbox" style={{ 
-            margin: 0, 
-            fontSize: '0.9rem',
-            color: 'var(--md-on-surface-variant)',
-            cursor: 'pointer'
-          }}>
-            I confirm that I have completed the inspection and reviewed all information
-          </label>
-        </div>
 
-        {/* Submit and Save buttons - only show when confirmed */}
-        {isConfirmed && (
-          <>
-            <button
-              type="button"
-              onClick={handleSubmit}
-              className="btn btn-primary"
-              disabled={isSubmitting}
-              title="Submit inspection form"
-            >
-              {isSubmitting ? 'Submitting...' : 'Submit Inspection'}
-            </button>
-            
-            <button
-              type="button"
-              onClick={handleSaveDraft}
-              className="btn btn-secondary"
-              disabled={isSubmitting || (!isOnline && !isDraft)}
-              title="Save as draft"
-            >
-              {isSubmitting ? 'Saving...' : 'Save Draft'}
-            </button>
-          </>
-        )}
+          {/* Confirmation Checkbox - show after signature */}
+          {intervieweeSignature && (
+            <div className="confirmation-checkbox" style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              padding: '16px',
+              background: 'var(--md-surface-variant)',
+              borderRadius: '8px',
+              marginTop: '20px',
+              marginBottom: '20px'
+            }}>
+              <input
+                type="checkbox"
+                id="confirmation-checkbox"
+                checked={isConfirmed}
+                onChange={(e) => setIsConfirmed(e.target.checked)}
+                style={{ width: '18px', height: '18px' }}
+              />
+              <label htmlFor="confirmation-checkbox" style={{
+                margin: 0,
+                fontSize: '0.9rem',
+                color: 'var(--md-on-surface-variant)',
+                cursor: 'pointer'
+              }}>
+                I confirm that I have completed the inspection and reviewed all information
+              </label>
+            </div>
+          )}
+
+          {/* Submit and Save buttons - show after confirmation */}
+          {isConfirmed && (
+            <div style={{
+              display: 'flex',
+              gap: '12px',
+              justifyContent: 'center',
+              marginTop: '16px'
+            }}>
+              <button
+                type="button"
+                onClick={handleSubmit}
+                className="btn btn-primary"
+                disabled={isSubmitting}
+                title="Submit inspection form"
+              >
+                {isSubmitting ? 'Submitting...' : 'Submit Inspection'}
+              </button>
+
+              <button
+                type="button"
+                onClick={handleSaveDraft}
+                className="btn btn-secondary"
+                disabled={isSubmitting || (!isOnline && !isDraft)}
+                title="Save as draft"
+              >
+                {isSubmitting ? 'Saving...' : 'Save Draft'}
+              </button>
+            </div>
+          )}
+        </div>
 
 
 

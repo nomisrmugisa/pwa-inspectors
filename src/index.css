@@ -2113,6 +2113,80 @@ body {
     }
 }
 
+/* Signature Capture Styles */
+.signature-capture-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.signature-canvas-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.signature-canvas {
+    display: block;
+    touch-action: none;
+    border: 1px dashed #ced4da;
+    border-radius: 4px;
+    cursor: crosshair;
+    width: 500px !important;
+    height: 200px !important;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+.signature-header h4 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #495057;
+    font-weight: 600;
+}
+
+.signature-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+}
+
+.signature-status {
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.signature-preview {
+    text-align: center;
+}
+
+.signature-preview img {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Mobile responsive adjustments for signature */
+@media (max-width: 768px) {
+    .signature-canvas-container {
+        padding: 8px;
+    }
+
+    .signature-actions {
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+    }
+
+    .signature-status {
+        text-align: center;
+        justify-content: center;
+    }
+}
+
 /* Filled Field Highlighting */
 .form-control.filled,
 .form-select.filled,
