@@ -71,16 +71,20 @@ export function LoginPage() {
   };
 
   return (
-    <div className="login-page">
-      <div className="login-container">
-        <div className="login-form">
-          <div className="login-header">
-            <div className="app-logo">
-              <LocalHospitalIcon style={{ fontSize: '48px', color: '#0369a1' }} />
-            </div>
-            <h1>Inspections</h1>
-            <p>Mobile data capture for facility inspections</p>
-          </div>
+    <>
+      <link rel="stylesheet" href="/auth-look.css" />
+      <div className="auth-page">
+        <div className="auth-container">
+          <div className="form-column">
+            <div className="auth-card">
+              <div className="auth-card-body">
+                <div className="login-header">
+                  <div className="app-logo">
+                    <LocalHospitalIcon style={{ fontSize: '48px', color: '#0369a1' }} />
+                  </div>
+                  <h2 className="auth-title">Inspections</h2>
+                  <p className="auth-subtitle">Mobile data capture for facility inspections</p>
+                </div>
           
           <form onSubmit={handleSubmit}>
             <div className="form-group">
@@ -136,7 +140,7 @@ export function LoginPage() {
             
             <button 
               type="submit" 
-              className="btn btn-primary btn-block"
+              className="auth-btn"
               disabled={loading}
             >
               {loading ? (
@@ -151,28 +155,29 @@ export function LoginPage() {
           </form>
           
           {error && (
-            <div className="error-message">
+            <div className="auth-helper">
               <CheckCircleIcon style={{ fontSize: '16px', marginRight: '8px' }} />
               {error}
             </div>
           )}
-        </div>
-        
-        <div className="login-footer">
-          <p>
-            <LocalHospitalIcon style={{ fontSize: '16px', marginRight: '8px', verticalAlign: 'middle' }} />
-            Built for QIMS program
-          </p>
-          <p>
-            <AssignmentIcon style={{ fontSize: '16px', marginRight: '8px', verticalAlign: 'middle' }} />
-            Automated inspection data collection
-          </p>
-          <p>
-            <SignalCellularConnectedNoInternet0BarIcon style={{ fontSize: '16px', marginRight: '8px', verticalAlign: 'middle' }} />
-            Works offline with automatic sync
-          </p>
+
+                <p className="auth-note">
+                  <LocalHospitalIcon style={{ fontSize: '16px', marginRight: '8px', verticalAlign: 'middle' }} />
+                  Built for QIMS program
+                </p>
+                <p className="auth-note">
+                  <AssignmentIcon style={{ fontSize: '16px', marginRight: '8px', verticalAlign: 'middle' }} />
+                  Automated inspection data collection
+                </p>
+                <p className="auth-note">
+                  <SignalCellularConnectedNoInternet0BarIcon style={{ fontSize: '16px', marginRight: '8px', verticalAlign: 'middle' }} />
+                  Works offline with automatic sync
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 } 

@@ -19,6 +19,16 @@ export function DebugInfo() {
     currentTei: null
   });
 
+  // Collapsed by default; remember user preference
+  const [isOpen, setIsOpen] = useState(() => {
+    try {
+      const saved = localStorage.getItem('debugInfoOpen');
+      return saved ? saved === 'true' : false;
+    } catch {
+      return false;
+    }
+  });
+
   // Listen for TEI-related console logs to capture debug info
   useEffect(() => {
     const originalLog = console.log;
@@ -95,7 +105,14 @@ export function DebugInfo() {
 
   return (
     <div className="debug-info">
-      <details>
+      <details
+        open={isOpen}
+        onToggle={(e) => {
+          const open = e.currentTarget.open;
+          setIsOpen(open);
+          try { localStorage.setItem('debugInfoOpen', String(open)); } catch {}
+        }}
+      >
         <summary>Debug Info</summary>
         <div className="debug-content">
           <div className="debug-section">

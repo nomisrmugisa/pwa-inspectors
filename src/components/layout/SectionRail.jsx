@@ -3,12 +3,13 @@ import { List, ListItemButton, ListItemText, ListItemIcon, Badge } from '@mui/ma
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 
-export function SectionRail({ sections = [], currentIndex = 0, onSelect = () => {}, getSectionStatus = () => ({ completed: false, errors: 0 }) }) {
+export function SectionRail({ sections = [], currentIndex = 0, onSelect = () => {}, getSectionStatus = () => ({ completed: false, errors: 0 }), sectionErrors = {} }) {
   return (
     <div style={{ position: 'sticky', top: 0 }}>
       <List dense>
         {sections.map((section, index) => {
           const { completed, errors } = getSectionStatus(section, index) || { completed: false, errors: 0 };
+          const errorCount = sectionErrors[index] ?? errors;
           return (
             <ListItemButton
               key={section.id || index}
@@ -16,7 +17,7 @@ export function SectionRail({ sections = [], currentIndex = 0, onSelect = () => 
               onClick={() => onSelect(index)}
             >
               <ListItemIcon>
-                <Badge color={errors > 0 ? 'error' : 'default'} badgeContent={errors || null} overlap="circular">
+                <Badge color={errorCount > 0 ? 'error' : 'default'} badgeContent={errorCount || null} overlap="circular">
                   {completed ? (
                     <CheckCircleIcon color="success" fontSize="small" />
                   ) : (

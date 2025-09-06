@@ -4,11 +4,15 @@ import { Grid, Paper, Box, Typography, Divider } from '@mui/material';
 import { SectionRail } from '../components/layout/SectionRail';
 import { StepperNav } from '../components/nav/StepperNav';
 import { Field } from '../components/form/Field';
+import { ErrorSummary } from '../components/form/ErrorSummary';
+import { useAltFormValidation } from '../hooks/useAltFormValidation';
 
 export function AltFormPage() {
   const { configuration } = useApp();
 
-  const sections = useMemo(() => configuration?.sections || [], [configuration]);
+  const sections = useMemo(() => (
+    configuration?.programStage?.sections || configuration?.sections || []
+  ), [configuration]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [formData, setFormData] = useState({});
 
@@ -25,7 +29,7 @@ export function AltFormPage() {
   }, [formData]);
 
   const getSectionStatus = useCallback((section) => {
-    const p = section.programStageDataElements || [];
+    const p = section.dataElements || section.programStageDataElements || [];
     let filled = 0;
     p.forEach((psde) => {
       const key = `de_${psde.dataElement.id}`;
@@ -34,12 +38,14 @@ export function AltFormPage() {
     return { completed: p.length > 0 && filled === p.length, errors: 0 };
   }, [formData]);
 
-  const current = sections[currentIndex] || { programStageDataElements: [] };
-  const fields = current.programStageDataElements || [];
+  const current = sections[currentIndex] || { dataElements: [] };
+  const fields = current.dataElements || current.programStageDataElements || [];
 
   const handleChange = (psdeId, val) => {
     setFormData((prev) => ({ ...prev, [`de_${psdeId}`]: val }));
   };
+
+  const { fieldErrors, sectionErrors } = useAltFormValidation(sections, formData);
 
   return (
     <Box sx={{ p: 2 }}>
@@ -54,11 +60,13 @@ export function AltFormPage() {
               currentIndex={currentIndex}
               onSelect={setCurrentIndex}
               getSectionStatus={getSectionStatus}
+              sectionErrors={sectionErrors}
             />
           </Paper>
         </Grid>
         <Grid item xs={12} md={9}>
           <Paper variant="outlined" sx={{ p: 2 }}>
+            <ErrorSummary sections={sections} sectionErrors={sectionErrors} currentIndex={currentIndex} />
             <Typography variant="h6" gutterBottom>
               {current.displayName || current.name || 'Section'}
             </Typography>
@@ -70,6 +78,7 @@ export function AltFormPage() {
                     psde={psde}
                     value={formData[`de_${psde.dataElement.id}`]}
                     onChange={(v) => handleChange(psde.dataElement.id, v)}
+                    error={fieldErrors[`de_${psde.dataElement.id}`]}
                   />
                 </Grid>
               ))}

@@ -124,13 +124,28 @@ const enhancedServiceFieldDetection = (dataElement) => {
 
 // Form field component for individual data elements
 
-function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoading = false, readOnly = false, getCurrentPosition, formatCoordinatesForDHIS2, staticText }) {
+function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoading = false, readOnly = false, getCurrentPosition, formatCoordinatesForDHIS2, staticText, onCommentChange, comments = {} }) {
 
   const { dataElement } = psde;
 
   const fieldId = `dataElement_${dataElement.id}`;
 
-  
+  const [showCommentField, setShowCommentField] = useState(false);
+  const [commentText, setCommentText] = useState(comments[dataElement.id] || '');
+
+  // Helper function to determine if field is filled
+  const isFieldFilled = (fieldValue) => {
+    if (fieldValue === null || fieldValue === undefined) return false;
+    if (typeof fieldValue === 'string') return fieldValue.trim().length > 0;
+    if (typeof fieldValue === 'boolean') return true; // Boolean fields are always considered filled when they have a value
+    if (Array.isArray(fieldValue)) return fieldValue.length > 0;
+    return fieldValue !== '';
+  };
+
+  // Get filled class for styling
+  const getFilledClass = () => {
+    return isFieldFilled(value) ? 'filled' : '';
+  };
 
   // ALWAYS log when FormField is rendered
 
@@ -398,7 +413,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
           onChange={onChange}
 
-          className={`form-select ${error ? 'error' : ''}`}
+          className={`form-select ${error ? 'error' : ''} ${getFilledClass()}`}
 
           disabled={readOnly || isLoading}
 
@@ -528,13 +543,13 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
           onChange={onChange}
 
-          className={`form-select ${error ? 'error' : ''}`}
+          className={`form-select ${error ? 'error' : ''} ${getFilledClass()}`}
 
           disabled={readOnly}
 
         >
 
-          <option value="">Select {dataElement.displayName}</option>
+          <option value="">Select an option</option>
 
           {dataElement.optionSet.options
 
@@ -600,9 +615,9 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
             onChange={onChange}
 
-            placeholder={`Enter ${dataElement.displayName}`}
+            placeholder="Enter text"
 
-            className={`form-input ${error ? 'error' : ''}`}
+            className={`form-input ${error ? 'error' : ''} ${getFilledClass()}`}
 
             readOnly={readOnly}
 
@@ -640,9 +655,9 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
             onChange={onChange}
 
-            placeholder={`Enter ${dataElement.displayName}`}
+            placeholder="Enter details"
 
-            className={`form-textarea ${error ? 'error' : ''}`}
+            className={`form-textarea ${error ? 'error' : ''} ${getFilledClass()}`}
 
             rows={4}
 
@@ -694,9 +709,9 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
             onChange={onChange}
 
-            placeholder={`Enter ${dataElement.displayName}`}
+            placeholder="Enter number"
 
-            className={`form-input ${error ? 'error' : ''}`}
+            className={`form-input ${error ? 'error' : ''} ${getFilledClass()}`}
 
             step={dataElement.valueType.includes('INTEGER') ? '1' : 'any'}
 
@@ -746,7 +761,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
             onChange={onChange}
 
-            className={`form-input ${error ? 'error' : ''}`}
+            className={`form-input ${error ? 'error' : ''} ${getFilledClass()}`}
 
             readOnly={readOnly}
 
@@ -786,7 +801,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
             onChange={onChange}
 
-            className={`form-input ${error ? 'error' : ''}`}
+            className={`form-input ${error ? 'error' : ''} ${getFilledClass()}`}
 
             readOnly={readOnly}
 
@@ -818,7 +833,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
         return (
 
-          <div className="checkbox-group">
+          <div className={`checkbox-group boolean-field ${getFilledClass()}`}>
 
             <label className="checkbox-label">
 
@@ -876,9 +891,9 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
             onChange={onChange}
 
-            placeholder={`Enter ${dataElement.displayName}`}
+            placeholder="Enter date"
 
-            className={`form-input ${error ? 'error' : ''}`}
+            className={`form-input ${error ? 'error' : ''} ${getFilledClass()}`}
 
             readOnly={readOnly}
 
@@ -918,9 +933,9 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
             onChange={onChange}
 
-            placeholder={`Enter ${dataElement.displayName}`}
+            placeholder="Enter time"
 
-            className={`form-input ${error ? 'error' : ''}`}
+            className={`form-input ${error ? 'error' : ''} ${getFilledClass()}`}
 
             readOnly={readOnly}
 
@@ -960,9 +975,9 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
             onChange={onChange}
 
-            placeholder={`Enter ${dataElement.displayName}`}
+            placeholder="Enter percentage"
 
-            className={`form-input ${error ? 'error' : ''}`}
+            className={`form-input ${error ? 'error' : ''} ${getFilledClass()}`}
 
             readOnly={readOnly}
 
@@ -1008,7 +1023,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
         return (
 
-          <div>
+          <div className={`coordinate-field ${getFilledClass()}`}>
 
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px' }}>
 
@@ -1068,7 +1083,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
                 placeholder="Enter coordinates (longitude,latitude)"
 
-                className={`form-input ${error ? 'error' : ''}`}
+                className={`form-input ${error ? 'error' : ''} ${getFilledClass()}`}
 
                 pattern="^\[-?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?),\s*-?([1-8]?\d(\.\d+)?|90(\.0+)?)\]$"
 
@@ -1152,9 +1167,9 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
             onChange={onChange}
 
-            placeholder={`Enter ${dataElement.displayName}`}
+            placeholder="Enter value"
 
-            className={`form-input ${error ? 'error' : ''}`}
+            className={`form-input ${error ? 'error' : ''} ${getFilledClass()}`}
 
             readOnly={readOnly}
 
@@ -1170,23 +1185,77 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
 
 
+  // Handle comment changes
+  const handleCommentChange = (newComment) => {
+    setCommentText(newComment);
+    if (onCommentChange) {
+      onCommentChange(dataElement.id, newComment);
+    }
+  };
+
+  // Handle comment toggle
+  const toggleCommentField = () => {
+    setShowCommentField(!showCommentField);
+  };
+
   return (
 
     <div className="form-field">
 
       {/* Test indicators removed */}
 
-      
 
-      <label htmlFor={fieldId} className="form-label">
 
-        {dataElement.displayName}
+      <div className="field-header">
+        <label htmlFor={fieldId} className="form-label">
+          {dataElement.displayName}
+        </label>
 
-        
-
-      </label>
+        {/* Comment Toggle Button */}
+        <button
+          type="button"
+          className={`comment-toggle-btn ${showCommentField ? 'active' : ''} ${commentText ? 'has-comment' : ''}`}
+          onClick={toggleCommentField}
+          title={commentText ? 'Edit comment' : 'Add comment'}
+        >
+          {commentText ? '💬' : '💭'}
+        </button>
+      </div>
 
       {renderField()}
+
+      {/* Comment Field */}
+      {showCommentField && (
+        <div className="comment-field-container">
+          <textarea
+            className="comment-field"
+            placeholder="Add your comment or observation..."
+            value={commentText}
+            onChange={(e) => handleCommentChange(e.target.value)}
+            rows={3}
+          />
+          <div className="comment-actions">
+            <button
+              type="button"
+              className="btn btn-sm btn-primary"
+              onClick={() => setShowCommentField(false)}
+            >
+              Save Comment
+            </button>
+            <button
+              type="button"
+              className="btn btn-sm btn-secondary"
+              onClick={() => {
+                setCommentText('');
+                handleCommentChange('');
+                setShowCommentField(false);
+              }}
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+      )}
 
       {error && <div className="field-error">{error}</div>}
 
@@ -1199,8 +1268,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
 
   // Section component for organizing form fields
-
-  function FormSection({ section, formData, onChange, errors, serviceSections, loadingServiceSections, readOnlyFields = {}, getCurrentPosition, formatCoordinatesForDHIS2, facilityClassifications = [], loadingFacilityClassifications = false, inspectionInfoConfirmed = false, setInspectionInfoConfirmed = () => {}, areAllInspectionFieldsComplete = () => false, showDebugPanel = false, getCurrentFacilityClassification = () => null, facilityType = null }) {
+  function FormSection({ section, formData, onChange, errors, serviceSections, loadingServiceSections, readOnlyFields = {}, getCurrentPosition, formatCoordinatesForDHIS2, facilityClassifications = [], loadingFacilityClassifications = false, inspectionInfoConfirmed = false, setInspectionInfoConfirmed = () => {}, areAllInspectionFieldsComplete = () => false, showDebugPanel = false, getCurrentFacilityClassification = () => null, facilityType = null, onCommentChange, comments = {} }) {
     console.log(`📝 Rendering FormSection: ${section.displayName}, Facility Type: ${facilityType}`);
     console.log(`🔍 SECTION FILTER DEBUG: Section="${section.displayName}", FacilityType="${facilityType}", HasDataElements=${!!section.dataElements}, DataElementsCount=${section.dataElements?.length || 0}`);
     console.log(`🔍 DETAILED SECTION DEBUG:`, {
@@ -1211,17 +1279,12 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       facilityTypeLength: facilityType?.length,
       dataElementsCount: section.dataElements?.length || 0
     });
+
     // Safety check - if section is undefined, return null
-
     if (!section) {
-
       console.warn('🚨 FormSection: section prop is undefined, returning null');
-
       return null;
-
     }
-
-
 
     // Pagination state for dataElements
 
@@ -1231,7 +1294,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
     
 
-    // Function to check if a field is a comment field
+    // Function to check if a field is a comment/remarks field (case-insensitive)
 
     const isCommentField = (dataElement) => {
 
@@ -1239,7 +1302,9 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
       const name = dataElement.displayName;
 
-      return name.endsWith(' Comments');
+      const commentSuffixRegex = /\s*(Comments?|Remarks?)\s*$/i;
+
+      return commentSuffixRegex.test(name);
 
     };
 
@@ -1269,15 +1334,15 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
         console.log(`🔎 Filtering Data Element: ${displayName}, Section: ${section.displayName}, Facility Type: ${facilityType}`);
         console.log(`🔍 EXACT VALUES: DataElement="${displayName}", Section="${section.displayName}", FacilityType="${facilityType}"`);
 
-        // Check if this is a Comments data element
-        const isComment = displayName.endsWith(' Comments');
+        // Check if this is a Comments/Remarks data element
+        const isComment = /\s*(Comments?|Remarks?)\s*$/i.test(displayName);
         
         if (isComment) {
-          // For Comments elements, check if the main element would pass the filter
-          // Extract main element name by removing " Comments" suffix
-          const mainElementName = displayName.replace(/\sComments$/,'');
+          // For Comments/Remarks elements, check if the main element would pass the filter
+          // Extract main element name by removing comment/remarks suffix
+          const mainElementName = displayName.replace(/\s*(Comments?|Remarks?)\s*$/i,'');
           
-          console.log(`💬 Comment element detected: "${displayName}" -> Main: "${mainElementName}"`);
+          console.log(`💬 Comment/Remarks element detected: "${displayName}" -> Main: "${mainElementName}"`);
           
           // Check if the main element passes the filter
           const mainElementPasses = shouldShowDataElementForService(
@@ -1286,7 +1351,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
           );
           
           if (!mainElementPasses) {
-            console.log(`🔍 Hiding comment element "${displayName}" because main element doesn't pass filter`);
+            console.log(`🔍 Hiding comment/remarks element "${displayName}" because main element doesn't pass filter`);
           }
           
           return mainElementPasses;
@@ -1356,20 +1421,20 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
               const displayName = psde.dataElement.displayName;
               console.log(`🔎 Async Filtering Data Element: ${displayName}, Section: ${section.displayName}, Facility Type: ${facilityType}`);
               
-              // Check if this is a Comments data element
-              const isComment = displayName.endsWith(' Comments');
+              // Check if this is a Comments/Remarks data element
+              const isComment = /\s*(Comments?|Remarks?)\s*$/i.test(displayName);
               
               if (isComment) {
-                // For Comments elements, check if the main element would pass the filter
-                const mainElementName = displayName.replace(/\sComments$/,'');
+                // For Comments/Remarks elements, check if the main element would pass the filter
+                const mainElementName = displayName.replace(/\s*(Comments?|Remarks?)\s*$/i,'');
                 
-                console.log(`💬 Async: Comment element detected: "${displayName}" -> Main: "${mainElementName}"`);
+                console.log(`💬 Async: Comment/Remarks element detected: "${displayName}" -> Main: "${mainElementName}"`);
                 
                 const mainElementPasses = await shouldShowDataElementForService(
                     mainElementName,
                     facilityType
                 );
-                console.log(`🔎 Async Filter Result for comment: ${displayName} -> ${mainElementPasses} (based on main element)`);
+                console.log(`🔎 Async Filter Result for comment/remarks: ${displayName} -> ${mainElementPasses} (based on main element)`);
                 return mainElementPasses;
               } else {
                 // For main elements, use the standard filter
@@ -1523,6 +1588,31 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
     
 
+    // Auto-scroll to section top helper function
+    const scrollToSectionTop = () => {
+      // Small delay to ensure page content has updated
+      setTimeout(() => {
+        const sectionElement = document.querySelector(`[data-section-id="${section.id}"]`);
+        if (sectionElement) {
+          sectionElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+            inline: 'nearest'
+          });
+        } else {
+          // Fallback: scroll to section header
+          const sectionHeader = document.querySelector('.section-header');
+          if (sectionHeader) {
+            sectionHeader.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start',
+              inline: 'nearest'
+            });
+          }
+        }
+      }, 100);
+    };
+
     // Navigation functions
 
     const goToNextPage = () => {
@@ -1530,30 +1620,33 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       if (currentPage < totalPages - 1) {
 
         setCurrentPage(prev => prev + 1);
+        scrollToSectionTop();
 
       }
 
     };
 
-    
+
 
     const goToPreviousPage = () => {
 
       if (currentPage > 0) {
 
         setCurrentPage(prev => prev - 1);
+        scrollToSectionTop();
 
       }
 
     };
 
-    
+
 
     const goToPage = (pageNumber) => {
 
       if (pageNumber >= 0 && pageNumber < totalPages) {
 
         setCurrentPage(pageNumber);
+        scrollToSectionTop();
 
       }
 
@@ -1699,19 +1792,24 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
     return (
 
-      <div className="form-section">
+      <div className="form-section" data-section-id={section.id}>
 
-        {/* Section Debug Panel */}
+        {/* Section Debug Panel - collapsed by default */}
+        {(
+          <details
+            open={false}
+            style={{ marginBottom: '8px' }}
+          >
+            <summary style={{ cursor: 'pointer', fontSize: '12px' }}>🔍 Section Debug: {section.displayName}</summary>
         <div style={{
           backgroundColor: '#e7f3ff',
           border: '1px solid #b3d9ff',
           borderRadius: '4px',
           padding: '8px',
-          marginBottom: '8px',
+              marginTop: '6px',
           fontSize: '11px',
           fontFamily: 'monospace'
         }}>
-          <strong>🔍 Section Debug:</strong> {section.displayName}<br/>
           <strong>Facility Type:</strong> {facilityType || 'null'} |
           <strong>Elements:</strong> {filteredDataElements.length}/{section.dataElements?.length || 0} |
           <strong>Page:</strong> {currentPage + 1}/{Math.ceil(filteredDataElements.length / baseFieldsPerPage)}
@@ -1757,6 +1855,8 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
             </div>
           )}
         </div>
+          </details>
+        )}
 
         <div className={`section-header ${isInspectionInfoSection || isInspectionTypeSection ? 'always-expanded-section' : 'collapsible-section'}`}>
 
@@ -1935,20 +2035,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
                     <div key={`field-container-${psde.dataElement.id}-${actualIndex}`}>
 
-                      {/* Data Element Debug Indicator */}
-                      <div style={{
-                        backgroundColor: '#d4edda',
-                        border: '1px solid #c3e6cb',
-                        borderRadius: '3px',
-                        padding: '2px 6px',
-                        fontSize: '10px',
-                        fontFamily: 'monospace',
-                        marginBottom: '4px',
-                        color: '#155724'
-                      }}>
-                        ✅ DE: {psde.dataElement.displayName.substring(0, 50)}{psde.dataElement.displayName.length > 50 ? '...' : ''}
-                      </div>
-
                       <FormField
 
                         key={`${psde.dataElement.id}-${actualIndex}`}
@@ -1986,8 +2072,9 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
                         formatCoordinatesForDHIS2={formatCoordinatesForDHIS2}
 
+                        onCommentChange={onCommentChange}
 
-
+                        comments={comments}
 
                       />
 
@@ -2053,11 +2140,43 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
                     </button>
 
-                    
+                    {/* Page Indicator */}
+                    <div className="page-indicator" style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      fontSize: '14px',
+                      color: '#495057',
+                      fontWeight: '500'
+                    }}>
+                      <span>Page {currentPage + 1} of {totalPages}</span>
 
+                      {/* Page dots for visual indication */}
+                      <div style={{ display: 'flex', gap: '4px' }}>
+                        {Array.from({ length: Math.min(totalPages, 5) }, (_, index) => {
+                          const pageIndex = totalPages <= 5 ? index :
+                            currentPage < 3 ? index :
+                            currentPage > totalPages - 3 ? totalPages - 5 + index :
+                            currentPage - 2 + index;
 
-
-                    
+                          return (
+                            <div
+                              key={pageIndex}
+                              style={{
+                                width: '8px',
+                                height: '8px',
+                                borderRadius: '50%',
+                                backgroundColor: pageIndex === currentPage ? '#007bff' : '#dee2e6',
+                                cursor: 'pointer',
+                                transition: 'background-color 0.2s'
+                              }}
+                              onClick={() => setCurrentPage(pageIndex)}
+                              title={`Go to page ${pageIndex + 1}`}
+                            />
+                          );
+                        })}
+                      </div>
+                    </div>
 
                     {/* Next Button */}
 
@@ -2095,7 +2214,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
                 
 
-                {/* Quick Page Navigation */}
+                {/* Quick Page Navigation - Fields summary removed */}
 
                 {totalPages > 5 && (
 
@@ -2321,7 +2440,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
     );
 
-  }
+  } // End of FormSection component
 
 
 
@@ -3256,6 +3375,12 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
               console.warn('⚠️ No facility type found in facilityData:', facilityData);
             }
 
+            // Store current facility ID for dashboard filtering
+            if (facilityData.facilityId) {
+              localStorage.setItem('lastSelectedFacility', facilityData.facilityId);
+              console.log('🏥 Stored facility ID for dashboard filtering:', facilityData.facilityId);
+            }
+
             // Also update form data if there's a facility classification field
             if (facilityData.type && configuration.programStage?.allDataElements) {
               const facilityClassificationElement = configuration.programStage.allDataElements.find(psde => {
@@ -3306,6 +3431,91 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
     const [readOnlyFields, setReadOnlyFields] = useState({});
 
     const [errors, setErrors] = useState({});
+
+    const [fieldComments, setFieldComments] = useState({});
+
+    // Handle comment changes for data elements
+    const handleCommentChange = (dataElementId, comment) => {
+      setFieldComments(prev => {
+        const updated = { ...prev };
+        if (comment && comment.trim()) {
+          updated[dataElementId] = comment.trim();
+        } else {
+          delete updated[dataElementId];
+        }
+
+        // Save comments to the designated Survey Comments data element
+        saveCommentsToDataElement(updated);
+
+        return updated;
+      });
+    };
+
+    // Save comments to the Survey Comments data element in JSON format
+    const saveCommentsToDataElement = (comments) => {
+      // Find the Survey Comments data element
+      // We'll look for any data element that might be used for comments
+      const surveyCommentsElement = findSurveyCommentsElement();
+
+      if (surveyCommentsElement && Object.keys(comments).length > 0) {
+        const commentsJson = JSON.stringify(comments);
+        console.log('💬 Saving comments to Survey Comments element:');
+        console.log('  📝 Original Object:', comments);
+        console.log('  📄 JSON String (with escapes):', commentsJson);
+        console.log('  🔍 Element ID:', surveyCommentsElement.id);
+        console.log('  ✅ Parsed back test:', JSON.parse(commentsJson));
+
+        // Update form data with the comments JSON
+        setFormData(prev => ({
+          ...prev,
+          [`dataElement_${surveyCommentsElement.id}`]: commentsJson
+        }));
+      }
+    };
+
+    // Find the Survey Comments data element - using specific ID
+    const findSurveyCommentsElement = () => {
+      if (!configuration?.programStage?.allDataElements) return null;
+
+      // Use the specific data element ID for storing comments
+      const COMMENTS_DATA_ELEMENT_ID = "EaIXCub2vjL";
+
+      const commentsElement = configuration.programStage.allDataElements.find(psde => {
+        return psde.dataElement.id === COMMENTS_DATA_ELEMENT_ID;
+      });
+
+      if (commentsElement) {
+        console.log('💬 Found Survey Comments data element:', {
+          id: commentsElement.dataElement.id,
+          displayName: commentsElement.dataElement.displayName
+        });
+      } else {
+        console.warn('⚠️ Survey Comments data element not found with ID:', COMMENTS_DATA_ELEMENT_ID);
+      }
+
+      return commentsElement;
+    };
+
+    // Load existing comments when form data changes
+    useEffect(() => {
+      const surveyCommentsElement = findSurveyCommentsElement();
+      if (surveyCommentsElement && formData) {
+        const commentsFieldKey = `dataElement_${surveyCommentsElement.id}`;
+        const commentsJson = formData[commentsFieldKey];
+
+        if (commentsJson && typeof commentsJson === 'string') {
+          try {
+            const parsedComments = JSON.parse(commentsJson);
+            if (typeof parsedComments === 'object' && parsedComments !== null) {
+              setFieldComments(parsedComments);
+              console.log('💬 Loaded existing comments:', parsedComments);
+            }
+          } catch (error) {
+            console.warn('Failed to parse existing comments:', error);
+          }
+        }
+      }
+    }, [formData, configuration]);
 
     // Debug panel removed - no longer needed
 
@@ -5631,24 +5841,17 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                    <form onSubmit={handleSubmit} className="inspection-form">
 
-             {/* UI Debug Panel - Temporary */}
-             <div className="ui-debug-panel" style={{
+             {/* UI Debug Panel - Temporary (collapsed) */}
+             <details className="ui-debug-panel" open={false} style={{ marginBottom: '20px' }}>
+               <summary style={{ cursor: 'pointer', color: '#856404', fontWeight: 600 }}>🐛 UI Debug Panel (Temporary)</summary>
+               <div style={{
                backgroundColor: '#fff3cd',
                border: '2px solid #ffeaa7',
                borderRadius: '8px',
                padding: '16px',
-               marginBottom: '20px',
+                 marginTop: '8px',
                fontFamily: 'monospace'
              }}>
-               <h5 style={{
-                 margin: '0 0 12px 0',
-                 color: '#856404',
-                 fontSize: '16px',
-                 fontWeight: '600'
-               }}>
-                 🐛 UI Debug Panel (Temporary)
-               </h5>
-
                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', fontSize: '12px' }}>
                  <div>
                    <strong>Facility Type State:</strong>
@@ -5714,6 +5917,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                  </div>
                </div>
              </div>
+             </details>
 
              {/* Facility Information Display - Always show */}
              <div className="facility-info-display">
@@ -6248,6 +6452,10 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                       facilityType={facilityType}
 
+                      onCommentChange={handleCommentChange}
+
+                      comments={fieldComments}
+
                      />
 
                    ))}
@@ -6377,6 +6585,10 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                           getCurrentFacilityClassification={getCurrentFacilityClassification}
 
                           facilityType={facilityType}
+
+                          onCommentChange={handleCommentChange}
+
+                          comments={fieldComments}
 
                         />
 
@@ -6812,52 +7024,68 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
             <div className="payload-content" style={{
               marginBottom: '24px'
             }}>
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: '16px'
-              }}>
-                <p style={{
+              {/* Collapsible payload section */}
+              <details style={{ marginBottom: '16px' }}>
+                <summary style={{
+                  cursor: 'pointer',
+                  padding: '12px',
+                  backgroundColor: '#f8f9fa',
+                  border: '1px solid #e9ecef',
+                  borderRadius: '4px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  fontSize: '14px',
                   color: '#495057',
-                  margin: 0,
-                  fontSize: '14px'
+                  userSelect: 'none'
                 }}>
-                  This is the data that will be submitted to DHIS2:
-                </p>
-                <button
-                  onClick={() => {
-                    navigator.clipboard.writeText(JSON.stringify(payloadData, null, 2));
-                    showToast('Payload copied to clipboard!', 'success');
-                  }}
-                  style={{
-                    padding: '4px 8px',
-                    border: '1px solid #007bff',
+                  <span>📄 This is the data that will be submitted to DHIS2 (click to expand)</span>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      navigator.clipboard.writeText(JSON.stringify(payloadData, null, 2));
+                      showToast('Payload copied to clipboard!', 'success');
+                    }}
+                    style={{
+                      padding: '4px 8px',
+                      border: '1px solid #007bff',
+                      backgroundColor: 'white',
+                      color: '#007bff',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontSize: '12px',
+                      marginLeft: '12px'
+                    }}
+                    title="Copy payload to clipboard"
+                  >
+                    📋 Copy
+                  </button>
+                </summary>
+                <div style={{
+                  padding: '16px',
+                  backgroundColor: '#f8f9fa',
+                  border: '1px solid #e9ecef',
+                  borderTop: 'none',
+                  borderRadius: '0 0 4px 4px'
+                }}>
+                  <pre style={{
                     backgroundColor: 'white',
-                    color: '#007bff',
+                    padding: '16px',
                     borderRadius: '4px',
-                    cursor: 'pointer',
-                    fontSize: '12px'
-                  }}
-                >
-                  📋 Copy
-                </button>
-              </div>
-
-              <pre style={{
-                backgroundColor: '#f8f9fa',
-                border: '1px solid #dee2e6',
-                borderRadius: '4px',
-                padding: '16px',
-                fontSize: '12px',
-                fontFamily: 'Monaco, Consolas, "Courier New", monospace',
-                overflow: 'auto',
-                maxHeight: '400px',
-                whiteSpace: 'pre-wrap',
-                wordBreak: 'break-word'
-              }}>
-                {JSON.stringify(payloadData, null, 2)}
-              </pre>
+                    border: '1px solid #e9ecef',
+                    fontSize: '12px',
+                    fontFamily: 'Monaco, Consolas, "Courier New", monospace',
+                    overflow: 'auto',
+                    maxHeight: '400px',
+                    margin: 0,
+                    whiteSpace: 'pre-wrap',
+                    wordBreak: 'break-word'
+                  }}>
+                    {JSON.stringify(payloadData, null, 2)}
+                  </pre>
+                </div>
+              </details>
             </div>
 
             <div className="payload-dialog-actions" style={{

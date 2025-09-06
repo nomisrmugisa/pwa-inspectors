@@ -1,10 +1,12 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useApp } from '../contexts/AppContext';
 import { useStorage } from '../hooks/useStorage';
+import { InspectionPreview } from '../components/InspectionPreview';
 
 export function HomePage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const {
     configuration,
     stats,
@@ -15,12 +17,32 @@ export function HomePage() {
     showToast,
     userAssignments
   } = useApp();
-  
+
   const storage = useStorage();
-  
+
   const [searchTerm, setSearchTerm] = useState('');
   const [events, setEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedFacilityId, setSelectedFacilityId] = useState(null);
+  const [previewEvent, setPreviewEvent] = useState(null);
+
+  // Get facility filter from URL parameters or localStorage
+  useEffect(() => {
+    const facilityId = searchParams.get('facility');
+    if (facilityId) {
+      setSelectedFacilityId(facilityId);
+      console.log('🏥 Dashboard filtering by facility:', facilityId);
+      // Store in localStorage for persistence
+      localStorage.setItem('lastSelectedFacility', facilityId);
+    } else {
+      // Try to get from localStorage if no URL parameter
+      const lastFacility = localStorage.getItem('lastSelectedFacility');
+      if (lastFacility) {
+        setSelectedFacilityId(lastFacility);
+        console.log('🏥 Dashboard using last selected facility from localStorage:', lastFacility);
+      }
+    }
+  }, [searchParams]);
 
   // Load events from storage
   useEffect(() => {
@@ -42,24 +64,33 @@ export function HomePage() {
     loadEvents();
   }, [storage.isReady, stats]); // Reload when stats change (after sync)
 
-  // Filter events based on search term
+  // Filter events based on search term and selected facility
   const filteredEvents = useMemo(() => {
-    if (!searchTerm.trim()) {
-      return events;
+    let filtered = events;
+
+    // First filter by selected facility if specified
+    if (selectedFacilityId) {
+      filtered = filtered.filter(event => event.orgUnit === selectedFacilityId);
+      console.log(`🏥 Filtered ${events.length} events to ${filtered.length} for facility: ${selectedFacilityId}`);
     }
-    
-    const search = searchTerm.toLowerCase();
-    return events.filter(event => {
-      const eventDate = new Date(event.eventDate).toLocaleDateString().toLowerCase();
-      const orgUnitName = configuration?.organisationUnits?.find(
-        ou => ou.id === event.orgUnit
-      )?.displayName?.toLowerCase() || '';
-      
-      return eventDate.includes(search) || 
-             orgUnitName.includes(search) ||
-             (event.status || event.syncStatus || '').toLowerCase().includes(search);
-    });
-  }, [events, searchTerm, configuration]);
+
+    // Then filter by search term if provided
+    if (searchTerm.trim()) {
+      const search = searchTerm.toLowerCase();
+      filtered = filtered.filter(event => {
+        const eventDate = new Date(event.eventDate).toLocaleDateString().toLowerCase();
+        const orgUnitName = configuration?.organisationUnits?.find(
+          ou => ou.id === event.orgUnit
+        )?.displayName?.toLowerCase() || '';
+
+        return eventDate.includes(search) ||
+               orgUnitName.includes(search) ||
+               (event.status || event.syncStatus || '').toLowerCase().includes(search);
+      });
+    }
+
+    return filtered;
+  }, [events, searchTerm, selectedFacilityId, configuration]);
 
 
   const handleNewForm = () => {
@@ -287,14 +318,105 @@ export function HomePage() {
         <div className="section-header">
           <h3>Recent Inspections</h3>
           <div className="search-container">
-            <input 
-              type="text" 
+            <input
+              type="text"
               placeholder="Search inspections..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="search-input"
             />
             <span className="search-icon">[S]</span>
+          </div>
+        </div>
+
+        {/* Facility Filter Display and Selector */}
+        <div className="facility-filter-section" style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginBottom: '16px',
+          padding: '12px',
+          backgroundColor: '#f8f9fa',
+          borderRadius: '8px',
+          border: '1px solid #dee2e6'
+        }}>
+          <div className="facility-filter-info">
+            {selectedFacilityId ? (
+              <div className="current-facility-filter" style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '6px 12px',
+                backgroundColor: '#e3f2fd',
+                border: '1px solid #2196f3',
+                borderRadius: '20px',
+                fontSize: '14px',
+                color: '#1976d2'
+              }}>
+                🏥 Showing inspections for: <strong>{(() => {
+                  const facility = userAssignments?.find(a => a.facility.id === selectedFacilityId);
+                  return facility?.facility.displayName || facility?.facility.name || selectedFacilityId;
+                })()}</strong>
+                <button
+                  onClick={() => {
+                    setSelectedFacilityId(null);
+                    navigate('/home');
+                  }}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#1976d2',
+                    cursor: 'pointer',
+                    padding: '2px 6px',
+                    fontSize: '16px',
+                    borderRadius: '50%',
+                    marginLeft: '4px'
+                  }}
+                  title="Show all facilities"
+                >
+                  ×
+                </button>
+              </div>
+            ) : (
+              <div style={{ fontSize: '14px', color: '#6c757d' }}>
+                📊 Showing inspections from all facilities
+              </div>
+            )}
+          </div>
+
+          <div className="facility-selector-container">
+            <label style={{ fontSize: '12px', color: '#6c757d', marginRight: '8px' }}>
+              Filter by facility:
+            </label>
+            <select
+              value={selectedFacilityId || ''}
+              onChange={(e) => {
+                const facilityId = e.target.value;
+                if (facilityId) {
+                  setSelectedFacilityId(facilityId);
+                  navigate(`/home?facility=${facilityId}`);
+                } else {
+                  setSelectedFacilityId(null);
+                  navigate('/home');
+                }
+              }}
+              className="facility-selector"
+              style={{
+                padding: '6px 12px',
+                border: '1px solid #ced4da',
+                borderRadius: '4px',
+                fontSize: '14px',
+                backgroundColor: 'white',
+                minWidth: '200px'
+              }}
+            >
+              <option value="">All Facilities</option>
+              {userAssignments?.map(assignment => (
+                <option key={assignment.facility.id} value={assignment.facility.id}>
+                  {assignment.facility.displayName || assignment.facility.name}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
         
@@ -391,6 +513,20 @@ export function HomePage() {
                   </div>
                   
                   <div className="form-actions">
+                    {/* Preview Button - only show if event has data */}
+                    {event.dataValues && event.dataValues.length > 0 && (
+                      <button
+                        className="btn btn-primary btn-sm preview-btn"
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent triggering the edit form
+                          setPreviewEvent(event);
+                        }}
+                        title="Preview inspection data by sections"
+                      >
+                        📋 Preview
+                      </button>
+                    )}
+
                     {(event.status === 'error' || event.syncStatus === 'error') && (
                       <button
                         className="btn btn-secondary btn-sm retry-btn"
@@ -424,6 +560,14 @@ export function HomePage() {
           )}
         </div>
       </div>
+
+      {/* Inspection Preview Modal */}
+      {previewEvent && (
+        <InspectionPreview
+          event={previewEvent}
+          onClose={() => setPreviewEvent(null)}
+        />
+      )}
     </div>
   );
 }

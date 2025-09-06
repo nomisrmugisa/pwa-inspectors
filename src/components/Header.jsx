@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { useApp } from '../contexts/AppContext';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import './Header.css';
 
 export function Header() {
-  const { 
-    isOnline, 
-    logout, 
-    syncEvents, 
-    loading, 
+  const navigate = useNavigate();
+  const {
+    isOnline,
+    logout,
+    syncEvents,
+    loading,
     syncInProgress,
     stats,
     user,
@@ -97,9 +98,28 @@ export function Header() {
               Inspections
             </Link>
 
-            <Link to="/home" className="nav-link" style={{ color: '#ffffff', textDecoration: 'none', marginRight: '20px' }}>
+            <button
+              onClick={() => {
+                const lastFacility = localStorage.getItem('lastSelectedFacility');
+                const dashboardUrl = lastFacility ? `/home?facility=${lastFacility}` : '/home';
+                navigate(dashboardUrl);
+              }}
+              className="nav-link"
+              style={{
+                color: '#ffffff',
+                textDecoration: 'none',
+                marginRight: '20px',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: 'inherit',
+                fontFamily: 'inherit'
+              }}
+            >
               Dashboard
-            </Link>
+            </button>
+
+
           </div>
           
           <div className="sync-info" style={{ color: '#ffffff' }}>
