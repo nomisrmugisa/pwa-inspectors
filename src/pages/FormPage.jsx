@@ -2324,9 +2324,9 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
             {isInspectionTypeSection && areAllInspectionFieldsComplete && areAllInspectionFieldsComplete() && (
 
-              <div className="form-section" style={{ 
+              <div className="form-section" data-inspection-type="true" style={{
 
-                backgroundColor: '#f8f9fa', 
+                backgroundColor: '#f8f9fa',
 
                 border: '2px solid #28a745',
 
@@ -3564,6 +3564,50 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
     // State for inspection information confirmation
 
     const [inspectionInfoConfirmed, setInspectionInfoConfirmed] = useState(false);
+
+    // Scroll to first section after inspection info confirmation
+    useEffect(() => {
+      if (inspectionInfoConfirmed) {
+        // Small delay to ensure DOM is updated with new sections
+        setTimeout(() => {
+          // Try to find the confirmation status message first (most reliable)
+          const statusMessage = document.querySelector('[data-confirmation-status="true"]');
+
+          if (statusMessage) {
+            statusMessage.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start',
+              inline: 'nearest'
+            });
+            console.log('📍 Scrolled to confirmation status message after inspection confirmation');
+          } else {
+            // Fallback: try to find the first form section that's not an inspection type section
+            const allSections = document.querySelectorAll('.form-section');
+            let targetSection = null;
+
+            for (const section of allSections) {
+              // Skip inspection type sections and find the first regular section
+              if (!section.hasAttribute('data-inspection-type') &&
+                  !section.querySelector('input[type="checkbox"]')) {
+                targetSection = section;
+                break;
+              }
+            }
+
+            if (targetSection) {
+              targetSection.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+                inline: 'nearest'
+              });
+              console.log('📍 Scrolled to first form section after inspection confirmation');
+            } else {
+              console.log('📍 No suitable scroll target found after inspection confirmation');
+            }
+          }
+        }, 500); // 500ms delay to ensure sections are fully rendered
+      }
+    }, [inspectionInfoConfirmed]);
 
     // State for form submission confirmation
 
@@ -6494,7 +6538,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                    {/* Status message */}
 
-                   <div className="form-section" style={{
+                   <div className="form-section" data-confirmation-status="true" style={{
 
                      backgroundColor: '#d4edda',
 
