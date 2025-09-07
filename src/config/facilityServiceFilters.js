@@ -20,6 +20,7 @@ import Radiology from './radiology.js';
 import clinic from './clinic.js';
 
 const facilityServiceFilters = {
+    // Original mappings
     'Gynae Clinics': GynaeClinics,
     'Laboratory': Laboratory,
     'Psychology clinic': Psychologyclinic,
@@ -31,6 +32,18 @@ const facilityServiceFilters = {
     'Potrait clinic': Potraitclinic,
     'Radiology': Radiology,
     'clinic': clinic,
+
+    // Add mappings for service names with "Service " prefix (from dataStore)
+    'Service Gynae Clinics': GynaeClinics,
+    'Service Laboratory': Laboratory,
+    'Service Psychology clinic': Psychologyclinic,
+    'Service Eye (opthalmologyoptometry  optician) Clinics': EyeopthalmologyoptometryopticianClinics,
+    'Service physiotheraphy': physiotheraphy,
+    'Service dental clinic': dentalclinic,
+    'Service ENT clinic': ENTclinic,
+    'Service Rehabilitation Centre': RehabilitationCentre,
+    'Service Potrait clinic': Potraitclinic,
+    'Service Radiology': Radiology,
 };
 
 export function shouldShowDataElementForService(dataElementName, selectedService) {

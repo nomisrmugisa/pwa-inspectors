@@ -1336,6 +1336,13 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
         console.log(`🔎 Filtering Data Element: ${displayName}, Section: ${section.displayName}, Facility Type: ${facilityType}`);
         console.log(`🔍 EXACT VALUES: DataElement="${displayName}", Section="${section.displayName}", FacilityType="${facilityType}"`);
 
+        // Hide specialisation/facility classification fields from users (they're handled by manual selector)
+        const isSpecialisationField = /specialisation|facility classification|facility type/i.test(displayName);
+        if (isSpecialisationField) {
+          console.log(`🚫 Hiding specialisation field from user: ${displayName}`);
+          return false; // Hide these fields from users
+        }
+
         // Check if this is a Comments/Remarks data element
         const isComment = /\s*(Comments?|Remarks?)\s*$/i.test(displayName);
         
@@ -1422,7 +1429,14 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
               const displayName = psde.dataElement.displayName;
               console.log(`🔎 Async Filtering Data Element: ${displayName}, Section: ${section.displayName}, Facility Type: ${facilityType}`);
-              
+
+              // Hide specialisation/facility classification fields from users (they're handled by manual selector)
+              const isSpecialisationField = /specialisation|facility classification|facility type/i.test(displayName);
+              if (isSpecialisationField) {
+                console.log(`🚫 Async: Hiding specialisation field from user: ${displayName}`);
+                return false; // Hide these fields from users
+              }
+
               // Check if this is a Comments/Remarks data element
               const isComment = /\s*(Comments?|Remarks?)\s*$/i.test(displayName);
               
@@ -2515,8 +2529,33 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
     // State to track selected facility service departments for section filtering
     const [selectedServiceDepartments, setSelectedServiceDepartments] = useState([]);
 
+    // Manual specialization selection state
+    const [manualSpecialization, setManualSpecialization] = useState('');
+
+    // Available specialization options
+    const specializationOptions = [
+      'Gynae Clinics',
+      'Laboratory',
+      'Psychology clinic',
+      'Eye (opthalmologyoptometry  optician) Clinics',
+      'physiotheraphy',
+      'dental clinic',
+      'ENT clinic',
+      'Rehabilitation Centre',
+      'Potrait clinic',
+      'Radiology',
+      'clinic'
+    ];
+
     // State to track loading of service sections
     const [loadingServiceSections, setLoadingServiceSections] = useState(false);
+
+    // Handle manual specialization selection
+    const handleSpecializationChange = (selectedSpecialization) => {
+      console.log(`🎯 Manual specialization selected: ${selectedSpecialization}`);
+      setManualSpecialization(selectedSpecialization);
+      setFacilityType(selectedSpecialization); // Update facility type for filtering
+    };
 
     // Function to determine if a section should be shown based on selected service departments
     const shouldShowSectionForServiceDepartments = (sectionName, selectedDepartments) => {
@@ -3627,44 +3666,43 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     const getCurrentFacilityClassification = () => {
 
-      // Try to get from formData first
-
-      if (formData.facilityClassification) {
-
-        return formData.facilityClassification;
-
+      // 1. Prioritize manual specialization selection
+      if (manualSpecialization) {
+        console.log(`🎯 Using manual specialization: ${manualSpecialization}`);
+        return manualSpecialization;
       }
 
+      // 2. Try to get from formData
+      if (formData.facilityClassification) {
+        console.log(`📋 Using formData classification: ${formData.facilityClassification}`);
+        return formData.facilityClassification;
+      }
 
-
-      // Try to get from the DHIS2 field if it exists
-
+      // 3. Try to get from the DHIS2 field if it exists
       if (configuration?.programStage?.allDataElements) {
-
         const facilityClassificationElement = configuration.programStage.allDataElements.find(psde => {
-
           const fieldName = (psde.dataElement.displayName || psde.dataElement.shortName || '').toLowerCase();
-
           return fieldName.includes('facility classification') || fieldName.includes('facility type');
-
         });
 
-        
-
         if (facilityClassificationElement) {
-
           const fieldKey = `dataElement_${facilityClassificationElement.dataElement.id}`;
-
-          return formData[fieldKey];
-
+          const dhisValue = formData[fieldKey];
+          if (dhisValue) {
+            console.log(`🏥 Using DHIS2 field classification: ${dhisValue}`);
+            return dhisValue;
+          }
         }
-
       }
 
+      // 4. Fallback to facilityType state
+      if (facilityType) {
+        console.log(`🔄 Using facilityType fallback: ${facilityType}`);
+        return facilityType;
+      }
 
-
+      console.log(`❌ No facility classification found`);
       return null;
-
     };
 
 
@@ -4445,7 +4483,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
           if (showDebugPanel) {
 
-            console.log(`🔍 Fetching service sections for facility: ${facilityId}, inspector: ${currentUser.displayName || currentUser.username}`);
+            console.log(`🔍 Fetching service sections for facility: ${facilityId}, inspector: ${currentUser.username || currentUser.displayName} (using username priority)`);
 
           }
 
@@ -4453,7 +4491,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
             facilityId,
 
-            currentUser.displayName || currentUser.username
+            currentUser.username || currentUser.displayName
 
           );
 
@@ -5988,10 +6026,10 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
              </details>
 
              {/* Facility Information Display - Always show */}
-             <div className="facility-info-display">
-               <div className="facility-info-header">
+             <details className="facility-info-display">
+               <summary className="facility-info-header">
                  🏥 Facility Information
-               </div>
+               </summary>
 
                <div className="facility-info-content">
                  {loadingFacilityInfo ? (
@@ -6021,12 +6059,20 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                        <span className="facility-info-value facility-name">{facilityInfo.facilityName}</span>
                      </div>
 
+                     {/* Specialisation row is now hidden - users use manual selector instead */}
+                   </div>
+                 ) : manualSpecialization ? (
+                   <div className="facility-info-grid">
                      <div className="facility-info-row">
-                       <span className="facility-info-label">Specialisation:</span>
-                       <span className="facility-info-value facility-type">
-                         {facilityInfo.type || 'Not specified'}
+                       <span className="facility-info-label">Facility Name:</span>
+                       <span className="facility-info-value facility-name">
+                         {formData.orgUnit ?
+                           (configuration?.organisationUnits?.find(ou => ou.id === formData.orgUnit)?.displayName || 'Selected Facility')
+                           : 'No facility selected'}
                        </span>
                      </div>
+
+                     {/* Specialisation row is now hidden - users use manual selector instead */}
                    </div>
                  ) : (
                    <div style={{
@@ -6039,6 +6085,41 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                    }}>
                      <div style={{ marginRight: '12px' }}>📋</div>
                      <span>Please select a facility to view information</span>
+                   </div>
+                 )}
+               </div>
+             </details>
+
+             {/* Manual Specialization Selector */}
+             <div className="specialization-selector-section">
+               <div className="form-section">
+                 <div className="form-field">
+                   <label htmlFor="specialization-select" className="form-label">
+                     Choose Specialization:
+                   </label>
+                   <select
+                     id="specialization-select"
+                     value={manualSpecialization}
+                     onChange={(e) => handleSpecializationChange(e.target.value)}
+                     className="form-select"
+                   >
+                     <option value="">Select a specialization...</option>
+                     {specializationOptions.map((option, index) => (
+                       <option key={index} value={option}>
+                         {option}
+                       </option>
+                     ))}
+                   </select>
+                 </div>
+
+                 {manualSpecialization && (
+                   <div className="specialization-status">
+                     <div className="status-indicator success">
+                       ✅ Specialization set to: <strong>{manualSpecialization}</strong>
+                     </div>
+                     <div className="status-note">
+                       Form sections and questions will be filtered based on this specialization.
+                     </div>
                    </div>
                  )}
                </div>
@@ -6922,20 +7003,21 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
       <div className="form-footer">
 
-        {/* Signature Capture Section */}
-        <div style={{
-          gridColumn: '1 / -1',
-          padding: '20px',
-          backgroundColor: '#f8f9fa',
-          border: '2px solid #e9ecef',
-          borderRadius: '12px',
-          marginBottom: '20px'
-        }}>
-          <CustomSignatureCanvas
-            onSignatureChange={handleSignatureChange}
-            existingSignature={intervieweeSignature}
-            disabled={false}
-          />
+        {/* Signature Capture Section - Only show after inspection info confirmation */}
+        {inspectionInfoConfirmed && (
+          <div style={{
+            gridColumn: '1 / -1',
+            padding: '20px',
+            backgroundColor: '#f8f9fa',
+            border: '2px solid #e9ecef',
+            borderRadius: '12px',
+            marginBottom: '20px'
+          }}>
+            <CustomSignatureCanvas
+              onSignatureChange={handleSignatureChange}
+              existingSignature={intervieweeSignature}
+              disabled={false}
+            />
 
           {/* Confirmation Checkbox - show after signature */}
           {intervieweeSignature && (
@@ -6998,6 +7080,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
             </div>
           )}
         </div>
+        )}
 
 
 

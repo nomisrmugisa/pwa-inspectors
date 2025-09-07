@@ -244,11 +244,11 @@ class DHIS2APIService {
       
       console.log('✅ Transformed organization units:', transformedOrgUnits);
       
-      // IMMEDIATELY try to get service sections for this user
+      // IMMEDIATELY try to get service sections for this user (using username priority)
       console.log('🔍 TESTING: Attempting to get service sections for user:', me.username);
       if (transformedOrgUnits.length > 0) {
         const firstFacility = transformedOrgUnits[0];
-        console.log(`🏢 TESTING: Getting service sections for facility: ${firstFacility.id} (${firstFacility.displayName}), user: ${me.username}`);
+        console.log(`🏢 TESTING: Getting service sections for facility: ${firstFacility.id} (${firstFacility.displayName}), user: ${me.username} (username priority)`);
         try {
           const testSections = await this.getServiceSectionsForInspector(firstFacility.id, me.username);
           console.log('🎯 TESTING: Service sections result:', testSections);
@@ -661,9 +661,10 @@ class DHIS2APIService {
   /**
    * Get service sections for a specific facility and inspector
    * Returns array of section names that should populate the service dropdown
+   * Uses username for inspector lookup (prioritized over displayName)
    */
-  async getServiceSectionsForInspector(facilityId, inspectorDisplayName) {
-    console.log(`🔍 Getting service sections for facility: ${facilityId}, inspector: ${inspectorDisplayName}`);
+  async getServiceSectionsForInspector(facilityId, inspectorIdentifier) {
+    console.log(`🔍 Getting service sections for facility: ${facilityId}, inspector: ${inspectorIdentifier} (username priority)`);
     
     try {
       let assignmentsData = await this.getInspectionAssignments();
@@ -688,11 +689,11 @@ class DHIS2APIService {
 
       console.log('🏥 Found facility inspection:', facilityInspection);
 
-      // Find assignments for the inspector using displayName, robust match
+      // Find assignments for the inspector using username (prioritized) or displayName, robust match
       const norm = (v) => (v ?? '').toString().trim().toLowerCase();
       const inspectorAssignments = facilityInspection.assignments.filter((assignment) => {
         const aName = norm(assignment.inspectorName);
-        const iName = norm(inspectorDisplayName);
+        const iName = norm(inspectorIdentifier);
         return (
           aName === iName ||
           aName.includes(iName) ||
@@ -701,7 +702,7 @@ class DHIS2APIService {
       });
 
       if (inspectorAssignments.length === 0) {
-        console.warn(`⚠️ No assignments found for inspector: ${inspectorDisplayName} at facility: ${facilityId}`);
+        console.warn(`⚠️ No assignments found for inspector: ${inspectorIdentifier} at facility: ${facilityId}`);
         return [];
       }
 

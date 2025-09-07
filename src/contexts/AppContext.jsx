@@ -494,7 +494,8 @@ export function AppProvider({ children }) {
           console.log('Step 2: 👤 Current user:', {
             id: userResult.id,
             username: userResult.username,
-            displayName: userResult.displayName
+            displayName: userResult.displayName,
+            lookupPriority: 'username (prioritized for inspector matching)'
           });
           // Step 3: Fetch Assignments Data
           const datastoreResponse = await api.getInspectionAssignments();
@@ -542,7 +543,8 @@ export function AppProvider({ children }) {
                 const norm = (v) => (v ?? '').toString().trim().toLowerCase();
                 const inspectorAssignment = (inspection.assignments || []).find(a => {
                   const aName = norm(a.inspectorName);
-                  const iName = norm(userResult.displayName || userResult.username);
+                  // Prioritize username for lookup, fallback to displayName
+                  const iName = norm(userResult.username || userResult.displayName);
                   return aName === iName || aName.includes(iName) || iName.includes(aName);
                 });
                 
@@ -614,7 +616,8 @@ export function AppProvider({ children }) {
                 const norm = (v) => (v ?? '').toString().trim().toLowerCase();
                 const hasAssignment = (inspection.assignments || []).some(a => {
                   const aName = norm(a.inspectorName);
-                  const iName = norm(userResult.displayName || userResult.username);
+                  // Prioritize username for lookup, fallback to displayName
+                  const iName = norm(userResult.username || userResult.displayName);
                   return aName === iName || aName.includes(iName) || iName.includes(aName);
                 });
                 return !hasAssignment;
