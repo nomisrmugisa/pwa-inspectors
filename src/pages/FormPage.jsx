@@ -19,6 +19,8 @@ import {
 import { shouldShowDataElementForService } from '../config/facilityServiceFilters';
 
 import CustomSignatureCanvas from '../components/CustomSignatureCanvas';
+import { useIncrementalSave } from '../hooks/useIncrementalSave';
+import indexedDBService from '../services/indexedDBService';
 
 import './FormPage.css'; // Import FormPage specific styles
 
@@ -124,6 +126,18 @@ const enhancedServiceFieldDetection = (dataElement) => {
 
 
 
+// Detect subsection headers: strictly exactly two trailing dashes "--" (with optional surrounding spaces)
+const isSectionHeaderName = (name) => {
+  if (!name || typeof name !== 'string') return false;
+  return /\s*--\s*$/.test(name) && !/\s*---+\s*$/.test(name);
+};
+
+// Strip exactly two trailing dashes for display
+const normalizeSectionHeaderName = (name) => {
+  if (!name || typeof name !== 'string') return '';
+  return name.replace(/\s*--\s*$/, '').trim();
+};
+
 // Form field component for individual data elements
 
 function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoading = false, readOnly = false, getCurrentPosition, formatCoordinatesForDHIS2, staticText, onCommentChange, comments = {} }) {
@@ -215,7 +229,8 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
           value={staticText}
           readOnly
           disabled
-          className="form-control"
+          className={`form-input ${error ? 'error' : ''} ${getFilledClass()}`}
+          style={{ flex: 1 }}
         />
       );
     }
@@ -1762,6 +1777,8 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
     const shouldShowForName = (name) => {
       if (isInspectionTypeSection || isDocumentReviewSection) return true; // Exclude from filters
       if (!name) return false;
+      // Always show headers regardless of service filter
+      if (isSectionHeaderName(name)) return true;
       const lower = name.toLowerCase();
       const isComment = lower.includes('comments') || lower.includes('comment') || lower.includes('remarks');
       if (isComment) {
@@ -2047,9 +2064,28 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
 
 
+                  // Hide specific IDs in Inspection Type section while keeping them assigned
+
+                  const dn = (psde?.dataElement?.displayName || '').toLowerCase();
+
+                  const shouldHideInspectionId = isInspectionTypeSection && (dn.includes('inspection') && dn.includes('id'));
+
+
+
+                  // Render subsection header (no input) if name ends with "--"
+                  const deName = psde?.dataElement?.displayName || '';
+                  if (isSectionHeaderName(deName)) {
+                    const headerText = normalizeSectionHeaderName(deName);
+                    return (
+                      <div key={`header-${psde.dataElement.id}-${actualIndex}`} style={{ fontWeight: 600, margin: '16px 0 8px' }}>
+                        {headerText}
+                      </div>
+                    );
+                  }
+
                   return (
 
-                    <div key={`field-container-${psde.dataElement.id}-${actualIndex}`}>
+                    <div key={`field-container-${psde.dataElement.id}-${actualIndex}`} style={shouldHideInspectionId ? { display: 'none' } : undefined}>
 
                       <FormField
 
@@ -2483,14 +2519,21 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
   function FormPage() {
 
     // Enable debug panel to show data element counts
-
-    const showDebugPanel = true;
+    const showDebugPanel = false;
 
     
 
     const { eventId } = useParams();
 
     const navigate = useNavigate();
+    // Ensure we always have an eventId for incremental saving
+    useEffect(() => {
+      if (!eventId) {
+        const generatedId = `draft-${Date.now().toString(36)}`;
+        console.log('🆕 No eventId in route; generating draft id:', generatedId);
+        navigate(`/form/${generatedId}`, { replace: true });
+      }
+    }, [eventId, navigate]);
 
     // const api = useAPI();
 
@@ -2532,6 +2575,17 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
     // Manual specialization selection state
     const [manualSpecialization, setManualSpecialization] = useState('');
 
+    // Save status indicator state
+    const [saveStatus, setSaveStatus] = useState({
+      isVisible: false,
+      message: '',
+      type: 'success'
+    });
+
+    // Debug panel state - using hardcoded constant from above
+    // const [showDebugPanel, setShowDebugPanel] = useState(false);
+    const [indexedDBData, setIndexedDBData] = useState(null);
+
     // Available specialization options
     const specializationOptions = [
       'Gynae Clinics',
@@ -2544,7 +2598,8 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       'Rehabilitation Centre',
       'Potrait clinic',
       'Radiology',
-      'clinic'
+      'clinic',
+      'Hospital'
     ];
 
     // State to track loading of service sections
@@ -3477,6 +3532,68 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     const [intervieweeSignature, setIntervieweeSignature] = useState(null);
 
+    // Initialize incremental save functionality
+    const {
+      saveField,
+      saveFieldImmediate,
+      loadFormData,
+      updateSectionMetadata,
+      flushPendingSaves
+    } = useIncrementalSave(eventId, {
+      debounceMs: 300,
+      onSaveSuccess: (result) => {
+        console.log('💾 Incremental save successful:', result);
+        // Show visual save indicator
+        setSaveStatus({
+          isVisible: true,
+          message: `Saved ${result.savedFields} field(s)`,
+          type: 'success'
+        });
+        // Hide after 2 seconds
+        setTimeout(() => setSaveStatus(prev => ({ ...prev, isVisible: false })), 2000);
+      },
+      onSaveError: (error) => {
+        console.error('❌ Incremental save failed:', error);
+        showToast('Failed to save form data locally', 'error');
+        setSaveStatus({
+          isVisible: true,
+          message: 'Save failed',
+          type: 'error'
+        });
+        setTimeout(() => setSaveStatus(prev => ({ ...prev, isVisible: false })), 3000);
+      },
+      enableLogging: true
+    });
+
+    // Load existing form data from IndexedDB on mount
+    useEffect(() => {
+      const loadExistingData = async () => {
+        if (eventId) {
+          try {
+            const existingData = await loadFormData();
+            if (existingData && existingData.formData) {
+              console.log('📖 Loading existing form data from IndexedDB:', existingData);
+              setFormData(prev => ({
+                ...prev,
+                ...existingData.formData
+              }));
+
+              // Load comments if they exist
+              if (existingData.metadata?.fieldComments) {
+                setFieldComments(existingData.metadata.fieldComments);
+              }
+
+              showToast('Loaded saved form data', 'success');
+            }
+          } catch (error) {
+            console.error('❌ Failed to load existing form data:', error);
+          }
+        }
+      };
+
+      loadExistingData();
+    }, [eventId, loadFormData, showToast]);
+
     // Handle comment changes for data elements
     const handleCommentChange = (dataElementId, comment) => {
       setFieldComments(prev => {
@@ -3489,6 +3606,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
         // Save comments to the designated Survey Comments data element
         saveCommentsToDataElement(updated);
+
+        // Save comments incrementally to IndexedDB
+        if (eventId) {
+          saveField(`comment_${dataElementId}`, comment?.trim() || '');
+        }
 
         return updated;
       });
@@ -3564,6 +3686,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
     const handleSignatureChange = (signatureDataURL) => {
       setIntervieweeSignature(signatureDataURL);
       console.log('📝 Signature captured:', signatureDataURL ? 'Yes' : 'No');
+
+      // Save signature immediately to IndexedDB (critical field)
+      if (eventId) {
+        saveFieldImmediate('intervieweeSignature', signatureDataURL);
+      }
     };
 
     // Debug panel removed - no longer needed
@@ -4759,7 +4886,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
       }));
 
-
+      // Save field incrementally to IndexedDB
+      if (eventId) {
+        saveField(fieldName, value);
+        console.log(`💾 Queued incremental save: ${fieldName} = ${value}`);
+      }
 
       // Clear field error when user starts typing
 
@@ -4868,6 +4999,24 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
         // Also fetch and set the facility classification
 
         fetchFacilityClassification(value);
+
+        // Auto-populate inspection date when facility is selected
+        if (!formData.eventDate) {
+          const today = new Date();
+          const todayString = today.toISOString().split('T')[0];
+          console.log('📅 Auto-populating inspection date:', todayString);
+          
+          setFormData(prev => ({
+            ...prev,
+            eventDate: todayString
+          }));
+          
+          // Save the auto-populated date
+          if (eventId) {
+            saveField('eventDate', todayString);
+            console.log(`💾 Auto-saved inspection date: ${todayString}`);
+          }
+        }
 
       }
 
@@ -5232,9 +5381,12 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
 
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
 
       e.preventDefault();
+
+      // Flush any pending saves before submission
+      await flushPendingSaves();
 
       // Check if signature is provided
       if (!intervieweeSignature) {
@@ -5281,15 +5433,34 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
       eventData.trackedEntityInstance = teiToUse;
       console.log('🔗 Final trackedEntityInstance in payload:', teiToUse);
 
-      // Add data values
-      Object.entries(formData).forEach(([key, value]) => {
-        if (key.startsWith('dataElement_') && value !== '') {
-          const dataElementId = key.replace('dataElement_', '');
-          eventData.dataValues.push({
-            dataElement: dataElementId,
-            value: value.toString()
-          });
+      // Add data values (skip section headers)
+      const isSectionHeaderById = (dataElementId) => {
+        try {
+          const sections = configuration?.programStage?.sections || [];
+          for (const section of sections) {
+            const des = section?.dataElements || [];
+            for (const psde of des) {
+              const de = psde?.dataElement;
+              if (de && de.id === dataElementId) {
+                return isSectionHeaderName(de.displayName || de.name || '');
+              }
+            }
+          }
+        } catch (e) {
+          console.warn('Failed to check if data element is header', e);
         }
+        return false;
+      };
+
+      Object.entries(formData).forEach(([key, value]) => {
+        if (!key.startsWith('dataElement_')) return;
+        if (value === '') return;
+        const dataElementId = key.replace('dataElement_', '');
+        if (isSectionHeaderById(dataElementId)) return; // skip headers
+        eventData.dataValues.push({
+          dataElement: dataElementId,
+          value: value.toString()
+        });
       });
 
       // Add signature to payload if provided
@@ -5873,7 +6044,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                    type="button"
 
-                   onClick={() => setShowDebugPanel(true)}
+                   onClick={() => {/* Debug panel is always enabled */}}
 
                    style={{
 
@@ -5986,6 +6157,14 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                  </div>
 
                  <div>
+                   <strong>Tracked Entity Instance (TEI):</strong>
+                   <div style={{ backgroundColor: '#fff', padding: '8px', borderRadius: '4px', marginTop: '4px' }}>
+                     Value: {trackedEntityInstance || facilityInfo?.trackedEntityInstance || 'None'}<br/>
+                     Source: {trackedEntityInstance ? 'state' : (facilityInfo?.trackedEntityInstance ? 'facilityInfo' : 'N/A')}
+                   </div>
+                 </div>
+
+                 <div>
                    <strong>Form Sections:</strong>
                    <div style={{ backgroundColor: '#fff', padding: '8px', borderRadius: '4px', marginTop: '4px' }}>
                      Total: {serviceSections?.length || 0}<br/>
@@ -6059,6 +6238,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                        <span className="facility-info-value facility-name">{facilityInfo.facilityName}</span>
                      </div>
 
+                     <div className="facility-info-row">
+                       <span className="facility-info-label">Tracked Entity Instance:</span>
+                       <span className="facility-info-value">{trackedEntityInstance || facilityInfo?.trackedEntityInstance || 'None'}</span>
+                     </div>
+
                      {/* Specialisation row is now hidden - users use manual selector instead */}
                    </div>
                  ) : manualSpecialization ? (
@@ -6070,6 +6254,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                            (configuration?.organisationUnits?.find(ou => ou.id === formData.orgUnit)?.displayName || 'Selected Facility')
                            : 'No facility selected'}
                        </span>
+                     </div>
+
+                     <div className="facility-info-row">
+                       <span className="facility-info-label">Tracked Entity Instance:</span>
+                       <span className="facility-info-value">{trackedEntityInstance || facilityInfo?.trackedEntityInstance || 'None'}</span>
                      </div>
 
                      {/* Specialisation row is now hidden - users use manual selector instead */}
@@ -6089,6 +6278,15 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                  )}
                </div>
              </details>
+
+             {/* Save Status Indicator */}
+             {saveStatus.isVisible && (
+               <div className={`save-status-indicator ${saveStatus.type}`}>
+                 <div className="save-status-content">
+                   {saveStatus.type === 'success' ? '💾' : '❌'} {saveStatus.message}
+                 </div>
+               </div>
+             )}
 
              {/* Manual Specialization Selector */}
              <div className="specialization-selector-section">
@@ -6153,7 +6351,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                   {/* All fields are optional note */}
 
-                  <div className="optional-fields-note">
+                  <div className="optional-fields-note" style={{ display: 'none' }}>
 
                     <p style={{ fontSize: '14px', color: '#666', marginBottom: '10px' }}>
 
@@ -6369,7 +6567,8 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                   </div>
 
-                                   <div className="form-field">
+                  {/* Inspection Date field - HIDDEN from user but still functional */}
+                  <div className="form-field" style={{ display: 'none' }}>
 
                      <label htmlFor="eventDate" className="form-label">
 
@@ -6483,21 +6682,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                   
 
-                {inspectionPeriod && (
-
-                  <div className="form-field">
-
-                    <label className="form-label">Inspection Scheduled: Dates:</label>
-
-                    <div>
-
-                      {inspectionPeriod.startDate} to {inspectionPeriod.endDate}
-
-                    </div>
-
-                  </div>
-
-                )}
+                {/* Removed duplicate Inspection Scheduled: Dates block */}
 
               </div>
 

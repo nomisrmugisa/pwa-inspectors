@@ -10,7 +10,7 @@
 const GynaeClinics = {
     "ORGANISATION AND MANAGEMENT": {
         "showOnly": [
-            "Does the Facility have an organisational structure?",
+            "Does the Facility have an organisational structure?--",
             "Is the director a medically trained person?",
             "Does the facility comply with regulatory requirements for Business registration?",
             "Does the facility comply with regulatory requirements for Work permits?",

@@ -1016,6 +1016,11 @@
   margin-bottom: 24px;
 }
 
+/* Hide Facility Information section at the top of the form */
+.facility-info-display {
+  display: none !important;
+}
+
 .specialization-selector-section .form-section {
   background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
   border: 2px solid #ffc107;
@@ -1099,4 +1104,47 @@
   0% { opacity: 1; }
   50% { opacity: 0.6; }
   100% { opacity: 1; }
+}
+
+/* Save Status Indicator */
+.save-status-indicator {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: slideInRight 0.3s ease-out;
+}
+
+.save-status-indicator.success {
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  border: 1px solid #28a745;
+  color: #155724;
+}
+
+.save-status-indicator.error {
+  background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+  border: 1px solid #dc3545;
+  color: #721c24;
+}
+
+.save-status-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }

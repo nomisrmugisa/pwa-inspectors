@@ -10,6 +10,7 @@ import { HomePage } from './pages/HomePage';
 import { FormPage } from './pages/FormPage';
 import { CSVDemoPage } from './pages/CSVDemoPage';
 import { AltFormPage } from './pages/AltFormPage';
+import { IncSaveTest } from './pages/IncSaveTest';
 
 // Main App Router
 function AppRouter() {
@@ -38,8 +39,9 @@ function AppRouter() {
         <main className="main-content">
           <Routes>
             {!isAuthenticated ? (
-              // Not authenticated - show login
+              // Not authenticated - show login (allow test route without auth)
               <>
+                <Route path="/inc-save-test" element={<IncSaveTest />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="*" element={<Navigate to="/login" replace />} />
               </>
@@ -61,6 +63,7 @@ function AppRouter() {
                 <Route path="/form-alt" element={<AltFormPage />} />
                 <Route path="/form/:eventId" element={<FormPage />} />
                 <Route path="/csv-demo" element={<CSVDemoPage />} />
+                <Route path="/inc-save-test" element={<IncSaveTest />} />
                 {/* Default route - go directly to form like Android app */}
                 <Route path="/" element={<Navigate to="/form" replace />} />
                 <Route path="*" element={<Navigate to="/form" replace />} />
