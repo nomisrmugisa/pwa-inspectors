@@ -1,0 +1,28 @@
+{
+  "name": "pwa-inspector-indexer",
+  "version": "1.0.0",
+  "description": "Code indexer for PWA Inspectors app",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "node index.js build",
+    "update": "node index.js update",
+    "ask": "node cli.js"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.23.0",
+    "@babel/traverse": "^7.23.0",
+    "better-sqlite3": "^9.2.2",
+    "chalk": "^5.3.0",
+    "commander": "^11.1.0",
+    "csv-parse": "^5.5.2",
+    "dotenv": "^16.3.1",
+    "elasticlunr": "^0.9.5",
+    "fast-glob": "^3.3.2",
+    "node-fetch": "^3.3.2",
+    "sqlite-vss": "^0.1.2"
+  }
+}
+
+
+

@@ -289,67 +289,72 @@
 
 
 
-/* Enhanced section header styling */
+/* Enhanced section header styling with blue theme */
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
   padding: 15px 20px;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border: 1px solid #dee2e6;
+  background: linear-gradient(135deg, var(--botswana-blue) 0%, var(--botswana-blue-light) 100%);
+  border: 1px solid var(--botswana-blue-dark);
   border-radius: 8px 8px 0 0;
   cursor: pointer;
   transition: all 0.2s ease;
   margin-top: 15px; /* Add top margin for better spacing */
+  color: white; /* White text on blue background */
 }
 
 .section-header:hover {
-  background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
-  border-color: #adb5bd;
+  background: linear-gradient(135deg, var(--botswana-blue-light) 0%, var(--botswana-blue-lighter) 100%);
+  border-color: var(--botswana-blue);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 56, 117, 0.3);
 }
 
 .section-header:focus {
   outline: none;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  box-shadow: 0 0 0 0.2rem rgba(0, 56, 117, 0.25);
 }
 
 /* Document Review sections - collapsible and visually distinct */
 .section-header.document-review-section {
-  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-  border-color: #2196f3;
+  background: linear-gradient(135deg, var(--botswana-blue) 0%, var(--botswana-blue-light) 100%);
+  border-color: var(--botswana-blue-dark);
   cursor: pointer;
   position: relative;
+  color: white; /* White text on blue background */
 }
 
 .section-header.document-review-section:hover {
-  background: linear-gradient(135deg, #bbdefb 0%, #90caf9 100%);
-  border-color: #1976d2;
+  background: linear-gradient(135deg, var(--botswana-blue-light) 0%, var(--botswana-blue-lighter) 100%);
+  border-color: var(--botswana-blue);
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(33, 150, 243, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 56, 117, 0.3);
 }
 
 .section-header.document-review-section:focus {
-  box-shadow: 0 0 0 0.2rem rgba(33, 150, 243, 0.25);
+  box-shadow: 0 0 0 0.2rem rgba(0, 56, 117, 0.25);
 }
 
 /* Collapsible sections - other sections that can be collapsed */
 .section-header.collapsible-section {
-  background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
-  border-color: #9c27b0;
+  background: linear-gradient(135deg, var(--botswana-blue) 0%, var(--botswana-blue-light) 100%);
+  border-color: var(--botswana-blue-dark);
   cursor: pointer;
   position: relative;
+  color: white; /* White text on blue background */
 }
 
 .section-header.collapsible-section:hover {
-  background: linear-gradient(135deg, #e1bee7 0%, #ce93d8 100%);
-  border-color: #7b1fa2;
+  background: linear-gradient(135deg, var(--botswana-blue-light) 0%, var(--botswana-blue-lighter) 100%);
+  border-color: var(--botswana-blue);
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(156, 39, 176, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 56, 117, 0.3);
 }
 
 .section-header.collapsible-section:focus {
-  box-shadow: 0 0 0 0.2rem rgba(156, 39, 176, 0.25);
+  box-shadow: 0 0 0 0.2rem rgba(0, 56, 117, 0.25);
 }
 
 /* Enhanced toggle indicator for all collapsible sections */
@@ -363,33 +368,34 @@
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--botswana-blue); /* Blue color for toggle icons */
 }
 
 /* Document Review section toggle colors */
 .section-header.document-review-section .section-toggle {
-  color: #2196f3;
+  color: var(--botswana-blue);
 }
 
 .section-header.document-review-section .section-toggle.expanded {
-  color: #1976d2;
+  color: var(--botswana-blue-dark);
 }
 
 .section-header.document-review-section .section-toggle.collapsed {
-  color: #2196f3;
+  color: var(--botswana-blue);
 }
 
 /* Collapsible section toggle colors */
 .section-header.collapsible-section .section-toggle {
-  color: #9c27b0;
+  color: var(--botswana-blue);
 }
 
 .section-header.collapsible-section .section-toggle.expanded {
-  color: #7b1fa2;
+  color: var(--botswana-blue-dark);
 }
 
 .section-header.collapsible-section .section-toggle.collapsed {
-  color: #9c27b0;
+  color: var(--botswana-blue);
 }
 
 .section-toggle:hover {
@@ -416,18 +422,19 @@
 
 /* Always expanded sections - non-collapsible and visually distinct */
 .section-header.always-expanded-section {
-  background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
-  border-color: #9c27b0;
+  background: linear-gradient(135deg, var(--botswana-blue) 0%, var(--botswana-blue-light) 100%);
+  border-color: var(--botswana-blue-dark);
   cursor: default;
+  color: white; /* White text on blue background */
 }
 
 .section-header.always-expanded-section:hover {
-  background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
-  border-color: #9c27b0;
+  background: linear-gradient(135deg, var(--botswana-blue) 0%, var(--botswana-blue-light) 100%);
+  border-color: var(--botswana-blue-dark);
 }
 
 .section-header.always-expanded-section:focus {
-  box-shadow: 0 0 0 0.2rem rgba(156, 39, 176, 0.25);
+  box-shadow: 0 0 0 0.2rem rgba(0, 56, 117, 0.25);
 }
 
 /* Bottom spacing for sections */
@@ -757,10 +764,26 @@
   margin: 0;
   font-size: 18px;
   font-weight: 600;
-  color: #495057;
+  color: white !important; /* White text for blue background - use !important to override global styles */
   display: flex;
   align-items: center;
   flex-wrap: wrap;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Subtle shadow for better readability */
+}
+
+/* More specific selectors to ensure white text on blue headers */
+.section-header .section-title {
+  color: white !important;
+}
+
+.section-header h3.section-title {
+  color: white !important;
+}
+
+.section-header.always-expanded-section .section-title,
+.section-header.collapsible-section .section-title,
+.section-header.document-review-section .section-title {
+  color: white !important;
 }
 
 /* Facility Information Display Styles */
@@ -917,6 +940,32 @@
   max-height: 200px;
   overflow-y: auto;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  position: relative;
+}
+
+/* Fix for native select multiple overflow */
+.form-field select[multiple] {
+  max-height: 200px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  padding: 8px;
+  background-color: white;
+  position: relative;
+  z-index: 1;
+}
+
+/* Ensure the select container doesn't overflow */
+.form-field {
+  position: relative;
+  overflow: visible;
+}
+
+/* Add proper containment for multi-select */
+.form-field select[multiple] {
+  contain: layout style;
+  will-change: scroll-position;
 }
 
 .multiselect-container:focus-within {
@@ -1147,4 +1196,23 @@
     transform: translateX(0);
     opacity: 1;
   }
+}
+
+/* Manual Facility Service Departments styling */
+.manual-facility-service-departments {
+  margin: 16px 0;
+  padding: 16px;
+  border: 2px solid #007bff;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #f8f9ff 0%, #e6f3ff 100%);
+}
+
+.manual-facility-service-departments .form-field {
+  margin-bottom: 0;
+}
+
+.manual-facility-service-departments .form-label {
+  color: #007bff;
+  font-weight: 600;
+  margin-bottom: 12px;
 }

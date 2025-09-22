@@ -1,639 +1,711 @@
-,Gynae Clinics,Laboratory,Psychology clinic,Eye (opthalmologyoptometry  optician) Clinics,physiotheraphy,dental clinic,ENT clinic,Rehabilitation Centre,Potrait clinic,Radiology,clinic
-,1,2,3,4,5,6,7,8,9,10,11
-ORGANISATION AND MANAGEMENT,,,,,,,,,,,
-Does the Facility have an organisational structure?--,?,?,?,?,?,?,?,?,?,?,?
-Is the director a medically trained person?,?,?,?,?,?,?,?,?,?,?,?
-Does the facility have statutory requirements?,,,,,,,,,,,
-Does the facility comply with regulatory requirements for Business registration?,?,?,?,?,?,?,?,?,?,?,?
-Does the facility comply with regulatory requirements for Work permits?,?,?,?,?,?,?,?,?,?,?,?
-Does the facility comply with regulatory requirements for Lease agreement?,?,?,?,?,?,?,,?,?,?,?
-Does the facility comply with regulatory requirements for Trading license?,?,?,?,?,?,?,?,?,?,?,?
-Does the facility comply with regulatory requirements for Permission to operate/set up?,?,?,?,,,,,,,,
-Does the facility comply with regulatory requirements for Occupancy certificate?,?,?,?,?,?,?,?,?,?,?,?
-Does the facility comply with regulatory requirements for Patient charter in English & Setswana?,?,?,?,?,?,?,?,?,?,?,?
-"Does the facility comply with regulatory requirements for Copies of relevant statutory instruments e.g. Public Health Act 2013, Botswana Health Professions Act,2001?",?,?,?,?,?,?,?,?,?,?,?
-Does the facility comply with regulatory requirements for Is there an indemnity insurance??,?,?,?,?,?,?,?,?,?,?,?
-Does the facility comply with regulatory requirements for Have personnel been cleared by police??,?,?,?,?,?,?,?,?,?,?,?
-Does the facility comply with regulatory requirements for contracts for staff?,?,?,?,?,?,?,?,?,?,?,?
-Does the facility comply with regulatory requirements for letter of permission to set up/operate?,?,?,?,?,?,?,?,?,?,?,?
-Does the facility comply with regulatory requirements for waste collection carrier licence?,?,?,?,?,?,?,?,?,?,?,?
-Does the facility comply with regulatory requirements for,?,?,?,?,?,?,?,?,?,?,?
-Does the facility comply with regulatory requirements for confidentiality clause?,?,?,?,?,?,?,?,?,?,?,?
-Does the facility comply with regulatory requirements for proof of change of land use?,?,?,?,?,?,?,?,,,,
-Does the facility comply with regulatory requirements for tax clearance certificate?,?,?,?,?,?,,?,?,?,?,?
-Does the facility comply with regulatory requirements for Practitioner?s licence?,?,?,?,?,?,?,?,?,?,?,?
-Does the facility comply with regulatory requirements for Fire clearance?,?,?,?,?,?,?,?,?,?,?,?
-Does the facility comply with regulatory requirements for work permits?,?,?,?,?,?,?,?,?,?,?,?
-Does the facility comply with regulatory requirements for residence permit?,?,?,?,?,?,,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-Does the clinic have policies and procedures for the following?,,,,,,,,,,,
-Does the Facility have policies and procedures for referral systems?,?,?,?,?,?,?,?,?,?,?,?
-Does the Facility have policies and procedures for assessment of patients?,?,?,?,?,?,?,?,?,?,?,?
-Does the Facility have policies and procedures for treatment protocols?,?,?,?,?,?,?,?,?,?,?,?
-Does the Facility have policies and procedures for testing and treatment techniques?,?,?,?,?,?,?,?,?,?,?,?
-"Does the Facility have policies and procedures for high risk patients and procedures, and?",?,?,?,?,?,?,?,?,?,?,?
-Does the Facility have policies and procedures for the confidentiality of patient information?,?,?,?,?,?,?,?,?,?,?,?
-Does the Facility have policies and procedures for incident reporting?,?,?,?,?,?,?,?,?,?,?,?
-Does the Facility have policies and procedures for Induction and orientation?,?,?,?,?,?,?,?,?,?,?,?
-Does the Facility have policies and procedures for patient consent?,?,?,?,?,?,?,?,?,?,?,?
-Does the Facility have policies and procedures for Linen management?,?,?,?,?,?,?,?,?,?,?,?
-Does the Facility have policies and procedures for Equipment maintenance plan/program?,?,?,?,?,?,?,?,?,?,?,?
-Does the Facility have policies and procedures for Testing and commissioning certificates?,?,?,?,?,?,?,?,?,?,?,?
-Does the Facility have policies and procedures for Infection prevention and control?,?,?,?,?,?,?,?,?,?,?,?
-Does the Facility have policies and procedures for Management of patient records and retention times?,?,?,?,?,?,?,?,?,?,?,?
-Does the Facility have policies and procedures for Management of information ?,?,?,?,?,?,?,?,?,?,?,?
-Does the Facility have policies and procedures for Risk management ?,?,?,?,?,?,?,?,?,?,?,?
-Does the Facility have policies and procedures for Management of supplies?,?,?,?,?,?,?,?,?,?,?,?
-Does the Facility have policies and procedures for Patient observation?,?,?,?,?,?,?,?,?,?,?,?
-Does the Facility have policies and procedures for Management of medication?,?,?,?,?,?,?,?,?,?,?,?
-Does the Facility have policies and procedures for Post exposure prophylaxis?,?,?,?,?,?,?,?,?,?,?,?
-Does the Facility have policies and procedures for Complaints procedure?,?,?,?,?,?,?,?,?,?,?,?
-Does the Facility have policies and procedures for Outreach services?,?,?,?,?,?,?,?,?,?,?,?
-Does the Facility have policies and procedures for Waste management?,?,?,?,?,?,?,?,?,?,?,?
-Is there an indemnity insurance?,,,,,,,,,,,
-,?,?,?,?,?,?,?,?,?,?,?
-,,,,,,,,,,,
-SERVICES PROVIDED,,,,,,,,,,,
-,,,,,,,,,,,
-Clinic provide Gynaecology services?,?,?,?,?,?,?,?,?,?,?,?
-Clinic provide Fertility?,?,?,?,?,?,?,?,?,?,?,?
-Clinic provide Sexual reproductive health?,?,?,?,?,?,?,?,?,?,?,?
-Clinic provide Antenatal care?,?,?,?,?,?,?,?,?,?,?,?
-Clinic provide Post-natal care?,?,?,?,?,?,?,?,?,?,?,?
-Clinic provide Post-abortal care?,?,?,?,?,?,?,?,?,?,?,?
-Clinic provide Lab-Specialist services (specify)?,?,?,?,?,?,?,?,?,?,?,?
-Clinic provide Lab-Laboratory services(specify)?,?,?,?,?,?,?,?,?,?,?,?
-Clinic provide Lab-Specimen collection (specify)?,?,?,?,?,?,?,?,?,?,?,?
-Clinic provide Eye- Vision services?,?,?,?,?,?,?,?,?,?,?,?
-Clinic provide Eye -Medical eye care?,?,?,?,?,?,?,?,?,?,?,?
-Clinic provide Eye- Surgical eye care?,?,?,?,?,?,?,?,?,?,?,?
-Clinic provide Eye- Diagnosis & treatment of eye conditions?,?,?,?,?,?,?,?,?,?,?,?
-Clinic provide Eye- Plastic surgery?,?,?,?,?,?,?,?,?,?,?,?
-Clinic provide General practice?,?,?,?,?,?,?,?,?,?,?,?
-Clinic provide Specialist services?,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-Clinic provide Home visits?,?,?,?,?,?,?,?,?,?,?,?
-Clinic provide Others ?,?,?,?,?,?,?,?,?,?,?,?
-Clinic provide General consultations?,?,?,?,?,?,?,?,?,?,?,?
-Clinic provide Hearing & balance services?,?,?,?,?,?,?,?,?,?,?,?
-"Clinic provide Voice, speech & swallowing?",?,?,?,?,?,?,?,?,?,?,?
-"Clinic provide Allergy, sinuses & sleep disorders?",?,?,?,?,?,?,?,?,?,?,?
-Clinic provide Medical examinations ?,?,?,?,?,?,?,?,?,?,?,?
-Clinic provide Dental surgery?,?,?,?,?,?,?,?,?,?,?,?
-Clinic provide Cosmetic dentistry (braces and implants)?,?,?,?,?,?,?,?,?,?,?,?
-Clinic provide Community health services (Preventive)?,?,?,?,?,?,?,?,?,?,?,?
-Clinic provide Dental whitening and teeth cleaning?,?,?,?,?,?,?,?,?,?,?,?
-Clinic provide Fillings and dentures ?,?,?,?,?,?,?,?,?,?,?,?
-Clinic provide Root canal treatment?,?,?,?,?,?,?,?,?,?,?,?
-Clinic provide Crowns and bridges?,?,?,?,?,?,?,?,?,?,?,?
-"Clinic provide Addiction treatment (Alcohol and drug addiction, Gambling addiction, Sex addiction, Mood addiction, Gaming addiction)?",?,?,?,?,?,?,?,?,?,?,?
-Clinic provide Mental health/ dual diagnosis treatment?,?,?,?,?,?,?,?,?,?,?,?
-Clinic provide Chronic pain management?,?,?,?,?,?,?,?,?,?,?,?
-Clinic provide Psychometric assessment (For the disorders mentioned above and others)?,?,?,?,?,?,?,?,?,?,?,?
-Clinic provide Pharmaceutical services (specify)?,?,?,?,?,?,?,?,?,?,,?
-Clinic provide Education credentials,?,?,?,?,?,?,?,?,?,?,?
-Clinic provide A signed confidentiality clause,?,?,?,?,?,?,?,?,?,?,?
-Clinic provide Evidence of orientation and induction,?,?,?,?,?,?,?,?,?,?,?
-Clinic provide Evidence of continuous professional development(CPD),?,?,?,?,?,?,?,?,?,?,?
-,,,,,,,,,,,
-What are the hours of operation?,?,?,?,?,?,?,?,?,?,?,?
-Is there a services board within the facility?,?,?,?,?,?,?,?,?,?,?,?
-What is number of patients seen per month?,?,?,?,?,?,?,?,?,?,?,?
-Any outreach services?,?,?,?,?,?,?,?,?,?,?,?
-Is there permission to offer the outreach services,?,?,?,?,?,?,?,?,?,?,?
-Agreement letter with a doctor where services will be offered from?,?,?,?,?,?,?,?,?,?,?,?
-Is there provision of emergency contact numbers? ,?,?,?,?,?,?,?,?,?,?,?
-,,,,,,,,,,,
-PERSONNEL,,,,,,,,,,,
-What is the intended total number of staff?,?,?,?,?,?,?,?,?,?,?,?
-What is the current number of staff?,?,?,?,?,?,?,?,?,?,?,?
-How many will be ,,,,,,,,,,,
-How many will be Gynaecologists ?,?,?,?,?,?,?,?,?,?,?,?
-How many will be Medical Doctors?,?,?,?,?,?,?,?,?,?,?,?
-How many will be Other specialist doctors?,?,?,?,?,?,?,,?,?,,?
-How many will be Nurses?,?,?,?,?,?,?,?,?,?,?,?
-How many will be Pharmacists?,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-How many will be Administrative staff?,?,?,?,?,?,?,?,?,?,?,?
-How many will be Support staff?,?,?,?,?,?,?,?,?,?,?,?
-How many will be Other professionals (specify)?,?,?,?,?,?,?,?,?,?,?,?
-How many will be Specialist doctors?,?,?,?,?,?,?,?,?,?,?,
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,
-,?,?,?,?,?,?,?,?,?,,?
-,?,?,?,?,?,?,?,?,?,?,?
-How many will be Ophthalmologists?,?,?,?,?,?,?,?,?,?,?,?
-How many will be Opticians?,?,?,?,?,?,?,?,?,?,?,?
-How many will be Optometrists?,?,?,?,?,?,?,?,?,?,?,?
-How many will be Physiotherapists?,?,?,?,?,?,?,?,?,?,?,?
-How many will be Physiotherapy assistants?,?,?,?,?,?,?,?,?,?,?,?
-How many will be Dentist?,?,?,?,?,?,?,?,?,?,?,?
-How many will be Dental therapist?,?,?,?,?,?,?,?,?,?,?,?
-How many will be Dental assistant?,?,?,?,?,?,?,?,?,?,?,?
-How many will be Dental technologist?,?,?,?,?,?,?,?,?,?,?,?
-How many will be ENT specialist?,?,?,?,?,?,?,?,?,?,?,?
-How many will be Psychologist?,?,?,?,?,?,?,?,?,?,?,?
-How many will be Social workers?,?,?,?,?,?,?,?,?,?,?,?
-How many will be Kitchen staff?,?,?,?,?,?,?,?,?,?,?,?
-How many will be Pharmacy technicians?,?,?,?,?,?,?,?,?,?,?,?
-How many will be Laboratory scientists?,?,?,?,?,?,?,?,?,?,?,?
-How many will be Laboratory technicians?,?,?,?,?,?,?,?,?,?,?,?
-How many will be Radiographers?,?,?,?,?,?,?,?,?,?,?,?
-How many will be Radiologists?,?,?,?,?,?,?,?,?,?,?,?
-How many will be Sonographers?,?,?,?,?,?,?,?,?,?,?,?
-How many will be Radiology technicians ?,?,?,?,?,?,?,?,?,?,?,?
-Are professionals registered with the relevant Councils?,?,?,?,?,?,?,?,?,?,?,?
-Did personnel files have,,,,,,,,,,,
-Did personnel files have Signed job effectiveness description?,?,?,?,?,?,?,?,?,?,?,?
-Did personnel files have Education credentials?,?,?,?,?,?,?,?,?,?,?,?
-Did personnel files have A signed confidentiality clause?,?,?,?,?,?,?,?,?,?,?,?
-Did personnel files have Evidence of orientation and induction?,?,?,?,?,?,?,?,?,?,?,?
-Did personnel files have Evidence of continued education?,?,?,?,?,?,?,?,?,?,?,?
-Did personnel files have Signed contracts or offer letters?,?,?,?,?,?,?,?,?,?,?,?
-Did personnel files have Medical examination certificates?,?,?,?,?,?,?,?,?,?,?,?
-,,,,,,,,,,,
-ENVIRONMENT,,,,,,,,,,,
-Does the facility have wheelchair accessibility?,?,?,?,?,?,?,?,?,?,?,?
-"Inspection_fac: Is it fenced, secure and easily accessible?",?,?,?,?,?,?,?,?,?,?,?
-Is there adequate space for parking?,?,?,?,?,?,?,?,?,?,?,?
-Is facility area clean and neat?,?,?,?,?,?,?,?,?,?,?,?
-Are surfaces free from dust?,?,?,?,?,?,?,?,?,?,?,?
-Is there adequate lighting?,?,?,?,?,?,?,?,?,?,?,?
-Is air conditioning available?,?,?,?,?,?,?,?,?,?,?,?
- Is there enough ventilation?,?,?,?,?,?,?,?,?,?,?,?
-"Is flooring of cleanable, smooth impervious material?",?,?,?,?,?,?,?,?,?,?,?
-Are there relevant restriction signs?,?,?,?,?,?,?,?,?,?,?,?
-Is there parking space designated for people living with disability?,?,?,?,?,?,?,?,?,?,?,?
-Is there directional signage within and outside the facility?,?,?,?,?,?,?,?,?,?,?,?
-Is there backup system for electricity and water?,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,,,,,,,,,,,
-RECEPTION/WAITING AREA INSPECTION,,,,,,,,,,,
-Does reception area have adequate space?,?,?,?,?,?,?,?,?,?,?,?
-Is the telephone/ cell phone available?,?,?,?,?,?,?,?,?,?,?,?
-Is a reception desk with chair available?,?,?,?,?,?,?,?,?,?,?,?
-Is it manned at all times?,?,?,?,?,?,?,?,?,?,?,?
-"Is there an organized patient registration, screening and booking system?",?,?,?,?,?,?,?,?,?,?,?
-Are there adequate patient benches / chairs in the waiting area?,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-Is there a computer?,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,,,,,,,,,,,
-SCREENING ROOM INSPECTION,,,,,,,,,,,
-Does the screening room have adequate space?,?,?,?,?,?,?,?,?,?,?,?
-Does the screening room have wheelchair accessibility?,?,?,?,?,?,?,?,?,?,?,?
-,,,,,,,,,,,
-Is screening room equipped with chairs and table?,?,?,?,?,?,?,?,?,?,?,?
-Is screening room equipped with sphygmomanometer?,?,?,?,?,?,?,?,?,?,?,?
-Is screening room equipped with thermometer?,?,?,?,?,?,?,?,?,?,?,?
-Is screening room equipped with glucometer and strips?,?,?,?,?,?,?,?,?,?,?,?
-Is screening room equipped with alcohol Swabs?,?,?,?,?,?,?,?,?,?,?,?
-Is screening room equipped with weighing scale (both adult and paediatric)?,?,?,?,?,?,?,?,?,?,?,?
-Is screening room equipped with height measuring device?,?,?,?,?,?,?,?,?,?,?,?
-Is screening room equipped with non sterile gloves?,?,?,?,?,?,?,?,?,?,?,?
-Is screening room equipped with waste bins with lids for clinical waste?,?,?,?,?,?,?,?,?,?,?,?
-Is screening room equipped with waste bin with lids for domestic waste?,?,?,?,?,?,?,?,?,?,?,?
-Is screening room equipped with sharps container?,?,?,?,?,?,?,?,?,?,?,?
-Is screening room equipped with hand wash facilities?,?,?,?,?,?,?,?,?,?,?,?
-Is screening room equipped with appropriate hand drying facilities?,?,?,?,?,?,?,?,?,?,?,?
-,,,,,,,,,,,
-CONSULTATION ROOM INSPECTION,,,,,,,,,,,
-Does the consultation room have adequate space?,?,?,?,?,?,?,?,?,?,?,?
-Does the consultation room have wheelchair accessibility?,?,?,?,?,?,?,?,?,?,?,?
-Does the consultation room have the following?,,,,,,,,,,,
-Does the consultation room have at least 3 chairs?,?,,?,,?,?,?,?,?,,?
-Does the consultation room have alcohol swabs?,,,?,,?,,,?,?,,?
-Does the consultation room have appropriate hand drying facilities?,?,,?,?,?,?,,,?,,?
-Does the consultation room have appropriate soap dispenser?,,,,,?,,,,,,
-Does the consultation room have an audiometer?,,,,,,,?,,,,
-Does the consultation room have an autoclave?,,,,,,,?,,,,
-Does the consultation room have an autorefractor?,,,,?,,,,,,,
-Does the consultation room have a binocular indirect ophthalmoscope?,,,,?,,,,,,,
-Does the consultation room have a bead bath heater?,,,,?,,,,,,,
-Does the consultation room have a cabinet/storage space?,,,?,,,,,?,?,,?
-Does the consultation room have a clinical waste bin with a lid?,,,?,,?,,,?,?,,?
-Does the consultation room have condoms?,?,,,,,,,,,,
-Does the consultation room have a cone and thudichum speculum (nasal and ear speculum)?,,,,,,,?,,,,
-Does the consultation room have cotton swabs soaked in alcohol?,?,,,,,,,,,,
-Does the consultation room have cotton wool/wipes?,,,,,?,,,,,,
-Does the consultation room have a curette?,,,,,,,?,,,,
-Does the consultation room have a dental chair covered with a headrest and all attachments?,,,,,,?,,,,,
-Does the consultation room have dental stools?,,,,,,?,,,,,
-Does the consultation room have a diagnostic set?,?,,,,,,,?,?,?,?
-Does the consultation room have a direct ophthalmoscope?,,,,?,,,,,,,
-Does the consultation room have disposable cups?,,,,,,?,,,,,
-Does the consultation room have disposable gloves?,,,?,,,,,,,,
-Does the consultation room have a domestic waste bin with a lid?,,,?,,?,,,?,?,,?
-Does the consultation room have a drip stand?,?,,,,,,,,,,
-Does the consultation room have an ear microscope?,,,,,,,?,,,,
-Does the consultation room have an emergency tray?,?,,,?,,,,,,,
-Does the consultation room have an endoscope and endoscopic light?,,,,,,,?,,,,
-Does the consultation room have an examination chair?,,,,,,,?,,,,
-"Does the consultation room have an examination couch with a tiltable headrest, covered with linen?",,,,,,,,?,?,,?
-"Does the consultation room have an examination gynaecological bed/couch with straps, covered with linen?",?,,,,,,,,,,
-Does the consultation room have an examination lamp?,?,,,,,,,?,?,,?
-Does the consultation room have an examination/treatment couch behind a curtain or located within a screened-off alcove to provide privacy?,,,,,?,,,,,,
-,,,,,?,,,,,,
-,,,,,?,,,,,,
-Does the consultation room have fetoscope?,?,,,,,,,,,,
-Does the consultation room have foetal monitor?,?,,,,,,,,,,
-,,,,?,,,,,,,
-Does the Procedure Room have Glucometer and strips?,?,,,,?,?,,?,?,,?
-,?,,?,?,,?,,?,?,,?
-,,,,,,,?,,,,
-Does the consultation room have height measuring device?,?,,,,?,,,?,?,,?
-,,,?,,,,,,,,
-,,,,,,,?,,,,
-Does the consultation room have is the couch behind a curtain or located within a screened off alcove to provide privacy?,?,,,,,,,?,?,,?
-,,,,,,,,?,,,
-,,,,,,,,?,,,
-,,,,,,,,,,,
-Does the consultation room have lubricating jell or solution?,?,,,,,,,,,,
-,,,,?,,,,,,,
-,,,,,,?,,,,,
-,,,,?,,,,,,,
-,?,,,?,?,?,,?,?,,?
-,,,,,,,?,,,,
-,?,,,,,,,,,,
-,,,,,,,,?,?,,?
-,?,,,,,,,?,?,,?
-,,,,?,,,,,,,
-,?,,?,,,?,,?,?,,?
-,,,,?,,,,,,,
-,?,,,,,,,,,,
-,?,,?,?,?,?,,?,?,,?
-,,,,,,,?,,,,
-,,,,?,,,,,,,
-,,,,?,,,,,,,
-,,,,,,,?,,,,
-,,,,?,,,,,,,
-,,,,?,,,,,,,
-,?,,,,?,,,?,?,,?
-,?,,,,?,,,?,?,,?
-,?,,,?,?,?,,?,?,,?
-,?,,,?,,,,,,,
-,?,,,,,?,?,,,,
-,,,,,,,?,,,,
-,,,?,,,,,,,,
-,?,,,,,,,,,,
-,?,,,,?,?,,?,?,,?
-,,,?,,,,,,,,
-,?,,,,,?,?,?,?,,?
-,,,,?,,,,,,,
-,,,,?,,,,,,,
-,,,,,,,?,,,,
-,?,,,,,,,,,,
-,?,,,,,,,,,,
-,?,,,,,,,?,?,,?
-,?,,,?,?,?,,,,,
-,?,,,?,,?,,,,,
-,?,,,,?,,,?,?,,?
-,,,,,?,?,,?,?,,?
-,,,,,,,,,,,
-PROCEDURE ROOM INSPECTION,,,,,,,,,,,
-Does the procedure room have adequate space?,,,,,,,,,,,
-Is the room wheelchair accessible?,,,,,,,,,,,
-,,,,,,,,,,,
-Room have Cotton swabs soaked in alcohol?,,,,?,,,,?,?,,?
-"Does the procedure room have Antiseptic ointments, creams, solutions etc.?",,,,,,,,?,?,,?
-,?,,,?,,,?,,?,,?
-,,,,?,,,,,,,
-,,,,,,,,?,?,,?
-,?,,,?,,,,?,?,,?
-,,,,?,,,?,?,?,,?
-,?,,,,,,,,,,
-,?,,,?,,,?,?,?,,?
-,,,,,,,?,,,,
-,?,,,,,,,,,,
-,?,,,?,,,?,?,?,,?
-,,,,?,,,?,?,?,,?
-,?,,,,,,,?,?,,?
-,,,,,,,?,,,,
-,,,,,,,,?,?,,?
-,?,,,?,,,,?,?,,?
-,?,,,?,,,,?,?,,?
-,?,,,,,,,,,,
-,?,,,?,,,?,?,?,,?
-,,,,,,,?,,,,
-,?,,,,,,,?,?,,?
-,?,,,?,,,,?,?,,?
-,?,,,,,,,,,,
-,?,,,,,,,,,,
-,,,,,,,?,?,?,,?
-,?,,,?,,,?,?,?,,?
-,?,,,?,,,?,?,?,,?
-,?,,,?,,,?,?,?,,?
-,?,,,,,,,,,,
-,?,,,,,,,,,,
-,?,,,,,,,,,,
-,?,,,,,,,,,,
-,?,,,?,,,?,?,?,,?
-,?,,,?,,,,?,?,,?
-,,,,?,,,,,,,
-,?,,,,,,,?,?,,?
-,?,,,?,,,?,?,?,,?
-,?,,,?,?,?,?,?,?,?,?
-,?,,,,,,?,,?,,?
-,,,,?,,,,?,,,
-,,,,?,,,,,,,
-,?,,,,,,?,?,?,,?
-,,,,,,,?,,,,
-,?,,,,,,,,,,
-,?,,,,,,,?,?,,?
-,?,,,,,,,,,,
-,?,,,,,,,,,,
-,,,,,,,,,,,
-SLUICE ROOM INSPECTION,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,?,,,,?,,,?,?,?,?
-,?,,,?,,,,,,,
-,?,,,?,,,,,,,
-,?,,,?,?,,,?,?,?,?
-,?,,,?,?,,,?,?,?,?
-,?,,,?,?,,,?,?,?,?
-,?,,,?,?,,,?,?,?,?
-,?,,,?,?,,,?,?,?,?
-,?,,,?,?,,,?,?,?,?
-,,,,,,,,,,,
-BLEEDING ROOM INSPECTION,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,?,?,,,,,,?,?,,?
-,?,?,,,,,,?,?,,?
-,?,?,,,,,,?,?,,?
-,?,?,,,,,,?,?,,?
-,?,?,,,,,,?,?,,?
-,?,?,,,,,,?,?,,?
-,?,?,,,,,,?,?,,?
-,?,?,,,,,,?,?,,?
-,?,?,,,,,,?,?,,?
-,?,?,,,,,,?,?,,?
-,?,?,,,,,,?,?,,?
-,?,?,,,,,,?,?,,?
-,?,?,,,,,,?,?,,?
-,?,?,,,,,,?,?,,?
-,?,?,,,,,,?,?,,?
-,?,?,,,,,,?,?,,?
-,?,?,,,,,,?,?,,?
-,,,,,,,,,,,
- INSPECTION OF TOILET FACILITIES,,,,,,,,,,,
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,,,,,,,,,,,
-PHARMACY/DISPENSARY INSPECTION,,,,,,,,,,,
-,?,,,,,,,,,,?
-,?,,,,,,,,,,?
-,?,,,,,,,,,,?
-,?,,,,,,,,,,?
-,?,,,,,,,,,,?
-,?,,,,,,,,,,?
-,?,,,,,,,,,,?
-,?,,,,,,,,,,?
-,?,,,,,,,,,,?
-,?,,,,,,,,,,?
-,?,,,,,,,,,,?
-,?,,,,,,,,,,?
-,?,,,,,,,,,,?
-,?,,,,,,,,,,?
-,?,,,,,,,,,,?
-,?,,,,,,,,,,?
-,?,,,,,,,,,,?
-,?,,,,,,,,,,?
-,?,,,,,,,,,,?
-,?,,,,,,,,,,?
-,?,,,,,,,,,,?
-,?,,,,,,,,,,?
-,?,,,,,,,,,,?
-,?,,,,,,,,,,?
-,?,,,,,,,,,,?
-,?,,,,,,,,,,?
-,,,,,,,,,,,
-PHARMACY/DISPENSARY INSPECTION,,,,,,,,,,,
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,,,,,,,,,,,
-SUPPLIES INSPECTION,,,,,,,,,,,
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,,,,,,,,,,,
-FRECORDS/INFORMATION MANAGEMENT INSPECTION,,,,,,,,,,,
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,,,,,,,,,,,
-CUSTOMER SATISFACTION INSPECTION,,,,,,,,,,,
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,?,?,?,?,?,?,?,?,?,?,?
-,,,,,,,,,,,
-SPECIMEN RECEPTION ROOM,,,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,,,,,,,,,,
-LABORATORY TESTING AREAS CHEMISTRY,,,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,,,,,,,,,,
-LABORATORY TESTING AREAS HAEMATOLOGY,,,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,,,,,,,,,,
-MICROBIOLOGY,,,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,?,,,,,,,,,
-HIV SCREENING,,?,,,,,,,,,
-,,?,,,,,,,,,
-,,,,,,,,,,,
-INSTRUMENT WASHING/STERILISING ROOM,,,,,,,,,,,
-,,,,,,?,,,,,
-,,,,,,?,,,,,
-,,,,,,?,,,,,
-,,,,,,?,,,,,
-,,,,,,?,,,,,
-,,,,,,?,,,,,
-,,,,,,?,,,,,
-,,,,,,?,,,,,
-,,,,,,?,,,,,
-,,,,,,?,,,,,
-,,,,,,?,,,,,
-,,,,,,?,,,,,
-,,,,,,?,,,,,
-,,,,,,?,,,,,
-,,,,,,?,,,,,
-,,,,,,?,,,,,
-,,,,,,?,,,,,
-,,,,,,?,,,,,
-,,,,,,?,,,,,
+,Hospital,Clinic,Laboratory,Radiology,ENT,Dental,Eye,Psycology,Physio,Rehab,Gynae,,,,,,,,,,,,,,,
+ORGANISATION AND MANAGEMENT,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Does The Facility Have An Organisational Structure,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is The Director A Medically Trained Person?,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Does The Facility Have Statutory Requirements?--,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Work Permits For Staff,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Lease Agreement,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Business Registration,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Trade Licence,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Contracts For Staff,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Occupancy Certificate,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Letter Of Permission To Set Up/Operate,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Waste Collection Carrier Licence,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Police Clearance For Employees,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Confidentiality Clause,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Proof Of Change Of Land Use Fire Clearance,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Resident Permit,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Copies Of Statutory,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Indemnity Insuarance,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+"Copies Of Relevant Statutory Instruments E.G. Public Health Act 2013, Botswana Health Professions Act,2001",,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is There Indemnity Insurance?,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Does The Clinic Have Policies And Procedures For The Following?--,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Patient Consent,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Patients Referral,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Assessment Of Patients,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Testing And Treatment Techniques,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Management Of High Risk Patients,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Confidentiality Of Patient Information,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Incident Reporting,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Orientation And Induction,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Linen Management,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Equipment Maintenance Plan/Program,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Testing And Commissioning Certificates,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Treatment Protocols/Guidelines,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Incident Reporting,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Infection Prevention And Control,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Management Of Patient Records And Retention Times,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Management Of Information,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Risk Management,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Management Of Supplies,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Patient Observation,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Management Of Medication,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Post Exposure Prophylaxis,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Complaints Procedure,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Outreach Services,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Waste Management,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+SERVICE PROVIDED,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+What Are The Services Provided At The Facility?--,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Specialists Services (Specify),,?,?,?,,?,,?,?,,,,,,,,,,,,,,,,,
+Specimen Collection (Specify),,?,?,,,,,,,,,,,,,,,,,,,,,,,
+General Practice,,?,,,,,,?,?,,,,,,,,,,,,,,,,,
+General Consultations,,,,,?,?,,,,?,,,,,,,,,,,,,,,,
+Laboratory Services(Specify),,?,,,,,,,,,,,,,,,,,,,,,,,,
+Pharmaceutical Services (Specify),,?,,,,,,,,,,,,,,,,,,,,,,,,
+General Radiology Practice,,,,?,,,,,,,,,,,,,,,,,,,,,,
+Hearing & Balance Services,,,,,?,,,,,,,,,,,,,,,,,,,,,
+"Voice, Speech & Swallowing",,,,,?,,,,,,,,,,,,,,,,,,,,,
+"Allergy, Sinuses & Sleep Disorders",,,,,?,,,,,,,,,,,,,,,,,,,,,
+Medical Examinations,,,,,?,,,,?,,,,,,,,,,,,,,,,,
+Dental Surgery,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Cosmetic Dentistry (Braces And Implants),,,,,,?,,,,,,,,,,,,,,,,,,,,
+Community Health Services (Preventive),,,,,,?,,,,,,,,,,,,,,,,,,,,
+Dental Whitening And Teeth Cleaning,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Fillings And Dentures,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Crowns And Bridges,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Root Canal Treatment,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Home Visits,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Vision Services,,,,,,,?,,,,,,,,,,,,,,,,,,,
+Medical Eye Care,,,,,,,?,,,,,,,,,,,,,,,,,,,
+Surgical Eye Care,,,,,,,?,,,,,,,,,,,,,,,,,,,
+Diagnosis & Treatment Of Eye Conditions,,,,,,,?,,,,,,,,,,,,,,,,,,,
+Plastic Surgery,,,,,,,?,,,,,,,,,,,,,,,,,,,
+Are The Following Treatment Methods Available In The Facility?--,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Cryotherapy,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Wax Therapy,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Galvanism Laser Beam,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Diadynamic Current,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Transcutaneous Electrical Nerve Stimulation ( Tens),,,,,,,,,?,,,,,,,,,,,,,,,,,
+Muscle & Nerve Stimulation,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Interferential Therapy,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Ultrasound,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Microwave Currents,,,,,,,,,?,,,,,,,,,,,,,,,,,
+"Addiction Treatment (Alcohol And Drug Addiction, Gambling Addiction, Sex Addiction, Mood Addiction, Gaming Addiction)",,,,,,,,,,?,,,,,,,,,,,,,,,,
+"Mental Health/ Dual Diagnosis Treatment (Anxiety, Depression, Trauma, Sexual Disorders, Mood Disorders, Psychosis, Psychosocial Such As Misconduct, Missing School, Missing Work And Malingering",,,,,,,,,,?,,,,,,,,,,,,,,,,
+"Chronic Pain Management (For Individuals Who Have Been On Prolonged Medication Use, Includes Medication Adherence)",,,,,,,,,,?,,,,,,,,,,,,,,,,
+Psychometric Assessment (For The Disorders Mentioned Above And Others),,,,,,,,,,?,,,,,,,,,,,,,,,,
+Gynaecology Services,,,,,,,,,,,?,,,,,,,,,,,,,,,
+Fertility,,,,,,,,,,,?,,,,,,,,,,,,,,,
+Sexual Reproductive Health,,,,,,,,,,,?,,,,,,,,,,,,,,,
+Antenatal Care,,,,,,,,,,,?,,,,,,,,,,,,,,,
+Post-Natal Care,,,,,,,,,,,?,,,,,,,,,,,,,,,
+Post-Abortal Care,,,,,,,,,,,?,,,,,,,,,,,,,,,
+Others (Specify),,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+What Is Number Of Specimens Tested Per Month?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Any Outreach Services? If Yes,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is There Letter Of Permission To Offer The Outreach Services,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is There Proof Of Agreement? Agreement Letter With The Facility Where Services Will Be Offered From,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is There Provision Of Emergency Contact Numbers?,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Are The Service To Be Provided Displayed?,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Are Emergency Contact Numbers Displayed?,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+What Is Number Of Patients Seen Per Month?,,?,,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+0,,,,,,,,,,,,,,,,,,,,,,,,,,
+PERSONNEL,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+What Is The Intended Total Number Of Staff?,,?,?,?,?,?,?,?,,?,?,,,,,,,,,,,,,,,
+What Is The Current Total Number Of Staff?,,?,?,?,?,?,?,?,,?,?,,,,,,,,,,,,,,,
+How Many Will Be?--,,,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Medical Doctors,,?,,,?,,?,?,?,?,?,,,,,,,,,,,,,,,
+Specialist Doctors,,?,?,,?,,?,?,?,?,?,,,,,,,,,,,,,,,
+Nurses,,?,,,?,,?,?,?,?,?,,,,,,,,,,,,,,,
+Pharmacists,,?,,,,,,,,,?,,,,,,,,,,,,,,,
+Pharmacy Technicians,,?,,,,,,,,,?,,,,,,,,,,,,,,,
+Laboratory Scientists,,?,?,,,,,,,,?,,,,,,,,,,,,,,,
+Laboratory Technicians,,?,?,,,,,,,,,,,,,,,,,,,,,,,
+Radiographers,,,,?,,,,,,,,,,,,,,,,,,,,,,
+Radiologists,,,,?,,,,,,,,,,,,,,,,,,,,,,
+Sonographers,,,,?,,,,,,,,,,,,,,,,,,,,,,
+Radiology Technicians,,,,?,,,,,,,,,,,,,,,,,,,,,,
+Dentist,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Dental Thereapist,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Dental Assistant,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Dental Technology,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Ophthalmologists,,,,,,,?,,,,,,,,,,,,,,,,,,,
+Optometrists,,,,,,,?,,,,,,,,,,,,,,,,,,,
+Opticians,,,,,,,?,,,,,,,,,,,,,,,,,,,
+Psycologist,,,,,,,,?,,?,,,,,,,,,,,,,,,,
+Physiotherapist,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Physiotherapist Assistant,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Gyaenacologist,,,,,,,,,,,?,,,,,,,,,,,,,,,
+Social Worker,,,,,,,,,,?,,,,,,,,,,,,,,,,
+Kitchen,,,,,,,,,,?,,,,,,,,,,,,,,,,
+Administrative,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Support Staff,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Other (Specify),,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Are Professionals Registered With The Relevant Councils?,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,?
+Personnel Files Have The Following? --,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Signed Job Effectiveness Description,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Education Credentials,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+A Signed Confidentially Clause,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Evidence Of Orientation And Induction,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Evidence Of Continued Education,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Signed Contracts Or Offer Letters,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Medical Examination Certificates,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+0,,,,,,,,,,,,,,,,,,,,,,,,,,
+ENVIRONMENT,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Does The Facility Have Wheelchair Accessibility Or Elevators?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+"Where There Are Ramps, Are There Safety Features?",?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+"Is It Fenced, Secure And Easily Accessible",?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is There Adequate Space For Parking?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is Facility Area Clean And Neat?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Are Surfaces Free From Dust?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is There Adequate Lighting?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is Air Conditioning Available?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is There Enough Ventilation?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+"Is Flooring Of Cleanable, Smooth Impervious Material?",?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Are There Relevant Restriction Signs,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is There Parking Space Designated For People Living With Disability?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is There Directional Signage Within And Outside The Facility?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is There Backup System For Electricity And Water?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is There Provision For Water Testing?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+0,,,,,,,,,,,,,,,,,,,,,,,,,,
+RECEPTION AREA,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is There Provision For Generator Testing If Available,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Does Reception Area Have Adequate Space?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is The Telephone Or Cell Phone Available?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is A Reception Desk With Chair Available,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is There A Computer?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is It Manned At All Times?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+"Is There An Organized Patient Registration, Screening, And Booking System",?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Are There Adequate Patient Benches / Chairs?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is There A Waste Bin With A Lid?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is There A Displayed Setswana And English Patient Charter?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is There Available Drinking Source?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is There Information Available On The Hazards Of Radiation In The Reception?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Are Educational Materials Available For Clients?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+0,,,,,,,,,,,,,,,,,,,,,,,,,,
+SCREENING ROOM,?,?,,,,?,?,,,?,?,,,,,,,,,,,,,,,
+Does The Screening Room Have Adequate Space?,?,?,,,,?,?,,,?,?,,,,,,,,,,,,,,,
+Does The Screening Room Have Wheelchair Accessibility?,?,?,,,,?,?,,,?,?,,,,,,,,,,,,,,,
+Is The Screening Room Equipped With?--,?,?,,,,?,?,,,?,?,,,,,,,,,,,,,,,
+Chairs And Table,?,?,,,,?,?,,,?,?,,,,,,,,,,,,,,,
+Sphygmonometer (Adults & Paediatrics),?,?,,,,?,?,,,?,?,,,,,,,,,,,,,,,
+Thermometer,?,?,,,,?,?,,,?,?,,,,,,,,,,,,,,,
+Glucometer And Strips,?,?,,,,?,?,,,?,?,,,,,,,,,,,,,,,
+Alcohol Swabs,?,?,,,,?,?,,,?,?,,,,,,,,,,,,,,,
+Weighing Scale,?,?,,,,?,?,,,?,?,,,,,,,,,,,,,,,
+Height Measuring Device,?,?,,,,?,?,,,?,?,,,,,,,,,,,,,,,
+Non Sterile Gloves,?,?,,,,?,?,,,?,?,,,,,,,,,,,,,,,
+Clinical Waste Bins With Lids,?,?,,,,?,?,,,?,?,,,,,,,,,,,,,,,
+Domestic Waste Bin With Lids,?,?,,,,?,?,,,?,?,,,,,,,,,,,,,,,
+Sharp Containers,?,?,,,,?,?,,,?,?,,,,,,,,,,,,,,,
+Hand Wash Facilities,?,?,,,,?,?,,,?,?,,,,,,,,,,,,,,,
+Appropriate Hand Drying Facilities,?,?,,,,?,?,,,?,?,,,,,,,,,,,,,,,
+0,,,,,,,,,,,,,,,,,,,,,,,,,,
+CONSULTATION ROOM,?,?,,,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Does The Consultation Room Have Adequate Space?,?,?,,,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Does The Consultation Room Have Wheelchair Accessibility?,?,?,,,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Does The Consultation Room Have The Following?--,?,?,,,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+At Least 3 Chairs,?,?,,,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Table,?,?,,,,,,?,,,,,,,,,,,,,,,,,,
+"Examination Couch With Tiltable Headrest, Covered With Linen",?,?,,,,,,,?,?,,,,,,,,,,,,,,,,
+Examination/Treatment Couch Covered With Clean Linen,?,?,,,,,,,?,,,,,,,,,,,,,,,,,
+"Examination Gynaecological Bed/Couch With Straps, Covered With Linen",,,,,,,,,,,?,,,,,,,,,,,,,,,
+Is The Couch Behind A Curtain Or Located Within A Screened Off Alcove To Provide Privacy,?,?,,,,,,,?,?,?,,,,,,,,,,,,,,,
+Steps To Ease Access To Couch,?,?,,,,,,,?,?,?,,,,,,,,,,,,,,,
+Cabinet/Storage Space,?,?,,,?,,?,?,,?,?,,,,,,,,,,,,,,,
+Examination Lamp*,?,?,,,,,,,,?,?,,,,,,,,,,,,,,,
+Sterile Gloves,?,?,,,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Sphygmomanometer*(Both Adult And Paediatric),?,?,,,,,,,?,?,?,,,,,,,,,,,,,,,
+Thermometer,?,?,,,?,?,,,?,?,?,,,,,,,,,,,,,,,
+Glucometer* And Strips,?,?,,,,?,,,?,?,?,,,,,,,,,,,,,,,
+Alcohol Swabs,?,?,,,,,,?,?,?,?,,,,,,,,,,,,,,,
+Weighing Scale ( Adult And Paediatric)*,?,?,,,,,,,?,?,?,,,,,,,,,,,,,,,
+Height Measuring Device*,?,?,,,,?,,,?,?,?,,,,,,,,,,,,,,,
+Non Sterile Gloves,?,?,,,?,?,?,,?,?,?,,,,,,,,,,,,,,,
+Clinical Waste Bins With Lids,?,?,,,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Domestic Waste Bin With Lids,?,?,,,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Sharps Container,?,?,,,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Appropriate Hand Washing Facilities,?,?,,,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Appropriate Hand Drying Facilities,?,?,,,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Disposable Cups,?,?,,,?,?,?,?,?,?,,,,,,,,,,,,,,,,
+Diagnostic Set*,?,?,,,,,,,,?,?,,,,,,,,,,,,,,,
+Pen Torch*,?,?,,,,,,,,?,?,,,,,,,,,,,,,,,
+Patellar Hammer,?,?,,,,,,,,?,?,,,,,,,,,,,,,,,
+Vaginal Speculae (Different Sizes),?,?,,,,,,,,?,?,,,,,,,,,,,,,,,
+Tongue Depressors,?,?,,,?,?,,,,?,?,,,,,,,,,,,,,,,
+X Ray Viewing Box*,?,?,,,,?,,,?,?,?,,,,,,,,,,,,,,,
+Reference Material,?,,,,,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Examination Chair,?,,,,?,,?,,,,?,,,,,,,,,,,,,,,
+Otoscope Set,?,,,,?,,,,,,?,,,,,,,,,,,,,,,
+Head Light / Head Mirror,?,,,,?,,,,?,,?,,,,,,,,,,,,,,,
+Irrigator,?,,,,?,,,,?,,,,,,,,,,,,,,,,,
+Curette,?,,,,?,,,,,,?,,,,,,,,,,,,,,,
+Cone And Thudichum Speculum (Nasal And Ear Speculum),?,,,,?,,,,,,?,,,,,,,,,,,,,,,
+Tuning Fork,?,,,,?,,,,,,?,,,,,,,,,,,,,,,
+Laryngoscope,?,,,,?,,,,,,?,,,,,,,,,,,,,,,
+Endoscope And Endoscopic Light,?,,,,?,,,,,,,,,,,,,,,,,,,,,
+Autoclave,?,,,,?,,,,,,,,,,,,,,,,,,,,,
+Audiometer,?,,,,?,,,,,,,,,,,,,,,,,,,,,
+Sound Proof Room/ Booth,?,,,,?,,,,,,,,,,,,,,,,,,,,,
+Siegelï¿½S Speculum,?,,,,?,,,,,,,,,,,,,,,,,,,,,
+Jobson-Horneï¿½S Probe,?,,,,?,,,,,,,,,,,,,,,,,,,,,
+Suction Apparatus,?,,,,?,,,,,,,,,,,,,,,,,,,,,
+Ear Microscope,?,,,,?,,,,,,,,,,,,,,,,,,,,,
+Dental Chair Covered With Head Rest And All Attachment,?,,,,?,?,,,,,,,,,,,,,,,,,,,,
+Dental Stools,?,,,,?,?,,,,,,,,,,,,,,,,,,,,
+Storage Space For Dental Consumables,?,,,,?,?,,,,,,,,,,,,,,,,,,,,
+Mouth Gargle,?,,,,,?,,,,,,,,,,,,,,,,,,,,
+Phoropter,?,,,,,,?,,,,,,,,,,,,,,,,,,,
+Snellen Chart (6 Meters From Client),?,,,,,,?,,,,,,,,,,,,,,,,,,,
+Slit Lamp,?,,,,,,?,,,,,,,,,,,,,,,,,,,
+Stool,?,,,,,,?,,,,,,,,,,,,,,,,,,,
+Retinal Camera,?,,,,,,?,,,,,,,,,,,,,,,,,,,
+Binocular Indirect Ophthalmoscope,?,,,,,,?,,,,,,,,,,,,,,,,,,,
+Direct Ophthalmoscope,?,,,,,,?,,,,,,,,,,,,,,,,,,,
+Manual Keratometer,?,,,,,,?,,,,,,,,,,,,,,,,,,,
+Autorefrator,?,,,,,,?,,,,,,,,,,,,,,,,,,,
+Tonometer,?,,,,,,?,,,,,,,,,,,,,,,,,,,
+Lensometer,?,,,,,,?,,,,,,,,,,,,,,,,,,,
+Toric Marker,?,,,,,,?,,,,,,,,,,,,,,,,,,,
+Pre Chopper,?,,,,,,?,,,,,,,,,,,,,,,,,,,
+Spectacles,?,,,,,,?,,,,,,,,,,,,,,,,,,,
+Speculum,?,,,,,,?,,,,,,,,,,,,,,,,,,,
+Needle Holders,?,,,,,,?,,,,,,,,,,,,,,,,,,,
+Forceps,?,,,,,,?,,,,,,,,,,,,,,,,,,,
+Bead Bath Heater,?,,,,,,?,,,,,,,,,,,,,,,,,,,
+Emergency Tray,?,,,,,,?,,,,?,,,,,,,,,,,,,,,
+Is The Room Sound Proof,?,,,,,,,?,,,,,,,,,,,,,,,,,,
+Is There Restriction Sign,?,,,,,,,?,,,,,,,,,,,,,,,,,,
+Tissues,?,,,,,,,?,,,,,,,,,,,,,,,,,,
+Hiv Testing Kit,?,,,,,,,?,,,,,,,,,,,,,,,,,,
+Is Psychology Testing Material Available (Intellectual Test),?,,,,,,,?,,,,,,,,,,,,,,,,,,
+Wash Basin With Running Hot And Cold Water,?,,,,,,,,?,,,,,,,,,,,,,,,,,
+Appropriate Soap Dispenser,?,,,,,,,,?,,,,,,,,,,,,,,,,,
+Cotton Wool/Wipes,?,,,,,,,,?,,,,,,,,,,,,,,,,,
+"Pap Smear Test Kit (Brush, Fixator, Frosted Microscope Glass Slides)",?,,,,,,,,,,?,,,,,,,,,,,,,,,
+Ultra Sound Machine*,?,,,,,,,,,,?,,,,,,,,,,,,,,,
+Ultra Sound Jelly,?,,,,,,,,,,?,,,,,,,,,,,,,,,
+Drip Stand,?,,,,,,,,,,?,,,,,,,,,,,,,,,
+Emergency Tray,?,,,,,,,,,,?,,,,,,,,,,,,,,,
+Condoms,?,,,,,,,,,,?,,,,,,,,,,,,,,,
+Fetoscope,?,,,,,,,,,,?,,,,,,,,,,,,,,,
+Foetal Monitor,?,,,,,,,,,,?,,,,,,,,,,,,,,,
+Tape Measure,?,,,,,,,,,,?,,,,,,,,,,,,,,,
+Sanitary Pads,?,,,,,,,,,,?,,,,,,,,,,,,,,,
+Stool,?,,,,,,,,,,?,,,,,,,,,,,,,,,
+Lubricating Jell Or Solution,?,,,,,,,,,,?,,,,,,,,,,,,,,,
+0,,,,,,,,,,,,,,,,,,,,,,,,,,
+PROCEDURE ROOM,?,?,,,?,,?,,,?,?,,,,,,,,,,,,,,,
+Does The Procedure Room Have Adequate Space?,?,?,,,?,,?,,,?,?,,,,,,,,,,,,,,,
+Is The Procedure Room Wheelchair Accessible?,?,?,,,?,,?,,,?,?,,,,,,,,,,,,,,,
+Does The Procedure Room Have The Following?--,?,?,,,?,,?,,,?,?,,,,,,,,,,,,,,,
+A Fully Equipped Resuscitation Trolley Which Is Regularly Checked,?,,,,,,,,,,,,,,,,,,,,,,,,,
+Chairs,?,?,,,?,,?,,,?,?,,,,,,,,,,,,,,,
+"Examination Couch With Tiltable Headrest, Covered With Linen",?,?,,,,,,,,?,,,,,,,,,,,,,,,,
+Gynaecological Couch With Straps,,,,,,,,,,,?,,,,,,,,,,,,,,,
+Is There Couch Behind A Curtain Or Located Within A Screened Off Alcove To Provide Privacy,?,?,,,,,,,,?,?,,,,,,,,,,,,,,,
+Steps To Ease Access To Couch,?,?,,,,,,,,?,?,,,,,,,,,,,,,,,
+Cupboards And Suitably Surfaced Bench Tops,?,?,,,?,,?,,,?,?,,,,,,,,,,,,,,,
+Examination Lamp*,?,?,,,,,?,,,?,?,,,,,,,,,,,,,,,
+Sterile Gloves,?,?,,,?,,?,,,?,?,,,,,,,,,,,,,,,
+Sphygmomanometer*(Both Adult And Paediatric)*,?,?,,,,,?,,,?,?,,,,,,,,,,,,,,,
+Alcohol Swabs,,?,,,,,?,,,?,?,,,,,,,,,,,,,,,
+Non Sterile Gloves,?,?,,,?,,?,,,?,?,,,,,,,,,,,,,,,
+Clinical Waste Bins With Lids,,?,,,?,,?,,,?,?,,,,,,,,,,,,,,,
+Domestic Waste Bin With Lids,,?,,,?,,?,,,?,?,,,,,,,,,,,,,,,
+Sharps Container,?,?,,,?,,?,,,?,?,,,,,,,,,,,,,,,
+Hand Wash Facilities,?,?,,,?,,?,,,?,?,,,,,,,,,,,,,,,
+Appropriate Hand Drying Facilities,?,?,,,?,,?,,,,?,,,,,,,,,,,,,,,
+Basin With Running Water And Soap Dispenser?,?,,,,,,,,,,,,,,,,,,,,,,,,,
+Vaginal Speculae,,?,,,,,,,,?,?,,,,,,,,,,,,,,,
+Tongue Depressors,,?,,,?,,,,,?,?,,,,,,,,,,,,,,,
+Drip Stand,?,?,,,,,,,,?,?,,,,,,,,,,,,,,,
+Nebulizing Machine And Solutions,,?,,,?,,,,,?,?,,,,,,,,,,,,,,,
+"Sterile Suture Pack (Gale Pots, Needle Holder, Scalpel, Pair Of Stich Scissors, Tooth Forceps)",,?,,,?,,?,,,?,?,,,,,,,,,,,,,,,
+"Sterile Dressing Packs (Sponge Holding Forceps, Toothed And Non-Toothed Forceps, Straight Artery Forceps, 2 Galley Pots, Sterile Gauge And Cotton Wool Swabs, Kidney Dish, Scalpel)",,?,,,?,,?,,,?,?,,,,,,,,,,,,,,,
+Bandages And Plasters,,?,,,,,,,,,,,,,,,,,,,,,,,,
+Disinfectants Or Antiseptic Solutions,,?,,,?,,?,,,?,?,,,,,,,,,,,,,,,
+Normal Saline,,?,,,?,,?,,,?,?,,,,,,,,,,,,,,,
+"Antiseptic Ointments, Creams, Solutions Etc.",,?,,,,,,,,?,,,,,,,,,,,,,,,,
+Needles (Different Sizes),,?,,,?,,?,,,?,?,,,,,,,,,,,,,,,
+Examination Chair,,,,,?,,,,,,,,,,,,,,,,,,,,,
+Tracheostomy Set,,,,,?,,,,,,,,,,,,,,,,,,,,,
+Irrigator,,,,,?,,,,,,,,,,,,,,,,,,,,,
+Curette,,,,,?,,,,,,,,,,,,,,,,,,,,,
+Glucometer* And Strips,,,,,,,?,,,?,?,,,,,,,,,,,,,,,
+Sutures,,,,,,,?,,,,,,,,,,,,,,,,,,,
+Lockable Refrigerator For Injectable With Temperature Monitoring Device And Chart,,,,,,,?,,,?,?,,,,,,,,,,,,,,,
+Autoclave,,,,,,,?,,,,,,,,,,,,,,,,,,,
+Stainless Steel Sink,,,,,,,?,,,,,,,,,,,,,,,,,,,
+Bandages And Plasters,,,,,,,,,,?,,,,,,,,,,,,,,,,
+Dilatation And Curettage Set,,,,,,,,,,,?,,,,,,,,,,,,,,,
+Sanitary Pads,,,,,,,,,,,?,,,,,,,,,,,,,,,
+Pap Smear Set,,,,,,,,,,,?,,,,,,,,,,,,,,,
+Pregnancy Test Kit,,,,,,,,,,,?,,,,,,,,,,,,,,,
+Urinary Catheters (Different Sizes),,,,,,,,,,,?,,,,,,,,,,,,,,,
+Lockable Refrigerator For Injectable With Temperature Monitoring Device,,,,,,,,,,,,,,,,,,,,,,,,,,
+Lubricating Jell Or Solution,,,,,,,,,,,,,,,,,,,,,,,,,,
+X-Ray View Box,?,,,,,,,,,,,,,,,,,,,,,,,,,
+0,,,,,,,,,,,,,,,,,,,,,,,,,,
+BLEEDING ROOM,?,?,?,,,,,,,?,?,,,,,,,,,,,,,,,
+Does The Bleeding Room Have Adequate Space?,?,?,?,,,,,,,?,?,,,,,,,,,,,,,,,
+Does The Room Have Wheelchair Accessibility?,?,?,?,,,,,,,?,?,,,,,,,,,,,,,,,
+Does The Lab Have Procedures For Patient Preparation Before Blood Collection?,?,,?,,,,,,,,,,,,,,,,,,,,,,,
+Is The Room Equipped With The Following--,?,?,?,,,,,,,?,?,,,,,,,,,,,,,,,
+2 Or More Chairs,?,?,?,,,,,,,?,?,,,,,,,,,,,,,,,
+Blood Tubes Of Different Colours,?,?,?,,,,,,,?,?,,,,,,,,,,,,,,,
+Needles And Syringes (Different Sizes),?,?,?,,,,,,,?,?,,,,,,,,,,,,,,,
+Vacutainer,?,?,?,,,,,,,?,?,,,,,,,,,,,,,,,
+Tourniquet (Adults And Peads),?,?,?,,,,,,,?,?,,,,,,,,,,,,,,,
+Plaster,?,?,?,,,,,,,?,?,,,,,,,,,,,,,,,
+Cotton Swab,?,?,?,,,,,,,?,?,,,,,,,,,,,,,,,
+Sharps Container,?,?,?,,,,,,,?,?,,,,,,,,,,,,,,,
+Antiseptic Disinfectant,?,?,?,,,,,,,?,?,,,,,,,,,,,,,,,
+Clinical Waste Bin With Lid,?,?,?,,,,,,,?,?,,,,,,,,,,,,,,,
+Domestic Waste Bin With Lid,?,?,?,,,,,,,?,?,,,,,,,,,,,,,,,
+Hand Wash Facilities,?,?,?,,,,,,,?,?,,,,,,,,,,,,,,,
+Appropriate Hand Drying Facilities,?,?,?,,,,,,,?,?,,,,,,,,,,,,,,,
+Disposable Gloves,?,?,?,,,,,,,?,?,,,,,,,,,,,,,,,
+Ice Packs,?,?,?,,,,,,,?,?,,,,,,,,,,,,,,,
+Specimen Racks,?,?,?,,,,,,,?,?,,,,,,,,,,,,,,,
+Ï¿½ Hand Basin With Running Water And Suitable Soap Dispenser?,?,,?,,,,,,,?,?,,,,,,,,,,,,,,,
+Cooler Box,?,,?,,,,,,,?,?,,,,,,,,,,,,,,,
+Alcohol Swab,?,,?,,,,,,,?,?,,,,,,,,,,,,,,,
+Specimen Register/Computer,?,,?,,,,,,,?,?,,,,,,,,,,,,,,,
+Specimen Containers,?,,?,,,,,,,?,?,,,,,,,,,,,,,,,
+Is There Provision For Patient Privacy,?,,?,,,,,,,?,?,,,,,,,,,,,,,,,
+Is There Air-Conditioner With Monitoring Device And Chart?,?,,?,,,,,,,?,?,,,,,,,,,,,,,,,
+0,,,,,,,,,,,,,,,,,,,,,,,,,,
+SLUICE ROOM,?,?,,?,,,?,,?,?,?,,,,,,,,,,,,,,,
+Does The Sluice Room Have Adequate Space?,?,?,,?,,,?,,?,?,?,,,,,,,,,,,,,,,
+Does The Room Have Adequate Ventilation?,?,?,,?,,,?,,?,?,?,,,,,,,,,,,,,,,
+Is The Sluice Room Equipped With The Following--,?,?,,?,,,?,,?,?,?,,,,,,,,,,,,,,,
+Stainless Steel Sink With Running Water,?,?,,?,,,?,,?,?,?,,,,,,,,,,,,,,,
+Stainless Steel Washing Sink With Running Water?,?,?,,?,,,?,,?,?,?,,,,,,,,,,,,,,,
+Stainless Steel Waste Discarding Sink,?,?,,?,,,?,,?,?,?,,,,,,,,,,,,,,,
+Non-Sterile Gloves?,?,?,,?,,,?,,?,?,?,,,,,,,,,,,,,,,
+Heavy Duty Gloves,?,?,,?,,,?,,?,?,?,,,,,,,,,,,,,,,
+Disinfectant,?,?,,?,,,?,,?,?,?,,,,,,,,,,,,,,,
+Waste Bin With Lid For Clinical Waste?,?,?,,?,,,?,,?,?,?,,,,,,,,,,,,,,,
+Waste Bin With Lid For Non-Clinical Waste,?,?,,?,,,?,,?,?,?,,,,,,,,,,,,,,,
+Linen Canvas Bag Or Trolley (Soiled Or Non Soiled),?,?,,?,,,?,,?,?,?,,,,,,,,,,,,,,,
+"Racks For Sputum Mugs, Urinals",?,?,,,,,?,,?,?,?,,,,,,,,,,,,,,,
+0,,,,,,,,,,,,,,,,,,,,,,,,,,
+INSTRUMENT WASHING/ STERILISING ROOM,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Is There A Washing Room With Adequate Space?,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Is The Room Equipped With The Following--,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Stainless Steel Sink With Running Water,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Stainless Steel Waste Discarding Sink Supplied With Hot And Cold Water,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Does The Room Have Adequate Ventilation?,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Is The Room Equipped With The Following--,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Chair,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Microwave,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Autoclave,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Sterilising Containers,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Sterilising Solutions,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Pack Wrappers,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Disinfectant,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Sharps Container,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Waste Bin With Lid For Clinical Waste,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Waste Bin With Lid For Domestic Waste,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Hand Wash Facilities,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Appropriate Hand Drying Facilities,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Disposable Gloves,,,,,,?,,,,,,,,,,,,,,,,,,,,
+0,,,,,,?,,,,,,,,,,,,,,,,,,,,
+TOILET FACILITITES,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is There A Minimum Of Two Toilets Available (For Male And,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Female Patients)?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Are They Labelled Ï¿½Maleï¿½ And Ï¿½Female?Ï¿½,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Are Toilets Fitted With Hand Wash Facilities?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is There Suitable Soap Dispenser?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is There An Appropriate Hand Drying Provision?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is There A Separate Toilet For Staff?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is There A Toilet That Is Designed For Wheel Chair Users?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Are Toilets Wheel Chair Accessible?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Does The Female Toilet Have Sanitary Pads Disposal?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Are Toilets Aesthetically Pleasing?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is There Provision For Paediatric Clients?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+0,,,,,,,,,,,,,,,,,,,,,,,,,,
+PHARMACY/ DISPENSARY,,?,,,,,,,,,?,,,,,,,,,,,,,,,
+Is There A Pharmacy Personnel Employed To Carry Out The Pharmacy Functions?,,?,,,,,,,,,?,,,,,,,,,,,,,,,
+Does The Dispensary Have Adequate Space To Allow For An Efficient Workflow?,,?,,,,,,,,,?,,,,,,,,,,,,,,,
+Are There Adequate Shelves For Stock Keeping?,,?,,,,,,,,,?,,,,,,,,,,,,,,,
+Is Stock Arranged And Labelled In A Systematic Manner?,,?,,,,,,,,,?,,,,,,,,,,,,,,,
+Are Drugs Well Protected From Direct Sunlight?,,?,,,,,,,,,?,,,,,,,,,,,,,,,
+Are All Surfaces Finished With An Impervious Washable Material?,,?,,,,,,,,,?,,,,,,,,,,,,,,,
+Are All Surfaces In A Good State Of Repair?,,?,,,,,,,,,?,,,,,,,,,,,,,,,
+Is There A Lockable Refrigerator For The Storage Of Thermos-Labile Drugs?,,?,,,,,,,,,?,,,,,,,,,,,,,,,
+Are There Mechanisms In Place For Monitoring And Controlling Room Temperatures (Storage And Dispensary)?,,?,,,,,,,,,?,,,,,,,,,,,,,,,
+Are There Mechanisms In Place For Monitoring And Controlling Refrigerator Temperatures?,,?,,,,,,,,,?,,,,,,,,,,,,,,,
+Is The Sink Supplied With Hot And Cold Water?,,?,,,,,,,,,?,,,,,,,,,,,,,,,
+"Are The Floors, Walls, Ceiling And Shelves Kept Satisfactorily Clean?",,?,,,,,,,,,?,,,,,,,,,,,,,,,
+Is There A Suitable Of Lighting In The Dispensary?,,?,,,,,,,,,?,,,,,,,,,,,,,,,
+Is There A Suitable Means For Counting Tablets And Capsules Dispensed?,,?,,,,,,,,,?,,,,,,,,,,,,,,,
+Is There A Suitable Means Of Measuring Liquids Dispensed?,,?,,,,,,,,,?,,,,,,,,,,,,,,,
+Is The Preparation Room Clean As Per The Requirements?,,?,,,,,,,,,?,,,,,,,,,,,,,,,
+Are There Suitable Ranges Of Containers For The Dispensing Of--,,?,,,,,,,,,?,,,,,,,,,,,,,,,
+Tablets/Capsules,,?,,,,,,,,,?,,,,,,,,,,,,,,,
+Liquids,,?,,,,,,,,,?,,,,,,,,,,,,,,,
+Cream/Ointments,,?,,,,,,,,,?,,,,,,,,,,,,,,,
+Are There Suitable Labels For The Above Mentioned,,?,,,,,,,,,?,,,,,,,,,,,,,,,
+"Is There A Register For Drugs Of Schedule 1A, 1B And 1C?",,?,,,,,,,,,?,,,,,,,,,,,,,,,
+Is There A Lockable Cabinet For The Storage Of 1A And 1B Drugs?,,?,,,,,,,,,?,,,,,,,,,,,,,,,
+Is There A Policy For The Management Of Expired Drugs?,,?,,,,,,,,,?,,,,,,,,,,,,,,,
+Is There Adequate Security In The Dispensary?,,?,,,,,,,,,?,,,,,,,,,,,,,,,
+Is There A Stock Management System?,,?,,,,,,,,,?,,,,,,,,,,,,,,,
+0,,,,,,,,,,,,,,,,,,,,,,,,,,
+SPECIMEN ROOM,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Does The Room Have The Following:--,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Chairs And A Table,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Disposable Gloves,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Specimen Racks And Trays,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Specimen Register/Computer,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Markers/Stickers,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Sharps Container,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Waste Bin With Lid For Clinical Waste,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Waste Bin With Lid For Domestic Waste,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Is There An Organised Specimen Registration System?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Does Registration Use A Unique Patient Identification,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Is There Identification Kept Throughout Lab Testing,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Is There Provision For Patient Privacy?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Is There Documented Specimen Acceptance/Rejection Criteria,,,?,,,,,,,,,,,,,,,,,,,,,,,
+"Does The Lab Have A Documented Specimen System( Collection, Handling, Storage And Transportation",,,?,,,,,,,,,,,,,,,,,,,,,,,
+Is There Specimen Fridge With Temperature Monitoring Device And Chart,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Is There Air-Conditioner With Monitoring Device And Chart?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+0,,,,,,,,,,,,,,,,,,,,,,,,,,
+LAB SERVICES PROVIDED,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Chemistry--,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Does The Testing Area Have Adequate Space?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Are There Adequate Lab Stools And Benches?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Is There Hand Washing Provision?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Is There Air-Conditioner With Monitoring Device And Chart?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+List The Clinical Chemistry Tests Done By The Lab:,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Does The Lab Have Technical Sops (Test Methods)?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Does The Lab Have The Following Equipment--,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Chemistry Analyser,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Centrifuge,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Medical Fridge,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Medical Freezer,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Graduated Pipettes,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Automated Pipettes,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Water Distiller Or Provision For Distilled Water,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Are Normal And Abnormal Quality Control Done And Recorded,,,?,,,,,,,,,,,,,,,,,,,,,,,
+How Often Are Quality Controls Run?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Are Qc Results Monitored Over A Period Of Time?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Does The Lab Participate In External Quality Assessment Schemes?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Are Eqa Results Reviewed And Monitored?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Does The Lab Have Reference Ranges For The Tests Performed?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Are Refrigerator And Freezer Temperatures Monitored?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Waste Bin With Lid For Clinical Waste,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Waste Bin With Lid For Domestic Waste,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Are Reagents Stored Appropriately? Explain,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Are Lab Equipment Calibrated,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Is There An Equipment Preventative Maintenance Plan?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Is Expiry Of Items Monitored?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Haematology:--,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Does The Testing Area Have Adequate Space?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Are There Adequate Lab Stools And Benches?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Is There Hand Washing Provision?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Is There Air-Conditioner With Monitoring Device And Chart?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+List Clinical Tests Done At Haematology,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Does The Lab Have Technical Sops (Test Methods)?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Does The Lab Have The Following Equipment--,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Haematology Analyser?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Microscope?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Staining Racks?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Water Bath?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Coagulation Machine?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Esr Tubes And Caps?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Sample Rocker?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Medical Fridge?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Sample Rotator?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Automated Pipettes?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Graduated Pipettes?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Pipette Fillers?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Are Normal And Abnormal Quality Control Done And Recorded?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+How Often Are Quality Controls Run?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Are Qc Results Monitored Over A Period Of Time?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Does The Lab Participate In External Quality Assessment Schemes?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Are Eqa Results Reviewed And Monitored?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Does The Lab Have Reference Ranges For The Tests Performed?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Are Refrigerator And Freezer Temperatures Monitored?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Waste Bin With Lid For Clinical Waste,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Waste Bin With Lid For Domestic Waste,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Are Reagents Stored Appropriately? Explain,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Are Lab Equipment Calibrated,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Is There An Equipment Preventative Maintenance Plan?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Is Expiry Of Items Monitored?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Microbiology:--,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Does The Testing Area Have Adequate Space?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Are There Adequate Lab Stools And Benches?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Is There Air-Conditioner With Monitoring Device And Chart?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Is There Hand Washing Provision?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+List Clinical Tests Done At Microbiology:,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Does The Lab Have Technical Sops (Test Methods,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Does The Lab Have The Following Equipment:--,,,?,,,,,,,,,,,,,,,,,,,,,,,
+"Incubators(Co2,O2,42Oc)",,,?,,,,,,,,,,,,,,,,,,,,,,,
+Microscopes?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Autoclave?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Anaerobic Jars?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Wire Loops,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Disposable Inoculating Loops And Needles?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Urine Wire Loop,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Reading Lamp,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Centrifuge?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Vortex,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Staining Racks?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Sample Rocker?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Medical Fridge,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Medical Freezer?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Hot Plate?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Weighing Scale?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Bunsen Burner?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Gas Cylinders?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Autoclave?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Timers?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Reagent Bottles(Brown)?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Measuring Cylinders?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Conical Flasks?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Reagent Preparation Bottles?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Universal Bottles?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Bijou Bottles?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Graduated Pipettes?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Storage Cabinet For Flammables?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Urine Centrifuge Tubes?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Ready To Use Culture Media?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Ready To Use Staining Reagents?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Graduated Pipettes?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+How Often Are Qc Run?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Does The Lab Have Quality Control Organisms?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+How Often Are Qc Run?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Are Qc Results Monitored Over A Period Of Time?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Does The Lab Participate In Eqa Assessment Schemes?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Are Eqa Results Reviewed And Monitored?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Are Refrigerator Temperatures Monitored?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+0,,,,,,,,,,,,,,,,,,,,,,,,,,
+HIV SCREENING,,,?,,,,,,,,,,,,,,,,,,,,,,,
+Does The Lab Do Any Hiv Screening?,,,?,,,,,,,,,,,,,,,,,,,,,,,
+0,,,,,,,,,,,,,,,,,,,,,,,,,,
+X-RAY ROOM,,,,?,,,,,,,,,,,,,,,,,,,,,,
+Does The X-Ray Room Have Adequate Space?,,,,?,,,,,,,,,,,,,,,,,,,,,,
+Does The X-Ray Room Have Wheelchair Accessibility?,,,,?,,,,,,,,,,,,,,,,,,,,,,
+Are The Following Items Available In The Room?--,,,,?,,,,,,,,,,,,,,,,,,,,,,
+"Red Warning Light At The Entrance, Which Automatically Switches On Whenever Exposure Is Made?",,,,?,,,,,,,,,,,,,,,,,,,,,,
+Examination/Treatment Couch With Tiltable Headrest?,,,,?,,,,,,,,,,,,,,,,,,,,,,
+Lead Gowns Of Different Lead Equivalence For Staff And Relatives?,,,,?,,,,,,,,,,,,,,,,,,,,,,
+Different Sizes Of Gonad Protection.?,,,,?,,,,,,,,,,,,,,,,,,,,,,
+Thyroid Shields.?,,,,?,,,,,,,,,,,,,,,,,,,,,,
+Control Panel Shielded With Lead Window.?,,,,?,,,,,,,,,,,,,,,,,,,,,,
+X-Ray Viewing Box?,,,,?,,,,,,,,,,,,,,,,,,,,,,
+Gloves Ï¿½ Non-Sterile?,,,,?,,,,,,,,,,,,,,,,,,,,,,
+Waste Bin With Lid For Clinical Waste?,,,,?,,,,,,,,,,,,,,,,,,,,,,
+Waste Bin With Lid For Non-Clinical Waste?,,,,?,,,,,,,,,,,,,,,,,,,,,,
+Are The Walls Barium-Plastered?,,,,?,,,,,,,,,,,,,,,,,,,,,,
+Sharps Disposal Container.?,,,,?,,,,,,,,,,,,,,,,,,,,,,
+Are The Walls Barium-Plastered?,,,,?,,,,,,,,,,,,,,,,,,,,,,
+Are The Walls Built From Concrete Bricks 30Cm Wide Or Have An Air Gap?,,,,?,,,,,,,,,,,,,,,,,,,,,,
+Are The Doors Lined With Lead?,,,,?,,,,,,,,,,,,,,,,,,,,,,
+Are The Doors Sliding Type?,,,,?,,,,,,,,,,,,,,,,,,,,,,
+"If Doors Are Not Sliding, Do They Have Lead Strips Along The Edges To Prevent Radiation Leakages?",,,,?,,,,,,,,,,,,,,,,,,,,,,
+"If Windows Exist, Are They Leaded?",,,,?,,,,,,,,,,,,,,,,,,,,,,
+0,,,,,,,,,,,,,,,,,,,,,,,,,,
+ULTRASOUND ROOM,,,,?,,,,,,,,,,,,,,,,,,,,,,
+Is The Ultrasound Machine Commissioned And Records Available?,,,,?,,,,,,,,,,,,,,,,,,,,,,
+Is There Provision For A Change Room For Patients?,,,,?,,,,,,,,,,,,,,,,,,,,,,
+Is The Room Accessible By The Handicapped( Wheel Chairs Users)Etc.,,,,?,,,,,,,,,,,,,,,,,,,,,,
+"Is The Room Equipped With Clinical Waste Bin, Domestic Waste Bin?",,,,?,,,,,,,,,,,,,,,,,,,,,,
+Is There Adequate Ventilation And Lighting?,,,,?,,,,,,,,,,,,,,,,,,,,,,
+Is There Provision For Handwashing?,,,,?,,,,,,,,,,,,,,,,,,,,,,
+0,,,,?,,,,,,,,,,,,,,,,,,,,,,
+SAFETY AND WASTE MANAGEMENT,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Does The Facility Have A Policy On Waste Management?,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Does The Clinic Have Sops On Waste Management?,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Does The Clinic Have A Waste Disposal System? Specify:--,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Domestic Waste,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Clinical Waste,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Other Waste,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Does The Clinic Have A Policy And Procedures On Safety?,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is There A Process For Equipment Sterilisation?,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Does The Facility Have Provision For Testing Drinking Water?,,,,,,,,,,?,,,,,,,,,,,,,,,,
+Is There A Policy And Procedure On Accidental Exposure To Hiv?,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Does The Clinic Have Fire Protection Equipment?--,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Fire Extinguishers,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Emergency Exits,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Additional:--,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Fire Alarms,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Smoke Detectors,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Fire Blankets,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Fire Hose Reel,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Does The Clinic Have A Written Program For Maintaining Fire Protection Equipment,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Fire Inspection Report?,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Does The Clinic Have Adequate Security?,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Alarm System?,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Burglar Bars?,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Lockable Gates?,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Others--,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Does The Facility Have Policy On Radiation Protection?Is The Policy Clear With Regard To Expectant Mothers? Are Radiation Monitoring Badges Availed To Employees? Are Radiation Monitoring Badges Regularly Monitored,,,,?,,,,,,,,,,,,,,,,,,,,,,
+0,,,,,,,,,,,,,,,,,,,,,,,,,,
+SUPPLIES,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Does The Clinic Have The Following Policies--,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Supplies And Purchasing,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Management Of Expired Supplies,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Decontamination Sop,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Does The Clinic Have Adequate Supplies For Services Provided?,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is There A Stock Control System? If Yes Explain,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Does The Clinic Have Equipment Maintenance Plan And Routine Service Plan,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Does The Clinic Have An Asset Register,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Surfaces Finished With An Impervious Washable Material,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Is Stock Arranged And Labelled In A Systematic Manner,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Are Supplies Well Protected From Direct Sunlight,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Is There A Lockable Refrigerator For The Storage Of Thermo-Labile Drugs With Temperature Monitoring For Fridges And Room Temperature,,,,,,?,,,,,,,,,,,,,,,,,,,,
+Is The Facility Stocked With The Following Supplies?--,,,,,,,,,,,,,,,,,,,,,,,,,,
+Tapping Materials,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Strapping Materials,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Crepe Bandage,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Compression Stocking,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Tubigrip,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Braces,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Supports,,,,,,,,,?,,,,,,,,,,,,,,,,,
+"Ambulatory Frames, Pick-Up For Adults",,,,,,,,,?,,,,,,,,,,,,,,,,,
+"Ambulatory Frames, Rollator For Adults",,,,,,,,,?,,,,,,,,,,,,,,,,,
+"Ambulatory Frames,Rollator For Paediatric",,,,,,,,,?,,,,,,,,,,,,,,,,,
+"Crutches, Axillary",,,,,,,,,?,,,,,,,,,,,,,,,,,
+"Crutches, Elbow",,,,,,,,,?,,,,,,,,,,,,,,,,,
+Tripod,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Ultrasound Gel,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Electric Pads(Disposable Or Non-Disposable),,,,,,,,,?,,,,,,,,,,,,,,,,,
+Disinfectant,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Antiseptic,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Massage Oil/Cream,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Sheets,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Towels,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Are Supplies Stored According To Manufacturerï¿½S Recommendations?,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Is The Expiry Of These Items Closely Monitored?,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Does The Facility Have Appropriate Equipment And Instruments For The Services Provided?,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Does The Facility Have The Following Equipment?--,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Wheelchair,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Ultrasound Machine,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Electrotherapy Machine With Provision For Selection Of Different Current Wave Forms,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Short Wave Diathermy Machine,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Wooden Couch For The Short Wave Diathermy Machine,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Infra-Red Lamp,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Laser Therapy Machine,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Ultra-Violet Lamp,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Hydro-Collator/Moist Heat Machine,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Exercise Weights,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Exercise Cycle Ergo Meter,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Parallel Bars,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Sphygmomanometer,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Stethoscope,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Hot Pack,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Measuring Tape,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Set Of Goniometers,,,,,,,,,?,,,,,,,,,,,,,,,,,
+Pair Of Scissors,,,,,,,,,?,,,,,,,,,,,,,,,,,
+0,,,,,,,,,,,,,,,,,,,,,,,,,,
+RECORDS/ INFORMATION MANAGEMENT,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Are Patients Records Well Maintained?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is There A Policy On Patient Confidentiality?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Are Records Controlled And Safe From Manipulation?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Are Records Kept Electronically?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is There A Backup System For Electronic Data?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+"If Hard Copies Are Kept, Is There A System For Protection Against Damage?",?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is There A Policy On Record Retention Times?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Are Hard Copies Kept In A Lockable Cabinet For Maximum Security?,?,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+0,,,,,,,,,,,,,,,,,,,,,,,,,,
+CUSTOMER SATISFACTION,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is There A Customer Feedback Mechanism--,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Suggestion Box,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Customer Surveys,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Others,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+Is There Provision For Consent Before Carrying Out Any Procedures/Assessment,,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,
+"Is There A Complaints, Procedure",,?,?,?,?,?,?,?,?,?,?,,,,,,,,,,,,,,,

@@ -1,49 +1,47 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist for facilities2.0.csv
- * Generated on: 2025-09-04 06:59:14
+ * Generated on: 2025-09-21 23:13:46
  *
  * This file imports all individual clinic filter files and combines them
  * To regenerate this file, run: python src/config/generateFilters.py
  */
 
-import GynaeClinics from './gynaeclinics.js';
+import Hospital from './hospital.js';
+import Clinic from './clinic.js';
 import Laboratory from './laboratory.js';
-import Psychologyclinic from './psychologyclinic.js';
-import EyeopthalmologyoptometryopticianClinics from './eyeopthalmologyoptometryopticianclinics.js';
-import physiotheraphy from './physiotheraphy.js';
-import dentalclinic from './dentalclinic.js';
-import ENTclinic from './entclinic.js';
-import RehabilitationCentre from './rehabilitationcentre.js';
-import Potraitclinic from './potraitclinic.js';
 import Radiology from './radiology.js';
-import clinic from './clinic.js';
+import ENT from './ent.js';
+import Dental from './dental.js';
+import Eye from './eye.js';
+import Psycology from './psycology.js';
+import Physio from './physio.js';
+import Rehab from './rehab.js';
+import Gynae from './gynae.js';
 
 const facilityServiceFilters = {
-    // Original mappings
-    'Gynae Clinics': GynaeClinics,
+    'Hospital': Hospital,
+    'Service Hospital': Hospital,
+    'Clinic': Clinic,
+    'Service Clinic': Clinic,
     'Laboratory': Laboratory,
-    'Psychology clinic': Psychologyclinic,
-    'Eye (opthalmologyoptometry  optician) Clinics': EyeopthalmologyoptometryopticianClinics,
-    'physiotheraphy': physiotheraphy,
-    'dental clinic': dentalclinic,
-    'ENT clinic': ENTclinic,
-    'Rehabilitation Centre': RehabilitationCentre,
-    'Potrait clinic': Potraitclinic,
-    'Radiology': Radiology,
-    'clinic': clinic,
-
-    // Add mappings for service names with "Service " prefix (from dataStore)
-    'Service Gynae Clinics': GynaeClinics,
     'Service Laboratory': Laboratory,
-    'Service Psychology clinic': Psychologyclinic,
-    'Service Eye (opthalmologyoptometry  optician) Clinics': EyeopthalmologyoptometryopticianClinics,
-    'Service physiotheraphy': physiotheraphy,
-    'Service dental clinic': dentalclinic,
-    'Service ENT clinic': ENTclinic,
-    'Service Rehabilitation Centre': RehabilitationCentre,
-    'Service Potrait clinic': Potraitclinic,
+    'Radiology': Radiology,
     'Service Radiology': Radiology,
+    'ENT': ENT,
+    'Service ENT': ENT,
+    'Dental': Dental,
+    'Service Dental': Dental,
+    'Eye': Eye,
+    'Service Eye': Eye,
+    'Psycology': Psycology,
+    'Service Psycology': Psycology,
+    'Physio': Physio,
+    'Service Physio': Physio,
+    'Rehab': Rehab,
+    'Service Rehab': Rehab,
+    'Gynae': Gynae,
+    'Service Gynae': Gynae,
 };
 
 export function shouldShowDataElementForService(dataElementName, selectedService) {

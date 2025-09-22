@@ -1,0 +1,91 @@
+{
+  "generated_on": "2025-09-13T02:01:37.857093",
+  "source_file": "src/config/checklist for facilities2.0.csv",
+  "facility_types": [
+    "Hospital",
+    "Clinic",
+    "Laboratory",
+    "Radiology",
+    "ENT",
+    "Dental",
+    "Eye",
+    "Psycology",
+    "Physio",
+    "Rehab",
+    "Gyaena"
+  ],
+  "sections": [
+    "SERVICE PROVIDED",
+    "PERSONNEL",
+    "ENVIRONMENT",
+    "RECEPTION AREA",
+    "SCREENING ROOM",
+    "CONSULTATION ROOM",
+    "PROCEDURE ROOM",
+    "BLEEDING ROOM",
+    "SLUICE ROOM",
+    "INSTRUMENT WASHING/ STERILISING ROOM",
+    "TOILET FACILITITES",
+    "PHARMACY/ DISPENSARY",
+    "SPECIMEN ROOM",
+    "LAB SERVICES PROVIDED",
+    "HIV SCREENING",
+    "X-RAY ROOM",
+    "ULTRASOUND ROOM",
+    "SAFETY AND WASTE MANAGEMENT",
+    "SUPPLIES",
+    "RECORDS/ INFORMATION MANAGEMENT",
+    "CUSTOMER SATISFACTION"
+  ],
+  "statistics": {
+    "total_facility_types": 11,
+    "total_sections": 21,
+    "total_questions": 209
+  },
+  "facility_statistics": {
+    "Hospital": {
+      "applicable_questions": 58,
+      "coverage_percentage": 27.8
+    },
+    "Clinic": {
+      "applicable_questions": 92,
+      "coverage_percentage": 44.0
+    },
+    "Laboratory": {
+      "applicable_questions": 143,
+      "coverage_percentage": 68.4
+    },
+    "Radiology": {
+      "applicable_questions": 88,
+      "coverage_percentage": 42.1
+    },
+    "ENT": {
+      "applicable_questions": 62,
+      "coverage_percentage": 29.7
+    },
+    "Dental": {
+      "applicable_questions": 65,
+      "coverage_percentage": 31.1
+    },
+    "Eye": {
+      "applicable_questions": 69,
+      "coverage_percentage": 33.0
+    },
+    "Psycology": {
+      "applicable_questions": 60,
+      "coverage_percentage": 28.7
+    },
+    "Physio": {
+      "applicable_questions": 66,
+      "coverage_percentage": 31.6
+    },
+    "Rehab": {
+      "applicable_questions": 74,
+      "coverage_percentage": 35.4
+    },
+    "Gyaena": {
+      "applicable_questions": 94,
+      "coverage_percentage": 45.0
+    }
+  }
+}

@@ -17,82 +17,269 @@
  */
 
 export const sectionVisibilityConfig = {
-  // Gynae Clinics - show all sections (comprehensive inspection)
-  'Gynae Clinics': {
+  // Hospital - show all sections
+  'Hospital': {
     'Document Review': true, 
     'ORGANISATION AND MANAGEMENT': true,
     'STATUTORY REQUIREMENTS': true, 
-    'POLICIES AND PROCEDURES': true
+    'POLICIES AND PROCEDURES': true,
+    'Inspection Type': true,
+    'Inspectors Details': true,
+    'SERVICE PROVIDED': true,
+    'PERSONNEL': true,
+    'ENVIRONMENT': true,
+    'RECEPTION AREA': true,
+    'SCREENING ROOM': true,
+    'CONSULTATION ROOM': true,
+    'PROCEDURE ROOM': true,
+    'BLEEDING ROOM': true,
+    'SLUICE ROOM': true,
+    'TOILET FACILITITES': true,
+    'PHARMACY/ DISPENSARY': true,
+    'SAFETY AND WASTE MANAGEMENT': true,
+    'SUPPLIES': true,
+    'RECORDS/ INFORMATION MANAGEMENT': true,
+    'CUSTOMER SATISFACTION': true
+  },
+
+  // Clinic - show all sections
+  'Clinic': {
+    'Document Review': true, 
+    'ORGANISATION AND MANAGEMENT': true,
+    'STATUTORY REQUIREMENTS': true, 
+    'POLICIES AND PROCEDURES': true,
+    'Inspection Type': true,
+    'Inspectors Details': true,
+    'SERVICE PROVIDED': true,
+    'PERSONNEL': true,
+    'ENVIRONMENT': true,
+    'RECEPTION AREA': true,
+    'SCREENING ROOM': true,
+    'CONSULTATION ROOM': true,
+    'PROCEDURE ROOM': true,
+    'BLEEDING ROOM': true,
+    'SLUICE ROOM': true,
+    'TOILET FACILITITES': true,
+    'PHARMACY/ DISPENSARY': true,
+    'SAFETY AND WASTE MANAGEMENT': true,
+    'SUPPLIES': true,
+    'RECORDS/ INFORMATION MANAGEMENT': true,
+    'CUSTOMER SATISFACTION': true
   },
 
   // Laboratory - focus on technical and safety sections
-  'laboratory': {
-    'SECTION A-ORGANISATION AND MANAGEMENT': true,
-    'SECTION B-STATUTORY REQUIREMENTS': true,
-    'SECTION C-POLICIES AND PROCEDURES': true
-  },
-
-  // Psychology clinic - focus on patient care and management
-  'Psychology clinic': {
-    'SECTION A-ORGANISATION AND MANAGEMENT': true,
-    'SECTION B-STATUTORY REQUIREMENTS': true,
-    'SECTION C-POLICIES AND PROCEDURES': true
-  },
-
-  // Eye Clinics - focus on specialized equipment and procedures
-  'Eye (opthalmologyoptometry  optician) Clinics': {
-    'SECTION A-ORGANISATION AND MANAGEMENT': true,
-    'SECTION B-STATUTORY REQUIREMENTS': true,
-    'SECTION C-POLICIES AND PROCEDURES': true
-  },
-
-  // Physiotherapy - focus on treatment protocols and safety
-  'physiotheraphy': {
-    'SECTION A-ORGANISATION AND MANAGEMENT': true,
-    'SECTION B-STATUTORY REQUIREMENTS': true,
-    'SECTION C-POLICIES AND PROCEDURES': true
-  },
-
-  // Dental clinic - focus on infection control and procedures
-  'dental clinic': {
-    'SECTION A-ORGANISATION AND MANAGEMENT': true,
-    'SECTION B-STATUTORY REQUIREMENTS': true,
-    'SECTION C-POLICIES AND PROCEDURES': true
-  },
-
-  // ENT clinic - focus on specialized procedures
-  'ENT clinic': {
-    'SECTION A-ORGANISATION AND MANAGEMENT': true,
-    'SECTION B-STATUTORY REQUIREMENTS': true,
-    'SECTION C-POLICIES AND PROCEDURES': true
-  },
-
-  // Rehabilitation Centre - focus on patient care and safety
-  'Rehabilitation Centre': {
-    'SECTION A-ORGANISATION AND MANAGEMENT': true,
-    'SECTION B-STATUTORY REQUIREMENTS': true,
-    'SECTION C-POLICIES AND PROCEDURES': true
-  },
-
-  // Portrait clinic - focus on basic requirements (example of hiding some sections)
-  'Potrait clinic': {
-    'SECTION A-ORGANISATION AND MANAGEMENT': true,
-    'SECTION B-STATUTORY REQUIREMENTS': true,
-    'SECTION C-POLICIES AND PROCEDURES': false
+  'Laboratory': {
+    'ORGANISATION AND MANAGEMENT': true,
+    'STATUTORY REQUIREMENTS': true, 
+    'POLICIES AND PROCEDURES': true,
+    'Inspection Type': true,
+    'Inspectors Details': true,
+    'SERVICE PROVIDED': true,
+    'PERSONNEL': true,
+    'ENVIRONMENT': true,
+    'RECEPTION AREA': true,
+    'SCREENING ROOM': true,
+    'CONSULTATION ROOM': true,
+    'PROCEDURE ROOM': true,
+    'BLEEDING ROOM': true,
+    'SLUICE ROOM': true,
+    'TOILET FACILITITES': true,
+    'PHARMACY/ DISPENSARY': true,
+    'SAFETY AND WASTE MANAGEMENT': true,
+    'SUPPLIES': true,
+    'RECORDS/ INFORMATION MANAGEMENT': true,
+    'CUSTOMER SATISFACTION': true
   },
 
   // Radiology - focus on safety and technical procedures
   'Radiology': {
-    'SECTION A-ORGANISATION AND MANAGEMENT': true,
-    'SECTION B-STATUTORY REQUIREMENTS': true,
-    'SECTION C-POLICIES AND PROCEDURES': true
+    'ORGANISATION AND MANAGEMENT': true,
+    'STATUTORY REQUIREMENTS': true, 
+    'POLICIES AND PROCEDURES': true,
+    'Inspection Type': true,
+    'Inspectors Details': true,
+    'SERVICE PROVIDED': true,
+    'PERSONNEL': true,
+    'ENVIRONMENT': true,
+    'RECEPTION AREA': true,
+    'SCREENING ROOM': true,
+    'CONSULTATION ROOM': true,
+    'PROCEDURE ROOM': true,
+    'BLEEDING ROOM': true,
+    'SLUICE ROOM': true,
+    'TOILET FACILITITES': true,
+    'PHARMACY/ DISPENSARY': true,
+    'SAFETY AND WASTE MANAGEMENT': true,
+    'SUPPLIES': true,
+    'RECORDS/ INFORMATION MANAGEMENT': true,
+    'CUSTOMER SATISFACTION': true,
+    'X-RAY ROOM': true
   },
 
-  // General clinic - show all sections
-  'clinic': {
-    'SECTION A-ORGANISATION AND MANAGEMENT': true,
-    'SECTION B-STATUTORY REQUIREMENTS': true,
-    'SECTION C-POLICIES AND PROCEDURES': true
+  // ENT - focus on specialized procedures
+  'ENT': {
+    'ORGANISATION AND MANAGEMENT': true,
+    'STATUTORY REQUIREMENTS': true, 
+    'POLICIES AND PROCEDURES': true,
+    'Inspection Type': true,
+    'Inspectors Details': true,
+    'SERVICE PROVIDED': true,
+    'PERSONNEL': true,
+    'ENVIRONMENT': true,
+    'RECEPTION AREA': true,
+    'SCREENING ROOM': true,
+    'CONSULTATION ROOM': true,
+    'PROCEDURE ROOM': true,
+    'BLEEDING ROOM': true,
+    'SLUICE ROOM': true,
+    'TOILET FACILITITES': true,
+    'PHARMACY/ DISPENSARY': true,
+    'SAFETY AND WASTE MANAGEMENT': true,
+    'SUPPLIES': true,
+    'RECORDS/ INFORMATION MANAGEMENT': true,
+    'CUSTOMER SATISFACTION': true
+  },
+
+  // Dental - focus on infection control and procedures
+  'Dental': {
+    'ORGANISATION AND MANAGEMENT': true,
+    'STATUTORY REQUIREMENTS': true, 
+    'POLICIES AND PROCEDURES': true,
+    'Inspection Type': true,
+    'Inspectors Details': true,
+    'SERVICE PROVIDED': true,
+    'PERSONNEL': true,
+    'ENVIRONMENT': true,
+    'RECEPTION AREA': true,
+    'SCREENING ROOM': true,
+    'CONSULTATION ROOM': true,
+    'PROCEDURE ROOM': true,
+    'BLEEDING ROOM': true,
+    'SLUICE ROOM': true,
+    'TOILET FACILITITES': true,
+    'PHARMACY/ DISPENSARY': true,
+    'SAFETY AND WASTE MANAGEMENT': true,
+    'SUPPLIES': true,
+    'RECORDS/ INFORMATION MANAGEMENT': true,
+    'CUSTOMER SATISFACTION': true
+  },
+
+  // Eye - focus on specialized equipment and procedures
+  'Eye': {
+    'ORGANISATION AND MANAGEMENT': true,
+    'STATUTORY REQUIREMENTS': true, 
+    'POLICIES AND PROCEDURES': true,
+    'Inspection Type': true,
+    'Inspectors Details': true,
+    'SERVICE PROVIDED': true,
+    'PERSONNEL': true,
+    'ENVIRONMENT': true,
+    'RECEPTION AREA': true,
+    'SCREENING ROOM': true,
+    'CONSULTATION ROOM': true,
+    'PROCEDURE ROOM': true,
+    'BLEEDING ROOM': true,
+    'SLUICE ROOM': true,
+    'TOILET FACILITITES': true,
+    'PHARMACY/ DISPENSARY': true,
+    'SAFETY AND WASTE MANAGEMENT': true,
+    'SUPPLIES': true,
+    'RECORDS/ INFORMATION MANAGEMENT': true,
+    'CUSTOMER SATISFACTION': true
+  },
+
+  // Psycology - focus on patient care and management
+  'Psycology': {
+    'ORGANISATION AND MANAGEMENT': true,
+    'STATUTORY REQUIREMENTS': true, 
+    'POLICIES AND PROCEDURES': true,
+    'Inspection Type': true,
+    'Inspectors Details': true,
+    'SERVICE PROVIDED': true,
+    'PERSONNEL': true,
+    'ENVIRONMENT': true,
+    'RECEPTION AREA': true,
+    'SCREENING ROOM': true,
+    'CONSULTATION ROOM': true,
+    'PROCEDURE ROOM': true,
+    'BLEEDING ROOM': true,
+    'SLUICE ROOM': true,
+    'TOILET FACILITITES': true,
+    'PHARMACY/ DISPENSARY': true,
+    'SAFETY AND WASTE MANAGEMENT': true,
+    'SUPPLIES': true,
+    'RECORDS/ INFORMATION MANAGEMENT': true,
+    'CUSTOMER SATISFACTION': true
+  },
+
+  // Physio - focus on treatment protocols and safety
+  'Physio': {
+    'ORGANISATION AND MANAGEMENT': true,
+    'STATUTORY REQUIREMENTS': true, 
+    'POLICIES AND PROCEDURES': true,
+    'Inspection Type': true,
+    'Inspectors Details': true,
+    'SERVICE PROVIDED': true,
+    'PERSONNEL': true,
+    'ENVIRONMENT': true,
+    'RECEPTION AREA': true,
+    'SCREENING ROOM': true,
+    'CONSULTATION ROOM': true,
+    'PROCEDURE ROOM': true,
+    'BLEEDING ROOM': true,
+    'SLUICE ROOM': true,
+    'TOILET FACILITITES': true,
+    'PHARMACY/ DISPENSARY': true,
+    'SAFETY AND WASTE MANAGEMENT': true,
+    'SUPPLIES': true,
+    'RECORDS/ INFORMATION MANAGEMENT': true,
+    'CUSTOMER SATISFACTION': true
+  },
+
+  // Rehab - focus on patient care and safety
+  'Rehab': {
+    'ORGANISATION AND MANAGEMENT': true,
+    'STATUTORY REQUIREMENTS': true, 
+    'POLICIES AND PROCEDURES': true,
+    'Inspection Type': true,
+    'Inspectors Details': true,
+    'SERVICE PROVIDED': true,
+    'PERSONNEL': true,
+    'ENVIRONMENT': true,
+    'RECEPTION AREA': true,
+    'SCREENING ROOM': true,
+    'CONSULTATION ROOM': true,
+    'PROCEDURE ROOM': true,
+    'BLEEDING ROOM': true,
+    'SLUICE ROOM': true,
+    'TOILET FACILITITES': true,
+    'PHARMACY/ DISPENSARY': true,
+    'SAFETY AND WASTE MANAGEMENT': true,
+    'SUPPLIES': true,
+    'RECORDS/ INFORMATION MANAGEMENT': true,
+    'CUSTOMER SATISFACTION': true
+  },
+
+  // Gynae - show specific sections for gynecological facilities
+  'Gynae': {
+    'Inspection Type': true,
+    'Inspectors Details': true,
+    'ORGANISATION AND MANAGEMENT': true,
+    'SERVICE PROVIDED': true,
+    'PERSONNEL': true,
+    'ENVIRONMENT': true,
+    'RECEPTION AREA': true,
+    'SCREENING ROOM': true,
+    'CONSULTATION ROOM': true,
+    'PROCEDURE ROOM': true,
+    'BLEEDING ROOM': true,
+    'SLUICE ROOM': true,
+    'TOILET FACILITITES': true,
+    'PHARMACY/ DISPENSARY': true,
+    'SAFETY AND WASTE MANAGEMENT': true,
+    'SUPPLIES': true,
+    'RECORDS/ INFORMATION MANAGEMENT': true,
+    'CUSTOMER SATISFACTION': true
   }
 };
 
@@ -113,112 +300,107 @@ export const sectionVisibilityConfig = {
  * }
  */
 export const dataElementFilterConfig = {
-  // Gynae Clinics - comprehensive inspection, show all DEs
-  'Gynae Clinics': {
-    'SECTION A-ORGANISATION AND MANAGEMENT': [],
-    'SECTION B-STATUTORY REQUIREMENTS': [],
-    'SECTION C-POLICIES AND PROCEDURES': []
+  // Hospital - show all DEs
+  'Hospital': {
+    'ORGANISATION AND MANAGEMENT': [],
+    'STATUTORY REQUIREMENTS': [],
+    'POLICIES AND PROCEDURES': []
+  },
+
+  // Clinic - show all DEs
+  'Clinic': {
+    'ORGANISATION AND MANAGEMENT': [],
+    'STATUTORY REQUIREMENTS': [],
+    'POLICIES AND PROCEDURES': []
   },
 
   // Laboratory - hide some non-technical DEs
-  'laboratory': {
-    'SECTION A-ORGANISATION AND MANAGEMENT': [
+  'Laboratory': {
+    'ORGANISATION AND MANAGEMENT': [
       'Patient care protocols',
       'Patient satisfaction surveys'
     ],
-    'SECTION B-STATUTORY REQUIREMENTS': [],
-    'SECTION C-POLICIES AND PROCEDURES': [
+    'STATUTORY REQUIREMENTS': [],
+    'POLICIES AND PROCEDURES': [
       'Patient communication policies'
     ]
   },
 
-  // Psychology clinic - hide technical/equipment specific DEs
-  'Psychology clinic': {
-    'SECTION A-ORGANISATION AND MANAGEMENT': [
-      'Equipment maintenance schedules',
-      'Technical safety protocols'
-    ],
-    'SECTION B-STATUTORY REQUIREMENTS': [],
-    'SECTION C-POLICIES AND PROCEDURES': []
-  },
-
-  // Eye Clinics - hide non-ophthalmology specific DEs
-  'Eye (opthalmologyoptometry  optician) Clinics': {
-    'SECTION A-ORGANISATION AND MANAGEMENT': [
-      'Dental equipment protocols',
-      'Laboratory testing procedures'
-    ],
-    'SECTION B-STATUTORY REQUIREMENTS': [],
-    'SECTION C-POLICIES AND PROCEDURES': []
-  },
-
-  // Physiotherapy - hide non-physio specific DEs
-  'physiotheraphy': {
-    'SECTION A-ORGANISATION AND MANAGEMENT': [
-      'Surgical procedures',
-      'Anesthesia protocols'
-    ],
-    'SECTION B-STATUTORY REQUIREMENTS': [],
-    'SECTION C-POLICIES AND PROCEDURES': []
-  },
-
-  // Dental clinic - hide non-dental specific DEs
-  'dental clinic': {
-    'SECTION A-ORGANISATION AND MANAGEMENT': [
-      'Ophthalmology procedures',
-      'Cardiology protocols'
-    ],
-    'SECTION B-STATUTORY REQUIREMENTS': [],
-    'SECTION C-POLICIES AND PROCEDURES': []
-  },
-
-  // ENT clinic - hide non-ENT specific DEs
-  'ENT clinic': {
-    'SECTION A-ORGANISATION AND MANAGEMENT': [
-      'Dental procedures',
-      'Ophthalmology protocols'
-    ],
-    'SECTION B-STATUTORY REQUIREMENTS': [],
-    'SECTION C-POLICIES AND PROCEDURES': []
-  },
-
-  // Rehabilitation Centre - hide non-rehab specific DEs
-  'Rehabilitation Centre': {
-    'SECTION A-ORGANISATION AND MANAGEMENT': [
-      'Surgical procedures',
-      'Emergency protocols'
-    ],
-    'SECTION B-STATUTORY REQUIREMENTS': [],
-    'SECTION C-POLICIES AND PROCEDURES': []
-  },
-
-  // Portrait clinic - hide SECTION C entirely, plus some DEs from other sections
-  'Potrait clinic': {
-    'SECTION A-ORGANISATION AND MANAGEMENT': [
-      'Complex management protocols',
-      'Advanced procedures'
-    ],
-    'SECTION B-STATUTORY REQUIREMENTS': [
-      'Specialized licensing requirements'
-    ],
-    'SECTION C-POLICIES AND PROCEDURES': []
-  },
-
   // Radiology - hide non-radiology specific DEs
   'Radiology': {
-    'SECTION A-ORGANISATION AND MANAGEMENT': [
+    'ORGANISATION AND MANAGEMENT': [
       'Patient care protocols',
       'Counseling procedures'
     ],
-    'SECTION B-STATUTORY REQUIREMENTS': [],
-    'SECTION C-POLICIES AND PROCEDURES': []
+    'STATUTORY REQUIREMENTS': [],
+    'POLICIES AND PROCEDURES': []
   },
 
-  // General clinic - comprehensive, show all DEs
-  'clinic': {
-    'SECTION A-ORGANISATION AND MANAGEMENT': [],
-    'SECTION B-STATUTORY REQUIREMENTS': [],
-    'SECTION C-POLICIES AND PROCEDURES': []
+  // ENT - hide non-ENT specific DEs
+  'ENT': {
+    'ORGANISATION AND MANAGEMENT': [
+      'Dental procedures',
+      'Ophthalmology protocols'
+    ],
+    'STATUTORY REQUIREMENTS': [],
+    'POLICIES AND PROCEDURES': []
+  },
+
+  // Dental - hide non-dental specific DEs
+  'Dental': {
+    'ORGANISATION AND MANAGEMENT': [
+      'Ophthalmology procedures',
+      'Cardiology protocols'
+    ],
+    'STATUTORY REQUIREMENTS': [],
+    'POLICIES AND PROCEDURES': []
+  },
+
+  // Eye - hide non-ophthalmology specific DEs
+  'Eye': {
+    'ORGANISATION AND MANAGEMENT': [
+      'Dental equipment protocols',
+      'Laboratory testing procedures'
+    ],
+    'STATUTORY REQUIREMENTS': [],
+    'POLICIES AND PROCEDURES': []
+  },
+
+  // Psycology - hide technical/equipment specific DEs
+  'Psycology': {
+    'ORGANISATION AND MANAGEMENT': [
+      'Equipment maintenance schedules',
+      'Technical safety protocols'
+    ],
+    'STATUTORY REQUIREMENTS': [],
+    'POLICIES AND PROCEDURES': []
+  },
+
+  // Physio - hide non-physio specific DEs
+  'Physio': {
+    'ORGANISATION AND MANAGEMENT': [
+      'Surgical procedures',
+      'Anesthesia protocols'
+    ],
+    'STATUTORY REQUIREMENTS': [],
+    'POLICIES AND PROCEDURES': []
+  },
+
+  // Rehab - hide non-rehab specific DEs
+  'Rehab': {
+    'ORGANISATION AND MANAGEMENT': [
+      'Surgical procedures',
+      'Emergency protocols'
+    ],
+    'STATUTORY REQUIREMENTS': [],
+    'POLICIES AND PROCEDURES': []
+  },
+
+  // Gynae - comprehensive inspection, show all DEs
+  'Gynae': {
+    'ORGANISATION AND MANAGEMENT': [],
+    'STATUTORY REQUIREMENTS': [],
+    'POLICIES AND PROCEDURES': []
   }
 };
 
@@ -235,28 +417,34 @@ export const shouldShowSection = (sectionName, facilityClassification) => {
     return true;
   }
   
-  // If no facility classification is set, show all sections
+  // Never show pre-inspection sections
+  if (sectionName && sectionName.toLowerCase().startsWith('pre-inspection')) {
+    console.log(`🚫 Never showing Pre-inspection section: ${sectionName}`);
+    return false;
+  }
+  
+  // If no facility classification is set, show only inspection type sections
   if (!facilityClassification) {
-    console.log('🔍 No facility classification set - showing all sections');
-    return true;
+    console.log('🔍 No facility classification set - only showing inspection type sections');
+    return false;
   }
 
-  // Get the visibility config for this facility type
-  // If not found, use the 'clinic' config as default (which shows all sections)
-  const facilityConfig = sectionVisibilityConfig[facilityClassification] || sectionVisibilityConfig['clinic'];
+  // Get the visibility config for this facility type from sectionVisibilityConfig
+  // No default fallback - only show sections explicitly configured
+  const facilityConfig = sectionVisibilityConfig[facilityClassification] || {};
   
   if (!facilityConfig) {
-    console.log(`🔍 No specific config for facility type "${facilityClassification}" and no default config - showing all sections`);
-    return true;
+    console.log(`🔍 No specific config for facility type "${facilityClassification}" - hiding section`);
+    return false;
   }
 
   // Check if this specific section should be shown
   const shouldShow = facilityConfig[sectionName];
   
   if (shouldShow === undefined) {
-    // If section not explicitly configured, show it by default
-    console.log(`🔍 Section "${sectionName}" not configured for "${facilityClassification}" - showing by default`);
-    return true;
+    // If section not explicitly configured, hide it by default
+    console.log(`🔍 Section "${sectionName}" not configured for "${facilityClassification}" - hiding by default`);
+    return false;
   }
 
   console.log(`🔍 Section "${sectionName}" for "${facilityClassification}": ${shouldShow ? 'SHOW' : 'HIDE'}`);
@@ -275,6 +463,12 @@ export const shouldShowDataElement = (dataElementName, sectionName, facilityClas
   if (sectionName && sectionName.toLowerCase().includes('inspection type')) {
     console.log(`✅ Always showing Data Element "${dataElementName}" in Inspection Type section`);
     return true;
+  }
+  
+  // Never show data elements in pre-inspection sections
+  if (sectionName && sectionName.toLowerCase().startsWith('pre-inspection')) {
+    console.log(`🚫 Never showing Data Element "${dataElementName}" in Pre-inspection section`);
+    return false;
   }
   
   // If no facility classification is set, show all Data Elements

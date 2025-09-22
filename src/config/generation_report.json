@@ -1,91 +1,92 @@
 {
-  "generated_on": "2025-09-04T06:59:14.487464",
+  "generated_on": "2025-09-21T23:13:46.939518",
   "source_file": "src/config/checklist for facilities2.0.csv",
   "facility_types": [
-    "Gynae Clinics",
+    "Hospital",
+    "Clinic",
     "Laboratory",
-    "Psychology clinic",
-    "Eye (opthalmologyoptometry  optician) Clinics",
-    "physiotheraphy",
-    "dental clinic",
-    "ENT clinic",
-    "Rehabilitation Centre",
-    "Potrait clinic",
     "Radiology",
-    "clinic"
+    "ENT",
+    "Dental",
+    "Eye",
+    "Psycology",
+    "Physio",
+    "Rehab",
+    "Gynae"
   ],
   "sections": [
     "ORGANISATION AND MANAGEMENT",
-    "SERVICES PROVIDED",
+    "SERVICE PROVIDED",
     "PERSONNEL",
     "ENVIRONMENT",
-    "RECEPTION/WAITING AREA INSPECTION",
-    "SCREENING ROOM INSPECTION",
-    "CONSULTATION ROOM INSPECTION",
-    "PROCEDURE ROOM INSPECTION",
-    "SLUICE ROOM INSPECTION",
-    "BLEEDING ROOM INSPECTION",
-    "INSPECTION OF TOILET FACILITIES",
-    "PHARMACY/DISPENSARY INSPECTION",
-    "SUPPLIES INSPECTION",
-    "FRECORDS/INFORMATION MANAGEMENT INSPECTION",
-    "CUSTOMER SATISFACTION INSPECTION",
-    "SPECIMEN RECEPTION ROOM",
-    "LABORATORY TESTING AREAS CHEMISTRY",
-    "LABORATORY TESTING AREAS HAEMATOLOGY",
-    "MICROBIOLOGY",
+    "RECEPTION AREA",
+    "SCREENING ROOM",
+    "CONSULTATION ROOM",
+    "PROCEDURE ROOM",
+    "BLEEDING ROOM",
+    "SLUICE ROOM",
+    "INSTRUMENT WASHING/ STERILISING ROOM",
+    "TOILET FACILITITES",
+    "PHARMACY/ DISPENSARY",
+    "SPECIMEN ROOM",
+    "LAB SERVICES PROVIDED",
     "HIV SCREENING",
-    "INSTRUMENT WASHING/STERILISING ROOM"
+    "X-RAY ROOM",
+    "ULTRASOUND ROOM",
+    "SAFETY AND WASTE MANAGEMENT",
+    "SUPPLIES",
+    "RECORDS/ INFORMATION MANAGEMENT",
+    "CUSTOMER SATISFACTION"
   ],
   "statistics": {
     "total_facility_types": 11,
-    "total_sections": 21,
-    "total_questions": 208
+    "total_sections": 22,
+    "total_questions": 667
   },
   "facility_statistics": {
-    "Gynae Clinics": {
-      "applicable_questions": 177,
-      "coverage_percentage": 85.1
+    "Hospital": {
+      "applicable_questions": 213,
+      "coverage_percentage": 31.9
+    },
+    "Clinic": {
+      "applicable_questions": 294,
+      "coverage_percentage": 44.1
     },
     "Laboratory": {
-      "applicable_questions": 162,
-      "coverage_percentage": 77.9
-    },
-    "Psychology clinic": {
-      "applicable_questions": 169,
-      "coverage_percentage": 81.2
-    },
-    "Eye (opthalmologyoptometry  optician) Clinics": {
-      "applicable_questions": 168,
-      "coverage_percentage": 80.8
-    },
-    "physiotheraphy": {
-      "applicable_questions": 171,
-      "coverage_percentage": 82.2
-    },
-    "dental clinic": {
-      "applicable_questions": 165,
-      "coverage_percentage": 79.3
-    },
-    "ENT clinic": {
-      "applicable_questions": 167,
-      "coverage_percentage": 80.3
-    },
-    "Rehabilitation Centre": {
-      "applicable_questions": 173,
-      "coverage_percentage": 83.2
-    },
-    "Potrait clinic": {
-      "applicable_questions": 174,
-      "coverage_percentage": 83.7
+      "applicable_questions": 308,
+      "coverage_percentage": 46.2
     },
     "Radiology": {
-      "applicable_questions": 159,
-      "coverage_percentage": 76.4
+      "applicable_questions": 196,
+      "coverage_percentage": 29.4
     },
-    "clinic": {
-      "applicable_questions": 173,
-      "coverage_percentage": 83.2
+    "ENT": {
+      "applicable_questions": 214,
+      "coverage_percentage": 32.1
+    },
+    "Dental": {
+      "applicable_questions": 229,
+      "coverage_percentage": 34.3
+    },
+    "Eye": {
+      "applicable_questions": 248,
+      "coverage_percentage": 37.2
+    },
+    "Psycology": {
+      "applicable_questions": 175,
+      "coverage_percentage": 26.2
+    },
+    "Physio": {
+      "applicable_questions": 249,
+      "coverage_percentage": 37.3
+    },
+    "Rehab": {
+      "applicable_questions": 276,
+      "coverage_percentage": 41.4
+    },
+    "Gynae": {
+      "applicable_questions": 326,
+      "coverage_percentage": 48.9
     }
   }
 }
