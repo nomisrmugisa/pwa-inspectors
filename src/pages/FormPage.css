@@ -280,6 +280,20 @@
   box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
 }
 
+/* Bold data element labels */
+.form-label.bold-label {
+  font-weight: 700;
+  font-size: 16px;
+  color: #2c3e50;
+  margin-top: 20px;
+  margin-bottom: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: #f8f9fa;
+  padding-left: 8px;
+  border-left: 4px solid #007bff;
+}
+
 .form-field.error .field-error {
   color: #dc3545;
   font-size: 12px;

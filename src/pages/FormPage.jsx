@@ -162,6 +162,51 @@ const normalizeSectionHeaderName = (name) => {
   return name.replace(/\s*--\s*$/, '').trim();
 };
 
+/**
+ * Detect data elements that should be treated as "bold" and start on a new page
+ *
+ * This function identifies data elements that should:
+ * 1. Be displayed with bold formatting
+ * 2. Start on a new page in the pagination system
+ *
+ * Patterns detected:
+ * - Section headers ending with "--"
+ * - ALL CAPS text (likely headers)
+ * - Numbered sections (e.g., "1. Introduction", "2.1 Staff")
+ * - Common header keywords (SECTION, PART, CHAPTER, etc.)
+ *
+ * @param {Object} dataElement - The DHIS2 data element object
+ * @returns {boolean} - Whether this data element should be treated as bold/header
+ */
+const isBoldDataElement = (dataElement) => {
+  if (!dataElement || !dataElement.displayName) return false;
+
+  const name = dataElement.displayName;
+
+  // 1. Section headers (ending with "--") are always bold
+  if (isSectionHeaderName(name)) return true;
+
+  // 2. Data elements that are all caps (likely headers/important sections)
+  if (name === name.toUpperCase() && name.length > 3) return true;
+
+  // 3. Data elements that start with numbers followed by a period (e.g., "1. Introduction", "2.1 Staff")
+  if (/^\d+(\.\d+)*\.\s/.test(name)) return true;
+
+  // 4. Data elements that contain common header patterns
+  const headerPatterns = [
+    /^(SECTION|Section)\s+[A-Z0-9]/i,
+    /^(PART|Part)\s+[A-Z0-9]/i,
+    /^(CHAPTER|Chapter)\s+[A-Z0-9]/i,
+    /^(AREA|Area)\s+[A-Z0-9]/i,
+    /^(DOMAIN|Domain)\s+[A-Z0-9]/i,
+    /^(CATEGORY|Category)\s+[A-Z0-9]/i,
+    /^\d+\.\s*(INTRODUCTION|BACKGROUND|OVERVIEW|SUMMARY)/i,
+    /^(INTRODUCTION|BACKGROUND|OVERVIEW|SUMMARY)$/i
+  ];
+
+  return headerPatterns.some(pattern => pattern.test(name));
+};
+
 // Form field component for individual data elements
 
 function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoading = false, readOnly = false, getCurrentPosition, formatCoordinatesForDHIS2, staticText, onCommentChange, comments = {}, manualSpecialization = null, facilityType = null, getCurrentFacilityClassification = null }) {
@@ -1503,7 +1548,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
 
       <div className="field-header">
-        <label htmlFor={fieldId} className="form-label">
+        <label htmlFor={fieldId} className={`form-label ${isBoldDataElement(dataElement) ? 'bold-label' : ''}`}>
           {dataElement.displayName}
         </label>
 
@@ -1784,47 +1829,47 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
       }
 
-      
+
 
       // Check if this is one of the sections that should start expanded
 
          const isInspectionInfoSection = (section.displayName || '').toLowerCase() === 'inspection information';
-      
+
          const isInspectionTypeSection = (section.displayName || '').toLowerCase() === 'inspection type';
 
-      
+
 
       // For Inspection Type section, show all fields on one page (no pagination)
 
       if (isInspectionTypeSection) {
 
-        return { 
+        return {
 
-          pages: [{ 
+          pages: [{
 
-            start: 0, 
+            start: 0,
 
-            end: filteredDataElements.length, 
+            end: filteredDataElements.length,
 
             size: filteredDataElements.length,
 
-            fields: filteredDataElements 
+            fields: filteredDataElements
 
-          }], 
+          }],
 
-          totalPages: 1 
+          totalPages: 1
 
         };
 
       }
 
-      
+
 
       const pages = [];
 
       let currentIndex = 0;
 
-      
+
 
       while (currentIndex < filteredDataElements.length) {
 
@@ -1832,27 +1877,36 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
         let endIndex = currentIndex + pageSize;
 
-        
 
-        // Check if the next field after this page would be a comment field
 
-        if (endIndex < filteredDataElements.length) {
-
-          const nextField = filteredDataElements[endIndex];
-
-          if (isCommentField(nextField.dataElement)) {
-
-            // Extend this page to include the comment field
-
-            endIndex++;
-
-            pageSize++;
-
+        // Check for bold data elements that should start on a new page
+        // Look ahead to see if there's a bold element within the current page
+        let foundBoldElement = false;
+        for (let i = currentIndex + 1; i < Math.min(endIndex, filteredDataElements.length); i++) {
+          const element = filteredDataElements[i];
+          if (isBoldDataElement(element.dataElement)) {
+            // Found a bold element - end the current page before it
+            endIndex = i;
+            pageSize = endIndex - currentIndex;
+            foundBoldElement = true;
+            break;
           }
-
         }
 
-        
+        // If we didn't find a bold element, apply the original comment field logic
+        if (!foundBoldElement) {
+          // Check if the next field after this page would be a comment field
+          if (endIndex < filteredDataElements.length) {
+            const nextField = filteredDataElements[endIndex];
+            if (isCommentField(nextField.dataElement)) {
+              // Extend this page to include the comment field
+              endIndex++;
+              pageSize++;
+            }
+          }
+        }
+
+
 
         // Ensure we don't exceed total length
 
@@ -1860,27 +1914,25 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
         pageSize = endIndex - currentIndex;
 
-        
 
-        pages.push({
 
-          start: currentIndex,
+        // Don't create empty pages
+        if (pageSize > 0) {
+          pages.push({
+            start: currentIndex,
+            end: endIndex,
+            size: pageSize,
+            fields: filteredDataElements.slice(currentIndex, endIndex)
+          });
+        }
 
-          end: endIndex,
 
-          size: pageSize,
-
-          fields: filteredDataElements.slice(currentIndex, endIndex)
-
-        });
-
-        
 
         currentIndex = endIndex;
 
       }
 
-      
+
 
       return { pages, totalPages: pages.length };
 
@@ -2384,15 +2436,47 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
                   if (isSectionHeaderName(deName)) {
                     const headerText = normalizeSectionHeaderName(deName);
                     return (
-                      <div key={`header-${psde.dataElement.id}-${actualIndex}`} style={{ fontWeight: 600, margin: '16px 0 8px' }}>
+                      <div key={`header-${psde.dataElement.id}-${actualIndex}`} style={{
+                        fontWeight: 700,
+                        fontSize: '16px',
+                        margin: '24px 0 12px',
+                        padding: '8px 0',
+                        borderBottom: '2px solid #e0e0e0',
+                        color: '#333'
+                      }}>
                         {headerText}
                       </div>
                     );
                   }
 
-                  return (
+                  // Check if this is a bold data element (but not a section header)
+                  const isBold = isBoldDataElement(psde.dataElement);
+                  const shouldRenderAsBold = isBold && !isSectionHeaderName(deName);
 
+                  // Add page break indicator for bold elements that start a new page
+                  const isFirstFieldOnPage = actualIndex === startIndex;
+                  const showPageBreakIndicator = shouldRenderAsBold && !isFirstFieldOnPage;
+
+                  return (
                     <div key={`field-container-${psde.dataElement.id}-${actualIndex}`} style={shouldHideInspectionId ? { display: 'none' } : undefined}>
+                      {/* Page break indicator for bold elements */}
+                      {showPageBreakIndicator && (
+                        <div style={{
+                          margin: '20px 0 10px',
+                          padding: '8px 12px',
+                          backgroundColor: '#e3f2fd',
+                          border: '1px solid #bbdefb',
+                          borderRadius: '4px',
+                          fontSize: '12px',
+                          color: '#1976d2',
+                          textAlign: 'center',
+                          fontWeight: '500'
+                        }}>
+                          📄 New Page Section
+                        </div>
+                      )}
+
+                    <div>
 
                       <FormField
 
@@ -2452,6 +2536,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
                       />
 
+                    </div>
                     </div>
 
                   );
@@ -4220,7 +4305,56 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                 setFieldComments(existingData.metadata.fieldComments);
               }
 
+              // Load specialization from saved form data
+              const specializationFieldName = 'dataElement_qfmVD6tCOHu';
+              const savedSpecialization = existingData.formData[specializationFieldName] ||
+                                         existingData.formData.facilityClassification;
+
+              if (savedSpecialization) {
+                console.log('🎯 Loading saved specialization:', savedSpecialization);
+                setManualSpecialization(savedSpecialization);
+                setFacilityType(savedSpecialization);
+
+                // Update global state for consistency
+                window.__currentSpecialization = savedSpecialization;
+                window.__manualSpecialization = savedSpecialization;
+
+                // Force re-render to update sections based on loaded specialization
+                setLastUpdateTimestamp(Date.now());
+              }
+
+              // Load saved service departments if they exist
+              const serviceDepartmentsFieldName = 'dataElement_facility_service_departments';
+              const savedServiceDepartments = existingData.formData[serviceDepartmentsFieldName];
+
+              if (savedServiceDepartments) {
+                try {
+                  const parsedDepartments = typeof savedServiceDepartments === 'string'
+                    ? JSON.parse(savedServiceDepartments)
+                    : savedServiceDepartments;
+
+                  if (Array.isArray(parsedDepartments)) {
+                    console.log('🏥 Loading saved service departments:', parsedDepartments);
+                    setSelectedServiceDepartments(parsedDepartments);
+
+                    // Update global state for consistency
+                    window.__selectedServiceDepartments = parsedDepartments;
+                  }
+                } catch (error) {
+                  console.warn('Failed to parse saved service departments:', error);
+                }
+              }
+
               showToast('Loaded saved form data', 'success');
+
+              // Log what was loaded for debugging
+              console.log('📋 Form data loading summary:', {
+                totalFields: Object.keys(existingData.formData).length,
+                hasSpecialization: !!savedSpecialization,
+                specialization: savedSpecialization,
+                hasServiceDepartments: !!savedServiceDepartments,
+                serviceDepartments: savedServiceDepartments
+              });
             }
           } catch (error) {
             console.error('❌ Failed to load existing form data:', error);
@@ -6774,9 +6908,199 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     };
 
+    // Function to get section completion status for progress tracking
+    const getSectionStatus = (section) => {
+      if (!section?.dataElements) return { completed: false, total: 0, filled: 0, percentage: 0 };
+
+      let total = 0;
+      let filled = 0;
+
+      section.dataElements.forEach((psde) => {
+        if (!psde?.dataElement) return;
+
+        total++;
+        const fieldName = `dataElement_${psde.dataElement.id}`;
+        const value = formData[fieldName];
+
+        // Check if field is filled (same logic as isFieldFilled helper)
+        if (value !== null && value !== undefined) {
+          if (typeof value === 'string' && value.trim().length > 0) filled++;
+          else if (typeof value === 'boolean') filled++; // Boolean fields are always considered filled
+          else if (Array.isArray(value) && value.length > 0) filled++;
+          else if (value !== '') filled++;
+        }
+      });
+
+      const percentage = total === 0 ? 0 : Math.round((filled / total) * 100);
+      const completed = total > 0 && filled === total;
+
+      return { completed, total, filled, percentage };
+    };
+
+    // Get visible sections for progress tracking
+    const getVisibleSections = () => {
+      if (!serviceSections || serviceSections.length === 0) return [];
+
+      return serviceSections
+        .filter(section => {
+          const sectionName = (section.displayName || '').toLowerCase();
+          return !sectionName.includes('inspection type') && !sectionName.includes('inspection information');
+        })
+        .filter(section => {
+          const currentClassification = getCurrentFacilityClassification();
+          return shouldShowSection(section.displayName, currentClassification);
+        })
+        .filter(section => {
+          return shouldShowSectionForServiceDepartments(section.displayName, selectedServiceDepartments);
+        });
+    };
+
+    // Floating Progress Component
+    const FloatingProgress = () => {
+      const [isCollapsed, setIsCollapsed] = useState(false);
+      const visibleSections = getVisibleSections();
+
+      if (visibleSections.length === 0) return null;
+
+      const overallStats = visibleSections.reduce((acc, section) => {
+        const status = getSectionStatus(section);
+        acc.total += status.total;
+        acc.filled += status.filled;
+        acc.completed += status.completed ? 1 : 0;
+        return acc;
+      }, { total: 0, filled: 0, completed: 0 });
+
+      const overallPercentage = overallStats.total === 0 ? 0 : Math.round((overallStats.filled / overallStats.total) * 100);
+
+      return (
+        <div style={{
+          position: 'fixed',
+          left: '20px',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          backgroundColor: '#fff',
+          border: '2px solid #e0e0e0',
+          borderRadius: '12px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+          zIndex: 1000,
+          minWidth: isCollapsed ? '60px' : '280px',
+          maxWidth: isCollapsed ? '60px' : '320px',
+          transition: 'all 0.3s ease'
+        }}>
+          {/* Header */}
+          <div style={{
+            padding: '12px 16px',
+            borderBottom: isCollapsed ? 'none' : '1px solid #e0e0e0',
+            backgroundColor: '#f8f9fa',
+            borderRadius: '10px 10px 0 0',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            cursor: 'pointer'
+          }} onClick={() => setIsCollapsed(!isCollapsed)}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              {!isCollapsed && (
+                <>
+                  <span style={{ fontSize: '14px', fontWeight: '600', color: '#333' }}>
+                    Progress
+                  </span>
+                  <span style={{
+                    fontSize: '12px',
+                    color: '#666',
+                    backgroundColor: overallPercentage === 100 ? '#d4edda' : '#fff3cd',
+                    padding: '2px 6px',
+                    borderRadius: '10px',
+                    border: `1px solid ${overallPercentage === 100 ? '#c3e6cb' : '#ffeaa7'}`
+                  }}>
+                    {overallPercentage}%
+                  </span>
+                </>
+              )}
+            </div>
+            <span style={{
+              fontSize: '16px',
+              color: '#666',
+              transform: isCollapsed ? 'rotate(0deg)' : 'rotate(180deg)',
+              transition: 'transform 0.3s ease'
+            }}>
+              {isCollapsed ? '📋' : '▼'}
+            </span>
+          </div>
+
+          {/* Content */}
+          {!isCollapsed && (
+            <div style={{ padding: '12px 0', maxHeight: '400px', overflowY: 'auto' }}>
+              {visibleSections.map((section, index) => {
+                const status = getSectionStatus(section);
+                const isComplete = status.completed;
+                const hasData = status.filled > 0;
+
+                return (
+                  <div key={section.id || index} style={{
+                    padding: '8px 16px',
+                    borderBottom: index < visibleSections.length - 1 ? '1px solid #f0f0f0' : 'none',
+                    cursor: 'pointer',
+                    transition: 'background-color 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#f8f9fa'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                  onClick={() => {
+                    // Scroll to section
+                    const sectionElement = document.querySelector(`[data-section-id="${section.id}"]`);
+                    if (sectionElement) {
+                      sectionElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                      <span style={{ fontSize: '16px' }}>
+                        {isComplete ? '✅' : hasData ? '🔄' : '⭕'}
+                      </span>
+                      <span style={{
+                        fontSize: '13px',
+                        fontWeight: '500',
+                        color: isComplete ? '#28a745' : hasData ? '#ffc107' : '#6c757d',
+                        flex: 1,
+                        lineHeight: '1.2'
+                      }}>
+                        {section.displayName}
+                      </span>
+                    </div>
+                    <div style={{ marginLeft: '24px', fontSize: '11px', color: '#666' }}>
+                      {status.filled}/{status.total} fields ({status.percentage}%)
+                    </div>
+                  </div>
+                );
+              })}
+
+              {/* Overall Summary */}
+              <div style={{
+                margin: '12px 16px 8px',
+                padding: '8px',
+                backgroundColor: '#f8f9fa',
+                borderRadius: '6px',
+                border: '1px solid #e0e0e0'
+              }}>
+                <div style={{ fontSize: '12px', fontWeight: '600', color: '#333', marginBottom: '4px' }}>
+                  Overall Progress
+                </div>
+                <div style={{ fontSize: '11px', color: '#666' }}>
+                  {overallStats.completed}/{visibleSections.length} sections complete
+                </div>
+                <div style={{ fontSize: '11px', color: '#666' }}>
+                  {overallStats.filled}/{overallStats.total} total fields
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    };
+
     return (
 
       <div className="screen">
+        {/* Floating Progress Component */}
+        <FloatingProgress />
 
         <div className="form-container">
 
