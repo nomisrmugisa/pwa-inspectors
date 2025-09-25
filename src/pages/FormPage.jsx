@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 
 import { useParams, useNavigate } from 'react-router-dom';
 
@@ -3002,6 +3002,8 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
     // const api = useAPI();
 
+
+
     const {
 
       configuration,
@@ -3054,6 +3056,9 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
     
     // State to force re-renders when specialization changes
     const [lastUpdateTimestamp, setLastUpdateTimestamp] = useState(Date.now());
+
+    // Flag to prevent clearing service departments during IndexedDB loading
+    const [isLoadingFromIndexedDB, setIsLoadingFromIndexedDB] = useState(false);
 
     // Debug panel state
     const [showDebugPanel, setShowDebugPanel] = useState(false);
@@ -3122,7 +3127,10 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       
       // Clear any previously selected departments when specialization changes
       // This ensures departments are only from the newly selected specialization
-      setSelectedServiceDepartments([]);
+      // But don't clear if we're loading from IndexedDB
+      if (!isLoadingFromIndexedDB) {
+        setSelectedServiceDepartments([]);
+      }
       
       // Clear the global department options to force recalculation
       window.__departmentOptionsForSection = null;
@@ -3181,20 +3189,8 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       // Override the global department options getter
       window.getDepartmentOptions = interceptor;
       
-      // Set up a periodic check to ensure our hardcoded departments stay in place
-      // This will run every 2 seconds and override any dynamic calculation
-      const departmentGuard = setInterval(() => {
-        if (window.__hardcodedDepartments && window.__hardcodedDepartments.length > 0) {
-          const currentOptions = window.__departmentOptionsForSection;
-          if (!currentOptions || currentOptions.length !== window.__hardcodedDepartments.length) {
-            console.log(`🛡️ GUARD: Restoring hardcoded departments (${window.__hardcodedDepartments.length} vs ${currentOptions?.length || 0})`);
-            window.__departmentOptionsForSection = window.__hardcodedDepartments;
-          }
-        }
-      }, 2000);
-      
-      // Store the interval ID so we can clear it later
-      window.__departmentGuard = departmentGuard;
+      // REMOVED: The periodic guard was causing performance issues and constant re-renders
+      // Instead, we'll rely on the one-time setup and proper state management
       
       // Legacy dynamic calculation (commented out - using hardcoded instead)
       /*
@@ -4060,6 +4056,35 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     });
 
+    // Cache for facility info to prevent repeated API calls
+    const facilityInfoCache = useMemo(() => new Map(), []);
+
+    // Global cache for inspection assignments to prevent repeated API calls
+    const inspectionAssignmentsCache = useMemo(() => {
+      let cache = null;
+      let lastFetch = 0;
+      const CACHE_DURATION = 30000; // 30 seconds
+
+      return {
+        async get() {
+          const now = Date.now();
+          if (cache && (now - lastFetch) < CACHE_DURATION) {
+            console.log('📋 Using cached inspection assignments');
+            return cache;
+          }
+
+          console.log('📋 Fetching fresh inspection assignments');
+          cache = await api.getInspectionAssignments();
+          lastFetch = now;
+          return cache;
+        },
+        clear() {
+          cache = null;
+          lastFetch = 0;
+        }
+      };
+    }, [api]);
+
     // Get facility information from dataStore when form loads
     useEffect(() => {
       const getFacilityInfoFromDataStore = async () => {
@@ -4067,6 +4092,14 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
         if (!formData.orgUnit || !api || !configuration) {
           console.log('⏳ Waiting for form dependencies to load...');
           setFacilityInfo(null);
+          return;
+        }
+
+        // Check cache first
+        if (facilityInfoCache.has(formData.orgUnit)) {
+          console.log('📋 Using cached facility info for:', formData.orgUnit);
+          setFacilityInfo(facilityInfoCache.get(formData.orgUnit));
+          setLoadingFacilityInfo(false);
           return;
         }
 
@@ -4079,8 +4112,10 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
           // First try to get from userAssignments (which may have more complete info)
           let facilityData = null;
 
-          if (userAssignments && userAssignments.length > 0) {
-            const userAssignment = userAssignments.find(assignment =>
+          // Get current userAssignments from context to avoid dependency issues
+          const currentUserAssignments = userAssignments;
+          if (currentUserAssignments && currentUserAssignments.length > 0) {
+            const userAssignment = currentUserAssignments.find(assignment =>
               assignment.facility && assignment.facility.id === formData.orgUnit
             );
 
@@ -4109,7 +4144,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
           // If not found in userAssignments, try inspection dataStore
           if (!facilityData) {
-            const inspectionData = await api.getInspectionAssignments();
+            const inspectionData = await inspectionAssignmentsCache.get();
 
             if (inspectionData && inspectionData.inspections) {
               const facilityInspection = inspectionData.inspections.find(
@@ -4152,6 +4187,8 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
           if (facilityData) {
             // Store complete facility information for UI display
             setFacilityInfo(facilityData);
+            // Cache the result
+            facilityInfoCache.set(formData.orgUnit, facilityData);
 
             // Set the facility type to use for filtering
             if (facilityData.type) {
@@ -4174,25 +4211,16 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
               console.log('🏥 Stored facility ID for dashboard filtering:', facilityData.facilityId);
             }
 
-            // Also update form data if there's a facility classification field
-            if (facilityData.type && configuration.programStage?.allDataElements) {
-              const facilityClassificationElement = configuration.programStage.allDataElements.find(psde => {
-                const fieldName = (psde.dataElement.displayName || '').toLowerCase();
-                return fieldName.includes('facility classification') || fieldName.includes('facility type');
-              });
-
-              if (facilityClassificationElement) {
-                const fieldKey = `dataElement_${facilityClassificationElement.dataElement.id}`;
-                setFormData(prev => ({
-                  ...prev,
-                  [fieldKey]: facilityData.type
-                }));
-                console.log(`✅ Auto-populated facility type field with: ${facilityData.type}`);
-              }
-            }
+            // REMOVED: Auto-populating facility type field to prevent circular dependency
+            // This was causing the useEffect to trigger repeatedly because it modifies formData
+            // which is a dependency of this same useEffect, creating an infinite loop
+            // The facility type should be set through other means (manual selection, IndexedDB loading, etc.)
+            console.log(`ℹ️ Facility type available but not auto-populated to prevent loops: ${facilityData.type}`);
           } else {
             console.log('⚠️ No facility found in dataStore for facility:', formData.orgUnit);
             setFacilityInfo(null);
+            // Cache the null result to prevent repeated calls
+            facilityInfoCache.set(formData.orgUnit, null);
           }
         } catch (error) {
           console.error('❌ Error getting facility information from dataStore:', error);
@@ -4206,7 +4234,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
       const timeoutId = setTimeout(getFacilityInfoFromDataStore, 100);
 
       return () => clearTimeout(timeoutId);
-    }, [formData.orgUnit, api, configuration, userAssignments]);
+    }, [formData.orgUnit, api, configuration]); // Only re-run when orgUnit, api, or configuration changes
 
     // Debug logging for facility info state
     useEffect(() => {
@@ -4295,6 +4323,9 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
             const existingData = await loadFormData();
             if (existingData && existingData.formData) {
               console.log('📖 Loading existing form data from IndexedDB:', existingData);
+
+              // Set loading flag to prevent clearing service departments
+              setIsLoadingFromIndexedDB(true);
               setFormData(prev => ({
                 ...prev,
                 ...existingData.formData
@@ -4305,45 +4336,68 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                 setFieldComments(existingData.metadata.fieldComments);
               }
 
-              // Load specialization from saved form data
+              // Load specialization and service departments together to prevent multiple updates
               const specializationFieldName = 'dataElement_qfmVD6tCOHu';
               const savedSpecialization = existingData.formData[specializationFieldName] ||
                                          existingData.formData.facilityClassification;
 
-              if (savedSpecialization) {
-                console.log('🎯 Loading saved specialization:', savedSpecialization);
-                setManualSpecialization(savedSpecialization);
-                setFacilityType(savedSpecialization);
-
-                // Update global state for consistency
-                window.__currentSpecialization = savedSpecialization;
-                window.__manualSpecialization = savedSpecialization;
-
-                // Force re-render to update sections based on loaded specialization
-                setLastUpdateTimestamp(Date.now());
-              }
-
-              // Load saved service departments if they exist
               const serviceDepartmentsFieldName = 'dataElement_facility_service_departments';
               const savedServiceDepartments = existingData.formData[serviceDepartmentsFieldName];
 
+              let parsedDepartments = [];
               if (savedServiceDepartments) {
                 try {
-                  const parsedDepartments = typeof savedServiceDepartments === 'string'
+                  parsedDepartments = typeof savedServiceDepartments === 'string'
                     ? JSON.parse(savedServiceDepartments)
                     : savedServiceDepartments;
 
-                  if (Array.isArray(parsedDepartments)) {
-                    console.log('🏥 Loading saved service departments:', parsedDepartments);
-                    setSelectedServiceDepartments(parsedDepartments);
-
-                    // Update global state for consistency
-                    window.__selectedServiceDepartments = parsedDepartments;
+                  if (!Array.isArray(parsedDepartments)) {
+                    parsedDepartments = [];
                   }
                 } catch (error) {
                   console.warn('Failed to parse saved service departments:', error);
+                  parsedDepartments = [];
                 }
               }
+
+              // Batch all updates together to prevent multiple re-renders
+              if (savedSpecialization || parsedDepartments.length > 0) {
+                console.log('🔄 Batching specialization and service departments loading:', {
+                  specialization: savedSpecialization,
+                  departments: parsedDepartments
+                });
+
+                // Update specialization if available
+                if (savedSpecialization) {
+                  setManualSpecialization(savedSpecialization);
+                  setFacilityType(savedSpecialization);
+
+                  // Update global state for consistency
+                  window.__currentSpecialization = savedSpecialization;
+                  window.__manualSpecialization = savedSpecialization;
+                }
+
+                // Update service departments if available
+                if (parsedDepartments.length > 0) {
+                  setSelectedServiceDepartments(parsedDepartments);
+
+                  // Update global state for consistency
+                  window.__selectedServiceDepartments = parsedDepartments;
+                }
+
+                // Single timestamp update for both changes
+                setLastUpdateTimestamp(Date.now());
+
+                console.log('✅ Batched loading complete:', {
+                  specialization: savedSpecialization,
+                  departmentCount: parsedDepartments.length
+                });
+              }
+
+              // Clear loading flag after all updates are complete
+              setTimeout(() => {
+                setIsLoadingFromIndexedDB(false);
+              }, 200); // Small delay to ensure all state updates are processed
 
               showToast('Loaded saved form data', 'success');
 
@@ -5352,7 +5406,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
       }
 
-    }, [safeUserAssignments, activeFacilities, formData.orgUnit, formData.eventDate, api]);
+    }, [safeUserAssignments, activeFacilities, api]); // Removed formData.orgUnit to prevent circular dependency
 
 
 
@@ -6554,11 +6608,23 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
 
 
-    // Function to fetch facility classification from dataStore
+    // Cache for facility classification to prevent repeated API calls
+    const classificationCache = useMemo(() => new Map(), []);
 
+    // Function to fetch facility classification from dataStore
     const fetchFacilityClassification = async (facilityId) => {
 
       if (!facilityId || !api) return;
+
+      // Check cache first
+      if (classificationCache.has(facilityId)) {
+        console.log('📋 Using cached classification for:', facilityId);
+        const cachedClassification = classificationCache.get(facilityId);
+        if (cachedClassification) {
+          setFacilityType(cachedClassification);
+        }
+        return;
+      }
 
       
 
@@ -6584,7 +6650,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
           // Fetch from inspection dataStore directly - this is the authoritative source
 
-          const inspectionData = await api.getInspectionAssignments();
+          const inspectionData = await inspectionAssignmentsCache.get();
 
           const facilityInspection = inspectionData.inspections?.find(
 
@@ -6648,7 +6714,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
               // If not in our assignments, try to fetch from inspection dataStore
 
-              const inspectionData = await api.getInspectionAssignments();
+              const inspectionData = await inspectionAssignmentsCache.get();
 
               const facilityInspection = inspectionData.inspections?.find(
 
@@ -6886,6 +6952,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
       }
 
+      // Cache the result (either found classification or default)
+      const finalClassification = classification || 'Gynae Clinics';
+      classificationCache.set(facilityId, finalClassification);
+      setFacilityType(finalClassification);
+
     };
 
 
@@ -6941,26 +7012,103 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
     const getVisibleSections = () => {
       if (!serviceSections || serviceSections.length === 0) return [];
 
-      return serviceSections
-        .filter(section => {
-          const sectionName = (section.displayName || '').toLowerCase();
-          return !sectionName.includes('inspection type') && !sectionName.includes('inspection information');
-        })
-        .filter(section => {
-          const currentClassification = getCurrentFacilityClassification();
-          return shouldShowSection(section.displayName, currentClassification);
-        })
-        .filter(section => {
-          return shouldShowSectionForServiceDepartments(section.displayName, selectedServiceDepartments);
-        });
+      console.log('🔍 Starting section filtering with', serviceSections.length, 'sections');
+
+      const afterInspectionFilter = serviceSections.filter(section => {
+        const sectionName = (section.displayName || '').toLowerCase();
+        const shouldShow = !sectionName.includes('inspection type') && !sectionName.includes('inspection information');
+        if (!shouldShow) {
+          console.log('❌ Inspection filter removed:', section.displayName);
+        }
+        return shouldShow;
+      });
+      console.log('📊 After inspection filter:', afterInspectionFilter.length, 'sections remain');
+
+      const afterClassificationFilter = afterInspectionFilter.filter(section => {
+        const currentClassification = getCurrentFacilityClassification();
+        const shouldShow = shouldShowSection(section.displayName, currentClassification);
+        if (!shouldShow) {
+          console.log('❌ Classification filter removed:', section.displayName, 'for classification:', currentClassification);
+        }
+        return shouldShow;
+      });
+      console.log('📊 After classification filter:', afterClassificationFilter.length, 'sections remain');
+
+      const finalSections = afterClassificationFilter.filter(section => {
+        const shouldShow = shouldShowSectionForServiceDepartments(section.displayName, selectedServiceDepartments);
+        if (!shouldShow) {
+          console.log('❌ Service departments filter removed:', section.displayName, 'for departments:', selectedServiceDepartments);
+        }
+        return shouldShow;
+      });
+      console.log('📊 Final sections:', finalSections.length, 'sections remain');
+
+      return finalSections;
     };
 
     // Floating Progress Component
     const FloatingProgress = () => {
       const [isCollapsed, setIsCollapsed] = useState(false);
-      const visibleSections = getVisibleSections();
 
-      if (visibleSections.length === 0) return null;
+      // Calculate visible sections using useMemo to prevent unnecessary recalculations
+      const visibleSections = useMemo(() => {
+        console.log('🎯 Progress bar: calculating sections...');
+        const sections = getVisibleSections();
+        console.log('🎯 Progress bar: sections calculated:', sections.length);
+        return sections;
+      }, [serviceSections, manualSpecialization, selectedServiceDepartments]);
+
+      console.log('🎯 Progress bar render:', {
+        serviceSectionsLength: serviceSections?.length || 0,
+        visibleSectionsLength: visibleSections.length,
+        manualSpecialization,
+        selectedServiceDepartmentsLength: selectedServiceDepartments?.length || 0
+      });
+
+      // Don't show progress bar if essential data isn't loaded yet
+      if (!serviceSections || serviceSections.length === 0) {
+        console.log('❌ Progress bar: No service sections');
+        return null;
+      }
+
+      if (visibleSections.length === 0) {
+        console.log('❌ Progress bar: No visible sections, showing first 5 sections anyway for testing');
+        // Temporarily show progress bar with first 5 sections for testing
+        const testSections = serviceSections.slice(0, 5);
+        if (testSections.length === 0) return null;
+
+        return (
+          <div style={{
+            position: 'fixed',
+            left: '20px',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            backgroundColor: '#fff',
+            border: '2px solid #e0e0e0',
+            borderRadius: '12px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+            zIndex: 1000,
+            minWidth: '280px',
+            padding: '16px'
+          }}>
+            <div style={{ fontSize: '14px', fontWeight: '600', color: '#333' }}>
+              Progress (Test Mode)
+            </div>
+            <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
+              Showing first {testSections.length} sections for testing
+            </div>
+            {testSections.map((section, index) => (
+              <div key={section.id || index} style={{
+                padding: '4px 0',
+                fontSize: '11px',
+                color: '#666'
+              }}>
+                📋 {section.displayName}
+              </div>
+            ))}
+          </div>
+        );
+      }
 
       const overallStats = visibleSections.reduce((acc, section) => {
         const status = getSectionStatus(section);
@@ -7411,7 +7559,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                  cursor: 'pointer'
                }}
              >
-               {showDebugPanel ? 'Hide' : 'Show'} IndexedDB Data
+               {showDebugPanel ? 'Hide' : 'Show'} Saved Data
              </button>
 
              {/* IndexedDB Debug Panel */}
@@ -7431,7 +7579,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
                }}>
                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                   <h4 style={{ margin: 0, color: '#007bff' }}>📊 IndexedDB Data</h4>
+                   <h4 style={{ margin: 0, color: '#007bff' }}>📊 Saved Data</h4>
                    <button
                      onClick={refreshIndexedDBData}
                      style={{

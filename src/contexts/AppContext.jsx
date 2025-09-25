@@ -484,8 +484,18 @@ export function AppProvider({ children }) {
   //   }
   // };
 
+  // Add a flag to prevent repeated calls
+  let isFetchingAssignments = false;
+
   const fetchUserAssignments = async () => {
+        // Prevent concurrent calls
+        if (isFetchingAssignments) {
+          console.log('🚫 fetchUserAssignments already in progress, skipping...');
+          return;
+        }
+
         try {
+          isFetchingAssignments = true;
           console.log('************ Final user assignments:**************');
           // Step 1: Start Fetching Assignments
           console.log('Step 1: 🔄 Fetching assignments from DataStore...');
@@ -639,6 +649,8 @@ export function AppProvider({ children }) {
           console.error('Failed to fetch user assignments:', error);
           dispatch({ type: ActionTypes.UPDATE_USER_ASSIGNMENTS, payload: [] });
           showToast(`Failed to load assignments: ${error.message}`, 'error');
+        } finally {
+          isFetchingAssignments = false;
         }
       };
 

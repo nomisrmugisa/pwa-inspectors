@@ -100,6 +100,10 @@ class DHIS2APIService {
       'Content-Type': 'application/json',
       'Accept': 'application/json'
     };
+
+    // Global request deduplication cache
+    this._requestCache = new Map();
+    this._pendingRequests = new Map();
   }
 
   setConfig(baseUrl, username, password) {
@@ -116,29 +120,78 @@ class DHIS2APIService {
 
   async request(endpoint, options = {}) {
     const url = `${this.baseUrl}${endpoint}`;
-    
+    const method = options.method || 'GET';
+    const requestKey = `${method}:${url}`;
+
+    // For GET requests, implement deduplication
+    if (method === 'GET') {
+      const now = Date.now();
+      const CACHE_DURATION = 5000; // 5 seconds
+
+      // Check if we have a cached response
+      if (this._requestCache.has(requestKey)) {
+        const cached = this._requestCache.get(requestKey);
+        if ((now - cached.timestamp) < CACHE_DURATION) {
+          console.log(`🚀 Using cached response for: ${endpoint}`);
+          return cached.data;
+        }
+      }
+
+      // Check if there's already a pending request for this endpoint
+      if (this._pendingRequests.has(requestKey)) {
+        console.log(`⏳ Waiting for pending request: ${endpoint}`);
+        return await this._pendingRequests.get(requestKey);
+      }
+    }
+
     const config = {
       headers: this.headers,
       ...options
     };
 
-    try {
-      const response = await fetch(url, config);
-      
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
+    // Create the request promise
+    const requestPromise = (async () => {
+      try {
+        const response = await fetch(url, config);
 
-      const contentType = response.headers.get('content-type');
-      if (contentType && contentType.includes('application/json')) {
-        return await response.json();
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const contentType = response.headers.get('content-type');
+        let data;
+        if (contentType && contentType.includes('application/json')) {
+          data = await response.json();
+        } else {
+          data = await response.text();
+        }
+
+        // Cache GET responses
+        if (method === 'GET') {
+          this._requestCache.set(requestKey, {
+            data: data,
+            timestamp: Date.now()
+          });
+        }
+
+        return data;
+      } catch (error) {
+        console.error('API Request failed:', error);
+        throw error;
+      } finally {
+        // Remove from pending requests
+        if (method === 'GET') {
+          this._pendingRequests.delete(requestKey);
+        }
       }
-      
-      return await response.text();
-    } catch (error) {
-      console.error('API Request failed:', error);
-      throw error;
+    })();
+
+    // Store pending request for GET requests
+    if (method === 'GET') {
+      this._pendingRequests.set(requestKey, requestPromise);
     }
+
+    return requestPromise;
   }
 
   async testAuth() {
@@ -635,26 +688,17 @@ class DHIS2APIService {
    * Get inspection assignments from dataStore
    * Used to create dynamic service dropdown based on facility and inspector
    */
-  async getInspectionAssignments(year = '2025') {
-    console.log(`📋 Fetching inspection assignments for year: ${year}`);
-    console.log(`🌐 Full URL will be: ${this.baseUrl}/api/dataStore/inspection/${year}`);
+  async getInspectionAssignments(year = new Date().getFullYear()) {
+    const endpoint = `/api/dataStore/inspection/${year}`;
     try {
-      const data = await this.request(`/api/dataStore/inspection/${year}`);
-      console.log('✅ Inspection assignments data:', data);
-      console.log('📊 Data structure:', {
-        hasInspections: !!data.inspections,
-        inspectionsCount: data.inspections?.length || 0,
-        inspectionsKeys: data.inspections ? Object.keys(data.inspections[0] || {}) : []
-      });
-      return data;
+      const data = await this.request(endpoint);
+      return data || [];
     } catch (error) {
-      console.error('❌ Failed to fetch inspection assignments:', error);
-      console.error('📍 Error details:', {
-        message: error.message,
-        status: error.status,
-        url: `/api/dataStore/inspection/${year}`
-      });
-      return { inspections: [] };
+      if (error.message.includes('404')) {
+        console.log(`No inspection assignments found for year ${year}`);
+        return [];
+      }
+      throw error;
     }
   }
 
