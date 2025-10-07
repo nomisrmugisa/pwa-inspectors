@@ -2103,59 +2103,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
               📄 {filteredDataElements.length} shown
             </span>
 
-            {/* Display filtered DE count if any */}
 
-            {(() => {
-
-              const currentFacilityClassification = getCurrentFacilityClassification();
-
-              if (currentFacilityClassification) {
-
-                const filteredCount = getFilteredDataElementCount(section.displayName, currentFacilityClassification);
-
-                if (filteredCount > 0) {
-
-                  return (
-
-                    <span 
-
-                      className="filtered-de-count" 
-
-                      title={`${filteredCount} data elements filtered out for ${currentFacilityClassification}`}
-
-                      style={{ 
-
-                        fontSize: '0.8em', 
-
-                        color: '#e74c3c', 
-
-                        marginLeft: '8px',
-
-                        backgroundColor: '#fdf2f2',
-
-                        padding: '2px 6px',
-
-                        borderRadius: '4px',
-
-                        border: '1px solid #fecaca'
-
-                      }}
-
-                    >
-
-                      🚫 {filteredCount} filtered
-
-              </span>
-
-                  );
-
-                }
-
-              }
-
-              return null;
-
-            })()}
 
             
 
@@ -7203,91 +7151,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                    <form onSubmit={handleSubmit} className="inspection-form">
 
-             {/* UI Debug Panel - Temporary (collapsed) */}
-             <details className="ui-debug-panel" open={false} style={{ marginBottom: '20px' }}>
-               <summary style={{ cursor: 'pointer', color: '#856404', fontWeight: 600 }}>🐛 UI Debug Panel (Temporary)</summary>
-               <div style={{
-               backgroundColor: '#fff3cd',
-               border: '2px solid #ffeaa7',
-               borderRadius: '8px',
-               padding: '16px',
-                 marginTop: '8px',
-               fontFamily: 'monospace'
-             }}>
-               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', fontSize: '12px' }}>
-                 <div>
-                   <strong>Facility Type State:</strong>
-                   <div style={{ backgroundColor: '#fff', padding: '8px', borderRadius: '4px', marginTop: '4px' }}>
-                     Value: "{facilityType || 'null'}"<br/>
-                     Type: {typeof facilityType}<br/>
-                     Length: {facilityType?.length || 0}
-                   </div>
-                 </div>
 
-                 <div>
-                   <strong>Selected Service Departments:</strong>
-                   <div style={{ backgroundColor: '#fff', padding: '8px', borderRadius: '4px', marginTop: '4px' }}>
-                     Count: {selectedServiceDepartments.length}<br/>
-                     Values: {JSON.stringify(selectedServiceDepartments)}
-                   </div>
-                 </div>
-
-                 <div>
-                   <strong>Facility Info:</strong>
-                   <div style={{ backgroundColor: '#fff', padding: '8px', borderRadius: '4px', marginTop: '4px' }}>
-                     Name: {facilityInfo?.facilityName || 'Not loaded'}<br/>
-                     Type: {facilityInfo?.type || 'Not loaded'}<br/>
-                     ID: {facilityInfo?.facilityId || 'Not loaded'}
-                   </div>
-                 </div>
-
-                 <div>
-                   <strong>Tracked Entity Instance (TEI):</strong>
-                   <div style={{ backgroundColor: '#fff', padding: '8px', borderRadius: '4px', marginTop: '4px' }}>
-                     Value: {trackedEntityInstance || facilityInfo?.trackedEntityInstance || 'None'}<br/>
-                     Source: {trackedEntityInstance ? 'state' : (facilityInfo?.trackedEntityInstance ? 'facilityInfo' : 'N/A')}
-                   </div>
-                 </div>
-
-                 <div>
-                   <strong>Form Sections:</strong>
-                   <div style={{ backgroundColor: '#fff', padding: '8px', borderRadius: '4px', marginTop: '4px' }}>
-                     Total: {serviceSections?.length || 0}<br/>
-                     Loaded: {loadingServiceSections ? 'Loading...' : 'Complete'}
-                   </div>
-                 </div>
-               </div>
-
-               <div style={{ marginTop: '12px' }}>
-                 <strong>Available Sections:</strong>
-                 <div style={{ backgroundColor: '#fff', padding: '8px', borderRadius: '4px', marginTop: '4px', maxHeight: '100px', overflow: 'auto' }}>
-                                     {serviceSections?.map((section, index) => {
-                   const total = section?.dataElements?.length || 0;
-                   const shown = (section?.dataElements || []).filter(psde => {
-                     if (!psde?.dataElement) return false;
-                     const displayName = psde.dataElement.displayName;
-                     
-                     // Check if this is a Comments element
-                     const isComment = displayName.endsWith(' Comments');
-                     
-                     if (isComment) {
-                       // For Comments, check if main element passes
-                       const mainElementName = displayName.replace(/\sComments$/,'');
-                       return shouldShowDataElementForService(mainElementName, facilityType);
-                     }
-                     
-                     return shouldShowDataElementForService(displayName, facilityType);
-                   }).length;
-                   return (
-                     <div key={index} style={{ fontSize: '11px', padding: '2px 0' }}>
-                       {index + 1}. {section.displayName} (ID: {section.id}) — {shown}/{total} shown
-                     </div>
-                   );
-                 }) || 'No sections loaded'}
-                 </div>
-               </div>
-             </div>
-             </details>
 
              {/* Facility Information Display - Always show */}
              <details className="facility-info-display">
@@ -7474,6 +7338,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                      value={manualSpecialization || ''}
                      onChange={(e) => handleSpecializationChange(e.target.value)}
                      className="form-select"
+                     disabled={inspectionInfoConfirmed}
                    >
                      <option value="">Select a specialization...</option>
                      {specializationOptions.map((option, index) => (
