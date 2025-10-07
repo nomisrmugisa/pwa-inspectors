@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 
 import { useParams, useNavigate } from 'react-router-dom';
 
@@ -232,23 +232,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
     return isFieldFilled(value) ? 'filled' : '';
   };
 
-  // ALWAYS log when FormField is rendered
-
-  console.log(`🔍 FormField RENDERED: "${dataElement.displayName}"`, {
-
-    fieldId,
-
-    valueType: dataElement.valueType,
-
-    hasOptionSet: !!dataElement.optionSet,
-
-    readOnly,
-
-    value,
-
-    staticText
-
-  });
+  // FormField rendered
   
 
 
@@ -270,25 +254,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
     // Initialize selectOptions at the top to fix hoisting issue
     let selectOptions = null;
 
-    // ALWAYS log field rendering for debugging
-
-    console.log(`🎨 ALWAYS LOG: Rendering field "${dataElement.displayName}":`, {
-
-      valueType: dataElement.valueType,
-
-      hasOptionSet: !!dataElement.optionSet,
-
-      optionSetOptions: dataElement.optionSet?.options?.length || 0,
-
-      dynamicOptions: dynamicOptions,
-
-      readOnly: readOnly,
-
-      isLoading: isLoading,
-
-      fieldId: fieldId
-
-    });
+    // Field rendering
 
     
 
@@ -922,25 +888,13 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
     
 
-    console.log(`🎯 ALWAYS LOG: Field "${dataElement.displayName}" using valueType switch (${dataElement.valueType})`);
 
-    
 
     switch (dataElement.valueType) {
 
       case 'TEXT':
 
-        console.log(`🔍 ALWAYS LOG: TEXT field ${fieldId}:`, { 
 
-          value, 
-
-          dataElement: dataElement.displayName,
-
-          valueType: dataElement.valueType,
-
-          fieldId: fieldId
-
-        });
 
         
 
@@ -972,17 +926,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
       case 'LONG_TEXT':
 
-        console.log(`🔍 ALWAYS LOG: LONG_TEXT field ${fieldId}:`, { 
 
-          value, 
-
-          dataElement: dataElement.displayName,
-
-          valueType: dataElement.valueType,
-
-          fieldId: fieldId
-
-        });
 
         
 
@@ -1024,17 +968,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
         break;
       case 'PERCENTAGE':
 
-        console.log(`🔍 ALWAYS LOG: NUMBER field ${fieldId}:`, { 
 
-          value, 
-
-          dataElement: dataElement.displayName,
-
-          valueType: dataElement.valueType,
-
-          fieldId: fieldId
-
-        });
 
         
 
@@ -1076,17 +1010,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
       case 'DATE':
 
-        console.log(`🔍 ALWAYS LOG: DATE field ${fieldId}:`, { 
 
-          value, 
-
-          dataElement: dataElement.displayName,
-
-          valueType: dataElement.valueType,
-
-          fieldId: fieldId
-
-        });
 
         
 
@@ -1116,17 +1040,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
       case 'DATETIME':
 
-        console.log(`🔍 ALWAYS LOG: DATETIME field ${fieldId}:`, { 
 
-          value, 
-
-          dataElement: dataElement.displayName,
-
-          valueType: dataElement.valueType,
-
-          fieldId: fieldId
-
-        });
 
         
 
@@ -1158,17 +1072,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
         break;
       case 'TRUE_ONLY':
 
-        console.log(`🔍 ALWAYS LOG: BOOLEAN field ${fieldId}:`, { 
 
-          value, 
-
-          dataElement: dataElement.displayName,
-
-          valueType: dataElement.valueType,
-
-          fieldId: fieldId
-
-        });
 
         
 
@@ -1206,17 +1110,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
       case 'EMAIL':
 
-        console.log(`🔍 ALWAYS LOG: EMAIL field ${fieldId}:`, { 
 
-          value, 
-
-          dataElement: dataElement.displayName,
-
-          valueType: dataElement.valueType,
-
-          fieldId: fieldId
-
-        });
 
         
 
@@ -1248,17 +1142,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
       case 'PHONE_NUMBER':
 
-        console.log(`🔍 ALWAYS LOG: PHONE_NUMBER field ${fieldId}:`, { 
 
-          value, 
-
-          dataElement: dataElement.displayName,
-
-          valueType: dataElement.valueType,
-
-          fieldId: fieldId
-
-        });
 
         
 
@@ -1290,17 +1174,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
       case 'URL':
 
-        console.log(`🔍 ALWAYS LOG: URL field ${fieldId}:`, { 
 
-          value, 
-
-          dataElement: dataElement.displayName,
-
-          valueType: dataElement.valueType,
-
-          fieldId: fieldId
-
-        });
 
         
 
@@ -1348,17 +1222,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
         
 
-        console.log(`🔍 ALWAYS LOG: COORDINATE field ${fieldId}:`, { 
 
-          value, 
-
-          dataElement: dataElement.displayName,
-
-          valueType: dataElement.valueType,
-
-          fieldId: fieldId
-
-        });
 
         
 
@@ -1610,16 +1474,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
   // Section component for organizing form fields
   function FormSection({ section, formData, onChange, errors, serviceSections, loadingServiceSections, readOnlyFields = {}, getCurrentPosition, formatCoordinatesForDHIS2, facilityClassifications = [], loadingFacilityClassifications = false, inspectionInfoConfirmed = false, setInspectionInfoConfirmed = () => {}, areAllInspectionFieldsComplete = () => false, showDebugPanel = false, getCurrentFacilityClassification = () => null, facilityType = null, manualSpecialization = null, onCommentChange, comments = {} }) {
-    console.log(`📝 Rendering FormSection: ${section.displayName}, Facility Type: ${facilityType}`);
-    console.log(`🔍 SECTION FILTER DEBUG: Section="${section.displayName}", FacilityType="${facilityType}", HasDataElements=${!!section.dataElements}, DataElementsCount=${section.dataElements?.length || 0}`);
-    console.log(`🔍 DETAILED SECTION DEBUG:`, {
-      sectionId: section.id,
-      sectionDisplayName: section.displayName,
-      facilityType: facilityType,
-      facilityTypeType: typeof facilityType,
-      facilityTypeLength: facilityType?.length,
-      dataElementsCount: section.dataElements?.length || 0
-    });
+    // FormSection rendering
 
     // Safety check - if section is undefined, return null
     if (!section) {
@@ -6986,8 +6841,20 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
       let total = 0;
       let filled = 0;
 
+      // Get current facility type for filtering
+      const currentFacilityType = manualSpecialization || facilityType;
+
       section.dataElements.forEach((psde) => {
         if (!psde?.dataElement) return;
+
+        // Apply the same filtering logic used in FormSection rendering
+        // Only count data elements that should be visible for this facility type
+        if (currentFacilityType) {
+          // Check if this data element should be shown for the current facility type
+          if (!shouldShowDataElementForService(psde.dataElement.displayName, currentFacilityType)) {
+            return; // Skip this data element - it shouldn't be counted
+          }
+        }
 
         total++;
         const fieldName = `dataElement_${psde.dataElement.id}`;
@@ -7008,43 +6875,61 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
       return { completed, total, filled, percentage };
     };
 
-    // Get visible sections for progress tracking
-    const getVisibleSections = () => {
+    // Memoized function to get visible sections - prevents infinite re-renders
+    const getVisibleSections = useCallback(() => {
       if (!serviceSections || serviceSections.length === 0) return [];
 
-      console.log('🔍 Starting section filtering with', serviceSections.length, 'sections');
+      // Get the current specialization
+      const currentSpecialization = manualSpecialization || facilityType;
 
-      const afterInspectionFilter = serviceSections.filter(section => {
-        const sectionName = (section.displayName || '').toLowerCase();
-        const shouldShow = !sectionName.includes('inspection type') && !sectionName.includes('inspection information');
-        if (!shouldShow) {
-          console.log('❌ Inspection filter removed:', section.displayName);
-        }
-        return shouldShow;
-      });
-      console.log('📊 After inspection filter:', afterInspectionFilter.length, 'sections remain');
+      // If we have a specialization and selected departments, filter by departments
+      if (currentSpecialization && selectedServiceDepartments && selectedServiceDepartments.length > 0) {
 
-      const afterClassificationFilter = afterInspectionFilter.filter(section => {
-        const currentClassification = getCurrentFacilityClassification();
-        const shouldShow = shouldShowSection(section.displayName, currentClassification);
-        if (!shouldShow) {
-          console.log('❌ Classification filter removed:', section.displayName, 'for classification:', currentClassification);
-        }
-        return shouldShow;
-      });
-      console.log('📊 After classification filter:', afterClassificationFilter.length, 'sections remain');
+        const filteredSections = serviceSections.filter(section => {
+          const sectionName = section.displayName;
 
-      const finalSections = afterClassificationFilter.filter(section => {
-        const shouldShow = shouldShowSectionForServiceDepartments(section.displayName, selectedServiceDepartments);
-        if (!shouldShow) {
-          console.log('❌ Service departments filter removed:', section.displayName, 'for departments:', selectedServiceDepartments);
-        }
-        return shouldShow;
-      });
-      console.log('📊 Final sections:', finalSections.length, 'sections remain');
+          // Always include inspection sections
+          if (sectionName.toLowerCase().includes('inspection')) {
+            return true;
+          }
 
-      return finalSections;
-    };
+          // Check if this section matches any selected department
+          const matchesDepartment = selectedServiceDepartments.some(dept =>
+            dept.toUpperCase() === sectionName.toUpperCase()
+          );
+
+          return matchesDepartment;
+        });
+
+        return filteredSections;
+      }
+
+      // If we have a specialization but no departments selected, show relevant sections for that specialization
+      if (currentSpecialization && currentSpecialization !== 'Unknown') {
+        const availableDepartments = getDepartmentsForSpecialization(currentSpecialization);
+
+        const relevantSections = serviceSections.filter(section => {
+          const sectionName = section.displayName;
+
+          // Always include inspection sections
+          if (sectionName.toLowerCase().includes('inspection')) {
+            return true;
+          }
+
+          // Check if this section is relevant to the specialization
+          const isRelevant = availableDepartments.some(dept =>
+            dept.toUpperCase() === sectionName.toUpperCase()
+          );
+
+          return isRelevant;
+        });
+
+        return relevantSections;
+      }
+
+      // No specialization selected - show first 10 sections to avoid overwhelming display
+      return serviceSections.slice(0, 10);
+    }, [serviceSections, manualSpecialization, facilityType, selectedServiceDepartments]);
 
     // Floating Progress Component
     const FloatingProgress = () => {
@@ -7052,62 +6937,12 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
       // Calculate visible sections using useMemo to prevent unnecessary recalculations
       const visibleSections = useMemo(() => {
-        console.log('🎯 Progress bar: calculating sections...');
-        const sections = getVisibleSections();
-        console.log('🎯 Progress bar: sections calculated:', sections.length);
-        return sections;
+        return getVisibleSections();
       }, [serviceSections, manualSpecialization, selectedServiceDepartments]);
 
-      console.log('🎯 Progress bar render:', {
-        serviceSectionsLength: serviceSections?.length || 0,
-        visibleSectionsLength: visibleSections.length,
-        manualSpecialization,
-        selectedServiceDepartmentsLength: selectedServiceDepartments?.length || 0
-      });
-
       // Don't show progress bar if essential data isn't loaded yet
-      if (!serviceSections || serviceSections.length === 0) {
-        console.log('❌ Progress bar: No service sections');
+      if (!serviceSections || serviceSections.length === 0 || visibleSections.length === 0) {
         return null;
-      }
-
-      if (visibleSections.length === 0) {
-        console.log('❌ Progress bar: No visible sections, showing first 5 sections anyway for testing');
-        // Temporarily show progress bar with first 5 sections for testing
-        const testSections = serviceSections.slice(0, 5);
-        if (testSections.length === 0) return null;
-
-        return (
-          <div style={{
-            position: 'fixed',
-            left: '20px',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            backgroundColor: '#fff',
-            border: '2px solid #e0e0e0',
-            borderRadius: '12px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-            zIndex: 1000,
-            minWidth: '280px',
-            padding: '16px'
-          }}>
-            <div style={{ fontSize: '14px', fontWeight: '600', color: '#333' }}>
-              Progress (Test Mode)
-            </div>
-            <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
-              Showing first {testSections.length} sections for testing
-            </div>
-            {testSections.map((section, index) => (
-              <div key={section.id || index} style={{
-                padding: '4px 0',
-                fontSize: '11px',
-                color: '#666'
-              }}>
-                📋 {section.displayName}
-              </div>
-            ))}
-          </div>
-        );
       }
 
       const overallStats = visibleSections.reduce((acc, section) => {
