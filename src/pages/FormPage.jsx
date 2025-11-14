@@ -27,12 +27,6 @@ import indexedDBService from '../services/indexedDBService';
 
 import './FormPage.css'; // Import FormPage specific styles
 
-
-
-
-
-
-
 // Define service field detection function at module level
 
 const enhancedServiceFieldDetection = (dataElement) => {
@@ -43,11 +37,7 @@ const enhancedServiceFieldDetection = (dataElement) => {
 
   }
 
-  
-
   const fieldName = (dataElement.displayName || dataElement.shortName || '').toLowerCase();
-
-  
 
   // Check if this is the Facility Service Departments field
 
@@ -61,22 +51,11 @@ const enhancedServiceFieldDetection = (dataElement) => {
   if (fieldName.includes('service') || fieldName.includes('department') ||
       dataElement.displayName === 'Facility Service Departments' ||
       dataElement.id === 'manual_facility_service_departments') {
-    console.log(`🔍 SERVICE FIELD DETECTION: "${dataElement.displayName}" (ID: ${dataElement.id}) -> fieldName: "${fieldName}" -> isFacilityServiceDepartments: ${isFacilityServiceDepartments}`);
   }
 
   // ALWAYS log for manual_facility_service_departments ID
   if (dataElement.id === 'manual_facility_service_departments') {
-    console.log(`🎯 MANUAL FACILITY SERVICE DEPARTMENTS DETECTED:`, {
-      id: dataElement.id,
-      displayName: dataElement.displayName,
-      fieldName,
-      isFacilityServiceDepartments,
-      willReturn: isFacilityServiceDepartments ? 'facility_service_departments' : 'false'
-    });
   }
-
-  
-
 
   // If it's the Facility Service Departments field, we want to handle it specially
 
@@ -86,13 +65,9 @@ const enhancedServiceFieldDetection = (dataElement) => {
 
   }
 
-  
-
   // Check if this is the main Services field
 
   const isMainServicesField = fieldName === 'services' || fieldName === 'service' || fieldName === 'service sections';
-
-  
 
   // If it's the main Services field, we want to treat it as a service field
 
@@ -101,8 +76,6 @@ const enhancedServiceFieldDetection = (dataElement) => {
     return true;
 
   }
-
-  
 
   // For other fields, use the standard service field detection logic
 
@@ -113,8 +86,6 @@ const enhancedServiceFieldDetection = (dataElement) => {
     return false;
 
   }
-
-  
 
   // Exclude fields that are about outreach services, special circumstances, etc.
 
@@ -127,8 +98,6 @@ const enhancedServiceFieldDetection = (dataElement) => {
     return false;
 
   }
-
-  
 
   // Only identify fields that are specifically about selecting service types/sections
 
@@ -147,8 +116,6 @@ const enhancedServiceFieldDetection = (dataElement) => {
          !fieldName.includes('special');
 
 };
-
-
 
 // Detect subsection headers: strictly exactly two trailing dashes "--" (with optional surrounding spaces)
 const isSectionHeaderName = (name) => {
@@ -233,9 +200,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
   };
 
   // FormField rendered
-  
-
-
 
   // Check if this field is mandatory based on field name or compulsory flag
 
@@ -247,16 +211,12 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
   };
 
-
-
   const renderField = () => {
 
     // Initialize selectOptions at the top to fix hoisting issue
     let selectOptions = null;
 
     // Field rendering
-
-    
 
     // If staticText is provided, render a disabled text input showing the text
     if (typeof staticText === 'string') {
@@ -272,33 +232,16 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       );
     }
 
-    
-
-    
-
     // Handle Facility Service Departments field with specific dropdown options
 
     const serviceFieldType = enhancedServiceFieldDetection(dataElement);
 
     if (serviceFieldType === 'facility_service_departments') {
-
-      console.log(`🏥 Rendering Facility Service Departments field: "${dataElement.displayName}"`);
-      console.log(`🔍 FIELD DEBUG:`, {
-        dataElementId: dataElement.id,
-        displayName: dataElement.displayName,
-        serviceFieldType: serviceFieldType,
-        dynamicOptions: dynamicOptions,
-        dynamicOptionsLength: dynamicOptions?.length || 0,
-        value: value
-      });
-
       // Allow re-rendering when options change - removed duplicate prevention
       // that was blocking field updates when department options are loaded
-      console.log(`🔄 Allowing Facility Service Departments field to render/re-render`);
       
       // Check if we have a facility type selected
       const currentFacilityType = window.__currentFacilityType || 'Unknown';
-      console.log(`🏥 Current facility type: ${currentFacilityType}`);
 
       // Check if specialization is selected - required before allowing department selection
       // Check both the prop and the global variable for robustness
@@ -332,14 +275,11 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
       // Force reload options if they're empty and we have a facility type
       if (selectOptions && selectOptions.length === 0 && currentFacilityType !== 'Unknown') {
-        console.log('🔄 Attempting to reload options for facility type:', currentFacilityType);
         // Trigger a re-render by updating the timestamp
         if (window.forceFormRerender) {
           window.forceFormRerender();
         }
       }
-
-      
 
       // Use dynamicOptions provided from parent (list of visible section names)
 
@@ -401,7 +341,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
       });
 
-
       // Get departments for the current specialization using hardcoded mapping
       // Try multiple sources to get the current specialization
       const currentSpecialization = window.__currentSpecialization || 
@@ -421,7 +360,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       // Store the current specialization in global state for debugging and consistency
       if (currentSpecialization && currentSpecialization !== 'Unknown') {
         window.__currentSpecialization = currentSpecialization;
-        console.log('🌍 Stored specialization in global state:', currentSpecialization);
       }
       
       const hardcodedDepartments = getDepartmentsForSpecialization(currentSpecialization);
@@ -431,43 +369,21 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       // This ensures that any dynamic calculation gets overridden
       if (hardcodedDepartments.length > 0) {
         window.__departmentOptionsForSection = hardcodedDepartments;
-        console.log('🚀 OVERRIDING global department options with hardcoded departments:', hardcodedDepartments.length);
       }
-      
-      console.log('🏥 Hardcoded departments for specialization:', {
-        specialization: currentSpecialization,
-        departments: hardcodedDepartments,
-        stats: departmentStats
-      });
-
       // ALWAYS use hardcoded departments as the primary source
       // Override any dynamic calculation with our hardcoded mapping
       selectOptions = hardcodedDepartments;
-      
-      console.log('🎯 OVERRIDING dynamic calculation with hardcoded departments:', {
-        hardcodedCount: hardcodedDepartments.length,
-        hardcodedDepartments: hardcodedDepartments,
-        dynamicFallbackUsed: false
-      });
-      
       // Only fallback to dynamic if hardcoded list is completely empty
       if (selectOptions && selectOptions.length === 0) {
-        console.log('⚠️ No hardcoded departments found, falling back to dynamic options');
         selectOptions = facilityServiceOptions && facilityServiceOptions.length > 0 
         ? facilityServiceOptions 
         : (window.__departmentOptionsForSection && window.__departmentOptionsForSection.length > 0 
           ? window.__departmentOptionsForSection 
             : []);
       }
-      
-      console.log('🔍 Facility Service Departments - selectOptions:', selectOptions);
-      console.log('🔍 facilityServiceOptions:', facilityServiceOptions);
-      console.log('🔍 window.__departmentOptionsForSection:', window.__departmentOptionsForSection);
-      console.log('🔍 selectOptions length:', selectOptions ? selectOptions.length : 'null');
 
       // Ensure we always have options - if hardcoded list is empty, show a message
       if (selectOptions && selectOptions.length === 0) {
-        console.log('⚠️ No departments available for this specialization');
       }
 
       const handleSelectChange = (e) => {
@@ -489,11 +405,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
           {/* Show warning when specialization is not selected */}
           {(() => {
-            console.log('🔍 RENDER CHECK - Warning visibility:', {
-              hasSpecializationSelected,
-              manualSpecialization,
-              willShowWarning: !hasSpecializationSelected
-            });
             return !hasSpecializationSelected;
           })() && (
             <div style={{
@@ -700,15 +611,11 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
     }
 
-    
-
     // Handle dynamic service dropdown (overrides static optionSet)
 
     if (dynamicOptions !== null) {
 
       const isMandatory = isMandatoryField();
-
-      console.log(`🔄 ALWAYS LOG: Using dynamic service dropdown for "${dataElement.displayName}"`);
 
       return (
 
@@ -744,15 +651,11 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
               : String(section);
 
-              
-
             const optionText = typeof section === 'object' && section !== null
 
               ? (section.displayName || section.name || section.id || JSON.stringify(section))
 
               : String(section);
-
-              
 
             return (
 
@@ -772,13 +675,9 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
     }
 
-
-
     // For Service fields without dynamic options, show error message
 
     if (serviceFieldType && serviceFieldType !== 'facility_service_departments' && dynamicOptions === null) {
-
-      console.log(`❌ ALWAYS LOG: Service field "${dataElement.displayName}" has no dynamic options available`);
 
       return (
 
@@ -808,15 +707,11 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
     }
 
-
-
     // For Service fields, only use dynamic options - no static optionSet fallback
 
     // For non-Service fields, check if field has optionSet (dropdown), regardless of valueType
 
     if (!serviceFieldType && dataElement.optionSet && dataElement.optionSet.options) {
-
-      
 
       console.log(`📋 ALWAYS LOG: Dropdown field "${dataElement.displayName}":`, {
 
@@ -837,8 +732,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
         }))
 
       });
-
-      
 
       return (
 
@@ -878,25 +771,13 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
     }
 
-    
-
     // Debug: Check if field should have options but doesn't - removed
 
-
-
     // Then handle by valueType
-
-    
-
-
 
     switch (dataElement.valueType) {
 
       case 'TEXT':
-
-
-
-        
 
         return (
 
@@ -922,13 +803,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
         );
 
-
-
       case 'LONG_TEXT':
-
-
-
-        
 
         return (
 
@@ -954,8 +829,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
         );
 
-
-
       case 'INTEGER':
         break;
       case 'INTEGER_POSITIVE':
@@ -967,10 +840,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       case 'NUMBER':
         break;
       case 'PERCENTAGE':
-
-
-
-        
 
         return (
 
@@ -1006,13 +875,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
         );
 
-
-
       case 'DATE':
-
-
-
-        
 
         return (
 
@@ -1036,13 +899,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
         );
 
-
-
       case 'DATETIME':
-
-
-
-        
 
         return (
 
@@ -1066,15 +923,9 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
         );
 
-
-
       case 'BOOLEAN':
         break;
       case 'TRUE_ONLY':
-
-
-
-        
 
         return (
 
@@ -1106,13 +957,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
         );
 
-
-
       case 'EMAIL':
-
-
-
-        
 
         return (
 
@@ -1138,13 +983,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
         );
 
-
-
       case 'PHONE_NUMBER':
-
-
-
-        
 
         return (
 
@@ -1170,13 +1009,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
         );
 
-
-
       case 'URL':
-
-
-
-        
 
         return (
 
@@ -1202,30 +1035,9 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
         );
 
-
-
       case 'COORDINATE':
 
         // Debug logging for coordinate fields
-
-        console.log(`🔍 COORDINATE field ${fieldId}:`, { 
-
-          value, 
-
-          dataElement: dataElement.displayName,
-
-          valueType: dataElement.valueType,
-
-          fieldId: fieldId
-
-        });
-
-        
-
-
-
-        
-
         return (
 
           <div className={`coordinate-field ${getFilledClass()}`}>
@@ -1253,8 +1065,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
                     return;
 
                   }
-
-                  
 
                   // If user finished typing (ends with ]), format it
 
@@ -1308,8 +1118,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
                 onClick={() => {
 
-                console.log(`📍 GPS button clicked for field: ${fieldId}`);
-
                 getCurrentPosition(fieldId, onChange);
 
               }}
@@ -1346,19 +1154,13 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
             </div>
 
-
-
           </div>
 
         );
 
-
-
       default:
 
         // Default to text input
-
-        console.log(`⚠️ ALWAYS LOG: Field "${dataElement.displayName}" using default text input (valueType: ${dataElement.valueType})`);
 
         return (
 
@@ -1388,8 +1190,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
   };
 
-
-
   // Handle comment changes
   const handleCommentChange = (newComment) => {
     setCommentText(newComment);
@@ -1408,8 +1208,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
     <div className="form-field">
 
       {/* Test indicators removed */}
-
-
 
       <div className="field-header">
         <label htmlFor={fieldId} className={`form-label ${isBoldDataElement(dataElement) ? 'bold-label' : ''}`}>
@@ -1470,8 +1268,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
 }
 
-
-
   // Section component for organizing form fields
   function FormSection({ section, formData, onChange, errors, serviceSections, loadingServiceSections, readOnlyFields = {}, getCurrentPosition, formatCoordinatesForDHIS2, facilityClassifications = [], loadingFacilityClassifications = false, inspectionInfoConfirmed = false, setInspectionInfoConfirmed = () => {}, areAllInspectionFieldsComplete = () => false, showDebugPanel = false, getCurrentFacilityClassification = () => null, facilityType = null, manualSpecialization = null, onCommentChange, comments = {} }) {
     // FormSection rendering
@@ -1490,8 +1286,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
     const baseFieldsPerPage = 5;
 
-    
-
     // Function to check if a field is a comment/remarks field (case-insensitive)
 
     const isCommentField = (dataElement) => {
@@ -1506,8 +1300,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
     };
 
-    
-
     // Filter data elements based on selected facility service
 
     const filterDataElements = (dataElements) => {
@@ -1518,24 +1310,15 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
       }
 
-
-
-      console.log(`🔍 Pre-pagination filtering for section "${section.displayName}" with facility type "${facilityType}"`);
-
-
-
       return dataElements.filter(psde => {
 
         if (!psde || !psde.dataElement) return false;
 
         const displayName = psde.dataElement.displayName;
-        console.log(`🔎 Filtering Data Element: ${displayName}, Section: ${section.displayName}, Facility Type: ${facilityType}`);
-        console.log(`🔍 EXACT VALUES: DataElement="${displayName}", Section="${section.displayName}", FacilityType="${facilityType}"`);
 
         // Hide specialisation/facility classification fields from users (they're handled by manual selector)
         const isSpecialisationField = /specialisation|facility classification|facility type/i.test(displayName);
         if (isSpecialisationField) {
-          console.log(`🚫 Hiding specialisation field from user: ${displayName}`);
           return false; // Hide these fields from users
         }
 
@@ -1546,9 +1329,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
           // For Comments/Remarks elements, check if the main element would pass the filter
           // Extract main element name by removing comment/remarks suffix
           const mainElementName = displayName.replace(/\s*(Comments?|Remarks?)\s*$/i,'');
-          
-          console.log(`💬 Comment/Remarks element detected: "${displayName}" -> Main: "${mainElementName}"`);
-          
+
           // Check if the main element passes the filter
           const mainElementPasses = shouldShowDataElementForService(
             mainElementName,
@@ -1556,7 +1337,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
           );
           
           if (!mainElementPasses) {
-            console.log(`🔍 Hiding comment/remarks element "${displayName}" because main element doesn't pass filter`);
           }
           
           return mainElementPasses;
@@ -1568,7 +1348,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
         );
 
         if (!shouldShow) {
-            console.log(`🔍 Pre-pagination filter: Hiding "${displayName}" in section "${section.displayName}"`);
         }
 
         return shouldShow;
@@ -1578,28 +1357,17 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
     };
 
-    
-
     // Get filtered data elements
 
     // const filteredDataElements = filterDataElements(section.dataElements);
 
-
-
     const [filteredDataElements, setFilteredDataElements] = useState([]);
 
-
-
-
-
     useEffect(() => {
-      console.log(`🔄 useEffect triggered for section: ${section.displayName}, facilityType: ${facilityType}, dataElements count: ${section.dataElements?.length || 0}`);
 
       const filterAsync = async () => {
 
         if (!facilityType || !section.dataElements) {
-          console.log(`⚠️ Early return: facilityType="${facilityType}", dataElements=${section.dataElements?.length || 0}`);
-          console.log(`🔍 FILTER DEBUG: Section="${section.displayName}" - No filtering applied, showing all ${section.dataElements?.length || 0} elements`);
           setFilteredDataElements(section.dataElements || []);
 
           return;
@@ -1610,12 +1378,9 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
         const sectionName = (section.displayName || '');
         const lowerName = sectionName.toLowerCase();
         if (sectionName === 'Inspection Type' || lowerName.includes('document review')) {
-          console.log('🔍 FILTER BYPASS: Special section - showing all data elements');
           setFilteredDataElements(section.dataElements || []);
           return;
         }
-
-        console.log(`🔍 FILTER DEBUG: Starting filtering for Section="${section.displayName}", FacilityType="${facilityType}", Elements=${section.dataElements.length}`);
 
         const results = await Promise.all(
 
@@ -1624,12 +1389,10 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
               if (!psde || !psde.dataElement) return false;
 
               const displayName = psde.dataElement.displayName;
-              console.log(`🔎 Async Filtering Data Element: ${displayName}, Section: ${section.displayName}, Facility Type: ${facilityType}`);
 
               // Hide specialisation/facility classification fields from users (they're handled by manual selector)
               const isSpecialisationField = /specialisation|facility classification|facility type/i.test(displayName);
               if (isSpecialisationField) {
-                console.log(`🚫 Async: Hiding specialisation field from user: ${displayName}`);
                 return false; // Hide these fields from users
               }
 
@@ -1639,14 +1402,11 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
               if (isComment) {
                 // For Comments/Remarks elements, check if the main element would pass the filter
                 const mainElementName = displayName.replace(/\s*(Comments?|Remarks?)\s*$/i,'');
-                
-                console.log(`💬 Async: Comment/Remarks element detected: "${displayName}" -> Main: "${mainElementName}"`);
-                
+
                 const mainElementPasses = await shouldShowDataElementForService(
                     mainElementName,
                     facilityType
                 );
-                console.log(`🔎 Async Filter Result for comment/remarks: ${displayName} -> ${mainElementPasses} (based on main element)`);
                 return mainElementPasses;
               } else {
                 // For main elements, use the standard filter
@@ -1654,7 +1414,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
                     displayName,
                     facilityType
                 );
-                console.log(`🔎 Async Filter Result: ${displayName} -> ${shouldShow}`);
               return shouldShow;
               }
 
@@ -1663,7 +1422,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
         );
 
         const filtered = section.dataElements.filter((_, idx) => results[idx]);
-        console.log(`✅ Filtering complete: ${filtered.length} elements shown out of ${section.dataElements.length} total`);
         setFilteredDataElements(filtered);
 
       };
@@ -1671,8 +1429,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       filterAsync();
 
     }, [section.dataElements, section.displayName, facilityType]);
-
-
 
     // Calculate optimal page boundaries to avoid starting with comment fields
 
@@ -1684,15 +1440,11 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
       }
 
-
-
       // Check if this is one of the sections that should start expanded
 
          const isInspectionInfoSection = (section.displayName || '').toLowerCase() === 'inspection information';
 
          const isInspectionTypeSection = (section.displayName || '').toLowerCase() === 'inspection type';
-
-
 
       // For Inspection Type section, show all fields on one page (no pagination)
 
@@ -1718,21 +1470,15 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
       }
 
-
-
       const pages = [];
 
       let currentIndex = 0;
-
-
 
       while (currentIndex < filteredDataElements.length) {
 
         let pageSize = baseFieldsPerPage;
 
         let endIndex = currentIndex + pageSize;
-
-
 
         // Check for bold data elements that should start on a new page
         // Look ahead to see if there's a bold element within the current page
@@ -1761,15 +1507,11 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
           }
         }
 
-
-
         // Ensure we don't exceed total length
 
         endIndex = Math.min(endIndex, filteredDataElements.length);
 
         pageSize = endIndex - currentIndex;
-
-
 
         // Don't create empty pages
         if (pageSize > 0) {
@@ -1781,19 +1523,13 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
           });
         }
 
-
-
         currentIndex = endIndex;
 
       }
 
-
-
       return { pages, totalPages: pages.length };
 
     };
-
-    
 
     const { pages, totalPages } = calculatePageBoundaries();
 
@@ -1804,8 +1540,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
     const startIndex = currentPageData.start;
 
     const endIndex = currentPageData.end;
-
-    
 
     // Auto-scroll to section top helper function
     const scrollToSectionTop = () => {
@@ -1845,8 +1579,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
     };
 
-
-
     const goToPreviousPage = () => {
 
       if (currentPage > 0) {
@@ -1858,8 +1590,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
     };
 
-
-
     const goToPage = (pageNumber) => {
 
       if (pageNumber >= 0 && pageNumber < totalPages) {
@@ -1870,8 +1600,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       }
 
     };
-
-    
 
     // Get current page info for display
 
@@ -1888,8 +1616,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       };
 
     };
-
-
 
     // IMMEDIATE DEBUGGING - Log everything that comes into this component
 
@@ -1927,34 +1653,22 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
     });
 
-
-
     // Check if this is one of the sections that should start expanded
 
     const isInspectionInfoSection = (section.displayName || '') === 'Inspection Information';
 
     const sectionDisplayName = (section.displayName || '');
     const isInspectionTypeSection = sectionDisplayName === 'Inspection Type';
-    console.log(`🎯 INSPECTION TYPE CHECK: "${sectionDisplayName}" -> isInspectionTypeSection: ${isInspectionTypeSection}`);
 
     const isDocumentReviewSection = sectionDisplayName.toLowerCase().includes('document review');
-    
-
-
-
-
 
     // Function to determine if a field should use dynamic service dropdown
 
     // (Now defined at component level)
 
-        
-
                     // All fields are optional - no mandatory count needed
 
                 const mandatoryFieldsCount = 0;
-
-
 
     // Always show sections with data elements
 
@@ -1984,33 +1698,11 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
     const unmatchedDEs = (isInspectionTypeSection || isDocumentReviewSection) ? [] : ((section.dataElements || [])
       .filter(psde => psde?.dataElement && !shouldShowForName(psde.dataElement.displayName))
       .map(psde => psde.dataElement.displayName));
-
-
-    console.log('🚨 FormSection logic check:', {
-
-      hasDataElements,
-
-      isInspectionInfoSection,
-
-      isInspectionTypeSection,
-
-      shouldShow,
-
-      willRender: shouldShow
-
-    });
-
-
-
     if (!shouldShow) {
-
-      console.log('🚨 FormSection NOT SHOWING - returning null');
 
       return null;
 
     }
-
-
 
     return (
 
@@ -2103,17 +1795,9 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
               📄 {filteredDataElements.length} shown
             </span>
 
-
-
-            
-
-
-
           </h3>
 
         </div>
-
-        
 
         <div className="section-content">
 
@@ -2123,21 +1807,11 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
           )}
 
-
-
           <div className="section-fields">
 
             {/* Debug info removed */}
 
-
-
             {/* All debug sections removed */}
-
-
-
-
-
-
 
             {/* Render data elements with pagination */}
 
@@ -2170,25 +1844,14 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
                   // Debug: Log all data elements in Inspection Type section
                   if (section.displayName.toLowerCase().includes('inspection type')) {
-                    console.log(`🔍 INSPECTION TYPE DATA ELEMENT: "${psde.dataElement.displayName}" (ID: ${psde.dataElement.id})`);
 
                     // Check if this is the Facility Service Departments field
                     const serviceFieldType = enhancedServiceFieldDetection(psde.dataElement);
                     if (psde.dataElement.displayName === 'Facility Service Departments' || serviceFieldType === 'facility_service_departments') {
-                      console.log(`🎯 FOUND FACILITY SERVICE DEPARTMENTS FIELD:`, {
-                        displayName: psde.dataElement.displayName,
-                        id: psde.dataElement.id,
-                        serviceFieldType: serviceFieldType,
-                        willGetDynamicOptions: serviceFieldType === 'facility_service_departments'
-                      });
                     }
                   }
 
-                  
-
                   // No need to filter here - already filtered before pagination
-
-                  
 
                   const serviceFieldType = enhancedServiceFieldDetection(psde.dataElement);
 
@@ -2198,41 +1861,16 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
                   const actualIndex = startIndex + index; // Global index for proper field identification
 
-                  
-
                   // Log field rendering for debugging
 
                   if (showDebugPanel) {
-
-                    console.log(`🔍 RENDERING FIELD: "${psde.dataElement.displayName}"`, {
-
-                      sectionName: section.displayName,
-
-                      fieldIndex: actualIndex,
-
-                      totalFields: section.dataElements.length,
-
-                      id: psde.dataElement.id,
-
-                      valueType: psde.dataElement.valueType,
-
-                      currentPage,
-
-                      pageIndex: index
-
-                    });
-
                   }
-
-
 
                   // Hide specific IDs in Inspection Type section while keeping them assigned
 
                   const dn = (psde?.dataElement?.displayName || '').toLowerCase();
 
                   const shouldHideInspectionId = isInspectionTypeSection && (dn.includes('inspection') && dn.includes('id'));
-
-
 
                   // Render subsection header (no input) if name ends with "--"
                   const deName = psde?.dataElement?.displayName || '';
@@ -2290,17 +1928,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
                         value={formData[`dataElement_${psde.dataElement.id}`]}
 
                         onChange={(e) => {
-
-                          console.log(`🔍 onChange called for field: ${psde.dataElement.displayName}`, {
-
-                            fieldId: `dataElement_${psde.dataElement.id}`,
-
-                            value: e.target.value,
-
-                            event: e
-
-                          });
-
                           onChange(`dataElement_${psde.dataElement.id}`, e.target.value);
 
                         }}
@@ -2321,7 +1948,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
                         isLoading={isDynamicServiceField ? loadingServiceSections : false}
 
                         readOnly={ (isInspectionTypeSection && psde.dataElement.displayName === 'Source') ? true : !!readOnlyFields[`dataElement_${psde.dataElement.id}`] }
-
 
                         getCurrentPosition={getCurrentPosition}
 
@@ -2345,8 +1971,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
                   );
 
                 }).filter(Boolean)}
-
-                
 
                 {/* Pagination Navigation - Hide for Inspection Type section */}
 
@@ -2474,8 +2098,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
                 )}
 
-                
-
                 {/* Quick Page Navigation - Fields summary removed */}
 
                 {totalPages > 5 && (
@@ -2572,19 +2194,9 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
             )}
 
-
-
-
-
-
-
-
-
             {/* Add bottom spacing after the last data element */}
 
             <div className="section-bottom-spacing"></div>
-
-
 
             {/* Confirmation Button for Inspection Type Section */}
 
@@ -2621,8 +2233,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
                   </p>
 
                 </div>
-
-                
 
                 <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', alignItems: 'center' }}>
 
@@ -2667,8 +2277,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
                   </label>
 
                 </div>
-
-                
 
                 {inspectionInfoConfirmed && (
 
@@ -2760,8 +2368,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
   } // End of FormSection component
 
-
-
   // Function to generate DHIS2 standard ID (11 characters alphanumeric)
   const generateDHIS2Id = () => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -2776,7 +2382,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       result += chars.charAt(Math.floor(Math.random() * chars.length));
     }
 
-    console.log('🆔 Generated DHIS2 ID:', result, `(length: ${result.length})`);
     return result;
   };
 
@@ -2798,14 +2403,11 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
     useEffect(() => {
       if (!eventId) {
         const generatedId = generateDHIS2Id();
-        console.log('🆕 No eventId in route; generating DHIS2 standard id:', generatedId);
         navigate(`/form/${generatedId}`, { replace: true });
       }
     }, [eventId, navigate]);
 
     // const api = useAPI();
-
-
 
     const {
 
@@ -2828,8 +2430,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       setEventDate
 
     } = useApp();
-
-    
 
     // State to track the facility type for filtering (from dataStore)
 
@@ -2900,15 +2500,8 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
     // Handle manual specialization selection
     const handleSpecializationChange = (selectedSpecialization) => {
-      console.log(`🎯 Manual specialization selected: ${selectedSpecialization}`);
 
       // Enhanced debugging
-      console.log('🔍 BEFORE CHANGE - Current state:', {
-        manualSpecialization,
-        facilityType,
-        formData: formData.facilityClassification
-      });
-
       setManualSpecialization(selectedSpecialization);
       setFacilityType(selectedSpecialization); // Update facility type for filtering
 
@@ -2925,7 +2518,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       // Save the specialization field incrementally to IndexedDB
       if (eventId) {
         saveField(specializationFieldName, selectedSpecialization);
-        console.log(`💾 Queued incremental save for specialization: ${specializationFieldName} = ${selectedSpecialization}`);
       }
       
       // Clear any previously selected departments when specialization changes
@@ -2947,18 +2539,10 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       }
       
       // Use hardcoded departments instead of dynamic calculation
-      console.log(`🎯 Using hardcoded departments for specialization: ${selectedSpecialization}`);
       
       // Get hardcoded departments for the selected specialization
       const hardcodedDepartments = getDepartmentsForSpecialization(selectedSpecialization);
       const departmentStats = getDepartmentStats(selectedSpecialization);
-      
-      console.log(`🏥 Hardcoded departments for ${selectedSpecialization}:`, {
-        count: hardcodedDepartments.length,
-        departments: hardcodedDepartments,
-        stats: departmentStats
-      });
-      
       // Set the global department options to our hardcoded list
       window.__departmentOptionsForSection = hardcodedDepartments;
       
@@ -2974,15 +2558,11 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       // Also override any other global variables that might be used
       window.__hardcodedDepartments = hardcodedDepartments;
       window.__currentSpecialization = selectedSpecialization;
-      
-      console.log(`🚀 OVERRIDING global department options with hardcoded list: ${hardcodedDepartments.length} departments`);
-      console.log(`🎯 Original dynamic count: ${originalDepartmentOptions?.length || 0}, Hardcoded count: ${hardcodedDepartments.length}`);
-      
+
       // Set up a global interceptor to ensure our hardcoded departments are always used
       // This will override any dynamic calculation that happens after this point
       const interceptor = () => {
         if (window.__hardcodedDepartments && window.__hardcodedDepartments.length > 0) {
-          console.log(`🛡️ INTERCEPTOR: Overriding dynamic calculation with hardcoded departments`);
           window.__departmentOptionsForSection = window.__hardcodedDepartments;
           return window.__hardcodedDepartments;
         }
@@ -3038,29 +2618,15 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
           if (shown > 0) {
             names.push(s.displayName);
             seenNames.add(s.displayName);
-            console.log(`✅ Adding section "${s.displayName}" to department options (${shown}/${total} elements shown)`);
           }
         }
         
         const departmentOptions = names;
-        console.log(`📋 Immediately calculated department options for "${selectedSpecialization}":`, departmentOptions);
         window.__departmentOptionsForSection = departmentOptions;
       }
       */
-      
-      console.log('🔍 AFTER CHANGE - Updated state:', {
-        manualSpecialization: selectedSpecialization,
-        facilityType: selectedSpecialization,
-        selectedServiceDepartments: [], // Reset to empty
-        formData: {
-          ...formData,
-          facilityClassification: selectedSpecialization
-        }
-      });
-      
       // Log what sections should be visible now
       const visibleSections = getVisibleSectionsForFacility(selectedSpecialization);
-      console.log(`🔍 Sections that should be visible for ${selectedSpecialization}:`, visibleSections);
     };
 
     // Function to determine if a section should be shown based on selected service departments
@@ -3153,30 +2719,23 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       };
 
       // Check if any selected department maps to this section
-      console.log(`🔍 Checking section "${sectionName}" against selected departments:`, selectedDepartments);
 
       for (const department of selectedDepartments) {
         if (department === 'OTHER') {
-          console.log(`✅ Section "${sectionName}" shown because "OTHER" department selected`);
           return true; // OTHER shows all sections
         }
 
         const keywords = departmentSectionMapping[department] || [];
-        console.log(`🔍 Checking department "${department}" with keywords:`, keywords);
 
         for (const keyword of keywords) {
           if (sectionName.toUpperCase().includes(keyword.toUpperCase())) {
-            console.log(`✅ Section "${sectionName}" MATCHES department "${department}" via keyword "${keyword}"`);
             return true;
           }
         }
       }
 
-      console.log(`🚫 Section "${sectionName}" FILTERED OUT - not relevant for selected departments:`, selectedDepartments);
       return false;
     };
-
-    
 
     // Set up global handler for updating the facilityType state
 
@@ -3184,15 +2743,12 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
       window.updateSelectedFacilityService = (value) => {
 
-        console.log(`🏥 Setting facility type: ${value}`);
-
         setFacilityType(value);
 
       };
 
       // Global function to update selected service departments
       window.updateSelectedServiceDepartments = (departments) => {
-        console.log(`🏥 Setting selected service departments:`, departments);
         setSelectedServiceDepartments(departments);
       };
 
@@ -3226,8 +2782,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
       if (!sections || !Array.isArray(sections)) return [];
 
-      
-
       // Filter out unwanted sections including those starting with "Pre"
 
       const filtered = sections.filter(section => {
@@ -3235,7 +2789,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
         
         // Check if section starts with "Pre" (case-insensitive)
         if (displayName.toLowerCase().startsWith('pre')) {
-          console.log(`🚫 Filtering out section starting with "Pre": "${displayName}"`);
           return false;
         }
         
@@ -3243,7 +2796,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
         if (displayName === "Final_Inspection_Event" || 
             displayName === "Preliminary-Report" ||
             displayName === "Inspectors Details") {
-          console.log(`🚫 Filtering out specific section: "${displayName}"`);
           return false;
         }
         
@@ -3263,8 +2815,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
     };
 
-
-
     // Function to parse CSV and extract facility classifications
 
     const parseCSVClassifications = (csvContent) => {
@@ -3277,23 +2827,15 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
         if (lines.length < 2) return [];
 
-        
-
         // Get the second line (index 1) which contains the actual facility classification names
 
         // Skip the first line which just has numbers
 
         const classificationRow = lines[1].split(',');
 
-        
-
         // Extract facility classifications (skip the first empty column)
 
         const classifications = classificationRow.slice(1).map(col => col.trim()).filter(col => col.length > 0);
-
-        
-
-        console.log('Parsed facility classifications from CSV:', classifications);
 
         return classifications;
 
@@ -3306,8 +2848,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       }
 
     };
-
-
 
     // Function to load facility classifications from CSV
 
@@ -3433,8 +2973,6 @@ Outreach services,?,?,?,?,?,?,?,?,?,?,?
 
 Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
-        
-
         const classifications = parseCSVClassifications(csvContent);
 
         setFacilityClassifications(classifications);
@@ -3453,8 +2991,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     };
 
-
-
     // Helper function to format coordinates in DHIS2 compliant format
 
     const formatCoordinatesForDHIS2 = (input) => {
@@ -3463,13 +2999,9 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
       const cleanInput = input.replace(/[\[\]\s]/g, '');
 
-      
-
       // Split by comma
 
       const parts = cleanInput.split(',');
-
-      
 
       if (parts.length !== 2) {
 
@@ -3477,15 +3009,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
       }
 
-      
-
       const [first, second] = parts;
 
       const longitude = parseFloat(first);
 
       const latitude = parseFloat(second);
-
-      
 
       // Validate ranges
 
@@ -3495,15 +3023,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
       }
 
-      
-
       if (longitude < -180 || longitude > 180) {
 
         return null; // Invalid longitude
 
       }
-
-      
 
       if (latitude < -90 || latitude > 90) {
 
@@ -3511,15 +3035,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
       }
 
-      
-
       // Return in DHIS2 format: [longitude,latitude]
 
       return `[${longitude.toFixed(6)},${latitude.toFixed(6)}]`;
 
     };
-
-
 
     // GPS coordinate function
 
@@ -3533,11 +3053,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
       }
 
-
-
       showToast('Getting GPS coordinates...', 'info');
-
-      
 
       navigator.geolocation.getCurrentPosition(
 
@@ -3549,13 +3065,9 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
           const coordinates = `[${longitude.toFixed(6)},${latitude.toFixed(6)}]`;
 
-          
-
           // Update the form field
 
           onChange({ target: { value: coordinates } });
-
-          
 
           // Update GPS state for debugging
 
@@ -3573,11 +3085,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
           });
 
-          
-
           showToast(`GPS coordinates captured: ${coordinates} (DHIS2 compliant)`, 'success');
-
-          
 
           console.log('🔍 GPS coordinates captured:', {
 
@@ -3647,31 +3155,21 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     };
 
-
-
     // Function to automatically assign GPS coordinates to all coordinate fields
 
     const autoAssignGPSCoordinates = async () => {
 
       if (!navigator.geolocation) {
 
-        console.log('⚠️ Geolocation not supported by browser');
-
         return;
 
       }
-
-
 
       if (!configuration?.programStage?.allDataElements) {
 
-        console.log('⚠️ Configuration not ready yet');
-
         return;
 
       }
-
-
 
       // Find all coordinate fields
 
@@ -3683,21 +3181,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
       });
 
-
-
       if (coordinateFields.length === 0) {
-
-        console.log('ℹ️ No coordinate fields found in form');
 
         return;
 
       }
-
-
-
-      console.log(`🔍 Found ${coordinateFields.length} coordinate field(s) to auto-fill`);
-
-
 
       return new Promise((resolve, reject) => {
 
@@ -3709,12 +3197,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
             const coordinates = `[${longitude.toFixed(6)},${latitude.toFixed(6)}]`;
 
-            
-
-            console.log(`📍 Auto-capturing GPS coordinates: ${coordinates}`);
-
-            
-
             // Update all coordinate fields in formData
 
             const updates = {};
@@ -3725,11 +3207,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
               updates[fieldName] = coordinates;
 
-              console.log(`✅ Auto-filled field "${psde.dataElement.displayName}" with coordinates: ${coordinates}`);
-
             });
-
-
 
             // Update form data with all coordinate values
 
@@ -3740,8 +3218,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
               ...updates
 
             }));
-
-
 
             // Update GPS state for debugging
 
@@ -3760,8 +3236,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
               dhis2Format: coordinates
 
             });
-
-
 
             showToast(`Auto-assigned GPS coordinates to ${coordinateFields.length} field(s): ${coordinates}`, 'success');
 
@@ -3823,17 +3297,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     };
 
-
-
     // Add debug effect
 
     useEffect(() => {
 
-      console.log('FormPage - userAssignments received:', userAssignments);
-
     }, [userAssignments]);
-
-
 
     const [formData, setFormData] = useState({
 
@@ -3872,11 +3340,9 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
         async get() {
           const now = Date.now();
           if (cache && (now - lastFetch) < CACHE_DURATION) {
-            console.log('📋 Using cached inspection assignments');
             return cache;
           }
 
-          console.log('📋 Fetching fresh inspection assignments');
           cache = await api.getInspectionAssignments();
           lastFetch = now;
           return cache;
@@ -3893,14 +3359,12 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
       const getFacilityInfoFromDataStore = async () => {
         // Wait for all required dependencies to be available
         if (!formData.orgUnit || !api || !configuration) {
-          console.log('⏳ Waiting for form dependencies to load...');
           setFacilityInfo(null);
           return;
         }
 
         // Check cache first
         if (facilityInfoCache.has(formData.orgUnit)) {
-          console.log('📋 Using cached facility info for:', formData.orgUnit);
           setFacilityInfo(facilityInfoCache.get(formData.orgUnit));
           setLoadingFacilityInfo(false);
           return;
@@ -3910,7 +3374,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
         setFacilityInfo(null); // Clear previous facility info
 
         try {
-          console.log('🔍 Getting facility information from dataStore for:', formData.orgUnit);
 
           // First try to get from userAssignments (which may have more complete info)
           let facilityData = null;
@@ -3923,16 +3386,8 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
             );
 
             if (userAssignment && userAssignment.facility) {
-              console.log('🔍 DETAILED userAssignment.facility structure:', userAssignment.facility);
-              console.log('🔍 All keys in facility object:', Object.keys(userAssignment.facility));
-              console.log('🔍 facility.facilityType value:', userAssignment.facility.facilityType);
-              console.log('🔍 facility.type value:', userAssignment.facility.type);
-              console.log('🔍 facility.facilityType type:', typeof userAssignment.facility.facilityType);
 
               const extractedType = userAssignment.facility.facilityType || userAssignment.facility.type;
-              console.log('🔍 EXTRACTED TYPE:', extractedType);
-              console.log('🔍 facilityType exists:', !!userAssignment.facility.facilityType);
-              console.log('🔍 type exists:', !!userAssignment.facility.type);
 
               facilityData = {
                 facilityId: userAssignment.facility.id,
@@ -3940,8 +3395,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                 type: extractedType,
                 trackedEntityInstance: userAssignment.facility.trackedEntityInstance
               };
-              console.log('✅ Found facility in userAssignments:', facilityData);
-              console.log('✅ Final facilityData.type:', facilityData.type);
             }
           }
 
@@ -3955,16 +3408,8 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
               );
 
               if (facilityInspection) {
-                console.log('🔍 DETAILED facilityInspection structure:', facilityInspection);
-                console.log('🔍 All keys in inspection object:', Object.keys(facilityInspection));
-                console.log('🔍 inspection.facilityType value:', facilityInspection.facilityType);
-                console.log('🔍 inspection.type value:', facilityInspection.type);
-                console.log('🔍 inspection.facilityType type:', typeof facilityInspection.facilityType);
 
                 const extractedType = facilityInspection.facilityType || facilityInspection.type;
-                console.log('🔍 EXTRACTED TYPE from dataStore:', extractedType);
-                console.log('🔍 facilityType exists:', !!facilityInspection.facilityType);
-                console.log('🔍 type exists:', !!facilityInspection.type);
 
                 facilityData = {
                   facilityId: facilityInspection.facilityId,
@@ -3972,11 +3417,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                   type: extractedType,
                   trackedEntityInstance: facilityInspection.trackedEntityInstance
                 };
-                console.log('✅ Found facility in inspection dataStore:', facilityData);
-                console.log('✅ Final facilityData.type:', facilityData.type);
-                console.log('🔍 FACILITY INFO DEBUG: This type will be used for section filtering');
               } else {
-                console.log('❌ No facility found in inspection dataStore with facilityId:', formData.orgUnit);
                 console.log('🔍 Available facilities in dataStore:', inspectionData.inspections?.map(i => ({
                   facilityId: i.facilityId,
                   facilityName: i.facilityName,
@@ -3996,8 +3437,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
             // Set the facility type to use for filtering
             if (facilityData.type) {
               setFacilityType(facilityData.type);
-              console.log('✅ Set facility type for filtering:', facilityData.type);
-              console.log('🔍 This should trigger section filtering for:', facilityData.type);
               console.log('🔍 FACILITY TYPE DEBUG: Type set to:', {
                 type: facilityData.type,
                 typeLength: facilityData.type.length,
@@ -4011,16 +3450,13 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
             // Store current facility ID for dashboard filtering
             if (facilityData.facilityId) {
               localStorage.setItem('lastSelectedFacility', facilityData.facilityId);
-              console.log('🏥 Stored facility ID for dashboard filtering:', facilityData.facilityId);
             }
 
             // REMOVED: Auto-populating facility type field to prevent circular dependency
             // This was causing the useEffect to trigger repeatedly because it modifies formData
             // which is a dependency of this same useEffect, creating an infinite loop
             // The facility type should be set through other means (manual selection, IndexedDB loading, etc.)
-            console.log(`ℹ️ Facility type available but not auto-populated to prevent loops: ${facilityData.type}`);
           } else {
-            console.log('⚠️ No facility found in dataStore for facility:', formData.orgUnit);
             setFacilityInfo(null);
             // Cache the null result to prevent repeated calls
             facilityInfoCache.set(formData.orgUnit, null);
@@ -4041,22 +3477,12 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     // Debug logging for facility info state
     useEffect(() => {
-      console.log('🔍 DEBUG - Current state:', {
-        'formData.orgUnit': formData.orgUnit,
-        'facilityInfo': facilityInfo,
-        'facilityType': facilityType,
-        'loadingFacilityInfo': loadingFacilityInfo,
-        'userAssignments length': userAssignments?.length || 0,
-        'api available': !!api,
-        'configuration available': !!configuration
-      });
     }, [formData.orgUnit, facilityInfo, facilityType, loadingFacilityInfo, userAssignments, api, configuration]);
     
     // Update sections when specialization changes
     useEffect(() => {
       if (facilityType || manualSpecialization) {
         const currentClassification = getCurrentFacilityClassification();
-        console.log(`🔄 Specialization changed to: ${currentClassification}, updating sections...`);
         
         // Force re-filtering of sections by updating the serviceSections state
         if (configuration?.programStage?.sections) {
@@ -4076,7 +3502,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
       }
     }, [facilityType, manualSpecialization, lastUpdateTimestamp, configuration]);
 
-
     const [readOnlyFields, setReadOnlyFields] = useState({});
 
     const [errors, setErrors] = useState({});
@@ -4095,7 +3520,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
     } = useIncrementalSave(eventId, {
       debounceMs: 300,
       onSaveSuccess: (result) => {
-        console.log('💾 Incremental save successful:', result);
         // Show visual save indicator
         setSaveStatus({
           isVisible: true,
@@ -4125,7 +3549,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
           try {
             const existingData = await loadFormData();
             if (existingData && existingData.formData) {
-              console.log('📖 Loading existing form data from IndexedDB:', existingData);
 
               // Set loading flag to prevent clearing service departments
               setIsLoadingFromIndexedDB(true);
@@ -4165,11 +3588,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
               // Batch all updates together to prevent multiple re-renders
               if (savedSpecialization || parsedDepartments.length > 0) {
-                console.log('🔄 Batching specialization and service departments loading:', {
-                  specialization: savedSpecialization,
-                  departments: parsedDepartments
-                });
-
                 // Update specialization if available
                 if (savedSpecialization) {
                   setManualSpecialization(savedSpecialization);
@@ -4190,11 +3608,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                 // Single timestamp update for both changes
                 setLastUpdateTimestamp(Date.now());
-
-                console.log('✅ Batched loading complete:', {
-                  specialization: savedSpecialization,
-                  departmentCount: parsedDepartments.length
-                });
               }
 
               // Clear loading flag after all updates are complete
@@ -4252,11 +3665,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
       if (surveyCommentsElement && Object.keys(comments).length > 0) {
         const commentsJson = JSON.stringify(comments);
-        console.log('💬 Saving comments to Survey Comments element:');
-        console.log('  📝 Original Object:', comments);
-        console.log('  📄 JSON String (with escapes):', commentsJson);
-        console.log('  🔍 Element ID:', surveyCommentsElement.id);
-        console.log('  ✅ Parsed back test:', JSON.parse(commentsJson));
 
         // Update form data with the comments JSON
         setFormData(prev => ({
@@ -4278,10 +3686,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
       });
 
       if (commentsElement) {
-        console.log('💬 Found Survey Comments data element:', {
-          id: commentsElement.dataElement.id,
-          displayName: commentsElement.dataElement.displayName
-        });
       } else {
         console.warn('⚠️ Survey Comments data element not found with ID:', COMMENTS_DATA_ELEMENT_ID);
       }
@@ -4301,7 +3705,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
             const parsedComments = JSON.parse(commentsJson);
             if (typeof parsedComments === 'object' && parsedComments !== null) {
               setFieldComments(parsedComments);
-              console.log('💬 Loaded existing comments:', parsedComments);
             }
           } catch (error) {
             console.warn('Failed to parse existing comments:', error);
@@ -4313,7 +3716,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
     // Handle signature changes
     const handleSignatureChange = (signatureDataURL) => {
       setIntervieweeSignature(signatureDataURL);
-      console.log('📝 Signature captured:', signatureDataURL ? 'Yes' : 'No');
 
       // Save signature immediately to IndexedDB (critical field)
       if (eventId) {
@@ -4342,7 +3744,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
       if (hardcodedDepartments.length > 0) {
         window.__departmentOptionsForSection = hardcodedDepartments;
-        console.log(`✅ IMMEDIATE INIT: Set ${hardcodedDepartments.length} hardcoded departments`);
       }
     };
 
@@ -4353,7 +3754,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
     useEffect(() => {
       try {
         if (facilityType) {
-          console.log(`🔄 Calculating department options for facility type: "${facilityType}"`);
 
           // First, try to get hardcoded departments for the current specialization
           const currentSpecialization = manualSpecialization || facilityType;
@@ -4366,14 +3766,12 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
           if (hardcodedDepartments.length > 0) {
             // Use hardcoded departments
-            console.log(`✅ Using hardcoded departments for "${currentSpecialization}" (${hardcodedDepartments.length} departments)`);
             window.__departmentOptionsForSection = hardcodedDepartments;
             return;
           }
 
           // Fallback to dynamic calculation only if no hardcoded departments are available
           if (serviceSections && Array.isArray(serviceSections)) {
-            console.log(`⚠️ No hardcoded departments found, falling back to dynamic calculation`);
 
             const names = [];
             const seenNames = new Set(); // Track seen names to prevent duplicates
@@ -4385,13 +3783,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
               // Only include sections that should be visible for the current facility type
               const shouldShowThisSection = shouldShowSection(s.displayName, facilityType);
               if (!shouldShowThisSection) {
-                console.log(`🚫 Skipping section "${s.displayName}" - not configured for "${facilityType}"`);
                 continue;
               }
 
               // Skip if we've already processed a section with this display name
               if (seenNames.has(s.displayName)) {
-                console.log(`🔄 Skipping duplicate section "${s.displayName}" - already processed`);
                 continue;
               }
 
@@ -4412,17 +3808,14 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
               if (shown > 0) {
                 names.push(s.displayName);
                 seenNames.add(s.displayName); // Mark as seen
-                console.log(`✅ Adding section "${s.displayName}" to department options (${shown}/${total} elements shown)`);
               }
             }
 
             // No need for additional deduplication since we prevented duplicates above
             const departmentOptions = names;
 
-            console.log(`📋 Final dynamic department options for "${facilityType}":`, departmentOptions);
             window.__departmentOptionsForSection = departmentOptions;
           } else {
-            console.log(`⚠️ No serviceSections available for dynamic calculation`);
             window.__departmentOptionsForSection = [];
           }
         }
@@ -4440,23 +3833,17 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     const [gpsCoordinates, setGpsCoordinates] = useState(null);
 
-
-
     // State for organization units (for the dropdown)
 
     const [organizationUnits, setOrganizationUnits] = useState([]);
 
     const [loadingOrganizationUnits, setLoadingOrganizationUnits] = useState(false);
 
-
-
     // State for facility classifications (from CSV)
 
     const [facilityClassifications, setFacilityClassifications] = useState([]);
 
     const [loadingFacilityClassifications, setLoadingFacilityClassifications] = useState(false);
-
-
 
     // State for inspection information confirmation (moved to top of FormPage function)
 
@@ -4474,7 +3861,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
               block: 'start',
               inline: 'nearest'
             });
-            console.log('📍 Scrolled to confirmation status message after inspection confirmation');
           } else {
             // Fallback: try to find the first form section that's not an inspection type section
             const allSections = document.querySelectorAll('.form-section');
@@ -4495,9 +3881,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                 block: 'start',
                 inline: 'nearest'
               });
-              console.log('📍 Scrolled to first form section after inspection confirmation');
             } else {
-              console.log('📍 No suitable scroll target found after inspection confirmation');
             }
           }
         }, 500); // 500ms delay to ensure sections are fully rendered
@@ -4512,25 +3896,17 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
     const [showPayloadDialog, setShowPayloadDialog] = useState(false);
     const [payloadData, setPayloadData] = useState(null);
 
-
-
-
-
-
-
     // Function to get current facility classification
 
     const getCurrentFacilityClassification = () => {
 
       // 1. Prioritize manual specialization selection
       if (manualSpecialization) {
-        console.log(`🎯 Using manual specialization: ${manualSpecialization}`);
         return manualSpecialization;
       }
 
       // 2. Try to get from formData
       if (formData.facilityClassification) {
-        console.log(`📋 Using formData classification: ${formData.facilityClassification}`);
         return formData.facilityClassification;
       }
 
@@ -4545,7 +3921,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
           const fieldKey = `dataElement_${facilityClassificationElement.dataElement.id}`;
           const dhisValue = formData[fieldKey];
           if (dhisValue) {
-            console.log(`🏥 Using DHIS2 field classification: ${dhisValue}`);
             return dhisValue;
           }
         }
@@ -4553,15 +3928,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
       // 4. Fallback to facilityType state
       if (facilityType) {
-        console.log(`🔄 Using facilityType fallback: ${facilityType}`);
         return facilityType;
       }
 
-      console.log(`❌ No facility classification found`);
       return null;
     };
-
-
 
     const fetchTrackedEntityInstance = async (facilityId) => {
 
@@ -4573,91 +3944,27 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
         const apiEndpoint = `/api/trackedEntityInstances?ou=${facilityId}&program=${FACILITY_REGISTRY_PROGRAM_ID}&fields=trackedEntityInstance&ouMode=DESCENDANTS`;
 
-        
-
         // Enhanced debugging for API call
-
-        console.log('🔍 ===== TEI RETRIEVAL DEBUG START =====');
-
-        console.log('🔍 Facility ID:', facilityId);
-
-        console.log('🔍 Program ID:', FACILITY_REGISTRY_PROGRAM_ID);
-
-        console.log('🔍 API Endpoint:', apiEndpoint);
-
-        console.log('🔍 Full URL:', `${window.location.origin}${apiEndpoint}`);
-
-        console.log('🔍 API Call Method: GET');
-
-        console.log('🔍 Expected Response Fields: trackedEntityInstance');
-
-        console.log('🔍 OU Mode: DESCENDANTS');
-
-        console.log('🔍 ===== TEI RETRIEVAL DEBUG END =====');
-
-        
 
         // Use the API service instead of direct fetch
 
-        console.log('📡 Making API request...');
-
         const response = await api.request(apiEndpoint);
-
-        
-
-        console.log('📡 ===== TEI API RESPONSE DEBUG =====');
-
-        console.log('📡 Full Response Object:', response);
-
-        console.log('📡 Response Type:', typeof response);
-
-        console.log('📡 Response Keys:', Object.keys(response || {}));
-
-        console.log('📡 Has trackedEntityInstances:', !!response?.trackedEntityInstances);
-
-        console.log('📡 trackedEntityInstances Length:', response?.trackedEntityInstances?.length || 0);
-
-        console.log('📡 ===== TEI API RESPONSE DEBUG END =====');
-
-        
 
         if (response.trackedEntityInstances && response.trackedEntityInstances.length > 0) {
 
           const tei = response.trackedEntityInstances[0].trackedEntityInstance;
 
-          console.log('✅ ===== TEI EXTRACTION DEBUG =====');
-
-          console.log('✅ First TEI Object:', response.trackedEntityInstances[0]);
-
-          console.log('✅ Extracted TEI Value:', tei);
-
-          console.log('✅ TEI Type:', typeof tei);
-
-          console.log('✅ TEI Length:', tei?.length || 0);
-
-          console.log('✅ TEI Trimmed:', tei?.trim() || 'N/A');
-
-          console.log('✅ ===== TEI EXTRACTION DEBUG END =====');
-
-          
-
           if (tei && tei.trim() !== '') {
 
           setTrackedEntityInstance(tei);
 
-            console.log('🔗 TEI set successfully in state:', tei);
-
           } else {
-
-            console.log('⚠️ TEI is empty or whitespace - setting to null');
 
             setTrackedEntityInstance(null);
 
           }
 
         } else {
-
-          console.log('⚠️ ===== NO TEI FOUND DEBUG =====');
 
           console.log('⚠️ Response structure:', {
 
@@ -4670,10 +3977,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
             responseKeys: Object.keys(response || {})
 
           });
-
-          console.log('⚠️ Setting TEI to null');
-
-          console.log('⚠️ ===== NO TEI FOUND DEBUG END =====');
 
           setTrackedEntityInstance(null);
 
@@ -4699,17 +4002,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     };
 
-
-
     useEffect(() => {
 
       setEventDate(formData.eventDate);
 
     }, [formData.eventDate]);
-
-
-
-
 
     // Build unique facilities from userAssignments
 
@@ -4729,8 +4026,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     // ];
 
-    
-
     // Get today's date in Botswana timezone (UTC+2)
 
     const getBotswanaDate = () => {
@@ -4747,13 +4042,9 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
         }
 
-        
-
         // Botswana is UTC+2, so add 2 hours to get local time
 
         const botswanaTime = new Date(now.getTime() + (2 * 60 * 60 * 1000));
-
-        
 
         if (isNaN(botswanaTime.getTime())) {
 
@@ -4762,8 +4053,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
           return now.toISOString().split('T')[0];
 
         }
-
-        
 
         return botswanaTime.toISOString().split('T')[0];
 
@@ -4777,23 +4066,17 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     };
 
-
-
     // Robust date parsing function to handle different date formats
 
     const parseDate = (dateString) => {
 
       if (!dateString) return null;
 
-      
-
       // Try parsing as ISO string first
 
       let date = new Date(dateString);
 
       if (!isNaN(date.getTime())) return date;
-
-      
 
       // Try parsing as DD/MM/YYYY or MM/DD/YYYY
 
@@ -4815,8 +4098,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
         ];
 
-        
-
         for (const [day, month, year] of combinations) {
 
           date = new Date(year, month - 1, day);
@@ -4827,23 +4108,13 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
       }
 
-      
-
       return null;
 
     };
 
-    
-
     const today = getBotswanaDate();
 
-    console.log('🌍 Today in Botswana timezone:', today);
-
-
-
     const safeUserAssignments = Array.isArray(userAssignments) ? userAssignments : [];
-
-
 
     //get services
 
@@ -4854,8 +4125,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
           .flatMap(a => Array.isArray(a.assignment.sections) ? a.assignment.sections : []);
 
       // console.log("allSections", allSections);
-
-
 
       // 2. Map to names (handle both string and object)
 
@@ -4869,15 +4138,9 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
       );
 
-
-
       // 3. Remove duplicates
 
       const uniqueServices = Array.from(new Set(sectionNames.filter(Boolean)));
-
-      console.log("uniqueServices", uniqueServices);
-
-
 
     // Get facilities with today's date in inspection period
 
@@ -4885,15 +4148,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
       const { startDate, endDate } = a.assignment.inspectionPeriod || {};
 
-      
-
       if (!startDate || !endDate) {
 
         return false;
 
       }
-
-      
 
       try {
 
@@ -4905,8 +4164,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
         const todayDate = parseDate(today);
 
-        
-
         // Check if dates are valid
 
         if (!start || !end || !todayDate) {
@@ -4914,8 +4171,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
           return false;
 
         }
-
-        
 
         // Reset time to start of day for accurate date comparison
 
@@ -4925,11 +4180,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
         todayDate.setHours(12, 0, 0, 0); // Middle of day
 
-        
-
         const isActive = start <= todayDate && todayDate <= end;
-
-        
 
         return isActive;
 
@@ -4947,47 +4198,20 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     }));
 
-
-
     // Debug logging removed
 
-
-
     const uniqueFacilities = activeFacilities; // Only show facilities with active assignments for today
-
-
 
     // Toggle for debugging: show all facilities vs only active ones
 
     const [showAllFacilities, setShowAllFacilities] = useState(false);
 
-
-
-    
-
     // Check if we have any active facilities
 
     const hasActiveFacilities = activeFacilities.length > 0;
 
-
-
     if (showDebugPanel) {
-
-      console.log('�� Facility filtering summary:', {
-
-        totalAssignments: safeUserAssignments.length,
-
-        activeFacilities: activeFacilities.length,
-
-        hasActiveFacilities,
-
-        showAllFacilities
-
-      });
-
     }
-
-
 
     // Helper function to determine if a field is mandatory
 
@@ -4998,12 +4222,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
         return false;
 
     };
-
-
-
-
-
-    
 
     const finalFacilities = showAllFacilities 
 
@@ -5021,13 +4239,9 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
       : uniqueFacilities; // Only show active facilities, no fallback
 
-
-
     // Debug logging removed
 
     // console.log("fac",safeUserAssignments)
-
-
 
       // Get the selected assignment for the chosen facility
 
@@ -5075,8 +4289,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
       : null;
 
-
-
     // Load existing event if editing
 
     useEffect(() => {
@@ -5090,8 +4302,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
       }
 
     }, [eventId, configuration]);
-
-
 
     // Fetch current user on mount
 
@@ -5117,8 +4327,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     //   };
 
-
-
     //   if (api) {
 
     //     fetchCurrentUser();
@@ -5126,8 +4334,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
     //   }
 
     // }, [api]);
-
-
 
     // Initialize organization unit to empty string when app loads
 
@@ -5147,8 +4353,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     }, [configuration, formData.orgUnit]);
 
-
-
     // Auto-select first available facility when user assignments load
 
     useEffect(() => {
@@ -5159,8 +4363,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
         if (firstActiveFacility && firstActiveFacility.id) {
 
-          console.log('🏥 Auto-selecting first available facility:', firstActiveFacility.name);
-
           setFormData(prev => ({
 
             ...prev,
@@ -5168,8 +4370,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
             orgUnit: firstActiveFacility.id
 
           }));
-
-          
 
           // Also auto-set the event date to today if not set
 
@@ -5185,19 +4385,13 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
             }));
 
-            console.log('📅 Auto-setting event date to today:', today);
-
           }
-
-          
 
           // Trigger facility classification fetch for the auto-selected facility
 
           setTimeout(() => {
 
             if (api) {
-
-              console.log('🔍 Auto-triggering facility classification fetch for:', firstActiveFacility.id);
 
               fetchFacilityClassification(firstActiveFacility.id);
 
@@ -5211,27 +4405,19 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     }, [safeUserAssignments, activeFacilities, api]); // Removed formData.orgUnit to prevent circular dependency
 
-
-
     // Auto-assign GPS coordinates when form loads
 
     useEffect(() => {
 
       if (configuration && configuration.programStage && configuration.programStage.allDataElements) {
 
-        console.log('�� Form loaded, auto-assigning GPS coordinates...');
-
         autoAssignGPSCoordinates().catch(error => {
-
-          console.log('⚠️ GPS auto-assignment failed:', error.message);
 
         });
 
       }
 
     }, [configuration]);
-
-
 
     // Filter and set initial sections when configuration loads
 
@@ -5242,23 +4428,17 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
         const filteredSections = filterUnwantedSections(configuration.programStage.sections);
 
         // Debug: Log all data elements to find Facility Service Departments
-        console.log('🔍 ALL PROGRAM STAGE DATA ELEMENTS:');
         configuration.programStage.sections.forEach(section => {
-          console.log(`📋 Section: ${section.displayName}`);
           if (section.dataElements) {
             section.dataElements.forEach(psde => {
               if (psde.dataElement) {
-                console.log(`  - ${psde.dataElement.displayName} (ID: ${psde.dataElement.id})`);
                 if (psde.dataElement.displayName.toLowerCase().includes('service') ||
                     psde.dataElement.displayName.toLowerCase().includes('department')) {
-                  console.log(`    🎯 POTENTIAL MATCH: ${psde.dataElement.displayName}`);
                 }
               }
             });
           }
         });
-
-
 
                 if (showDebugPanel) {
 
@@ -5288,11 +4468,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
         }
 
-      
-
         setServiceSections(filteredSections);
-
-        
 
         // Load facility classifications from CSV
 
@@ -5301,8 +4477,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
       }
 
     }, [configuration, showDebugPanel]);
-
-
 
     // Fetch service sections when facility or user changes
 
@@ -5315,28 +4489,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
         const currentUser = user;
 
         if (showDebugPanel) {
-
-          console.log("🔍 fetchServiceSections called with:", {
-
-            orgUnit: formData.orgUnit,
-
-            user: currentUser?.username,
-
-            configSections: configuration?.programStage?.sections?.length || 0
-
-          });
-
         }
-
-        
 
         if (!formData.orgUnit || !currentUser?.username) {
 
           if (showDebugPanel) {
-
-            console.log('⏳ Waiting for facility selection and user data...');
-
-            console.log('📊 Setting fallback sections:', configuration?.programStage?.sections?.filter((section) => !section.displayName.startsWith("Pre-Inspection:") ).length || 0);
 
           }
 
@@ -5346,8 +4503,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
         }
 
-
-
         setLoadingServiceSections(true);
 
         try {
@@ -5355,8 +4510,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
           const facilityId = typeof formData.orgUnit === 'string' ? formData.orgUnit : formData.orgUnit?.id;
 
           if (showDebugPanel) {
-
-            console.log(`🔍 Fetching service sections for facility: ${facilityId}, inspector: ${currentUser.username || currentUser.displayName} (using username priority)`);
 
           }
 
@@ -5370,17 +4523,9 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
           const allProgramSections = configuration?.programStage?.sections || [];
 
-          
-
           if (showDebugPanel) {
 
-            console.log('📋 All program sections:', allProgramSections.map(s => s.displayName));
-
-            console.log('👥 Assigned sections for inspector:', assignedSectionNames);
-
           }
-
-          
 
           // Filter sections based on assigned service sections
 
@@ -5388,7 +4533,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
             // Always include Inspection Type section
             if (section.displayName && section.displayName.toLowerCase() === "inspection type") {
               if (showDebugPanel) {
-                console.log(`✅ Always including Inspection Type section`);
               }
               return true;
             }
@@ -5399,15 +4543,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
               if (showDebugPanel) {
 
-                console.log(`✅ Including non-Pre-Inspection section: "${section.displayName}"`);
-
               }
 
               return true;
 
             }
-
-            
 
             // For Pre-Inspection sections, check if they're in the assigned sections
 
@@ -5415,15 +4555,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
             if (showDebugPanel) {
 
-              console.log(`🔍 Pre-Inspection section "${section.displayName}": ${isAssigned ? '✅ Assigned' : '❌ Not assigned'}`);
-
             }
 
             return isAssigned;
 
           });
-
-          
 
           // Apply final filtering to remove unwanted sections
 
@@ -5435,11 +4571,8 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
           );
           
           if (inspectionTypeSection && !finalFilteredSections.some(s => s.displayName && s.displayName.toLowerCase() === "inspection type")) {
-            console.log('🔄 Adding missing Inspection Type section');
             finalFilteredSections = [inspectionTypeSection, ...finalFilteredSections];
           }
-
-          
 
           // ADDITIONAL DEBUGGING: Log what sections we're setting
 
@@ -5459,11 +4592,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
           });
 
-          
-
           setServiceSections(finalFilteredSections);
-
-          
 
           if (showDebugPanel) {
 
@@ -5495,35 +4624,19 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
       };
 
-
-
       fetchServiceSections();
 
     }, [formData.orgUnit, user, configuration, api]);
 
-
-
-
-
-
-
-
-
-
-
     // Move this block after all hooks to avoid conditional hook call error
 
     // if (!configuration) { ... }
-
-
 
     // Calculate form completion percentage and stats
 
     const calculateFormStats = () => {
 
       if (!configuration) return { percentage: 0, filled: 0, total: 0 };
-
-
 
       // Use currently rendered sections when available; fallback to configuration
 
@@ -5533,15 +4646,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
         : configuration?.programStage?.sections || [];
 
-
-
       const normalize = (value) => (value || '').toString().trim().toLowerCase();
 
       const isPreInspection = (section) => normalize(section?.displayName).startsWith('pre-inspection');
 
       const isDocumentReview = (section) => normalize(section?.displayName).includes('document review');
-
-
 
       const hasAnyDataInSection = (section) => {
 
@@ -5559,13 +4668,9 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
       };
 
-
-
       const documentReviewSections = sectionsSource.filter((s) => isDocumentReview(s));
 
       const nonPreNonDocSections = sectionsSource.filter((s) => !isPreInspection(s) && !isDocumentReview(s));
-
-
 
       // If any data has been entered in Document Review section(s), only count those.
 
@@ -5575,13 +4680,9 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
       const countedSections = useDocumentReviewOnly ? documentReviewSections : nonPreNonDocSections;
 
-
-
       let totalFields = 0;
 
       let filledFields = 0;
-
-
 
       // Always include the two basic fields
 
@@ -5590,8 +4691,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
       if (formData.orgUnit) filledFields++;
 
       if (formData.eventDate) filledFields++;
-
-
 
       countedSections.forEach((section) => {
 
@@ -5613,15 +4712,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
       });
 
-
-
       const percentage = totalFields === 0 ? 0 : Math.round((filledFields / totalFields) * 100);
 
       return { percentage, filled: filledFields, total: totalFields };
 
     };
-
-
 
     // Update form stats when form data changes
 
@@ -5637,8 +4732,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     }, [formData, configuration]);
 
-
-
     const handleFieldChange = (fieldName, value) => {
 
       setFormData(prev => ({
@@ -5652,7 +4745,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
       // Save field incrementally to IndexedDB
       if (eventId) {
         saveField(fieldName, value);
-        console.log(`💾 Queued incremental save: ${fieldName} = ${value}`);
       }
 
       // Clear field error when user starts typing
@@ -5669,21 +4761,9 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
       }
 
-
-
       // Set tracked entity instance from dataStore when facility is selected
 
       if (fieldName === 'orgUnit' && value) {
-
-        console.log('🏥 ===== FACILITY SELECTION DEBUG START =====');
-
-        console.log('🏥 Selected facility ID:', value);
-
-        console.log('🏥 Total userAssignments available:', userAssignments.length);
-
-        console.log('🏥 All userAssignments:', userAssignments);
-
-        
 
         // Find the selected facility in userAssignments to get its trackedEntityInstance
 
@@ -5693,47 +4773,13 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
         );
 
-        
-
-        console.log('🔍 ===== SELECTED FACILITY DEBUG =====');
-
-        console.log('🔍 Selected facility found:', !!selectedFacility);
-
-        console.log('🔍 Selected facility object:', selectedFacility);
-
-        
-
         if (selectedFacility) {
 
-          console.log('🔍 Facility ID:', selectedFacility.facility.id);
-
-          console.log('🔍 Facility Name:', selectedFacility.facility.name);
-
-          console.log('🔍 Facility trackedEntityInstance:', selectedFacility.facility.trackedEntityInstance);
-
-          console.log('🔍 Facility trackedEntityInstance type:', typeof selectedFacility.facility.trackedEntityInstance);
-
-          console.log('🔍 Facility trackedEntityInstance truthy:', !!selectedFacility.facility.trackedEntityInstance);
-
-          console.log('🔍 Complete facility object:', selectedFacility.facility);
-
-          console.log('🔍 Complete assignment object:', selectedFacility.assignment);
-
-          console.log('🔍 ===== SELECTED FACILITY DEBUG END =====');
-
-          
-
           if (selectedFacility.facility.trackedEntityInstance) {
-
-            console.log('🔗 Found trackedEntityInstance in dataStore:', selectedFacility.facility.trackedEntityInstance);
 
             setTrackedEntityInstance(selectedFacility.facility.trackedEntityInstance);
 
           } else {
-
-            console.log('⚠️ No trackedEntityInstance found in dataStore for facility:', value);
-
-            console.log('🔄 Falling back to API call to fetch TEI');
 
             fetchTrackedEntityInstance(value);
 
@@ -5741,23 +4787,9 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
         } else {
 
-          console.log('❌ Selected facility not found in userAssignments!');
-
-          console.log('❌ Available facility IDs:', userAssignments.map(a => a.facility.id));
-
-          console.log('❌ Looking for facility ID:', value);
-
-          console.log('🔄 Falling back to API call to fetch TEI');
-
           fetchTrackedEntityInstance(value);
 
         }
-
-        
-
-        console.log('🏥 ===== FACILITY SELECTION DEBUG END =====');
-
-        
 
         // Also fetch and set the facility classification
 
@@ -5767,7 +4799,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
         if (!formData.eventDate) {
           const today = new Date();
           const todayString = today.toISOString().split('T')[0];
-          console.log('📅 Auto-populating inspection date:', todayString);
           
           setFormData(prev => ({
             ...prev,
@@ -5777,15 +4808,12 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
           // Save the auto-populated date
           if (eventId) {
             saveField('eventDate', todayString);
-            console.log(`💾 Auto-saved inspection date: ${todayString}`);
           }
         }
 
       }
 
     };
-
-
 
     // Set Type from assignment and lock field when facility/orgUnit changes
 
@@ -5800,8 +4828,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
         return name === 'type' || name.includes('facility type') || name.includes('inspection type');
 
       });
-
-
 
       if (typeElement) {
 
@@ -5826,8 +4852,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
               normalized(opt.id) === normalized(assignmentType)
 
             );
-
-            
 
             // Only set value if a matching option is found - no fallback to raw assignmentType
 
@@ -5865,15 +4889,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     }, [configuration, assignmentType, formData.orgUnit]);
 
-    
-
     // Service field detection is now handled by the module-level enhancedServiceFieldDetection function
-
-    
-
-
-
-
 
     // Set Inspection-id from assignment and lock field when facility/orgUnit changes
 
@@ -5901,8 +4917,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
       });
 
-
-
       if (idElement) {
 
         const fieldKey = `dataElement_${idElement.dataElement.id}`;
@@ -5929,8 +4943,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     }, [configuration, assignmentInspectionId, formData.orgUnit]);
 
-
-
     // Check if mandatory fields are filled
 
     const areAllMandatoryFieldsFilled = () => {
@@ -5941,17 +4953,9 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     };
 
-
-
-
-
-
-
     const validateForm = () => {
 
       const newErrors = {};
-
-
 
       // All fields are now optional - no validation required
 
@@ -5960,8 +4964,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
       return true;
 
     };
-
-
 
     const handleSave = async (saveDraft = false) => {
 
@@ -5973,18 +4975,13 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
       }
 
-
-
       setIsSubmitting(true);
-
-
 
       try {
 
         // Prepare event data
         // Always ensure we have a proper DHIS2 event ID
         const finalEventId = eventId || generateDHIS2Id();
-        console.log('🆔 Event ID for submission:', finalEventId, eventId ? '(existing)' : '(generated)');
 
         const eventData = {
 
@@ -6004,19 +5001,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
         };
 
-
-
         // Always ensure trackedEntityInstance is included
-
-        console.log('🔍 ===== FORM SUBMISSION TEI DEBUG =====');
-
-        console.log('🔍 Current trackedEntityInstance state:', trackedEntityInstance);
-
-        console.log('🔍 trackedEntityInstance type:', typeof trackedEntityInstance);
-
-        console.log('🔍 trackedEntityInstance truthy check:', !!trackedEntityInstance);
-
-
 
         // Try to get trackedEntityInstance from multiple sources
         let teiToUse = trackedEntityInstance;
@@ -6024,7 +5009,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
         // If trackedEntityInstance is not set, try to get it from facilityInfo
         if (!teiToUse && facilityInfo && facilityInfo.trackedEntityInstance) {
           teiToUse = facilityInfo.trackedEntityInstance;
-          console.log('🔗 Using trackedEntityInstance from facilityInfo:', teiToUse);
         }
 
         // If still no TEI, try to get it from userAssignments
@@ -6034,7 +5018,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
           );
           if (userAssignment && userAssignment.facility.trackedEntityInstance) {
             teiToUse = userAssignment.facility.trackedEntityInstance;
-            console.log('🔗 Using trackedEntityInstance from userAssignments:', teiToUse);
           }
         }
 
@@ -6042,15 +5025,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
           eventData.trackedEntityInstance = teiToUse;
 
-          console.log('🔗 Including trackedEntityInstance in event:', teiToUse);
-
-          console.log('🔗 Event data now contains TEI:', eventData.trackedEntityInstance);
-
         } else {
-
-          console.log('ℹ️ No trackedEntityInstance available from any source - creating event without TEI link');
-
-          console.log('ℹ️ This will cause "Unknown Organisation" in DHIS2');
 
           // Show warning to user about missing TEI
           if (!saveDraft) {
@@ -6067,10 +5042,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
           }
 
         }
-
-        console.log('🔍 ===== FORM SUBMISSION TEI DEBUG END =====');
-
-
 
         // Add data values
 
@@ -6092,8 +5063,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
         });
 
-
-
         // Clean up event data - remove any undefined or null values
 
         Object.keys(eventData).forEach(key => {
@@ -6106,21 +5075,12 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
         });
 
-
-
-        console.log('📝 Final event data for submission:', eventData);
-
-
-
         const savedEvent = await saveEvent(eventData, saveDraft);
 
         setIsDraft(saveDraft);
 
         // Always navigate to dashboard after successful save (both draft and final)
-        console.log('✅ Save successful, navigating to dashboard...');
         navigate('/home');
-
-
 
       } catch (error) {
 
@@ -6129,7 +5089,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
         showToast(`Failed to save: ${error.message}`, 'error');
 
         // Always navigate to dashboard even on failure (both draft and final)
-        console.log('❌ Save failed, navigating to dashboard...');
         navigate('/home');
 
       } finally {
@@ -6139,8 +5098,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
       }
 
     };
-
-
 
     const handleSubmit = async (e) => {
 
@@ -6158,7 +5115,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
       // Create payload data to show in dialog
       // Always ensure we have a proper DHIS2 event ID
       const finalEventId = eventId || generateDHIS2Id();
-      console.log('🆔 Event ID for payload:', finalEventId, eventId ? '(existing)' : '(generated)');
 
       const eventData = {
         event: finalEventId,
@@ -6176,7 +5132,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
       // If trackedEntityInstance is not set, try to get it from facilityInfo
       if (!teiToUse && facilityInfo && facilityInfo.trackedEntityInstance) {
         teiToUse = facilityInfo.trackedEntityInstance;
-        console.log('🔗 Using trackedEntityInstance from facilityInfo:', teiToUse);
       }
 
       // If still no TEI, try to get it from userAssignments
@@ -6186,13 +5141,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
         );
         if (userAssignment && userAssignment.facility.trackedEntityInstance) {
           teiToUse = userAssignment.facility.trackedEntityInstance;
-          console.log('🔗 Using trackedEntityInstance from userAssignments:', teiToUse);
         }
       }
 
       // Always add trackedEntityInstance to payload (even if null/undefined for debugging)
       eventData.trackedEntityInstance = teiToUse;
-      console.log('🔗 Final trackedEntityInstance in payload:', teiToUse);
 
       // Add data values (skip section headers)
       const isSectionHeaderById = (dataElementId) => {
@@ -6231,7 +5184,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
           dataElement: SIGNATURE_DATA_ELEMENT_ID,
           value: intervieweeSignature
         });
-        console.log('📝 Added signature to payload for data element:', SIGNATURE_DATA_ELEMENT_ID);
       }
 
       // Clean up event data - remove any undefined or null values
@@ -6253,15 +5205,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
       handleSave(false);
     };
 
-
-
     const handleSaveDraft = () => {
 
       handleSave(true);
 
     };
-
-
 
     // Helper function to get missing mandatory fields details
 
@@ -6279,27 +5227,15 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     };
 
-
-
     // Get missing mandatory fields details
 
     const missingMandatoryFields = getMissingMandatoryFields();
-
-
-
-
-
-
 
     // Log Inspection Scheduled: Dates for debugging
 
     if (inspectionPeriod) {
 
-      console.log('Inspection Scheduled: Dates:', inspectionPeriod.startDate, 'to', inspectionPeriod.endDate);
-
     }
-
-
 
     // Place the configuration check here, after all hooks
 
@@ -6323,11 +5259,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     }
 
-
-
     const { program, programStage, organisationUnits } = configuration;
-
-
 
     // Safe date parsing with validation
 
@@ -6337,8 +5269,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     const _end = inspectionPeriod?.endDate ? new Date(inspectionPeriod.endDate) : null;
 
-
-
     // Check if dates are valid before using them
 
     const isTodayValid = !isNaN(_today.getTime());
@@ -6347,13 +5277,9 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     const isEndValid = _end && !isNaN(_end.getTime());
 
-
-
     // TEMPORARILY BYPASS DATE VALIDATION FOR TESTING
 
     const date_valid = true; // !inspectionPeriod ? true : (isStartValid && isEndValid && _today >= _start && _today <= _end);
-
-    
 
     // ADDITIONAL DEBUGGING: Log the exact condition values with safe date handling
 
@@ -6393,8 +5319,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     });
 
-    
-
     // ADDITIONAL DEBUGGING: Log the main condition values
 
     console.log("🔍 MAIN CONDITION DEBUG:", {
@@ -6409,8 +5333,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     });
 
-
-
     // Cache for facility classification to prevent repeated API calls
     const classificationCache = useMemo(() => new Map(), []);
 
@@ -6421,7 +5343,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
       // Check cache first
       if (classificationCache.has(facilityId)) {
-        console.log('📋 Using cached classification for:', facilityId);
         const cachedClassification = classificationCache.get(facilityId);
         if (cachedClassification) {
           setFacilityType(cachedClassification);
@@ -6429,23 +5350,15 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
         return;
       }
 
-      
-
       try {
 
         if (showDebugPanel) {
 
-          console.log('🔍 Fetching facility classification for:', facilityId);
-
         }
-
-        
 
         // Try multiple approaches to get facility type/classification
 
         let classification = null;
-
-        
 
         // Approach 1: Try to get facility type directly from inspection data
 
@@ -6461,15 +5374,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
           );
 
-          
-
           if (facilityInspection && facilityInspection.type) {
 
             classification = facilityInspection.type;
 
               if (showDebugPanel) {
-
-              console.log('✅ Found facility type directly from inspection data:', classification);
 
             }
 
@@ -6479,13 +5388,9 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
           if (showDebugPanel) {
 
-            console.log('⚠️ Inspection data not accessible:', error.message);
-
           }
 
         }
-
-        
 
         // Approach 2: Try to get from inspection assignments data (which we already have)
 
@@ -6501,15 +5406,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
             );
 
-            
-
             if (facilityAssignment && facilityAssignment.assignment && facilityAssignment.assignment.type) {
 
               classification = facilityAssignment.assignment.type;
 
                 if (showDebugPanel) {
-
-                console.log('✅ Found facility type from user assignments:', classification);
 
               }
 
@@ -6525,15 +5426,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
               );
 
-              
-
               if (facilityInspection && facilityInspection.type) {
 
                 classification = facilityInspection.type;
 
                 if (showDebugPanel) {
-
-                  console.log('✅ Found facility type via inspection dataStore:', classification);
 
                 }
 
@@ -6545,15 +5442,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
             if (showDebugPanel) {
 
-              console.log('⚠️ Error accessing inspection data:', error.message);
-
             }
 
           }
 
         }
-
-        
 
         // Approach 3: Try to get from organization unit metadata
 
@@ -6583,15 +5476,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
               );
 
-              
-
               if (facilityTypeGroup) {
 
                 classification = facilityTypeGroup.displayName;
 
                 if (showDebugPanel) {
-
-                  console.log('✅ Found facility type via organisation unit groups:', classification);
 
                 }
 
@@ -6603,21 +5492,15 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
             if (showDebugPanel) {
 
-              console.log('⚠️ Organisation unit metadata not accessible:', error.message);
-
             }
 
           }
 
         }
 
-        
-
                // Set the classification if found, otherwise set a default
 
         const classificationToSet = classification || 'Gynae Clinics'; // Default to first option from CSV
-
-        
 
         // Find the DHIS2 "Facility Classification" data element and populate it
 
@@ -6631,8 +5514,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
           });
 
-          
-
           if (facilityClassificationElement) {
 
             const fieldKey = `dataElement_${facilityClassificationElement.dataElement.id}`;
@@ -6645,15 +5526,9 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
             }));
 
-            
-
             if (showDebugPanel) {
 
-              console.log(`✅ Auto-populated DHIS2 field "${facilityClassificationElement.dataElement.displayName}" with: ${classificationToSet}`);
-
             }
-
-            
 
             showToast(`Facility classification auto-populated: ${classificationToSet}`, 'success');
 
@@ -6661,15 +5536,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
             if (showDebugPanel) {
 
-              console.log('⚠️ No DHIS2 "Facility Classification" field found to populate');
-
             }
 
           }
 
         }
-
-        
 
         // Also keep the custom field for internal use (if needed elsewhere)
 
@@ -6681,23 +5552,15 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
         }));
 
-        
-
       } catch (error) {
 
         if (showDebugPanel) {
 
-          console.log('❌ Error in facility classification lookup:', error);
-
         }
-
-        
 
                // Set a default classification if all attempts fail
 
         const defaultClassification = 'Gynae Clinics';
-
-        
 
         // Find and populate the DHIS2 "Facility Classification" field with default
 
@@ -6711,8 +5574,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
           });
 
-          
-
           if (facilityClassificationElement) {
 
             const fieldKey = `dataElement_${facilityClassificationElement.dataElement.id}`;
@@ -6725,19 +5586,13 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
             }));
 
-            
-
             if (showDebugPanel) {
-
-              console.log(`✅ Auto-populated DHIS2 field "${facilityClassificationElement.dataElement.displayName}" with default: ${defaultClassification}`);
 
             }
 
           }
 
         }
-
-        
 
         // Also keep the custom field for internal use
 
@@ -6748,8 +5603,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
           facilityClassification: defaultClassification
 
         }));
-
-        
 
         showToast(`Facility classification set to default: ${defaultClassification}`, 'info');
 
@@ -6762,8 +5615,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     };
 
-
-
     // Function to check if all inspection information fields are complete
 
     const areAllInspectionFieldsComplete = () => {
@@ -6771,13 +5622,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
       // Check if facility service departments have been selected
       // This is required before allowing confirmation
       const hasFacilityServiceDepartments = selectedServiceDepartments && selectedServiceDepartments.length > 0;
-
-      console.log('🔍 Checking inspection fields completion:', {
-        selectedServiceDepartments,
-        departmentCount: selectedServiceDepartments?.length || 0,
-        hasFacilityServiceDepartments
-      });
-
       return hasFacilityServiceDepartments;
 
     };
@@ -6914,13 +5758,13 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
           borderRadius: '12px',
           boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
           zIndex: 1000,
-          minWidth: isCollapsed ? '60px' : '280px',
-          maxWidth: isCollapsed ? '60px' : '320px',
+          minWidth: isCollapsed ? '50px' : '200px',
+          maxWidth: isCollapsed ? '50px' : '220px',
           transition: 'all 0.3s ease'
         }}>
           {/* Header */}
           <div style={{
-            padding: '12px 16px',
+            padding: '8px 12px',
             borderBottom: isCollapsed ? 'none' : '1px solid #e0e0e0',
             backgroundColor: '#f8f9fa',
             borderRadius: '10px 10px 0 0',
@@ -6960,7 +5804,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
           {/* Content */}
           {!isCollapsed && (
-            <div style={{ padding: '12px 0', maxHeight: '400px', overflowY: 'auto' }}>
+            <div style={{ padding: '8px 0', maxHeight: '350px', overflowY: 'auto' }}>
               {visibleSections.map((section, index) => {
                 const status = getSectionStatus(section);
                 const isComplete = status.completed;
@@ -6968,7 +5812,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                 return (
                   <div key={section.id || index} style={{
-                    padding: '8px 16px',
+                    padding: '6px 12px',
                     borderBottom: index < visibleSections.length - 1 ? '1px solid #f0f0f0' : 'none',
                     cursor: 'pointer',
                     transition: 'background-color 0.2s ease'
@@ -7005,7 +5849,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
               {/* Overall Summary */}
               <div style={{
-                margin: '12px 16px 8px',
+                margin: '8px 12px 6px',
                 padding: '8px',
                 backgroundColor: '#f8f9fa',
                 borderRadius: '6px',
@@ -7038,8 +5882,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
           <div className="form-header">
 
             <h2>Facility Inspection Form</h2>
-
-            
 
                      {/* Facility Filtering Status Summary */}
 
@@ -7109,8 +5951,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
              </div>
 
-
-
             <div>
 
               {/* Removed Facility-Registry heading as requested */}
@@ -7119,15 +5959,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
               {/* Removed program description as requested */}
 
-
-
-
-
-
-
             </div>
-
-
 
             <div className="form-actions">
               
@@ -7135,23 +5967,9 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
           </div>
 
-
-
           {/* Debug Panel completely removed */}
 
-
-
-
-
-
-
-
-
-
-
                    <form onSubmit={handleSubmit} className="inspection-form">
-
-
 
              {/* Facility Information Display - Always show */}
              <details className="facility-info-display">
@@ -7331,7 +6149,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                  <div className="form-field">
 
                    <label htmlFor="specialization-select" className="form-label">
-                     Choose Specialization:
+                     Choose Category:
                    </label>
                    <select
                      id="specialization-select"
@@ -7382,8 +6200,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                  </button>
 
-
-
               <div className="section-content">
 
                 <div className="section-fields">
@@ -7418,15 +6234,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                   {/* Debug toggle for facility filtering */}
 
-
-
-
-
                   {/* Manual refresh button for troubleshooting */}
-
-
-
-                      
 
                       {/* Facility Classification and Section Visibility Debug Panel */}
 
@@ -7454,8 +6262,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                           </h6>
 
-                          
-
                           {(() => {
 
                             const currentClassification = getCurrentFacilityClassification();
@@ -7476,8 +6282,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                               );
 
-                              
-
                               return (
 
                                 <div>
@@ -7488,15 +6292,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                   </div>
 
-
-
                                   <div style={{ marginBottom: '4px' }}>
 
                                     <strong>Visible:</strong> {visibleSections.length} | <strong>Hidden:</strong> {hiddenSections.length}
 
                                   </div>
-
-                                  
 
                                   {hiddenSections.length > 0 && (
 
@@ -7532,12 +6332,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                   </div>
 
-
-
-
-
-                  
-
                                    <div className="form-field">
 
                      <label htmlFor="orgUnit" className="form-label">
@@ -7545,7 +6339,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                        Facility/Organisation Unit <span style={{ color: 'red' }}>*</span>
 
                      </label>
-
 
                     {/* Help message for facility selection */}
 
@@ -7578,7 +6371,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                       </div>
 
                     )}
-
 
                     <select
 
@@ -7615,8 +6407,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                      </label>
 
-                    
-
                     {/* Help message for date selection */}
 
                     {!formData.eventDate && (
@@ -7648,8 +6438,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                       </div>
 
                     )}
-
-                    
 
                                      <input
 
@@ -7719,8 +6507,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                 </div>
 
-                  
-
                 {/* Removed duplicate Inspection Scheduled: Dates block */}
 
               </div>
@@ -7729,8 +6515,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
           )}
 
-
-
           {/* Program stage sections */}
 
              { serviceSections && date_valid && serviceSections.length > 0 ? (
@@ -7738,8 +6522,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                <>
 
                  {/* Debug info for sections removed */}
-
-               
 
                                                                        {/* Show only Inspection Information and Inspection Type sections until confirmation */}
 
@@ -7761,15 +6543,9 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                      const shouldShow = shouldShowSection(section.displayName, currentClassification);
 
-
-
                      if (!shouldShow) {
 
-                       console.log(`🚫 Hiding section "${section.displayName}" for facility type "${currentClassification}"`);
-
                      }
-
-
 
                      return shouldShow;
 
@@ -7779,7 +6555,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                      const shouldShowForDepartments = shouldShowSectionForServiceDepartments(section.displayName, selectedServiceDepartments);
 
                      if (!shouldShowForDepartments) {
-                       console.log(`🚫 Hiding inspection section "${section.displayName}" - not relevant for selected service departments:`, selectedServiceDepartments);
                      }
 
                      return shouldShowForDepartments;
@@ -7833,8 +6608,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                    ))}
 
-               
-
                {/* Show remaining sections only after confirmation */}
 
                {inspectionInfoConfirmed && (
@@ -7873,8 +6646,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                    </div>
 
-                   
-
                                        {/* Show all other sections */}
 
                     {serviceSections && serviceSections.length > 0 && serviceSections
@@ -7895,15 +6666,9 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                         const shouldShow = shouldShowSection(section.displayName, currentClassification);
 
-
-
                         if (!shouldShow) {
 
-                          console.log(`🚫 Hiding section "${section.displayName}" for facility type "${currentClassification}"`);
-
                         }
-
-
 
                         return shouldShow;
 
@@ -7913,7 +6678,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                         const shouldShowForDepartments = shouldShowSectionForServiceDepartments(section.displayName, selectedServiceDepartments);
 
                         if (!shouldShowForDepartments) {
-                          console.log(`🚫 Hiding section "${section.displayName}" - not relevant for selected service departments:`, selectedServiceDepartments);
                         }
 
                         return shouldShowForDepartments;
@@ -7967,16 +6731,9 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                       ))}
 
-
-
-
-
                  </>
 
                )}
-
-               
-
 
              </>
 
@@ -8010,8 +6767,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                 </div>
 
-                
-
                 {/* Debug info removed */}
 
               </div>
@@ -8023,8 +6778,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
         )}
 
       </form>
-
-
 
       {/* Form footer with actions */}
 
@@ -8109,16 +6862,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
         </div>
         )}
 
-
-
-
-
-
-
-
-
-
-
         {!isOnline && (
 
           <div className="offline-notice" style={{
@@ -8144,8 +6887,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
           </div>
 
         )}
-
-
 
         {isDraft && (
 
@@ -8336,7 +7077,5 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 );
 
 }
-
-
 
 export { FormPage };
