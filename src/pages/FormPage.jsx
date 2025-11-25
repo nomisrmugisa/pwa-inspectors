@@ -1218,6 +1218,9 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       <div className="field-header">
         <label htmlFor={fieldId} className={`form-label ${isBoldDataElement(dataElement) ? 'bold-label' : ''}`}>
           {dataElement.displayName}
+          <span style={{ fontSize: '0.75em', color: '#666', marginLeft: '8px', fontWeight: 'normal' }}>
+            (ID: {dataElement.id})
+          </span>
         </label>
 
         {/* Comment Toggle Button */}
@@ -1388,9 +1391,69 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
           return;
         }
 
+        // DEBUG: Log all DHIS2 data element names for Ear, Nose & Throat sections
+        const isENT = facilityType === 'Ear, Nose & Throat';
+        const isRelevantSection = /service|personnel|supplies|organisation|management|tens|hiv/i.test(sectionName);
+
+        if (isENT && isRelevantSection && section.dataElements && section.dataElements.length > 0) {
+          console.group(`🔍 DEBUG: DHIS2 Data Elements for "${sectionName}" (ENT)`);
+          console.log('Total data elements in section:', section.dataElements.length);
+          console.log('\n📄 DHIS2 Data Element Names (using formName/displayFormName):');
+          section.dataElements.forEach((psde, idx) => {
+            if (psde && psde.dataElement) {
+              const de = psde.dataElement;
+              const usedName = de.displayName; // This is already formName || displayFormName || name
+              const deId = de.id;
+              const lastUpdated = de.lastUpdated || 'N/A';
+              const isHeader = isSectionHeaderName(usedName);
+              const endsWithDashes = usedName.endsWith('--');
+              console.log(`  [${idx}] ID: ${deId} | Name: "${usedName}" | Updated: ${lastUpdated} | IsHeader: ${isHeader} | EndsWith--: ${endsWithDashes}`);
+            }
+          });
+
+          // Also show what's in the CSV config for this section
+          console.log('\n📋 CSV Config (earnoseandthroat.js) - ALL SECTIONS:');
+          const { default: facilityServiceFilters } = await import('../config/facilityServiceFilters');
+          const entConfig = facilityServiceFilters['Ear, Nose & Throat'];
+          if (entConfig) {
+            // Show ALL CSV sections
+            const csvSectionKeys = Object.keys(entConfig);
+            console.log('All CSV sections:', csvSectionKeys);
+
+            // Try to find matching section in CSV config
+            const possibleMatches = csvSectionKeys.filter(key =>
+              key.toLowerCase().replace(/s\s/g, ' ').includes(sectionName.toLowerCase().replace(/s\s/g, ' ')) ||
+              sectionName.toLowerCase().replace(/s\s/g, ' ').includes(key.toLowerCase().replace(/s\s/g, ' '))
+            );
+
+            if (possibleMatches.length > 0) {
+              possibleMatches.forEach(match => {
+                console.log(`\n✅ Matched CSV Section: "${match}"`);
+                if (entConfig[match].showOnly) {
+                  console.log(`Total questions in CSV: ${entConfig[match].showOnly.length}`);
+                  console.log('First 5 CSV Question Names:');
+                  entConfig[match].showOnly.slice(0, 5).forEach((q, idx) => {
+                    console.log(`  [${idx}] "${q}"`);
+                  });
+                  if (entConfig[match].showOnly.length > 5) {
+                    console.log(`  ... and ${entConfig[match].showOnly.length - 5} more`);
+                  }
+                }
+              });
+            } else {
+              console.log('⚠️ No matching CSV section found for DHIS2 section:', sectionName);
+              console.log('This means the filter will search ALL CSV sections for matching questions.');
+            }
+          } else {
+            console.log('❌ No ENT config found in facilityServiceFilters!');
+          }
+
+          console.groupEnd();
+        }
+
         const results = await Promise.all(
 
-            section.dataElements.map(async (psde) => {
+            section.dataElements.map(async (psde, idx) => {
 
               if (!psde || !psde.dataElement) return false;
 
@@ -1404,7 +1467,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
               // Check if this is a Comments/Remarks data element
               const isComment = /\s*(Comments?|Remarks?)\s*$/i.test(displayName);
-              
+
               if (isComment) {
                 // For Comments/Remarks elements, check if the main element would pass the filter
                 const mainElementName = displayName.replace(/\s*(Comments?|Remarks?)\s*$/i,'');
@@ -1413,6 +1476,12 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
                     mainElementName,
                     facilityType
                 );
+
+                // DEBUG: Log comment field filtering for ENT
+                if (isENT && isRelevantSection) {
+                  console.log(`  [${idx}] Comment field "${displayName}" → main: "${mainElementName}" → ${mainElementPasses ? '✅ PASS' : '❌ FAIL'}`);
+                }
+
                 return mainElementPasses;
               } else {
                 // For main elements, use the standard filter
@@ -1420,14 +1489,37 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
                     displayName,
                     facilityType
                 );
-              return shouldShow;
+
+                // DEBUG: Log main field filtering for ENT
+                if (isENT && isRelevantSection) {
+                  console.log(`  [${idx}] Main field "${displayName}" → ${shouldShow ? '✅ PASS' : '❌ FAIL'}`);
+                }
+
+                return shouldShow;
               }
 
             })
 
         );
 
-        const filtered = section.dataElements.filter((_, idx) => results[idx]);
+        // Apply the filter, but never let it make a section completely empty.
+        // If no data elements pass the filter for this section + facility type,
+        // fall back to showing all the section's data elements so inspectors
+        // can still capture data while we align DHIS2 names with the CSV.
+        let filtered = section.dataElements.filter((_, idx) => results[idx]);
+
+        if (isENT && isRelevantSection) {
+          console.log(`📊 Filter result for "${sectionName}": ${filtered.length} of ${section.dataElements.length} elements passed`);
+        }
+
+        if ((!filtered || filtered.length === 0) && section.dataElements.length > 0) {
+          console.warn('⚠️ Filter removed all data elements for section; falling back to showing all', {
+            section: section.displayName,
+            facilityType
+          });
+          filtered = section.dataElements;
+        }
+
         setFilteredDataElements(filtered);
 
       };
@@ -1882,6 +1974,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
                   const deName = psde?.dataElement?.displayName || '';
                   if (isSectionHeaderName(deName)) {
                     const headerText = normalizeSectionHeaderName(deName);
+                    console.log(`🎯 Rendering subsection header: "${headerText}" (original: "${deName}", ID: ${psde.dataElement.id})`);
                     return (
                       <div key={`header-${psde.dataElement.id}-${actualIndex}`} style={{
                         fontWeight: 700,
@@ -5754,10 +5847,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
         return shouldShowByDepartments;
       });
 
-      // If we still have no sections (e.g. classification not yet known), fall back
-      // to a small subset so the user is not presented with an empty progress bar.
+      // If we still have no sections, keep the progress bar empty so that
+      // sections only appear once there is at least one applicable section for
+      // the current facility type + selected departments.
       if (filteredByConfig.length === 0) {
-        return serviceSections.slice(0, 10);
+        return [];
       }
 
       return filteredByConfig;
@@ -5820,7 +5914,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
               justifyContent: 'space-between',
               cursor: 'pointer'
             }}
-            onClick={() => setIsProgressCollapsed(!isProgressCollapsed)}
+            onClick={() => setIsProgressCollapsed(prev => !prev)}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               {!isCollapsed && (

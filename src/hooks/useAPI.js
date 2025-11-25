@@ -447,9 +447,9 @@ class DHIS2APIService {
       'sortOrder',
       'repeatable',
       // Get Data Elements from program stage sections
-      'programStageSections[id,name,displayName,sortOrder,dataElements[id,displayFormName,name,shortName,code,description,valueType,compulsory,allowProvidedElsewhere,optionSet[id,displayName,options[id,displayName,code,sortOrder]]]]',
+      'programStageSections[id,name,displayName,sortOrder,dataElements[id,formName,displayFormName,name,displayName,shortName,code,description,valueType,compulsory,allowProvidedElsewhere,lastUpdated,optionSet[id,displayName,options[id,displayName,code,sortOrder]]]]',
       // Get Data Elements directly from program stage
-      'programStageDataElements[id,displayName,sortOrder,compulsory,allowProvidedElsewhere,dataElement[id,displayName,shortName,code,description,valueType,aggregationType,optionSet[id,displayName,options[id,displayName,code,sortOrder]]]]'
+      'programStageDataElements[id,displayName,sortOrder,compulsory,allowProvidedElsewhere,dataElement[id,formName,displayFormName,name,displayName,shortName,code,description,valueType,aggregationType,lastUpdated,optionSet[id,displayName,options[id,displayName,code,sortOrder]]]]'
     ].join(',');
     
     const metadata = await this.request(`/api/programStages/${stageId}?fields=${fields}`);
@@ -479,25 +479,59 @@ class DHIS2APIService {
       console.log(`📋 Found ${stageMetadata.programStageSections.length} program stage sections`);
       
       stageMetadata.programStageSections.forEach((section, index) => {
+        // First, collect all data elements with their metadata
+        let dataElementsWithMetadata = section.dataElements?.map((de, deIndex) => ({
+          id: `psde_${de.id}`,
+          // Prioritize formName for CSV matching, then displayFormName, then name
+          displayName: de.formName || de.displayFormName || de.name || `Field ${deIndex + 1}`,
+          sortOrder: deIndex,
+          compulsory: de.compulsory || false,
+          allowProvidedElsewhere: false,
+          lastUpdated: de.lastUpdated,
+          dataElement: {
+            id: de.id,
+            // Prioritize formName for CSV matching, then displayFormName, then name
+            displayName: de.formName || de.displayFormName || de.name || `Field ${deIndex + 1}`,
+            shortName: de.name || `field_${deIndex + 1}`,
+            valueType: de.valueType || 'TEXT',
+            optionSet: de.optionSet,
+            lastUpdated: de.lastUpdated
+          }
+        })) || [];
+
+        // Handle duplicates: keep only the most recently updated data element for each displayName
+        const nameToElementMap = new Map();
+        dataElementsWithMetadata.forEach(element => {
+          const name = element.displayName;
+          const existing = nameToElementMap.get(name);
+
+          if (!existing) {
+            // First occurrence of this name
+            nameToElementMap.set(name, element);
+          } else {
+            // Duplicate found - keep the one with the latest lastUpdated date
+            const existingDate = existing.lastUpdated ? new Date(existing.lastUpdated) : new Date(0);
+            const currentDate = element.lastUpdated ? new Date(element.lastUpdated) : new Date(0);
+
+            if (currentDate > existingDate) {
+              console.log(`  🔄 Duplicate found: "${name}" - keeping newer version (${element.dataElement.id} updated ${element.lastUpdated})`);
+              nameToElementMap.set(name, element);
+            } else {
+              console.log(`  🔄 Duplicate found: "${name}" - keeping existing version (${existing.dataElement.id} updated ${existing.lastUpdated})`);
+            }
+          }
+        });
+
+        // Convert map back to array, preserving original sort order where possible
+        const deduplicatedElements = Array.from(nameToElementMap.values())
+          .sort((a, b) => a.sortOrder - b.sortOrder);
+
         const processedSection = {
           id: `section_${index}`,
           displayName: section.name || section.displayName,
           description: null,
           sortOrder: section.sortOrder || index,
-          dataElements: section.dataElements?.map((de, deIndex) => ({
-            id: `psde_${de.id}`,
-            displayName: de.displayFormName || de.name || `Field ${deIndex + 1}`,
-            sortOrder: deIndex,
-            compulsory: de.compulsory || false,
-            allowProvidedElsewhere: false,
-            dataElement: {
-              id: de.id,
-              displayName: de.displayFormName || de.name || `Field ${deIndex + 1}`,
-              shortName: de.name || `field_${deIndex + 1}`,
-              valueType: de.valueType || 'TEXT',
-              optionSet: de.optionSet
-            }
-          })) || []
+          dataElements: deduplicatedElements
         };
         
         console.log(`  📂 Section ${index + 1}: "${processedSection.displayName}" with ${processedSection.dataElements.length} Data Elements`);
@@ -535,24 +569,28 @@ class DHIS2APIService {
           section.dataElements.forEach((de, deIndex) => {
             const element = {
               id: `psde_${de.id}`,
-              displayName: de.displayFormName || de.name || `Field ${deIndex + 1}`,
+              // Prioritize formName for CSV matching, then displayFormName, then name
+              displayName: de.formName || de.displayFormName || de.name || `Field ${deIndex + 1}`,
               sortOrder: allDataElements.length,
               compulsory: de.compulsory || false,
               allowProvidedElsewhere: false,
               sectionName: section.name || section.displayName,
               sectionIndex: sectionIndex,
+              lastUpdated: de.lastUpdated,
               dataElement: {
                 id: de.id,
-                displayName: de.displayFormName || de.name || `Field ${deIndex + 1}`,
+                // Prioritize formName for CSV matching, then displayFormName, then name
+                displayName: de.formName || de.displayFormName || de.name || `Field ${deIndex + 1}`,
                 shortName: de.name || `field_${deIndex + 1}`,
                 valueType: de.valueType || 'TEXT',
-                optionSet: de.optionSet
+                optionSet: de.optionSet,
+                lastUpdated: de.lastUpdated
               }
             };
-            
+
             allDataElements.push(element);
             sectionElementsCount++;
-            
+
             console.log(`      ✅ Added: ${element.displayName} (${de.valueType || 'UNKNOWN'})`);
           });
         } else {
@@ -567,24 +605,31 @@ class DHIS2APIService {
     if (stageMetadata.programStageDataElements && stageMetadata.programStageDataElements.length > 0) {
       console.log(`📝 Processing ${stageMetadata.programStageDataElements.length} direct program stage Data Elements...`);
       
-      stageMetadata.programStageDataElements.forEach((de, index) => {
+      stageMetadata.programStageDataElements.forEach((psde, index) => {
+        // programStageDataElements wraps the actual dataElement
+        const de = psde.dataElement || psde;
+
         // Check if this element is already included from sections
         const existingElement = allDataElements.find(elem => elem.dataElement.id === de.id);
         if (!existingElement) {
           const element = {
             id: `psde_${de.id}`,
-            displayName: de.displayName || de.name || `Field ${index + 1}`,
+            // Prioritize formName for CSV matching, then displayFormName, then displayName, then name
+            displayName: de.formName || de.displayFormName || de.displayName || de.name || `Field ${index + 1}`,
             sortOrder: allDataElements.length,
-            compulsory: de.compulsory || false,
-            allowProvidedElsewhere: de.allowProvidedElsewhere || false,
+            compulsory: psde.compulsory || de.compulsory || false,
+            allowProvidedElsewhere: psde.allowProvidedElsewhere || de.allowProvidedElsewhere || false,
             sectionName: 'Direct Stage Assignment',
             sectionIndex: -1,
+            lastUpdated: de.lastUpdated,
             dataElement: {
               id: de.id,
-              displayName: de.displayName || de.name || `Field ${index + 1}`,
+              // Prioritize formName for CSV matching, then displayFormName, then displayName, then name
+              displayName: de.formName || de.displayFormName || de.displayName || de.name || `Field ${index + 1}`,
               shortName: de.name || `field_${index + 1}`,
               valueType: de.valueType || 'TEXT',
-              optionSet: de.optionSet
+              optionSet: de.optionSet,
+              lastUpdated: de.lastUpdated
             }
           };
           

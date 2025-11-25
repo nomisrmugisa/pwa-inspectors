@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist for facilities2.0.csv
- * Generated on: 2025-11-24 20:06:33
+ * Generated on: 2025-11-25 11:54:31
  * Facility Type: Dental Laboratory
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -12,6 +12,7 @@ const DentalLaboratory = {
         "showOnly": [
             "Does the Facility have an organisational structure",
             "Is the director a medically trained person?",
+            "Does the facility comply with regulatory requirements? --",
             "Business registration",
             "ta clearance certificate",
             "Valid private pactice license",
@@ -32,6 +33,7 @@ const DentalLaboratory = {
             "Practitioners licence",
             "Fire clearance",
             "residence permit",
+            "Does the Facility have policies and procedures for the following?--",
             "The confidentiality of patient information",
             "Incident reporting",
             "Induction and orientation",
@@ -45,6 +47,7 @@ const DentalLaboratory = {
             "Management of supplies",
             "Complaints procedure",
             "Waste management",
+            "Does the Facility have the following reference materials?--",
             "Treatment protocols/ guidelines",
             "Testing and treatment techniques",
             "Copies of relevant statutory instruments",
@@ -52,6 +55,7 @@ const DentalLaboratory = {
     },
     "SERVICES PROVIDED": {
         "showOnly": [
+            "What are the services provided at the Facility?--",
             "General services; Specify",
             "Specialist services; Specify",
             "Other services (Specify); .....",
@@ -72,6 +76,7 @@ const DentalLaboratory = {
             "Administrative Staff (Specify)",
             "Support staff (Specify)",
             "Are professionals registered with the relevant Councils?",
+            "Did personnel files have the following?--",
             "Signed job effectiveness description",
             "Education credentials",
             "A signed confidentiality clause",
@@ -107,6 +112,7 @@ const DentalLaboratory = {
             "Is there patient charter available in Setswana and English?",
             "Is there available drinking water source?",
             "Are educational materials available for clients",
+            "Toilet facilities--",
             "Is there a minimum of two toilets available (for male and",
             "Female patients)?",
             "Are they labelled male and female?",
@@ -119,6 +125,7 @@ const DentalLaboratory = {
             "Does the female toilet have sanitary pads disposal?",
             "Are toilets aesthetically pleasing?",
             "Is there provision for paediatric clients?",
+            "Safety and waste management --",
             "Does the Facility have a policy on waste management?",
             "Does the Facility have SOPs on waste management?",
             "Does the Facility have a waste disposal system? Specify:",
@@ -183,6 +190,7 @@ const DentalLaboratory = {
     },
     "TENS": {
         "showOnly": [
+            "Customer satisfaction--",
             "Is there a customer feedback mechanism",
             "Suggestion bo",
             "Customer surveys",

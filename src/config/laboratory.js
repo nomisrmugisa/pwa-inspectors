@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist for facilities2.0.csv
- * Generated on: 2025-11-24 20:06:33
+ * Generated on: 2025-11-25 11:54:31
  * Facility Type: laboratory
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -12,6 +12,7 @@ const laboratory = {
         "showOnly": [
             "Does the Facility have an organisational structure",
             "Is the director a medically trained person?",
+            "Does the facility comply with regulatory requirements? --",
             "Business registration",
             "ta clearance certificate",
             "Valid private pactice license",
@@ -31,6 +32,7 @@ const laboratory = {
             "Practitioners licence",
             "Fire clearance",
             "residence permit",
+            "Does the Facility have policies and procedures for the following?--",
             "Patient referral",
             "Management of high risk patients",
             "The confidentiality of patient information",
@@ -52,6 +54,7 @@ const laboratory = {
             "Complaints procedure",
             "Outreach services",
             "Waste management",
+            "Does the Facility have the following reference materials?--",
             "Treatment protocols/ guidelines",
             "Testing and treatment techniques",
             "Copies of relevant statutory instruments",
@@ -59,6 +62,7 @@ const laboratory = {
     },
     "SERVICES PROVIDED": {
         "showOnly": [
+            "What are the services provided at the Facility?--",
             "General services; Specify",
             "Specialist services; Specify",
             "Other services (Specify); .....",
@@ -83,6 +87,7 @@ const laboratory = {
             "Administrative Staff (Specify)",
             "Support staff (Specify)",
             "Are professionals registered with the relevant Councils?",
+            "Did personnel files have the following?--",
             "Signed job effectiveness description",
             "Education credentials",
             "A signed confidentiality clause",
@@ -123,6 +128,7 @@ const laboratory = {
             "Pregnancy test kit",
             "Does the bleeding room have space? Elaborate.",
             "Does the room have wheelchair accessibility?",
+            "Is the room equipped with the following --",
             "· 2 chairs",
             "· Needles and syringes (different sizes)",
             "· Vacutainers of different colours",
@@ -140,6 +146,7 @@ const laboratory = {
             "· Cooler bo",
             "· Ice packs",
             "Specimen racks",
+            "Toilet facilities--",
             "Is there a minimum of two toilets available (for male and",
             "Female patients)?",
             "Are they labelled male and female?",
@@ -152,6 +159,7 @@ const laboratory = {
             "Does the female toilet have sanitary pads disposal?",
             "Are toilets aesthetically pleasing?",
             "Is there provision for paediatric clients?",
+            "Safety and waste management --",
             "Does the Facility have a policy on waste management?",
             "Does the Facility have SOPs on waste management?",
             "Does the Facility have a waste disposal system? Specify:",
@@ -185,12 +193,14 @@ const laboratory = {
     },
     "TENS": {
         "showOnly": [
+            "Customer satisfaction--",
             "Is there a customer feedback mechanism",
             "Suggestion bo",
             "Customer surveys",
             "Is there a patient charter in both English and Setswana",
             "Is there provision for consent before carrying out any procedures/assessment",
             "Is there a complaints, procedure",
+            "Specimen reception room--",
             "Does the room have the following:",
             "· Chairs and a table",
             "· Disposable gloves",
@@ -209,6 +219,7 @@ const laboratory = {
             "· Does the lab have a documented specimen system( collection, handling, storage and transportation",
             "· Is there specimen fridge with temperature monitoring device and chart",
             "Is there air-conditioner with monitoring device and chart?",
+            "Laboratory testing areas Chemistry--",
             "Chemistry",
             "Does the testing area have adequate space?",
             "Are there adequate lab stools and benches?",

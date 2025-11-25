@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist for facilities2.0.csv
- * Generated on: 2025-11-24 20:06:33
+ * Generated on: 2025-11-25 11:54:31
  * Facility Type: Rehabilitation Centre
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -12,6 +12,7 @@ const RehabilitationCentre = {
         "showOnly": [
             "Does the Facility have an organisational structure",
             "Is the director a medically trained person?",
+            "Does the facility comply with regulatory requirements? --",
             "Business registration",
             "ta clearance certificate",
             "Valid private pactice license",
@@ -31,6 +32,7 @@ const RehabilitationCentre = {
             "Practitioners licence",
             "Fire clearance",
             "residence permit",
+            "Does the Facility have policies and procedures for the following?--",
             "Patient referral",
             "Assessment of patients",
             "Management of high risk patients",
@@ -53,6 +55,7 @@ const RehabilitationCentre = {
             "Complaints procedure",
             "Outreach services",
             "Waste management",
+            "Does the Facility have the following reference materials?--",
             "Treatment protocols/ guidelines",
             "Testing and treatment techniques",
             "Copies of relevant statutory instruments",
@@ -60,6 +63,7 @@ const RehabilitationCentre = {
     },
     "SERVICES PROVIDED": {
         "showOnly": [
+            "What are the services provided at the Facility?--",
             "General services; Specify",
             "Specialist services; Specify",
             "Other services (Specify); .....",
@@ -84,6 +88,7 @@ const RehabilitationCentre = {
             "Administrative Staff (Specify)",
             "Support staff (Specify)",
             "Are professionals registered with the relevant Councils?",
+            "Did personnel files have the following?--",
             "Signed job effectiveness description",
             "Education credentials",
             "A signed confidentiality clause",
@@ -121,6 +126,7 @@ const RehabilitationCentre = {
             "Are educational materials available for clients",
             "Does the screening room have space? Elaborate.",
             "Does the screening room have wheelchair accessibility?",
+            "Is screening room equipped with the following?--",
             "Chairs and table",
             "Sphygmomanometer",
             "Thermometer",
@@ -137,6 +143,7 @@ const RehabilitationCentre = {
             "Appropriate hand wash soap",
             "Does the consultation room have adequate space?",
             "Does the consultation room have wheelchair accessibility",
+            "Does the consultation room have the following --",
             "At least 3 Chairs",
             "Alcohol swabs",
             "Appropriate hand drying facilities",
@@ -185,12 +192,14 @@ const RehabilitationCentre = {
             "Waste bins with lids for clinical waste",
             "Weighing scale (both adult and paediatric)*",
             "-ray viewing bo",
+            "Nurses' station--",
             "Desk",
             "Chairs",
             "Counter",
             "Computer with printer",
             "Nurse call system panel",
             "Telephone",
+            "In patient Admission rooms--",
             "is the room wheelcahir accessible?",
             "are there separate male and female admission rooms?",
             "is there patient nurse call system in patient rooms and bathrooms?",
@@ -207,6 +216,7 @@ const RehabilitationCentre = {
             "are there storage cabinets/ closets/ cupboards",
             "are there visitors/ pateints' chairs?",
             "Is there domestic waste bins with lid?",
+            "Office for the Manager--",
             "Is there an office for the In- Charge officer?",
             "Does the oofice have the followig;",
             "Chairs?",
@@ -214,10 +224,12 @@ const RehabilitationCentre = {
             "Desktop/ computer connected to printer?",
             "Telephone?",
             "Habit Forming cabinet/ cupboard?",
+            "Emergency equipment--",
             "emergency trolley with chelist with atleast",
             "Does the Emergency trolloey have atleast the following; Defibrilator/ Automated Eternal Difibrilator (AED), laryngoscope set, endotracheal tubes, ambu bags, syringes, needles, cannulas, alcohol swab, drugs, IV fluids, oygen cylinder and masks of different sizes, etc",
             "Does the procedure room have adequate space?",
             "Is the room wheelchair accessible",
+            "Does the procedure room have the following --",
             "Alcohol swabs",
             "Antiseptic ointments, creams, solutions etc.",
             "Appropriate hand drying facilities",
@@ -260,6 +272,7 @@ const RehabilitationCentre = {
             "Does the room have space? Elaborate.",
             "Does the room have ventilation? Elaborate",
             "Does the room have wheelchair accessibility?",
+            "Is the room equipped with the following--",
             "Canvas bag trolley with cover",
             "Canvas bag trolley with cover for non soiled linen",
             "Clinical waste bins with lid",
@@ -271,6 +284,7 @@ const RehabilitationCentre = {
             "stainless steel waste discarding sink or sluice machine",
             "Does the bleeding room have space? Elaborate.",
             "Does the room have wheelchair accessibility?",
+            "Is the room equipped with the following --",
             "· 2 chairs",
             "· Needles and syringes (different sizes)",
             "· Vacutainers of different colours",
@@ -288,6 +302,7 @@ const RehabilitationCentre = {
             "· Cooler bo",
             "· Ice packs",
             "Specimen racks",
+            "Toilet facilities--",
             "Is there a minimum of two toilets available (for male and",
             "Female patients)?",
             "Are they labelled male and female?",
@@ -300,6 +315,7 @@ const RehabilitationCentre = {
             "Does the female toilet have sanitary pads disposal?",
             "Are toilets aesthetically pleasing?",
             "Is there provision for paediatric clients?",
+            "Safety and waste management --",
             "Does the Facility have a policy on waste management?",
             "Does the Facility have SOPs on waste management?",
             "Does the Facility have a waste disposal system? Specify:",
@@ -333,6 +349,7 @@ const RehabilitationCentre = {
     },
     "TENS": {
         "showOnly": [
+            "Customer satisfaction--",
             "Is there a customer feedback mechanism",
             "Suggestion bo",
             "Customer surveys",
