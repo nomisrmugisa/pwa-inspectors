@@ -2,12 +2,12 @@
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist for facilities2.0.csv
  * Generated on: 2025-11-24 20:06:33
- * Facility Type: Physiotheraphy
+ * Facility Type: Psychology
  *
  * To regenerate this file, run: python src/config/generateFilters.py
  */
 
-const Physiotheraphy = {
+const Psychology = {
     "ORGANISATION AND MANAGEMENT": {
         "showOnly": [
             "Does the Facility have an organisational structure",
@@ -119,7 +119,6 @@ const Physiotheraphy = {
             "Is there patient charter available in Setswana and English?",
             "Is there available drinking water source?",
             "Are educational materials available for clients",
-            "Appropriate hand wash soap",
             "Does the consultation room have adequate space?",
             "Does the consultation room have wheelchair accessibility",
             "At least 3 Chairs",
@@ -130,33 +129,32 @@ const Physiotheraphy = {
             "clinical waste bin with lid",
             "Cotton swabs soaked in alcohol",
             "Cotton wool/ wipes",
+            "Couch",
             "disposable cups",
             "Disposable gloves",
             "domestic waste bin with lid",
             "Emergency tray",
-            "Eamination/ treatment couch with tiltable headrest behind a curtain, covered with linen",
-            "Eamination/ treatment couch covered with linen?",
             "Glucometer* and strips",
             "Hand washing basin with running hot and cold water",
             "Hand washing soap",
             "hand drying facilities",
-            "Height measuring device",
             "HIV testing kit",
-            "Lubricating jell or solution",
             "Non sterile gloves",
+            "Psychology Testing material (intellectual tests)",
             "Reference material",
             "Sharps container",
+            "Sound proof room/ booth",
             "Sphygmomanometer*",
             "Step to ease access to couch",
-            "Sterile gloves",
             "Storage space for consumables",
+            "Table",
             "Tape measure",
             "Thermometer*",
+            "Tissues",
             "Ultra sound jelly",
             "Waste bin with lids for domestic waste",
             "Waste bins with lids for clinical waste",
             "Weighing scale (both adult and paediatric)*",
-            "-ray viewing bo",
             "Is there a minimum of two toilets available (for male and",
             "Female patients)?",
             "Are they labelled male and female?",
@@ -198,48 +196,6 @@ const Physiotheraphy = {
             "· management of epired supplies",
             "Does the Facility have adequate supplies for services provided/",
             "Is there a stock control system?",
-            "Tapping materials",
-            "Strapping materials",
-            "Crepe bandage",
-            "Compression stocking",
-            "Tubigrip",
-            "Braces",
-            "Supports",
-            "Ambulatory frames, pick-up for adults",
-            "Ambulatory frames, rollator for adults",
-            "Ambulatory frames,rollator for paediatric",
-            "Crutches, aillary",
-            "Crutches, elbow",
-            "Tripod",
-            "Ultrasound gel",
-            "Electric pads(disposable or non-disposable)",
-            "Disinfectant",
-            "Antiseptic",
-            "Massage oil/cream",
-            "Sheets",
-            "Towels",
-            "Are supplies stored according to manufacturers recommendations?",
-            "Is the epiry of these items closely monitored?",
-            "Does the facility have appropriate equipment and instruments for the services provided?",
-            "Does the facility have the following equipment?--",
-            "Wheelchair",
-            "Ultrasound machine",
-            "Electrotherapy machine with provision for selection of different current wave forms",
-            "Short wave diathermy machine",
-            "Wooden couch for the short wave diathermy machine",
-            "Infra-red lamp",
-            "Laser therapy machine",
-            "Ultra-violet lamp",
-            "Hydro-collator/moist heat machine",
-            "Eercise weights",
-            "Eercise cycle ergo meter",
-            "Parallel bars",
-            "Sphygmomanometer",
-            "Stethoscope",
-            "Hot pack",
-            "Measuring tape",
-            "Set of goniometers",
-            "Pair of scissors",
         ]
     },
     "TENS": {
@@ -255,4 +211,4 @@ const Physiotheraphy = {
 
 };
 
-export default Physiotheraphy;
+export default Psychology;

@@ -1,47 +1,53 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist for facilities2.0.csv
- * Generated on: 2025-09-21 23:13:46
+ * Generated on: 2025-11-24 20:06:33
  *
  * This file imports all individual clinic filter files and combines them
  * To regenerate this file, run: python src/config/generateFilters.py
  */
 
-import Hospital from './hospital.js';
-import Clinic from './clinic.js';
-import Laboratory from './laboratory.js';
-import Radiology from './radiology.js';
-import ENT from './ent.js';
+import ObstetricsandGynaecology from './obstetricsandgynaecology.js';
+import laboratory from './laboratory.js';
+import Psychology from './psychology.js';
+import EyeOpthalmologyOptometry from './eyeopthalmologyoptometry.js';
+import Physiotheraphy from './physiotheraphy.js';
 import Dental from './dental.js';
-import Eye from './eye.js';
-import Psycology from './psycology.js';
-import Physio from './physio.js';
-import Rehab from './rehab.js';
-import Gynae from './gynae.js';
+import DentalLaboratory from './dentallaboratory.js';
+import EarNoseandThroat from './earnoseandthroat.js';
+import RehabilitationCentre from './rehabilitationcentre.js';
+import Radiology from './radiology.js';
+import GeneralPractice from './generalpractice.js';
+import Paediatric from './paediatric.js';
+import NursingHome from './nursinghome.js';
 
 const facilityServiceFilters = {
-    'Hospital': Hospital,
-    'Service Hospital': Hospital,
-    'Clinic': Clinic,
-    'Service Clinic': Clinic,
-    'Laboratory': Laboratory,
-    'Service Laboratory': Laboratory,
-    'Radiology': Radiology,
-    'Service Radiology': Radiology,
-    'ENT': ENT,
-    'Service ENT': ENT,
+    'Obstetrics & Gynaecology': ObstetricsandGynaecology,
+    'Service Obstetrics & Gynaecology': ObstetricsandGynaecology,
+    'laboratory': laboratory,
+    'Service laboratory': laboratory,
+    'Psychology': Psychology,
+    'Service Psychology': Psychology,
+    'Eye (Opthalmology /Optometry)': EyeOpthalmologyOptometry,
+    'Service Eye (Opthalmology /Optometry)': EyeOpthalmologyOptometry,
+    'Physiotheraphy': Physiotheraphy,
+    'Service Physiotheraphy': Physiotheraphy,
     'Dental': Dental,
     'Service Dental': Dental,
-    'Eye': Eye,
-    'Service Eye': Eye,
-    'Psycology': Psycology,
-    'Service Psycology': Psycology,
-    'Physio': Physio,
-    'Service Physio': Physio,
-    'Rehab': Rehab,
-    'Service Rehab': Rehab,
-    'Gynae': Gynae,
-    'Service Gynae': Gynae,
+    'Dental Laboratory': DentalLaboratory,
+    'Service Dental Laboratory': DentalLaboratory,
+    'Ear, Nose & Throat': EarNoseandThroat,
+    'Service Ear, Nose & Throat': EarNoseandThroat,
+    'Rehabilitation Centre': RehabilitationCentre,
+    'Service Rehabilitation Centre': RehabilitationCentre,
+    'Radiology': Radiology,
+    'Service Radiology': Radiology,
+    'General Practice': GeneralPractice,
+    'Service General Practice': GeneralPractice,
+    'Paediatric': Paediatric,
+    'Service Paediatric': Paediatric,
+    'Nursing Home': NursingHome,
+    'Service Nursing Home': NursingHome,
 };
 
 export function shouldShowDataElementForService(dataElementName, selectedService) {

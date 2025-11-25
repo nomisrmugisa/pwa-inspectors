@@ -5,17 +5,13 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useApp } from '../contexts/AppContext';
 
 import {
-
   shouldShowSection,
-
   getFilteredDataElementCount,
-
   getSectionDetailsForFacility,
-
   getFacilitySummary,
-  
-  getVisibleSectionsForFacility
-
+  getVisibleSectionsForFacility,
+  CANONICAL_FACILITY_TYPES,
+  normalizeFacilityClassification,
 } from '../config/sectionVisibilityConfig';
 
 import { shouldShowDataElementForService } from '../config/facilityServiceFilters';
@@ -343,25 +339,35 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
       // Get departments for the current specialization using hardcoded mapping
       // Try multiple sources to get the current specialization
-      const currentSpecialization = window.__currentSpecialization || 
-                                   window.__currentFacilityType || 
-                                   window.__manualSpecialization ||
-                                   (typeof getCurrentFacilityClassification === 'function' ? getCurrentFacilityClassification() : null) ||
-                                   'Unknown';
-      
+      const rawSpecialization =
+        window.__currentSpecialization ||
+        window.__currentFacilityType ||
+        window.__manualSpecialization ||
+        (typeof getCurrentFacilityClassification === 'function'
+          ? getCurrentFacilityClassification()
+          : null) ||
+        'Unknown';
+
+      const currentSpecialization =
+        normalizeFacilityClassification(rawSpecialization) || rawSpecialization;
+
       console.log('🔍 Specialization lookup sources:', {
         windowCurrentSpecialization: window.__currentSpecialization,
         windowCurrentFacilityType: window.__currentFacilityType,
         windowManualSpecialization: window.__manualSpecialization,
-        getCurrentFacilityClassification: typeof getCurrentFacilityClassification === 'function' ? getCurrentFacilityClassification() : 'function not available',
+        getCurrentFacilityClassification:
+          typeof getCurrentFacilityClassification === 'function'
+            ? getCurrentFacilityClassification()
+            : 'function not available',
+        rawSpecialization,
         finalSpecialization: currentSpecialization
       });
-      
+
       // Store the current specialization in global state for debugging and consistency
       if (currentSpecialization && currentSpecialization !== 'Unknown') {
         window.__currentSpecialization = currentSpecialization;
       }
-      
+
       const hardcodedDepartments = getDepartmentsForSpecialization(currentSpecialization);
       const departmentStats = getDepartmentStats(currentSpecialization);
       
@@ -2480,20 +2486,8 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       }
     };
 
-    // Available specialization options
-    const specializationOptions = [
-      'Hospital',
-      'Clinic',
-      'Laboratory',
-      'Radiology',
-      'ENT',
-      'Dental',
-      'Eye',
-      'Psycology',
-      'Physio',
-      'Rehab',
-      'Gynae'
-    ];
+    // Available specialization options - aligned to canonical CSV facility types
+    const specializationOptions = CANONICAL_FACILITY_TYPES;
 
     // State to track loading of service sections
     const [loadingServiceSections, setLoadingServiceSections] = useState(false);
@@ -2631,27 +2625,36 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
     // Function to determine if a section should be shown based on selected service departments
     const shouldShowSectionForServiceDepartments = (sectionName, selectedDepartments) => {
-      // If no departments selected, show all sections
-      if (!selectedDepartments || selectedDepartments.length === 0) {
-        return true;
-      }
+      const safeName = (sectionName || '').toString();
+      const sectionLower = safeName.toLowerCase();
 
-      // Always show inspection information and inspection type sections
-      const sectionLower = sectionName.toLowerCase();
+      // Always show core inspection sections regardless of department selection
       if (sectionLower.includes('inspection information') || sectionLower.includes('inspection type')) {
         return true;
       }
 
+      // If no departments have been selected yet, hide all other sections.
+      // This keeps the progress bar and main form from showing every department
+      // section as soon as a category is chosen; sections only appear once at
+      // least one Facility Service Department has been ticked.
+      if (!selectedDepartments || selectedDepartments.length === 0) {
+        return false;
+      }
+
       // Enhanced mapping of service departments to relevant sections
       const departmentSectionMapping = {
-        // Management and Organization
-        'ORGANISATION AND MANAGEMENT': ['ORGANISATION', 'ORGANIZATION', 'MANAGEMENT', 'ADMIN', 'LEADERSHIP'],
-        'STATUTORY REQUIREMENTS': ['STATUTORY', 'REQUIREMENTS', 'COMPLIANCE', 'LEGAL', 'REGULATION'],
-        'POLICIES AND PROCEDURES': ['POLICIES', 'PROCEDURES', 'PROTOCOL', 'GUIDELINE', 'SOP'],
+        // Management and Organization (use exact, CSV-aligned names to avoid
+        // accidental matches on generic words like "MANAGEMENT" or "ADMIN")
+        'ORGANISATION AND MANAGEMENT': ['ORGANISATION AND MANAGEMENT'],
+        'STATUTORY REQUIREMENTS': ['STATUTORY REQUIREMENTS'],
+        'POLICIES AND PROCEDURES': ['POLICIES AND PROCEDURES'],
 
-        // Services and Personnel
-        'SERVICE PROVIDED': ['SERVICE', 'SERVICES', 'PROVIDED', 'DELIVERY', 'CARE'],
-        'PERSONNEL': ['PERSONNEL', 'STAFF', 'HUMAN RESOURCES', 'EMPLOYEE', 'WORKFORCE', 'STAFFING'],
+        // Services and Personnel (CSV canonical departments). We match on the
+        // full, CSV-aligned names (or very tight aliases) only 1 no more
+        // generic words like "SERVICE" or "STAFF" that could hit unrelated
+        // sections.
+        'SERVICES PROVIDED': ['SERVICES PROVIDED', 'SERVICE PROVIDED'],
+        'PERSONNEL': ['PERSONNEL'],
 
         // Environment and Infrastructure
         'ENVIRONMENT': ['ENVIRONMENT', 'ENVIRONMENTAL', 'FACILITY ENVIRONMENT', 'INFRASTRUCTURE'],
@@ -2683,8 +2686,8 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
         'LABORATORY WORK AREA': ['LABORATORY', 'LAB', 'TESTING', 'ANALYSIS'],
 
         // Pharmacy and Supplies
-        'PHARMACY/ DISPENSARY': ['PHARMACY', 'DISPENSARY', 'MEDICATION', 'DRUG'],
-        'SUPPLIES': ['SUPPLIES', 'INVENTORY', 'EQUIPMENT', 'STOCK'],
+        'PHARMACY/ DISPENSARY': ['PHARMACY/ DISPENSARY'],
+        'SUPPLIES': ['SUPPLIES'],
 
         // Information Management
         'RECORDS/ INFORMATION MANAGEMENT': ['RECORDS', 'INFORMATION', 'MANAGEMENT', 'DATA', 'FILING'],
@@ -2714,6 +2717,15 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
         // Quality and Satisfaction
         'CUSTOMER SATISFACTION': ['CUSTOMER', 'SATISFACTION', 'PATIENT SATISFACTION', 'FEEDBACK'],
 
+        // CSV-driven departments that map 1:1 to sections
+        // For HIV SCREENING we require an exact, CSV-aligned section name so
+        // that selecting this department only pulls in the explicit
+        // "HIV SCREENING" section and does NOT also match generic rooms.
+        'HIV SCREENING': ['HIV SCREENING'],
+        // TENS is represented in DHIS2 as a "CUSTOMER SATISFACTION" style section,
+        // so we map it to that exact section name as well.
+        'TENS': ['TENS', 'CUSTOMER SATISFACTION'],
+
         // Catch-all
         'OTHER': [] // OTHER shows all sections
       };
@@ -2727,8 +2739,15 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
         const keywords = departmentSectionMapping[department] || [];
 
+        // Match on full, CSV-aligned names (or tight aliases) using a
+        // case-insensitive contains check. This is effectively "exact" at the
+        // level of whole section names because we only put full section names in
+        // the mapping (no more generic tokens like "SCREENING" or "STAFF").
+        const safeUpper = safeName.toUpperCase();
+
         for (const keyword of keywords) {
-          if (sectionName.toUpperCase().includes(keyword.toUpperCase())) {
+          const token = String(keyword).trim().toUpperCase();
+          if (token && safeUpper.includes(token)) {
             return true;
           }
         }
@@ -2743,7 +2762,8 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
       window.updateSelectedFacilityService = (value) => {
 
-        setFacilityType(value);
+        const normalized = normalizeFacilityClassification(value);
+        setFacilityType(normalized || value);
 
       };
 
@@ -2973,9 +2993,18 @@ Outreach services,?,?,?,?,?,?,?,?,?,?,?
 
 Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
-        const classifications = parseCSVClassifications(csvContent);
+        const rawClassifications = parseCSVClassifications(csvContent);
 
-        setFacilityClassifications(classifications);
+        // Normalize and de-duplicate against canonical facility types from CSV
+        const normalizedClassifications = Array.from(
+          new Set(
+            rawClassifications
+              .map((name) => normalizeFacilityClassification(name))
+              .filter(Boolean)
+          )
+        );
+
+        setFacilityClassifications(normalizedClassifications);
 
       } catch (error) {
 
@@ -3436,9 +3465,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
             // Set the facility type to use for filtering
             if (facilityData.type) {
-              setFacilityType(facilityData.type);
+              const normalizedType = normalizeFacilityClassification(facilityData.type);
+              setFacilityType(normalizedType || facilityData.type);
               console.log('🔍 FACILITY TYPE DEBUG: Type set to:', {
                 type: facilityData.type,
+                normalizedType,
                 typeLength: facilityData.type.length,
                 typeType: typeof facilityData.type,
                 exactValue: JSON.stringify(facilityData.type)
@@ -3590,12 +3621,14 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
               if (savedSpecialization || parsedDepartments.length > 0) {
                 // Update specialization if available
                 if (savedSpecialization) {
-                  setManualSpecialization(savedSpecialization);
-                  setFacilityType(savedSpecialization);
+                  const normalizedSaved =
+                    normalizeFacilityClassification(savedSpecialization) || savedSpecialization;
+                  setManualSpecialization(normalizedSaved);
+                  setFacilityType(normalizedSaved);
 
                   // Update global state for consistency
-                  window.__currentSpecialization = savedSpecialization;
-                  window.__manualSpecialization = savedSpecialization;
+                  window.__currentSpecialization = normalizedSaved;
+                  window.__manualSpecialization = normalizedSaved;
                 }
 
                 // Update service departments if available
@@ -3727,6 +3760,9 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     const [isDraft, setIsDraft] = useState(false);
 
+    // Controls whether the Floating Progress bar is collapsed
+    const [isProgressCollapsed, setIsProgressCollapsed] = useState(false);
+
     // const [currentUser, setCurrentUser] = useState(null);
 
     const [serviceSections, setServiceSections] = useState([]);
@@ -3734,13 +3770,18 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
     // Initialize department options immediately when component loads
     // This ensures hardcoded departments are available before any FormField renders
     const initializeDepartmentOptions = () => {
-      const currentSpecialization = manualSpecialization || facilityType || 'Gynae Clinics';
+      const baseClassification = manualSpecialization || facilityType || 'Obstetrics & Gynaecology';
+      const currentSpecialization =
+        normalizeFacilityClassification(baseClassification) || 'Obstetrics & Gynaecology';
       const hardcodedDepartments = getDepartmentsForSpecialization(currentSpecialization);
 
-      console.log(`🚀 IMMEDIATE INIT: Setting department options for "${currentSpecialization}":`, {
-        count: hardcodedDepartments.length,
-        departments: hardcodedDepartments.slice(0, 3) // Show first 3 for debugging
-      });
+      console.log(
+        `🚀 IMMEDIATE INIT: Setting department options for "${currentSpecialization}":`,
+        {
+          count: hardcodedDepartments.length,
+          departments: hardcodedDepartments.slice(0, 3) // Show first 3 for debugging
+        }
+      );
 
       if (hardcodedDepartments.length > 0) {
         window.__departmentOptionsForSection = hardcodedDepartments;
@@ -3756,7 +3797,9 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
         if (facilityType) {
 
           // First, try to get hardcoded departments for the current specialization
-          const currentSpecialization = manualSpecialization || facilityType;
+          const baseClassification = manualSpecialization || facilityType || 'Obstetrics & Gynaecology';
+          const currentSpecialization =
+            normalizeFacilityClassification(baseClassification) || 'Obstetrics & Gynaecology';
           const hardcodedDepartments = getDepartmentsForSpecialization(currentSpecialization);
 
           console.log(`🎯 Checking hardcoded departments for "${currentSpecialization}":`, {
@@ -3781,7 +3824,10 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
               if (total === 0) continue;
 
               // Only include sections that should be visible for the current facility type
-              const shouldShowThisSection = shouldShowSection(s.displayName, facilityType);
+              const shouldShowThisSection = shouldShowSection(
+                s.displayName,
+                currentSpecialization
+              );
               if (!shouldShowThisSection) {
                 continue;
               }
@@ -3791,7 +3837,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                 continue;
               }
 
-              const shown = (s.dataElements || []).filter(psde2 => {
+              const shown = (s.dataElements || []).filter((psde2) => {
                 if (!psde2?.dataElement) return false;
                 const displayName2 = psde2.dataElement.displayName;
                 const isComment2 = /\s(Comments?|Remarks?)$/i.test(displayName2);
@@ -3800,9 +3846,9 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                     .replace(/\sComments?\s*$/i, '')
                     .replace(/\sRemarks?\s*$/i, '')
                     .trim();
-                  return shouldShowDataElementForService(main2, facilityType);
+                  return shouldShowDataElementForService(main2, currentSpecialization);
                 }
-                return shouldShowDataElementForService(displayName2, facilityType);
+                return shouldShowDataElementForService(displayName2, currentSpecialization);
               }).length;
 
               if (shown > 0) {
@@ -3899,20 +3945,19 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
     // Function to get current facility classification
 
     const getCurrentFacilityClassification = () => {
-
       // 1. Prioritize manual specialization selection
       if (manualSpecialization) {
-        return manualSpecialization;
+        return normalizeFacilityClassification(manualSpecialization);
       }
 
       // 2. Try to get from formData
       if (formData.facilityClassification) {
-        return formData.facilityClassification;
+        return normalizeFacilityClassification(formData.facilityClassification);
       }
 
       // 3. Try to get from the DHIS2 field if it exists
       if (configuration?.programStage?.allDataElements) {
-        const facilityClassificationElement = configuration.programStage.allDataElements.find(psde => {
+        const facilityClassificationElement = configuration.programStage.allDataElements.find((psde) => {
           const fieldName = (psde.dataElement.displayName || psde.dataElement.shortName || '').toLowerCase();
           return fieldName.includes('facility classification') || fieldName.includes('facility type');
         });
@@ -3921,14 +3966,14 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
           const fieldKey = `dataElement_${facilityClassificationElement.dataElement.id}`;
           const dhisValue = formData[fieldKey];
           if (dhisValue) {
-            return dhisValue;
+            return normalizeFacilityClassification(dhisValue);
           }
         }
       }
 
       // 4. Fallback to facilityType state
       if (facilityType) {
-        return facilityType;
+        return normalizeFacilityClassification(facilityType);
       }
 
       return null;
@@ -5345,7 +5390,8 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
       if (classificationCache.has(facilityId)) {
         const cachedClassification = classificationCache.get(facilityId);
         if (cachedClassification) {
-          setFacilityType(cachedClassification);
+          const normalizedCached = normalizeFacilityClassification(cachedClassification);
+          setFacilityType(normalizedCached || cachedClassification);
         }
         return;
       }
@@ -5500,7 +5546,9 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                // Set the classification if found, otherwise set a default
 
-        const classificationToSet = classification || 'Gynae Clinics'; // Default to first option from CSV
+        const classificationToSetRaw = classification || 'Obstetrics & Gynaecology'; // Default to first canonical option from CSV
+        const classificationToSet =
+          normalizeFacilityClassification(classificationToSetRaw) || classificationToSetRaw;
 
         // Find the DHIS2 "Facility Classification" data element and populate it
 
@@ -5560,7 +5608,9 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                // Set a default classification if all attempts fail
 
-        const defaultClassification = 'Gynae Clinics';
+        const defaultClassificationRaw = 'Obstetrics & Gynaecology';
+        const defaultClassification =
+          normalizeFacilityClassification(defaultClassificationRaw) || defaultClassificationRaw;
 
         // Find and populate the DHIS2 "Facility Classification" field with default
 
@@ -5609,7 +5659,10 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
       }
 
       // Cache the result (either found classification or default)
-      const finalClassification = classification || 'Gynae Clinics';
+      const finalClassificationRaw =
+        (typeof classification !== 'undefined' && classification) || 'Obstetrics & Gynaecology';
+      const finalClassification =
+        normalizeFacilityClassification(finalClassificationRaw) || finalClassificationRaw;
       classificationCache.set(facilityId, finalClassification);
       setFacilityType(finalClassification);
 
@@ -5667,70 +5720,60 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
       return { completed, total, filled, percentage };
     };
 
-    // Memoized function to get visible sections - prevents infinite re-renders
+    // Memoized function to get visible sections - keeps progress bar in sync
+    // with facility classification + selected facility service departments.
     const getVisibleSections = useCallback(() => {
       if (!serviceSections || serviceSections.length === 0) return [];
 
-      // Get the current specialization
-      const currentSpecialization = manualSpecialization || facilityType;
+      const currentClassification =
+        typeof getCurrentFacilityClassification === 'function'
+          ? getCurrentFacilityClassification()
+          : null;
 
-      // If we have a specialization and selected departments, filter by departments
-      if (currentSpecialization && selectedServiceDepartments && selectedServiceDepartments.length > 0) {
+      const filteredByConfig = serviceSections.filter((section) => {
+        const name = section.displayName || '';
 
-        const filteredSections = serviceSections.filter(section => {
-          const sectionName = section.displayName;
-
-          // Always include inspection sections
-          if (sectionName.toLowerCase().includes('inspection')) {
-            return true;
-          }
-
-          // Check if this section matches any selected department
-          const matchesDepartment = selectedServiceDepartments.some(dept =>
-            dept.toUpperCase() === sectionName.toUpperCase()
+        // Apply visibility rules based on facility classification
+        if (currentClassification) {
+          const shouldShowByClassification = shouldShowSection(
+            name,
+            currentClassification
           );
 
-          return matchesDepartment;
-        });
-
-        return filteredSections;
-      }
-
-      // If we have a specialization but no departments selected, show relevant sections for that specialization
-      if (currentSpecialization && currentSpecialization !== 'Unknown') {
-        const availableDepartments = getDepartmentsForSpecialization(currentSpecialization);
-
-        const relevantSections = serviceSections.filter(section => {
-          const sectionName = section.displayName;
-
-          // Always include inspection sections
-          if (sectionName.toLowerCase().includes('inspection')) {
-            return true;
+          if (!shouldShowByClassification) {
+            return false;
           }
+        }
 
-          // Check if this section is relevant to the specialization
-          const isRelevant = availableDepartments.some(dept =>
-            dept.toUpperCase() === sectionName.toUpperCase()
-          );
+        // Apply filtering based on selected service departments
+        const shouldShowByDepartments = shouldShowSectionForServiceDepartments(
+          name,
+          selectedServiceDepartments
+        );
 
-          return isRelevant;
-        });
+        return shouldShowByDepartments;
+      });
 
-        return relevantSections;
+      // If we still have no sections (e.g. classification not yet known), fall back
+      // to a small subset so the user is not presented with an empty progress bar.
+      if (filteredByConfig.length === 0) {
+        return serviceSections.slice(0, 10);
       }
 
-      // No specialization selected - show first 10 sections to avoid overwhelming display
-      return serviceSections.slice(0, 10);
-    }, [serviceSections, manualSpecialization, facilityType, selectedServiceDepartments]);
+      return filteredByConfig;
+    }, [
+      serviceSections,
+      selectedServiceDepartments,
+      getCurrentFacilityClassification
+    ]);
 
     // Floating Progress Component
     const FloatingProgress = () => {
-      const [isCollapsed, setIsCollapsed] = useState(false);
+      // Use parent state so collapse/expand persists across re-renders
+      const isCollapsed = isProgressCollapsed;
 
-      // Calculate visible sections using useMemo to prevent unnecessary recalculations
-      const visibleSections = useMemo(() => {
-        return getVisibleSections();
-      }, [serviceSections, manualSpecialization, selectedServiceDepartments]);
+      // Calculate visible sections using the shared helper
+      const visibleSections = getVisibleSections();
 
       // Don't show progress bar if essential data isn't loaded yet
       if (!serviceSections || serviceSections.length === 0 || visibleSections.length === 0) {
@@ -5757,22 +5800,28 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
           border: '2px solid #e0e0e0',
           borderRadius: '12px',
           boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-          zIndex: 1000,
+          zIndex: 10000,
           minWidth: isCollapsed ? '50px' : '200px',
           maxWidth: isCollapsed ? '50px' : '220px',
+          maxHeight: '80vh',
+          display: 'flex',
+          flexDirection: 'column',
           transition: 'all 0.3s ease'
         }}>
           {/* Header */}
-          <div style={{
-            padding: '8px 12px',
-            borderBottom: isCollapsed ? 'none' : '1px solid #e0e0e0',
-            backgroundColor: '#f8f9fa',
-            borderRadius: '10px 10px 0 0',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            cursor: 'pointer'
-          }} onClick={() => setIsCollapsed(!isCollapsed)}>
+          <div
+            style={{
+              padding: '8px 12px',
+              borderBottom: isCollapsed ? 'none' : '1px solid #e0e0e0',
+              backgroundColor: '#f8f9fa',
+              borderRadius: '10px 10px 0 0',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              cursor: 'pointer'
+            }}
+            onClick={() => setIsProgressCollapsed(!isProgressCollapsed)}
+          >
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               {!isCollapsed && (
                 <>
@@ -5804,7 +5853,14 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
           {/* Content */}
           {!isCollapsed && (
-            <div style={{ padding: '8px 0', maxHeight: '350px', overflowY: 'auto' }}>
+            <div
+              style={{
+                padding: '8px 0',
+                maxHeight: '60vh',
+                overflowY: 'auto',
+                overflowX: 'hidden'
+              }}
+            >
               {visibleSections.map((section, index) => {
                 const status = getSectionStatus(section);
                 const isComplete = status.completed;

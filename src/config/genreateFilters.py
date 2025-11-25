@@ -149,12 +149,13 @@ class FacilityFilterGenerator:
         # Remove special characters and convert to lowercase
         filename = facility_type.lower()
         filename = filename.replace(' ', '').replace('(', '').replace(')', '')
-        filename = filename.replace('-', '').replace('&', 'and')
+        filename = filename.replace('-', '').replace('&', 'and').replace('/', '')
+        filename = filename.replace(',', '').replace(':', '').replace(';', '')
         return filename + '.js'
 
     def generate_js_file_content(self, facility_type, config):
         """Generate the JavaScript file content for a facility filter"""
-        sanitized_name = facility_type.replace(' ', '').replace('(', '').replace(')', '').replace('-', '')
+        sanitized_name = facility_type.replace(' ', '').replace('(', '').replace(')', '').replace('-', '').replace('/', '').replace(',', '').replace(':', '').replace(';', '').replace('&', 'and')
 
         content = f'''/**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
@@ -208,7 +209,7 @@ export default {sanitized_name};
         mappings = []
 
         for facility_type in self.facility_types:
-            sanitized_name = facility_type.replace(' ', '').replace('(', '').replace(')', '').replace('-', '')
+            sanitized_name = facility_type.replace(' ', '').replace('(', '').replace(')', '').replace('-', '').replace('/', '').replace(',', '').replace(':', '').replace(';', '').replace('&', 'and')
             filename = self.sanitize_filename(facility_type).replace('.js', '')
 
             imports.append(f"import {sanitized_name} from './{filename}.js';")
