@@ -205,6 +205,74 @@ class IndexedDBService {
   }
 
   /**
+   * Get the most recent form data (by lastUpdated timestamp)
+   * Useful for restoring the last form the user was working on
+   */
+  async getMostRecentFormData() {
+    if (!this.db) {
+      await this.init();
+    }
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db.transaction([this.storeName], 'readonly');
+      const store = transaction.objectStore(this.storeName);
+      const index = store.index('lastUpdated');
+      
+      // Get all records sorted by lastUpdated (descending)
+      const request = index.openCursor(null, 'prev'); // 'prev' = descending order
+      
+      let mostRecent = null;
+
+      request.onsuccess = (event) => {
+        const cursor = event.target.result;
+        if (cursor) {
+          // Get the first (most recent) record
+          mostRecent = cursor.value;
+          resolve(mostRecent);
+        } else {
+          // No records found
+          resolve(null);
+        }
+      };
+
+      request.onerror = () => {
+        console.error('❌ Failed to get most recent form data from IndexedDB:', request.error);
+        reject(request.error);
+      };
+    });
+  }
+
+  /**
+   * Get all form data records (for debugging/management)
+   */
+  async getAllFormData() {
+    if (!this.db) {
+      await this.init();
+    }
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db.transaction([this.storeName], 'readonly');
+      const store = transaction.objectStore(this.storeName);
+      const request = store.getAll();
+
+      request.onsuccess = () => {
+        // Sort by lastUpdated (most recent first)
+        const sorted = (request.result || []).sort((a, b) => {
+          const dateA = new Date(a.lastUpdated || a.createdAt || 0);
+          const dateB = new Date(b.lastUpdated || b.createdAt || 0);
+          return dateB - dateA; // Descending order
+        });
+        resolve(sorted);
+      };
+
+      request.onerror = () => {
+        console.error('❌ Failed to get all form data from IndexedDB:', request.error);
+        reject(request.error);
+      };
+    });
+  }
+
+  /**
    * Delete form data
    */
   async deleteFormData(eventId) {

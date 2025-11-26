@@ -236,12 +236,22 @@ export function AppProvider({ children }) {
   useEffect(() => {
     const initializeApp = async () => {
       console.log("Initializing app...");
-      // Wait for storage to be ready before trying to use it
-      if (!storage.isReady) {
-        return;
-      }
+      
+      // Set loading to true during initialization to prevent premature redirect to login
+      dispatch({ type: ActionTypes.SET_LOADING, payload: true });
       
       try {
+        // Wait for storage to be ready (it should be ready, but wait just in case)
+        let waitCount = 0;
+        while (!storage.isReady && waitCount < 50) {
+          await new Promise(resolve => setTimeout(resolve, 100));
+          waitCount++;
+        }
+        
+        if (!storage.isReady) {
+          console.warn('Storage not ready after waiting, continuing anyway...');
+        }
+        
         // Try to restore authentication
         const auth = await storage.getAuth();
         if (auth?.serverUrl && auth?.credentials) {
@@ -250,25 +260,73 @@ export function AppProvider({ children }) {
           // Configure API
           api.setConfig(serverUrl, username, password);
           
-          // Test authentication
-          const authResult = await api.testAuth();
-          if (authResult.success) {
+          // Check if we're online
+          const isOnline = navigator.onLine;
+          
+          if (isOnline) {
+            // Test authentication only when online
+            const authResult = await api.testAuth();
+            if (authResult.success) {
+              // Update stored auth with latest user info
+              await storage.setAuth({
+                ...auth,
+                user: authResult.user
+              });
+              
+              dispatch({
+                type: ActionTypes.LOGIN_SUCCESS,
+                payload: {
+                  user: authResult.user,
+                  serverUrl
+                }
+              });
+              
+              // Fetch configuration immediately after login like Android app
+              await fetchConfiguration();
+
+              // Fetch user assignments
+              await fetchUserAssignments();
+            } else {
+              // Only clear credentials if auth test fails while online
+              console.log('Authentication failed, clearing stored credentials');
+              await storage.clearAuth();
+            }
+          } else {
+            // Offline: Restore session from stored auth without testing
+            console.log('Offline: Restoring authentication from stored credentials');
+            
+            // Restore user from stored auth if available
+            const storedUser = auth.user || { 
+              displayName: username,
+              username: username 
+            };
+            
             dispatch({
               type: ActionTypes.LOGIN_SUCCESS,
               payload: {
-                user: authResult.user,
+                user: storedUser,
                 serverUrl
               }
             });
             
-            // Fetch configuration immediately after login like Android app
-            await fetchConfiguration();
-
-            // Fetch user assignments
-            await fetchUserAssignments();
-          } else {
-            // Clear invalid credentials
-            await storage.clearAuth();
+            // Try to load configuration from storage if available
+            const storedConfig = await storage.getConfiguration();
+            if (storedConfig) {
+              dispatch({
+                type: ActionTypes.FETCH_CONFIGURATION_SUCCESS,
+                payload: storedConfig
+              });
+            } else {
+              // If no stored config, try fetching (will fail offline, that's ok)
+              try {
+                await fetchConfiguration();
+              } catch (error) {
+                console.log('Could not fetch configuration offline, continuing with stored data');
+              }
+            }
+            
+            // User assignments will be empty offline, which is acceptable
+            console.log('Offline mode: User assignments not available');
           }
         }
         
@@ -297,14 +355,15 @@ export function AppProvider({ children }) {
             payload: 'Failed to initialize application'
           });
         }
+      } finally {
+        // Always set loading to false after initialization completes
+        dispatch({ type: ActionTypes.SET_LOADING, payload: false });
       }
     };
 
-    // Only run initialization when storage is ready
-    if (storage.isReady) {
-      initializeApp();
-    }
-  }, [storage.isReady]); // Depend on storage.isReady instead of storage itself
+    // Start initialization - it will wait for storage if needed
+    initializeApp();
+  }, [storage.isReady]); // Re-run if storage readiness changes
 
   // Network status monitoring
   useEffect(() => {
@@ -679,7 +738,8 @@ export function AppProvider({ children }) {
             serverUrl: cleanUrl,
             username,
             password,
-            credentials: btoa(`${username}:${password}`)
+            credentials: btoa(`${username}:${password}`),
+            user: authResult.user // Store user info for offline restoration
           });
         } catch (storageError) {
           console.warn('Failed to store credentials:', storageError);

@@ -2499,11 +2499,34 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
     const navigate = useNavigate();
     // Ensure we always have an eventId for incremental saving
+    // If no eventId, check for most recent draft first before generating new one
     useEffect(() => {
-      if (!eventId) {
-        const generatedId = generateDHIS2Id();
-        navigate(`/form/${generatedId}`, { replace: true });
-      }
+      const initializeEventId = async () => {
+        if (!eventId) {
+          try {
+            // Check for most recent draft form data
+            const mostRecent = await indexedDBService.getMostRecentFormData();
+            
+            if (mostRecent && mostRecent.eventId) {
+              console.log('📋 Found most recent draft, restoring eventId:', mostRecent.eventId);
+              // Navigate to existing draft instead of creating new one
+              navigate(`/form/${mostRecent.eventId}`, { replace: true });
+            } else {
+              // No existing draft found, generate new eventId
+              const generatedId = generateDHIS2Id();
+              console.log('🆕 No existing draft found, generating new eventId:', generatedId);
+              navigate(`/form/${generatedId}`, { replace: true });
+            }
+          } catch (error) {
+            console.error('❌ Error checking for existing drafts:', error);
+            // On error, generate new eventId as fallback
+            const generatedId = generateDHIS2Id();
+            navigate(`/form/${generatedId}`, { replace: true });
+          }
+        }
+      };
+
+      initializeEventId();
     }, [eventId, navigate]);
 
     // const api = useAPI();
