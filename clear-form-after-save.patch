@@ -1,0 +1,41 @@
+--- a/src/pages/FormPage.jsx
++++ b/src/pages/FormPage.jsx
+@@ -5238,14 +5238,28 @@ function FormPage() {
+ 
+         const savedEvent = await saveEvent(eventData, saveDraft);
+ 
+         setIsDraft(saveDraft);
+ 
+-        // Always navigate to dashboard after successful save (both draft and final)
+-        navigate('/home');
++        // Clear the IndexedDB form data for this event after successful save
++        if (finalEventId) {
++          try {
++            await indexedDBService.deleteFormData(finalEventId);
++            console.log('✅ Cleared form data from IndexedDB after save');
++          } catch (error) {
++            console.warn('⚠️ Failed to clear form data from IndexedDB:', error);
++          }
++        }
++
++        // Navigate to new blank form for next inspection (instead of dashboard)
++        // This allows users to immediately start a new entry
++        navigate('/form');
++        
++        // Show success message
++        showToast(
++          saveDraft ? 'Draft saved! Starting new form...' : 'Inspection submitted! Starting new form...', 
++          'success'
++        );
+ 
+       } catch (error) {
+ 
+         console.error('Failed to save event:', error);
+ 
+         showToast(`Failed to save: ${error.message}`, 'error');
+ 
+-        // Always navigate to dashboard even on failure (both draft and final)
++        // On error, navigate to dashboard to see existing records
+         navigate('/home');
+ 
+       } finally {
