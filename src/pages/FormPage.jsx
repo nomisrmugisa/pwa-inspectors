@@ -469,16 +469,6 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
               alignItems: 'center'
             }}>
               <span>Specialization: <strong>{currentSpecialization}</strong></span>
-              {departmentStats && (
-                <span style={{ 
-                  backgroundColor: '#f0f8ff',
-                  padding: '2px 6px',
-                  borderRadius: '8px',
-                  fontSize: '11px'
-                }}>
-                  {departmentStats.available}/{departmentStats.total} departments
-                </span>
-              )}
             </div>
             
             {/* Custom checkbox-based multiselect for easy selection */}

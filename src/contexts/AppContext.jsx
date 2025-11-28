@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { useAPI } from '../hooks/useAPI';
 import { useStorage } from '../hooks/useStorage';
+import indexedDBService from '../services/indexedDBService';
 
 // Initial state
 const initialState = {
@@ -9,26 +10,26 @@ const initialState = {
   isAuthenticated: false,
   user: null,
   serverUrl: '',
-  
+
   // Configuration - like Android DHIS2 app
   configuration: null,
-  
+
   // User assignments from DataStore
   userAssignments: [],
-  
+
   // UI State
   loading: false,
   error: null,
   toast: null,
-  
+
   // Network state
   isOnline: navigator.onLine,
-  
+
   // Sync state
   pendingEvents: [],
   lastSyncTime: null,
   syncInProgress: false,
-  
+
   // Statistics
   stats: {
     totalEvents: 0,
@@ -45,31 +46,31 @@ const ActionTypes = {
   LOGIN_SUCCESS: 'LOGIN_SUCCESS',
   LOGIN_FAILURE: 'LOGIN_FAILURE',
   LOGOUT: 'LOGOUT',
-  
+
   // Configuration actions
   FETCH_CONFIGURATION_START: 'FETCH_CONFIGURATION_START',
   FETCH_CONFIGURATION_SUCCESS: 'FETCH_CONFIGURATION_SUCCESS',
   FETCH_CONFIGURATION_FAILURE: 'FETCH_CONFIGURATION_FAILURE',
-  
+
   // User assignments actions
   UPDATE_USER_ASSIGNMENTS: 'UPDATE_USER_ASSIGNMENTS',
-  
+
   // UI actions
   SET_LOADING: 'SET_LOADING',
   SET_ERROR: 'SET_ERROR',
   CLEAR_ERROR: 'CLEAR_ERROR',
   SHOW_TOAST: 'SHOW_TOAST',
   HIDE_TOAST: 'HIDE_TOAST',
-  
+
   // Network actions
   SET_ONLINE_STATUS: 'SET_ONLINE_STATUS',
-  
+
   // Sync actions
   SYNC_START: 'SYNC_START',
   SYNC_SUCCESS: 'SYNC_SUCCESS',
   SYNC_FAILURE: 'SYNC_FAILURE',
   UPDATE_PENDING_EVENTS: 'UPDATE_PENDING_EVENTS',
-  
+
   // Stats actions
   UPDATE_STATS: 'UPDATE_STATS',
 
@@ -91,7 +92,7 @@ function appReducer(state, action) {
         loading: true,
         error: null
       };
-      
+
     case ActionTypes.LOGIN_SUCCESS:
       return {
         ...state,
@@ -101,7 +102,7 @@ function appReducer(state, action) {
         serverUrl: action.payload.serverUrl,
         error: null
       };
-      
+
     case ActionTypes.LOGIN_FAILURE:
       return {
         ...state,
@@ -110,7 +111,7 @@ function appReducer(state, action) {
         user: null,
         error: action.payload
       };
-      
+
     case ActionTypes.LOGOUT:
       return {
         ...initialState,
@@ -129,7 +130,7 @@ function appReducer(state, action) {
         loading: true,
         error: null
       };
-      
+
     case ActionTypes.FETCH_CONFIGURATION_SUCCESS:
       return {
         ...state,
@@ -137,7 +138,7 @@ function appReducer(state, action) {
         configuration: action.payload,
         error: null
       };
-      
+
     case ActionTypes.FETCH_CONFIGURATION_FAILURE:
       return {
         ...state,
@@ -145,49 +146,49 @@ function appReducer(state, action) {
         configuration: null,
         error: action.payload
       };
-      
+
     case ActionTypes.SET_LOADING:
       return {
         ...state,
         loading: action.payload
       };
-      
+
     case ActionTypes.SET_ERROR:
       return {
         ...state,
         error: action.payload
       };
-      
+
     case ActionTypes.CLEAR_ERROR:
       return {
         ...state,
         error: null
       };
-      
+
     case ActionTypes.SHOW_TOAST:
       return {
         ...state,
         toast: action.payload
       };
-      
+
     case ActionTypes.HIDE_TOAST:
       return {
         ...state,
         toast: null
       };
-      
+
     case ActionTypes.SET_ONLINE_STATUS:
       return {
         ...state,
         isOnline: action.payload
       };
-      
+
     case ActionTypes.SYNC_START:
       return {
         ...state,
         syncInProgress: true
       };
-      
+
     case ActionTypes.SYNC_SUCCESS:
       return {
         ...state,
@@ -195,26 +196,26 @@ function appReducer(state, action) {
         lastSyncTime: new Date().toISOString(),
         pendingEvents: action.payload.remainingEvents || []
       };
-      
+
     case ActionTypes.SYNC_FAILURE:
       return {
         ...state,
         syncInProgress: false,
         error: action.payload
       };
-      
+
     case ActionTypes.UPDATE_PENDING_EVENTS:
       return {
         ...state,
         pendingEvents: action.payload
       };
-      
+
     case ActionTypes.UPDATE_STATS:
       return {
         ...state,
         stats: { ...state.stats, ...action.payload }
       };
-      
+
     default:
       return state;
   }
@@ -236,10 +237,10 @@ export function AppProvider({ children }) {
   useEffect(() => {
     const initializeApp = async () => {
       console.log("Initializing app...");
-      
+
       // Set loading to true during initialization to prevent premature redirect to login
       dispatch({ type: ActionTypes.SET_LOADING, payload: true });
-      
+
       try {
         // Wait for storage to be ready (it should be ready, but wait just in case)
         let waitCount = 0;
@@ -247,22 +248,22 @@ export function AppProvider({ children }) {
           await new Promise(resolve => setTimeout(resolve, 100));
           waitCount++;
         }
-        
+
         if (!storage.isReady) {
           console.warn('Storage not ready after waiting, continuing anyway...');
         }
-        
+
         // Try to restore authentication
         const auth = await storage.getAuth();
         if (auth?.serverUrl && auth?.credentials) {
           const { serverUrl, username, password } = auth;
-          
+
           // Configure API
           api.setConfig(serverUrl, username, password);
-          
+
           // Check if we're online
           const isOnline = navigator.onLine;
-          
+
           if (isOnline) {
             // Test authentication only when online
             const authResult = await api.testAuth();
@@ -272,7 +273,7 @@ export function AppProvider({ children }) {
                 ...auth,
                 user: authResult.user
               });
-              
+
               dispatch({
                 type: ActionTypes.LOGIN_SUCCESS,
                 payload: {
@@ -280,7 +281,7 @@ export function AppProvider({ children }) {
                   serverUrl
                 }
               });
-              
+
               // Fetch configuration immediately after login like Android app
               await fetchConfiguration();
 
@@ -294,13 +295,13 @@ export function AppProvider({ children }) {
           } else {
             // Offline: Restore session from stored auth without testing
             console.log('Offline: Restoring authentication from stored credentials');
-            
+
             // Restore user from stored auth if available
-            const storedUser = auth.user || { 
+            const storedUser = auth.user || {
               displayName: username,
-              username: username 
+              username: username
             };
-            
+
             dispatch({
               type: ActionTypes.LOGIN_SUCCESS,
               payload: {
@@ -308,7 +309,7 @@ export function AppProvider({ children }) {
                 serverUrl
               }
             });
-            
+
             // Try to load configuration from storage if available
             const storedConfig = await storage.getConfiguration();
             if (storedConfig) {
@@ -324,12 +325,12 @@ export function AppProvider({ children }) {
                 console.log('Could not fetch configuration offline, continuing with stored data');
               }
             }
-            
+
             // User assignments will be empty offline, which is acceptable
             console.log('Offline mode: User assignments not available');
           }
         }
-        
+
         // Load stats
         const stats = await storage.getStats();
         if (stats) {
@@ -338,14 +339,14 @@ export function AppProvider({ children }) {
             payload: stats
           });
         }
-        
+
         // Load pending events
         const events = await storage.getEvents({ status: 'pending' });
         dispatch({
           type: ActionTypes.UPDATE_PENDING_EVENTS,
           payload: events
         });
-        
+
       } catch (error) {
         console.error('Failed to initialize app:', error);
         // Don't show error to user if it's just storage not ready
@@ -401,10 +402,10 @@ export function AppProvider({ children }) {
    */
   const fetchConfiguration = async () => {
     dispatch({ type: ActionTypes.FETCH_CONFIGURATION_START });
-    
+
     try {
       const configuration = await api.getDataCollectionConfiguration();
-      
+
       // Store configuration locally if storage is ready
       if (storage.isReady) {
         try {
@@ -414,18 +415,18 @@ export function AppProvider({ children }) {
           // Continue anyway since we have the configuration
         }
       }
-      
+
       dispatch({
         type: ActionTypes.FETCH_CONFIGURATION_SUCCESS,
         payload: configuration
       });
-      
+
       showToast(`Loaded: ${configuration.program.displayName}`, 'success');
-      
+
       return configuration;
     } catch (error) {
       console.error('Failed to fetch configuration:', error);
-      
+
       // Try to load from local storage as fallback
       if (storage.isReady) {
         try {
@@ -442,12 +443,12 @@ export function AppProvider({ children }) {
           console.error('Failed to load local configuration:', localError);
         }
       }
-      
+
       dispatch({
         type: ActionTypes.FETCH_CONFIGURATION_FAILURE,
         payload: error.message
       });
-      
+
       showToast(`Configuration error: ${error.message}`, 'error');
       throw error;
     }
@@ -547,190 +548,205 @@ export function AppProvider({ children }) {
   let isFetchingAssignments = false;
 
   const fetchUserAssignments = async () => {
-        // Prevent concurrent calls
-        if (isFetchingAssignments) {
-          console.log('🚫 fetchUserAssignments already in progress, skipping...');
-          return;
-        }
+    // Prevent concurrent calls
+    if (isFetchingAssignments) {
+      console.log('🚫 fetchUserAssignments already in progress, skipping...');
+      return;
+    }
 
-        try {
-          isFetchingAssignments = true;
-          console.log('************ Final user assignments:**************');
-          // Step 1: Start Fetching Assignments
-          console.log('Step 1: 🔄 Fetching assignments from DataStore...');
-          // Step 2: Get Current User
-          const userResult = await api.getMe();
-          console.log('Step 2: 👤 Current user:', {
-            id: userResult.id,
-            username: userResult.username,
-            displayName: userResult.displayName,
-            lookupPriority: 'username (prioritized for inspector matching)'
+    try {
+      isFetchingAssignments = true;
+      console.log('************ Final user assignments:**************');
+      // Step 1: Start Fetching Assignments
+      console.log('Step 1: 🔄 Fetching assignments from DataStore...');
+      // Step 2: Get Current User
+      const userResult = await api.getMe();
+      console.log('Step 2: 👤 Current user:', {
+        id: userResult.id,
+        username: userResult.username,
+        displayName: userResult.displayName,
+        lookupPriority: 'username (prioritized for inspector matching)'
+      });
+      // Step 3: Fetch Assignments Data
+      const datastoreResponse = await api.getInspectionAssignments();
+      console.log('Step 3: 📊 Raw DataStore response:', datastoreResponse);
+      const assignmentsData = datastoreResponse;
+      console.log('Step 3: 📋 Processing assignments data:', assignmentsData);
+
+
+
+      // Debug: Log each facility's trackedEntityInstance availability
+
+      if (Array.isArray(datastoreResponse)) {
+
+        console.log('🔍 ===== DATASTORE FACILITIES DEBUG =====');
+
+        datastoreResponse.forEach((inspection, index) => {
+
+          console.log(`🔍 Facility ${index + 1}:`, {
+
+            facilityId: inspection.facilityId,
+
+            facilityName: inspection.facilityName,
+
+            hasTrackedEntityInstance: !!inspection.trackedEntityInstance,
+
+            trackedEntityInstance: inspection.trackedEntityInstance,
+
+            trackedEntityInstanceType: typeof inspection.trackedEntityInstance,
+
+            allKeys: Object.keys(inspection)
+
           });
-          // Step 3: Fetch Assignments Data
-          const datastoreResponse = await api.getInspectionAssignments();
-          console.log('Step 3: 📊 Raw DataStore response:', datastoreResponse);
-          const assignmentsData = datastoreResponse;
-          console.log('Step 3: 📋 Processing assignments data:', assignmentsData);
 
-          
+        });
 
-          // Debug: Log each facility's trackedEntityInstance availability
+        console.log('🔍 ===== DATASTORE FACILITIES DEBUG END =====');
 
-          if (Array.isArray(datastoreResponse)) {
+      }
 
-            console.log('🔍 ===== DATASTORE FACILITIES DEBUG =====');
-
-            datastoreResponse.forEach((inspection, index) => {
-
-              console.log(`🔍 Facility ${index + 1}:`, {
-
-                facilityId: inspection.facilityId,
-
-                facilityName: inspection.facilityName,
-
-                hasTrackedEntityInstance: !!inspection.trackedEntityInstance,
-
-                trackedEntityInstance: inspection.trackedEntityInstance,
-
-                trackedEntityInstanceType: typeof inspection.trackedEntityInstance,
-
-                allKeys: Object.keys(inspection)
-
-              });
-
+      // Step 4: Log Facilities
+      if (datastoreResponse && Array.isArray(datastoreResponse)) {
+        const facilities = datastoreResponse
+          .map(inspection => {
+            // Prefer the assignment entry for the current user when present
+            const norm = (v) => (v ?? '').toString().trim().toLowerCase();
+            const inspectorAssignment = (inspection.assignments || []).find(a => {
+              const aName = norm(a.inspectorName);
+              // Prioritize username for lookup, fallback to displayName
+              const iName = norm(userResult.username || userResult.displayName);
+              return aName === iName || aName.includes(iName) || iName.includes(aName);
             });
 
-            console.log('🔍 ===== DATASTORE FACILITIES DEBUG END =====');
+            return {
+              inspection,
+              inspectorAssignment,
+              hasUserAssignment: !!inspectorAssignment
+            };
+          })
+          // Only include facilities where the current user has assignments
+          .filter(item => item.hasUserAssignment)
+          .map(item => {
+            const { inspection, inspectorAssignment } = item;
 
-          }
+            return {
+              facility: {
+                id: inspection.facilityId,
+                name: inspection.facilityName,
+                facilityType: inspection.facilityType,
+                trackedEntityInstance: inspection.trackedEntityInstance || null
+              },
+              assignment: {
+                // Sections from the inspector-specific assignment if available; fall back to all
+                sections: inspectorAssignment?.sections || (inspection.assignments || []).flatMap(a => Array.isArray(a.sections) ? a.sections : []),
+                inspectionPeriod: {
+                  startDate: inspection.startDate,
+                  endDate: inspection.endDate
+                },
+                // Prefer per-assignment values, then facility-level fallbacks
+                type: inspectorAssignment?.type || inspection.type || inspection.Type || inspection.inspectionType || null,
+                inspectionId: inspectorAssignment?.inspectionId || inspectorAssignment?.inspectionID || inspection.inspectionId || inspection.inspectionID || inspection.id || inspection.Id || null
+              }
+            };
+          });
 
-            // Step 4: Log Facilities
-          if (datastoreResponse && Array.isArray(datastoreResponse)) {
-            const facilities = datastoreResponse
-              .map(inspection => {
-                // Prefer the assignment entry for the current user when present
-                const norm = (v) => (v ?? '').toString().trim().toLowerCase();
-                const inspectorAssignment = (inspection.assignments || []).find(a => {
-                  const aName = norm(a.inspectorName);
-                  // Prioritize username for lookup, fallback to displayName
-                  const iName = norm(userResult.username || userResult.displayName);
-                  return aName === iName || aName.includes(iName) || iName.includes(aName);
-                });
-                
-                return {
-                  inspection,
-                  inspectorAssignment,
-                  hasUserAssignment: !!inspectorAssignment
-                };
-              })
-              // Only include facilities where the current user has assignments
-              .filter(item => item.hasUserAssignment)
-              .map(item => {
-                const { inspection, inspectorAssignment } = item;
-                
-                return {
-                  facility: {
-                    id: inspection.facilityId,
-                    name: inspection.facilityName,
-                    facilityType: inspection.facilityType,
-                    trackedEntityInstance: inspection.trackedEntityInstance || null
-                  },
-                  assignment: {
-                    // Sections from the inspector-specific assignment if available; fall back to all
-                    sections: inspectorAssignment?.sections || (inspection.assignments || []).flatMap(a => Array.isArray(a.sections) ? a.sections : []),
-                    inspectionPeriod: {
-                      startDate: inspection.startDate,
-                      endDate: inspection.endDate
-                    },
-                    // Prefer per-assignment values, then facility-level fallbacks
-                    type: inspectorAssignment?.type || inspection.type || inspection.Type || inspection.inspectionType || null,
-                    inspectionId: inspectorAssignment?.inspectionId || inspectorAssignment?.inspectionID || inspection.inspectionId || inspection.inspectionID || inspection.id || inspection.Id || null
-                  }
-                };
-              });
+        console.log('Processing facilities:', facilities);
 
-            console.log('Processing facilities:', facilities);
-            
-            // Log trackedEntityInstance availability for debugging
-            const facilitiesWithTEI = facilities.filter(f => f.facility.trackedEntityInstance);
-            console.log(`📊 Facilities with trackedEntityInstance: ${facilitiesWithTEI.length}/${facilities.length}`);
-            if (facilitiesWithTEI.length > 0) {
-              console.log('🔗 Facilities with TEI:', facilitiesWithTEI.map(f => ({
-                name: f.facility.name,
-                id: f.facility.id,
-                tei: f.facility.trackedEntityInstance
-              })));
-            }
-
-            // Update the state with facilities
-            dispatch({ type: ActionTypes.UPDATE_USER_ASSIGNMENTS, payload: facilities });
-
-            if (facilities.length > 0) {
-              showToast(`Found ${facilities.length} facility assignments`, 'success');
-            } else {
-              showToast('No facility assignments found', 'warning');
-            }
-            
-            // Debug: Log filtering details
-            console.log('🔍 User assignment filtering details:', {
-              currentUser: userResult.displayName || userResult.username,
-              totalInspections: datastoreResponse.length,
-              userAssignedFacilities: facilities.length,
-              filteredOutFacilities: datastoreResponse.length - facilities.length
-            });
-            
-            // Log which facilities were filtered out
-            if (datastoreResponse.length > facilities.length) {
-              const filteredOut = datastoreResponse.filter(inspection => {
-                const norm = (v) => (v ?? '').toString().trim().toLowerCase();
-                const hasAssignment = (inspection.assignments || []).some(a => {
-                  const aName = norm(a.inspectorName);
-                  // Prioritize username for lookup, fallback to displayName
-                  const iName = norm(userResult.username || userResult.displayName);
-                  return aName === iName || aName.includes(iName) || iName.includes(aName);
-                });
-                return !hasAssignment;
-              });
-              
-              console.log('❌ Facilities filtered out (user not assigned):', 
-                filteredOut.map(f => ({ 
-                  name: f.facilityName, 
-                  id: f.facilityId,
-                  assignedInspectors: f.assignments?.map(a => a.inspectorName) || []
-                }))
-              );
-            }
-          } else {
-            console.warn('Invalid or empty response from DataStore');
-            dispatch({ type: ActionTypes.UPDATE_USER_ASSIGNMENTS, payload: [] });
-          }
-        } catch (error) {
-          console.error('Failed to fetch user assignments:', error);
-          dispatch({ type: ActionTypes.UPDATE_USER_ASSIGNMENTS, payload: [] });
-          showToast(`Failed to load assignments: ${error.message}`, 'error');
-        } finally {
-          isFetchingAssignments = false;
+        // Log trackedEntityInstance availability for debugging
+        const facilitiesWithTEI = facilities.filter(f => f.facility.trackedEntityInstance);
+        console.log(`📊 Facilities with trackedEntityInstance: ${facilitiesWithTEI.length}/${facilities.length}`);
+        if (facilitiesWithTEI.length > 0) {
+          console.log('🔗 Facilities with TEI:', facilitiesWithTEI.map(f => ({
+            name: f.facility.name,
+            id: f.facility.id,
+            tei: f.facility.trackedEntityInstance
+          })));
         }
-      };
+
+        // Update the state with facilities
+        dispatch({ type: ActionTypes.UPDATE_USER_ASSIGNMENTS, payload: facilities });
+
+        if (facilities.length > 0) {
+          showToast(`Found ${facilities.length} facility assignments`, 'success');
+        } else {
+          showToast('No facility assignments found', 'warning');
+        }
+
+        // Debug: Log filtering details
+        console.log('🔍 User assignment filtering details:', {
+          currentUser: userResult.displayName || userResult.username,
+          totalInspections: datastoreResponse.length,
+          userAssignedFacilities: facilities.length,
+          filteredOutFacilities: datastoreResponse.length - facilities.length
+        });
+
+        // Log which facilities were filtered out
+        if (datastoreResponse.length > facilities.length) {
+          const filteredOut = datastoreResponse.filter(inspection => {
+            const norm = (v) => (v ?? '').toString().trim().toLowerCase();
+            const hasAssignment = (inspection.assignments || []).some(a => {
+              const aName = norm(a.inspectorName);
+              // Prioritize username for lookup, fallback to displayName
+              const iName = norm(userResult.username || userResult.displayName);
+              return aName === iName || aName.includes(iName) || iName.includes(aName);
+            });
+            return !hasAssignment;
+          });
+
+          console.log('❌ Facilities filtered out (user not assigned):',
+            filteredOut.map(f => ({
+              name: f.facilityName,
+              id: f.facilityId,
+              assignedInspectors: f.assignments?.map(a => a.inspectorName) || []
+            }))
+          );
+        }
+      } else {
+        console.warn('Invalid or empty response from DataStore');
+        dispatch({ type: ActionTypes.UPDATE_USER_ASSIGNMENTS, payload: [] });
+      }
+    } catch (error) {
+      console.error('Failed to fetch user assignments:', error);
+      dispatch({ type: ActionTypes.UPDATE_USER_ASSIGNMENTS, payload: [] });
+      showToast(`Failed to load assignments: ${error.message}`, 'error');
+    } finally {
+      isFetchingAssignments = false;
+    }
+  };
 
   // Authentication functions
   const login = async (serverUrl, username, password) => {
     dispatch({ type: ActionTypes.LOGIN_START });
-    
+
+    // Clear any existing form drafts and local storage data to ensure a fresh start
+    try {
+      await indexedDBService.clearAll();
+      console.log('✅ Cleared all form drafts from IndexedDB on login');
+    } catch (dbError) {
+      console.warn('Failed to clear IndexedDB on login:', dbError);
+    }
+
+    try {
+      localStorage.removeItem('lastSelectedFacility');
+      console.log('✅ Cleared localStorage form data on login');
+    } catch (lsError) {
+      console.warn('Failed to clear localStorage on login:', lsError);
+    }
+
     try {
       // Clean URL
       const cleanUrl = serverUrl.replace(/\/$/, '');
-      
+
       // Configure API
       api.setConfig(cleanUrl, username, password);
-      
+
       // Test authentication
       const authResult = await api.testAuth();
-      
+
       if (!authResult.success) {
         throw new Error(authResult.error || 'Invalid credentials');
       }
-      
+
       // Store credentials only if storage is ready
       if (storage.isReady) {
         try {
@@ -746,7 +762,7 @@ export function AppProvider({ children }) {
           // Continue anyway since authentication succeeded
         }
       }
-      
+
       dispatch({
         type: ActionTypes.LOGIN_SUCCESS,
         payload: {
@@ -754,21 +770,21 @@ export function AppProvider({ children }) {
           serverUrl: cleanUrl
         }
       });
-      
+
       showToast(`Welcome, ${authResult.user.displayName}!`, 'success');
-      
+
       // Immediately fetch configuration like Android app
       await fetchConfiguration();
 
       // Fetch user assignments
       await fetchUserAssignments();
-      
+
     } catch (error) {
       dispatch({
         type: ActionTypes.LOGIN_FAILURE,
         payload: error.message
       });
-      
+
       showToast(`Login failed: ${error.message}`, 'error');
       throw error;
     }
@@ -776,20 +792,39 @@ export function AppProvider({ children }) {
 
   const logout = async () => {
     const confirmed = window.confirm(
-        "Logging out will clear all synced data from this device. Do you want to continue?"
+      "Logging out will clear all synced data and form drafts from this device. Do you want to continue?"
     );
     if (!confirmed) return;
 
     try {
       if (storage.isReady) {
         try {
-          await storage.clearSyncedEvents();
+          await storage.clearAll(); // Clear ALL events (drafts, pending, synced)
           await storage.clearAuth();
         } catch (storageError) {
           console.warn('Failed to clear stored credentials:', storageError);
           // Continue with logout anyway
         }
       }
+
+      // Clear all form drafts from IndexedDB
+      try {
+        await indexedDBService.clearAll();
+        console.log('✅ Cleared all form drafts from IndexedDB');
+      } catch (indexedDBError) {
+        console.warn('Failed to clear IndexedDB:', indexedDBError);
+        // Continue with logout anyway
+      }
+
+      // Clear localStorage items related to forms
+      try {
+        localStorage.removeItem('lastSelectedFacility');
+        console.log('✅ Cleared localStorage form data');
+      } catch (localStorageError) {
+        console.warn('Failed to clear localStorage:', localStorageError);
+        // Continue with logout anyway
+      }
+
       dispatch({ type: ActionTypes.LOGOUT });
       showToast('Logged out successfully', 'info');
     } catch (error) {
@@ -837,14 +872,14 @@ export function AppProvider({ children }) {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
-      
+
       await storage.saveEvent(event);
-      
+
       // Update stats
       await updateStats();
-      
+
       showToast(isDraft ? 'Inspection draft saved' : 'Inspection saved', 'success');
-      
+
       return event;
     } catch (error) {
       console.error('Failed to save event:', error);
@@ -863,21 +898,21 @@ export function AppProvider({ children }) {
       showToast('Storage not ready - please wait and try again', 'warning');
       return;
     }
-    
+
     dispatch({ type: ActionTypes.SYNC_START });
-    
+
     try {
       const pendingEvents = await storage.getEvents({ status: 'pending' });
-      
+
       if (pendingEvents.length === 0) {
         showToast('No inspections to sync', 'info');
         dispatch({ type: ActionTypes.SYNC_SUCCESS, payload: { remainingEvents: [] } });
         return;
       }
-      
+
       const results = [];
       const failedEvents = [];
-      
+
       for (const event of pendingEvents) {
         try {
           // const response = await api.submitEvent(event);
@@ -944,12 +979,12 @@ export function AppProvider({ children }) {
               syncedAt: new Date().toISOString(),
               serverEventId
             });
-            results.push({event: event.event, status: 'success'});
+            results.push({ event: event.event, status: 'success' });
           }
 
         } catch (error) {
           console.error(`Failed to sync event ${event.event}:`, error);
-          
+
           // Mark as error
           await storage.updateEvent(event.event, {
             ...event,
@@ -957,34 +992,34 @@ export function AppProvider({ children }) {
             syncStatus: 'error',
             syncError: error.message
           });
-          
+
           failedEvents.push(event);
           results.push({ event: event.event, status: 'error', error: error.message });
         }
       }
-      
+
       const successCount = results.filter(r => r.status === 'success').length;
       const errorCount = results.filter(r => r.status === 'error').length;
-      
+
       if (successCount > 0) {
         showToast(`Synced ${successCount} inspection(s)`, 'success');
       }
-      
+
       if (errorCount > 0) {
         showToast(`${errorCount} inspection(s) failed to sync`, 'error');
       }
-      
+
       // Update pending events
       const remainingPending = await storage.getEvents({ status: 'pending' });
-      
+
       dispatch({
         type: ActionTypes.SYNC_SUCCESS,
         payload: { remainingEvents: remainingPending }
       });
-      
+
       // Update stats
       await updateStats();
-      
+
     } catch (error) {
       console.error('Sync failed:', error);
       dispatch({
@@ -1079,7 +1114,7 @@ export function AppProvider({ children }) {
 
       // Update stats
       await updateStats();
-      
+
       // Refresh events list
       const events = await storage.getEvents();
       dispatch({
@@ -1089,7 +1124,7 @@ export function AppProvider({ children }) {
 
     } catch (error) {
       console.error(`Failed to retry event ${eventId}:`, error);
-      
+
       // Mark as error again
       const event = await storage.getEvent(eventId);
       if (event) {
@@ -1100,7 +1135,7 @@ export function AppProvider({ children }) {
           syncError: error.message
         });
       }
-      
+
       showToast(`Retry failed: ${error.message}`, 'error');
     }
   };
@@ -1134,12 +1169,12 @@ export function AppProvider({ children }) {
 
       // Delete the event from storage
       await storage.deleteEvent(eventId);
-      
+
       showToast('Event deleted successfully', 'success');
-      
+
       // Update stats
       await updateStats();
-      
+
       // Refresh events list
       const events = await storage.getAllEvents();
       dispatch({
@@ -1167,7 +1202,7 @@ export function AppProvider({ children }) {
         syncedEvents: events.filter(e => e.status === 'synced').length,
         errorEvents: events.filter(e => e.status === 'error').length
       };
-      
+
       await storage.setStats(stats);
       dispatch({ type: ActionTypes.UPDATE_STATS, payload: stats });
     } catch (error) {

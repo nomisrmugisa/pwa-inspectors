@@ -16,7 +16,7 @@ export function LoginPage() {
 
   const validateForm = () => {
     const errors = {};
-    
+
     if (!formData.serverUrl.trim()) {
       errors.serverUrl = 'Server URL is required';
     } else {
@@ -26,15 +26,15 @@ export function LoginPage() {
         errors.serverUrl = 'Please enter a valid URL';
       }
     }
-    
+
     if (!formData.username.trim()) {
       errors.username = 'Username is required';
     }
-    
+
     if (!formData.password.trim()) {
       errors.password = 'Password is required';
     }
-    
+
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -45,7 +45,7 @@ export function LoginPage() {
       ...prev,
       [name]: value
     }));
-    
+
     // Clear error when user starts typing
     if (formErrors[name]) {
       setFormErrors(prev => ({
@@ -55,15 +55,29 @@ export function LoginPage() {
     }
   };
 
+  // Helper to generate DHIS2 compatible ID
+  const generateDHIS2Id = () => {
+    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = chars.charAt(Math.floor(Math.random() * 52)); // Start with letter
+    for (let i = 0; i < 10; i++) {
+      result += chars.charAt(Math.floor(Math.random() * 62));
+    }
+    return result;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
 
     try {
       await login(formData.serverUrl, formData.username, formData.password);
+
+      // After successful login, navigate to a new form with a fresh ID
+      const newId = generateDHIS2Id();
+      window.location.href = `/form/${newId}`;
     } catch (error) {
       // Error is handled by the context and displayed via toast
       console.error('Login failed:', error);
@@ -85,81 +99,81 @@ export function LoginPage() {
                   <h2 className="auth-title">Inspections</h2>
                   <p className="auth-subtitle">Mobile data capture for facility inspections</p>
                 </div>
-          
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="serverUrl">QIMS Server URL</label>
-              <input 
-                type="url" 
-                id="serverUrl" 
-                name="serverUrl"
-                value={formData.serverUrl}
-                onChange={handleInputChange}
-                placeholder="https://your-dhis2-server.com" 
-                required
-                className={formErrors.serverUrl ? 'error' : ''}
-              />
-              {formErrors.serverUrl && (
-                <div className="field-error">{formErrors.serverUrl}</div>
-              )}
-            </div>
-            
-            <div className="form-group">
-              <label htmlFor="username">Username</label>
-              <input 
-                type="text" 
-                id="username" 
-                name="username"
-                value={formData.username}
-                onChange={handleInputChange}
-                placeholder="Enter your username" 
-                required
-                className={formErrors.username ? 'error' : ''}
-              />
-              {formErrors.username && (
-                <div className="field-error">{formErrors.username}</div>
-              )}
-            </div>
-            
-            <div className="form-group">
-              <label htmlFor="password">Password</label>
-              <input 
-                type="password" 
-                id="password" 
-                name="password"
-                value={formData.password}
-                onChange={handleInputChange}
-                placeholder="Enter your password" 
-                required
-                className={formErrors.password ? 'error' : ''}
-              />
-              {formErrors.password && (
-                <div className="field-error">{formErrors.password}</div>
-              )}
-            </div>
-            
-            <button 
-              type="submit" 
-              className="auth-btn"
-              disabled={loading}
-            >
-              {loading ? (
-                <>
-                  <span className="spinner-small"></span>
-                  Configuring inspections...
-                </>
-              ) : (
-                'Login & Configure'
-              )}
-            </button>
-          </form>
-          
-          {error && (
-            <div className="auth-helper">
-              <CheckCircleIcon style={{ fontSize: '16px', marginRight: '8px' }} />
-              {error}
-            </div>
-          )}
+
+                <form onSubmit={handleSubmit}>
+                  <div className="form-group">
+                    <label htmlFor="serverUrl">QIMS Server URL</label>
+                    <input
+                      type="url"
+                      id="serverUrl"
+                      name="serverUrl"
+                      value={formData.serverUrl}
+                      onChange={handleInputChange}
+                      placeholder="https://your-dhis2-server.com"
+                      required
+                      className={formErrors.serverUrl ? 'error' : ''}
+                    />
+                    {formErrors.serverUrl && (
+                      <div className="field-error">{formErrors.serverUrl}</div>
+                    )}
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="username">Username</label>
+                    <input
+                      type="text"
+                      id="username"
+                      name="username"
+                      value={formData.username}
+                      onChange={handleInputChange}
+                      placeholder="Enter your username"
+                      required
+                      className={formErrors.username ? 'error' : ''}
+                    />
+                    {formErrors.username && (
+                      <div className="field-error">{formErrors.username}</div>
+                    )}
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="password">Password</label>
+                    <input
+                      type="password"
+                      id="password"
+                      name="password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      placeholder="Enter your password"
+                      required
+                      className={formErrors.password ? 'error' : ''}
+                    />
+                    {formErrors.password && (
+                      <div className="field-error">{formErrors.password}</div>
+                    )}
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="auth-btn"
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <>
+                        <span className="spinner-small"></span>
+                        Configuring inspections...
+                      </>
+                    ) : (
+                      'Login & Configure'
+                    )}
+                  </button>
+                </form>
+
+                {error && (
+                  <div className="auth-helper">
+                    <CheckCircleIcon style={{ fontSize: '16px', marginRight: '8px' }} />
+                    {error}
+                  </div>
+                )}
 
                 <p className="auth-note">
                   <LocalHospitalIcon style={{ fontSize: '16px', marginRight: '8px', verticalAlign: 'middle' }} />

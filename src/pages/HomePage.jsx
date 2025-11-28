@@ -93,12 +93,26 @@ export function HomePage() {
   }, [events, searchTerm, selectedFacilityId, configuration]);
 
 
+  // Helper to generate DHIS2 compatible ID
+  const generateDHIS2Id = () => {
+    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = chars.charAt(Math.floor(Math.random() * 52)); // Start with letter
+    for (let i = 0; i < 10; i++) {
+      result += chars.charAt(Math.floor(Math.random() * 62));
+    }
+    return result;
+  };
+
   const handleNewForm = () => {
     if (!configuration) {
       showToast('Configuration not loaded yet', 'warning');
       return;
     }
-    navigate('/form');
+    
+    // Generate a new ID and force a full reload to ensure a completely clean state
+    // This bypasses any "restore draft" logic that might trigger on /form
+    const newId = generateDHIS2Id();
+    window.location.href = /form/;
   };
 
   const handleEditForm = (event) => {

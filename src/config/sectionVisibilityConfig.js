@@ -114,7 +114,7 @@ const legacySectionVisibilityConfig = {
     'SAFETY AND WASTE MANAGEMENT': true,
     'SUPPLIES': true,
     'RECORDS/ INFORMATION MANAGEMENT': true,
-    'CUSTOMER SATISFACTION': true
+    'CUSTOMER SATISFACTION': false
   },
 
   // Clinic - show all sections
@@ -139,7 +139,7 @@ const legacySectionVisibilityConfig = {
     'SAFETY AND WASTE MANAGEMENT': true,
     'SUPPLIES': true,
     'RECORDS/ INFORMATION MANAGEMENT': true,
-    'CUSTOMER SATISFACTION': true
+    'CUSTOMER SATISFACTION': false
   },
 
   // Laboratory - focus on technical and safety sections
@@ -163,7 +163,7 @@ const legacySectionVisibilityConfig = {
     'SAFETY AND WASTE MANAGEMENT': true,
     'SUPPLIES': true,
     'RECORDS/ INFORMATION MANAGEMENT': true,
-    'CUSTOMER SATISFACTION': true
+    'CUSTOMER SATISFACTION': false
   },
 
   // Radiology - focus on safety and technical procedures
@@ -187,7 +187,7 @@ const legacySectionVisibilityConfig = {
     'SAFETY AND WASTE MANAGEMENT': true,
     'SUPPLIES': true,
     'RECORDS/ INFORMATION MANAGEMENT': true,
-    'CUSTOMER SATISFACTION': true,
+    'CUSTOMER SATISFACTION': false,
     'X-RAY ROOM': true
   },
 
@@ -212,7 +212,7 @@ const legacySectionVisibilityConfig = {
     'SAFETY AND WASTE MANAGEMENT': true,
     'SUPPLIES': true,
     'RECORDS/ INFORMATION MANAGEMENT': true,
-    'CUSTOMER SATISFACTION': true
+    'CUSTOMER SATISFACTION': false
   },
 
   // Dental - focus on infection control and procedures
@@ -236,7 +236,7 @@ const legacySectionVisibilityConfig = {
     'SAFETY AND WASTE MANAGEMENT': true,
     'SUPPLIES': true,
     'RECORDS/ INFORMATION MANAGEMENT': true,
-    'CUSTOMER SATISFACTION': true
+    'CUSTOMER SATISFACTION': false
   },
 
   // Eye - focus on specialized equipment and procedures
@@ -260,7 +260,7 @@ const legacySectionVisibilityConfig = {
     'SAFETY AND WASTE MANAGEMENT': true,
     'SUPPLIES': true,
     'RECORDS/ INFORMATION MANAGEMENT': true,
-    'CUSTOMER SATISFACTION': true
+    'CUSTOMER SATISFACTION': false
   },
 
   // Psycology - focus on patient care and management
@@ -284,7 +284,7 @@ const legacySectionVisibilityConfig = {
     'SAFETY AND WASTE MANAGEMENT': true,
     'SUPPLIES': true,
     'RECORDS/ INFORMATION MANAGEMENT': true,
-    'CUSTOMER SATISFACTION': true
+    'CUSTOMER SATISFACTION': false
   },
 
   // Physio - focus on treatment protocols and safety
@@ -308,7 +308,7 @@ const legacySectionVisibilityConfig = {
     'SAFETY AND WASTE MANAGEMENT': true,
     'SUPPLIES': true,
     'RECORDS/ INFORMATION MANAGEMENT': true,
-    'CUSTOMER SATISFACTION': true
+    'CUSTOMER SATISFACTION': false
   },
 
   // Rehab - focus on patient care and safety
@@ -332,7 +332,7 @@ const legacySectionVisibilityConfig = {
     'SAFETY AND WASTE MANAGEMENT': true,
     'SUPPLIES': true,
     'RECORDS/ INFORMATION MANAGEMENT': true,
-    'CUSTOMER SATISFACTION': true
+    'CUSTOMER SATISFACTION': false
   },
 
   // Gynae - show specific sections for gynecological facilities
@@ -354,7 +354,7 @@ const legacySectionVisibilityConfig = {
     'SAFETY AND WASTE MANAGEMENT': true,
     'SUPPLIES': true,
     'RECORDS/ INFORMATION MANAGEMENT': true,
-    'CUSTOMER SATISFACTION': true
+    'CUSTOMER SATISFACTION': false
   }
 };
 
