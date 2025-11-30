@@ -1226,8 +1226,8 @@ export function AppProvider({ children }) {
     dispatch({ type: ActionTypes.CLEAR_ERROR });
   };
 
-  // Context value
-  const value = {
+  // Context value - Memoized to prevent unnecessary re-renders
+  const value = useMemo(() => ({
     // State
     ...state,
     // userAssignments,
@@ -1244,29 +1244,18 @@ export function AppProvider({ children }) {
     updateStats,
     showToast,
     hideToast,
-    clearError
-  };
+    clearError,
+    // Expose API and Storage
+    api,
+    storage,
+    // Expose userAssignments from state
+    userAssignments: state.userAssignments,
+    setUserAssignments: (assignments) => dispatch({ type: ActionTypes.UPDATE_USER_ASSIGNMENTS, payload: assignments }),
+    fetchUserAssignments
+  }), [state, api, storage]);
 
   return (
-    <AppContext.Provider value={{
-      ...state,
-      api,
-      storage,
-      userAssignments: state.userAssignments, // Expose userAssignments from state
-      setUserAssignments: (assignments) => dispatch({ type: ActionTypes.UPDATE_USER_ASSIGNMENTS, payload: assignments }), // Expose setUserAssignments
-      login,
-      logout,
-      fetchUserAssignments,
-      saveEvent,
-      syncEvents,
-      retryEvent,
-      deleteEvent,
-      updateStats,
-      showToast,
-      hideToast,
-      clearError,
-      setEventDate
-    }}>
+    <AppContext.Provider value={value}>
       {children}
     </AppContext.Provider>
   );

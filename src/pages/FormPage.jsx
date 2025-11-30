@@ -39,14 +39,14 @@ const enhancedServiceFieldDetection = (dataElement) => {
 
   const isFacilityServiceDepartments = fieldName === 'facility service departments' ||
 
-                                      fieldName.includes('facility service department') ||
-                                      dataElement.id === 'manual_facility_service_departments' ||
-                                      dataElement.displayName === 'Facility Service Departments';
+    fieldName.includes('facility service department') ||
+    dataElement.id === 'manual_facility_service_departments' ||
+    dataElement.displayName === 'Facility Service Departments';
 
   // Debug logging for field detection - ALWAYS LOG for this field
   if (fieldName.includes('service') || fieldName.includes('department') ||
-      dataElement.displayName === 'Facility Service Departments' ||
-      dataElement.id === 'manual_facility_service_departments') {
+    dataElement.displayName === 'Facility Service Departments' ||
+    dataElement.id === 'manual_facility_service_departments') {
   }
 
   // ALWAYS log for manual_facility_service_departments ID
@@ -85,11 +85,11 @@ const enhancedServiceFieldDetection = (dataElement) => {
 
   // Exclude fields that are about outreach services, special circumstances, etc.
 
-  if (fieldName.includes('outreach services') || 
+  if (fieldName.includes('outreach services') ||
 
-      fieldName.includes('special circumstances') ||
+    fieldName.includes('special circumstances') ||
 
-      fieldName.includes('applications for')) {
+    fieldName.includes('applications for')) {
 
     return false;
 
@@ -97,19 +97,19 @@ const enhancedServiceFieldDetection = (dataElement) => {
 
   // Only identify fields that are specifically about selecting service types/sections
 
-  return (fieldName.includes('service type') || 
+  return (fieldName.includes('service type') ||
 
-          fieldName.includes('service selection') ||
+    fieldName.includes('service selection') ||
 
-          fieldName.includes('select service') ||
+    fieldName.includes('select service') ||
 
-          fieldName.includes('service section') ||
+    fieldName.includes('service section') ||
 
-          (fieldName.includes('service') && fieldName.includes('type'))) &&
+    (fieldName.includes('service') && fieldName.includes('type'))) &&
 
-         !fieldName.includes('outreach') &&
+    !fieldName.includes('outreach') &&
 
-         !fieldName.includes('special');
+    !fieldName.includes('special');
 
 };
 
@@ -203,7 +203,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
     // All fields are now optional - no mandatory requirements
 
-      return false;
+    return false;
 
   };
 
@@ -235,7 +235,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
     if (serviceFieldType === 'facility_service_departments') {
       // Allow re-rendering when options change - removed duplicate prevention
       // that was blocking field updates when department options are loaded
-      
+
       // Check if we have a facility type selected
       const currentFacilityType = window.__currentFacilityType || 'Unknown';
 
@@ -370,7 +370,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
       const hardcodedDepartments = getDepartmentsForSpecialization(currentSpecialization);
       const departmentStats = getDepartmentStats(currentSpecialization);
-      
+
       // OVERRIDE the global department options with our hardcoded departments
       // This ensures that any dynamic calculation gets overridden
       if (hardcodedDepartments.length > 0) {
@@ -381,10 +381,10 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       selectOptions = hardcodedDepartments;
       // Only fallback to dynamic if hardcoded list is completely empty
       if (selectOptions && selectOptions.length === 0) {
-        selectOptions = facilityServiceOptions && facilityServiceOptions.length > 0 
-        ? facilityServiceOptions 
-        : (window.__departmentOptionsForSection && window.__departmentOptionsForSection.length > 0 
-          ? window.__departmentOptionsForSection 
+        selectOptions = facilityServiceOptions && facilityServiceOptions.length > 0
+          ? facilityServiceOptions
+          : (window.__departmentOptionsForSection && window.__departmentOptionsForSection.length > 0
+            ? window.__departmentOptionsForSection
             : []);
       }
 
@@ -402,7 +402,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
         onChange(syntheticEvent);
       };
 
-            return (
+      return (
         <div key={`facility-service-departments-${currentFacilityType}`} className={`form-field multiselect-field ${readOnly ? 'readonly' : ''} ${!hasSpecializationSelected ? 'disabled' : ''}`}>
           {/* Hide label for Facility Service Departments to avoid duplication with section title */}
           {serviceFieldType !== 'facility_service_departments' &&
@@ -413,24 +413,24 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
           {(() => {
             return !hasSpecializationSelected;
           })() && (
-            <div style={{
-              backgroundColor: '#fff3cd',
-              border: '1px solid #ffc107',
-              borderRadius: '4px',
-              padding: '12px',
-              marginBottom: '12px',
-              fontSize: '14px',
-              color: '#856404'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span>⚠️</span>
-                <span><strong>Please select a specialization first</strong> before choosing facility service departments.</span>
+              <div style={{
+                backgroundColor: '#fff3cd',
+                border: '1px solid #ffc107',
+                borderRadius: '4px',
+                padding: '12px',
+                marginBottom: '12px',
+                fontSize: '14px',
+                color: '#856404'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span>⚠️</span>
+                  <span><strong>Please select a specialization first</strong> before choosing facility service departments.</span>
+                </div>
               </div>
-            </div>
-          )}
-          
+            )}
+
           {/* Material UI Card for Facility Service Departments */}
-          <div style={{ 
+          <div style={{
             border: '1px solid #e0e0e0',
             borderRadius: '8px',
             backgroundColor: '#fafafa',
@@ -446,9 +446,9 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
             }}>
               <span style={{ marginRight: '8px' }}>🏥</span>
               <span>Facility Service Departments</span>
-              <span style={{ 
-                marginLeft: 'auto', 
-                fontSize: '12px', 
+              <span style={{
+                marginLeft: 'auto',
+                fontSize: '12px',
                 color: '#666',
                 backgroundColor: '#e3f2fd',
                 padding: '2px 8px',
@@ -457,7 +457,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
                 {selectOptions ? selectOptions.length : 0} available
               </span>
             </div>
-            
+
             {/* Show current specialization and department stats */}
             <div style={{
               fontSize: '12px',
@@ -470,7 +470,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
             }}>
               <span>Specialization: <strong>{currentSpecialization}</strong></span>
             </div>
-            
+
             {/* Custom checkbox-based multiselect for easy selection */}
             <div
               style={{
@@ -553,7 +553,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
                 </div>
               )}
             </div>
-            
+
             {/* Help text for multiple selection */}
             <div style={{
               fontSize: '11px',
@@ -563,18 +563,18 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
             }}>
               Departments filtered by selected specialization
             </div>
-          
+
             {/* Selected values display */}
-          {selectedValues.length > 0 && (
-              <div style={{ 
+            {selectedValues.length > 0 && (
+              <div style={{
                 marginTop: '12px',
                 padding: '8px 12px',
                 backgroundColor: '#e8f5e8',
                 borderRadius: '4px',
                 border: '1px solid #c3e6c3'
               }}>
-            <div style={{ 
-              fontSize: '12px', 
+                <div style={{
+                  fontSize: '12px',
                   color: '#2e7d32',
                   fontWeight: '500',
                   marginBottom: '4px'
@@ -582,24 +582,24 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
                   Selected ({selectedValues.length}):
                 </div>
                 <div style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '4px'
-            }}>
-              {selectedValues.map((val, idx) => (
-                <span key={idx} style={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: '4px'
+                }}>
+                  {selectedValues.map((val, idx) => (
+                    <span key={idx} style={{
                       backgroundColor: '#1976d2',
                       color: 'white',
                       padding: '2px 8px',
                       borderRadius: '12px',
-                  fontSize: '11px',
+                      fontSize: '11px',
                       fontWeight: '500'
-                }}>
-                  {val}
-                </span>
-              ))}
+                    }}>
+                      {val}
+                    </span>
+                  ))}
                 </div>
-            </div>
+              </div>
             )}
           </div>
         </div>
@@ -631,9 +631,9 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
           <option value="">
 
-            {isLoading ? 'Loading service sections...' : 
+            {isLoading ? 'Loading service sections...' :
 
-             `Select ${dataElement.displayName}`}
+              `Select ${dataElement.displayName}`}
 
           </option>
 
@@ -641,7 +641,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
             // Handle both string and object options
 
-            const optionValue = typeof section === 'object' && section !== null 
+            const optionValue = typeof section === 'object' && section !== null
 
               ? (section.id || section.code || JSON.stringify(section))
 
@@ -659,7 +659,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
                 {optionText}
 
-            </option>
+              </option>
 
             );
 
@@ -855,11 +855,11 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
             step={dataElement.valueType.includes('INTEGER') ? '1' : 'any'}
 
-            min={dataElement.valueType === 'INTEGER_POSITIVE' ? '1' : 
+            min={dataElement.valueType === 'INTEGER_POSITIVE' ? '1' :
 
-                 dataElement.valueType === 'INTEGER_ZERO_OR_POSITIVE' ? '0' :
+              dataElement.valueType === 'INTEGER_ZERO_OR_POSITIVE' ? '0' :
 
-                 dataElement.valueType === 'PERCENTAGE' ? '0' : undefined}
+                dataElement.valueType === 'PERCENTAGE' ? '0' : undefined}
 
             max={dataElement.valueType === 'PERCENTAGE' ? '100' : undefined}
 
@@ -1114,9 +1114,9 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
                 onClick={() => {
 
-                getCurrentPosition(fieldId, onChange);
+                  getCurrentPosition(fieldId, onChange);
 
-              }}
+                }}
 
                 disabled={readOnly}
 
@@ -1267,82 +1267,82 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
 }
 
-  // Section component for organizing form fields
-  function FormSection({ section, formData, onChange, errors, serviceSections, loadingServiceSections, readOnlyFields = {}, getCurrentPosition, formatCoordinatesForDHIS2, facilityClassifications = [], loadingFacilityClassifications = false, inspectionInfoConfirmed = false, setInspectionInfoConfirmed = () => {}, areAllInspectionFieldsComplete = () => false, showDebugPanel = false, getCurrentFacilityClassification = () => null, facilityType = null, manualSpecialization = null, onCommentChange, comments = {} }) {
-    // FormSection rendering
+// Section component for organizing form fields
+function FormSection({ section, formData, onChange, errors, serviceSections, loadingServiceSections, readOnlyFields = {}, getCurrentPosition, formatCoordinatesForDHIS2, facilityClassifications = [], loadingFacilityClassifications = false, inspectionInfoConfirmed = false, setInspectionInfoConfirmed = () => { }, areAllInspectionFieldsComplete = () => false, showDebugPanel = false, getCurrentFacilityClassification = () => null, facilityType = null, manualSpecialization = null, onCommentChange, comments = {}, selectedServiceDepartments = [] }) {
+  // FormSection rendering
 
-    // Safety check - if section is undefined, return null
-    if (!section) {
-      console.warn('🚨 FormSection: section prop is undefined, returning null');
-      return null;
+  // Safety check - if section is undefined, return null
+  if (!section) {
+    console.warn('🚨 FormSection: section prop is undefined, returning null');
+    return null;
+  }
+
+  // Inspection Type section check will be done later in the function
+
+  // Pagination state for dataElements
+
+  const [currentPage, setCurrentPage] = useState(0);
+
+  const baseFieldsPerPage = 5;
+
+  // Function to check if a field is a comment/remarks field (case-insensitive)
+
+  const isCommentField = (dataElement) => {
+
+    if (!dataElement || !dataElement.displayName) return false;
+
+    const name = dataElement.displayName;
+
+    const commentSuffixRegex = /\s*(Comments?|Remarks?)\s*$/i;
+
+    return commentSuffixRegex.test(name);
+
+  };
+
+  // Filter data elements based on selected facility service
+
+  const filterDataElements = (dataElements) => {
+
+    if (!facilityType || !dataElements || !Array.isArray(dataElements)) {
+
+      return dataElements;
+
     }
 
-    // Inspection Type section check will be done later in the function
+    return dataElements.filter(psde => {
 
-    // Pagination state for dataElements
+      if (!psde || !psde.dataElement) return false;
 
-    const [currentPage, setCurrentPage] = useState(0);
+      const displayName = psde.dataElement.displayName;
 
-    const baseFieldsPerPage = 5;
-
-    // Function to check if a field is a comment/remarks field (case-insensitive)
-
-    const isCommentField = (dataElement) => {
-
-      if (!dataElement || !dataElement.displayName) return false;
-
-      const name = dataElement.displayName;
-
-      const commentSuffixRegex = /\s*(Comments?|Remarks?)\s*$/i;
-
-      return commentSuffixRegex.test(name);
-
-    };
-
-    // Filter data elements based on selected facility service
-
-    const filterDataElements = (dataElements) => {
-
-      if (!facilityType || !dataElements || !Array.isArray(dataElements)) {
-
-        return dataElements;
-
+      // Hide specialisation/facility classification fields from users (they're handled by manual selector)
+      const isSpecialisationField = /specialisation|facility classification|facility type/i.test(displayName);
+      if (isSpecialisationField) {
+        return false; // Hide these fields from users
       }
 
-      return dataElements.filter(psde => {
+      // Check if this is a Comments/Remarks data element
+      const isComment = /\s*(Comments?|Remarks?)\s*$/i.test(displayName);
 
-        if (!psde || !psde.dataElement) return false;
+      if (isComment) {
+        // For Comments/Remarks elements, check if the main element would pass the filter
+        // Extract main element name by removing comment/remarks suffix
+        const mainElementName = displayName.replace(/\s*(Comments?|Remarks?)\s*$/i, '');
 
-        const displayName = psde.dataElement.displayName;
+        // Check if the main element passes the filter
+        const mainElementPasses = shouldShowDataElementForService(
+          mainElementName,
+          facilityType
+        );
 
-        // Hide specialisation/facility classification fields from users (they're handled by manual selector)
-        const isSpecialisationField = /specialisation|facility classification|facility type/i.test(displayName);
-        if (isSpecialisationField) {
-          return false; // Hide these fields from users
+        if (!mainElementPasses) {
         }
 
-        // Check if this is a Comments/Remarks data element
-        const isComment = /\s*(Comments?|Remarks?)\s*$/i.test(displayName);
-        
-        if (isComment) {
-          // For Comments/Remarks elements, check if the main element would pass the filter
-          // Extract main element name by removing comment/remarks suffix
-          const mainElementName = displayName.replace(/\s*(Comments?|Remarks?)\s*$/i,'');
-
-          // Check if the main element passes the filter
-          const mainElementPasses = shouldShowDataElementForService(
-            mainElementName,
-            facilityType
-          );
-          
-          if (!mainElementPasses) {
-          }
-          
-          return mainElementPasses;
-        } else {
-          // For main elements, use the standard filter
-          const shouldShow = shouldShowDataElementForService(
-            displayName,
+        return mainElementPasses;
+      } else {
+        // For main elements, use the standard filter
+        const shouldShow = shouldShowDataElementForService(
+          displayName,
           facilityType
         );
 
@@ -1350,661 +1350,661 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
         }
 
         return shouldShow;
+      }
+
+    });
+
+  };
+
+  // Get filtered data elements
+
+  // const filteredDataElements = filterDataElements(section.dataElements);
+
+  const [filteredDataElements, setFilteredDataElements] = useState([]);
+
+  useEffect(() => {
+
+    const filterAsync = async () => {
+
+      if (!facilityType || !section.dataElements) {
+        setFilteredDataElements(section.dataElements || []);
+
+        return;
+
+      }
+
+      // Exclude certain sections from filtering: show all their fields
+      const sectionName = (section.displayName || '');
+      const lowerName = sectionName.toLowerCase();
+      if (sectionName === 'Inspection Type' || lowerName.includes('document review')) {
+        setFilteredDataElements(section.dataElements || []);
+        return;
+      }
+
+      // DEBUG: Log all DHIS2 data element names for Ear, Nose & Throat sections
+      const isENT = facilityType === 'Ear, Nose & Throat';
+      const isRelevantSection = /service|personnel|supplies|organisation|management|tens|hiv/i.test(sectionName);
+
+      if (isENT && isRelevantSection && section.dataElements && section.dataElements.length > 0) {
+        console.group(`🔍 DEBUG: DHIS2 Data Elements for "${sectionName}" (ENT)`);
+        console.log('Total data elements in section:', section.dataElements.length);
+        console.log('\n📄 DHIS2 Data Element Names (using formName/displayFormName):');
+        section.dataElements.forEach((psde, idx) => {
+          if (psde && psde.dataElement) {
+            const de = psde.dataElement;
+            const usedName = de.displayName; // This is already formName || displayFormName || name
+            const deId = de.id;
+            const lastUpdated = de.lastUpdated || 'N/A';
+            const isHeader = isSectionHeaderName(usedName);
+            const endsWithDashes = usedName.endsWith('--');
+            console.log(`  [${idx}] ID: ${deId} | Name: "${usedName}" | Updated: ${lastUpdated} | IsHeader: ${isHeader} | EndsWith--: ${endsWithDashes}`);
+          }
+        });
+
+        // Also show what's in the CSV config for this section
+        console.log('\n📋 CSV Config (earnoseandthroat.js) - ALL SECTIONS:');
+        const { default: facilityServiceFilters } = await import('../config/facilityServiceFilters');
+        const entConfig = facilityServiceFilters['Ear, Nose & Throat'];
+        if (entConfig) {
+          // Show ALL CSV sections
+          const csvSectionKeys = Object.keys(entConfig);
+          console.log('All CSV sections:', csvSectionKeys);
+
+          // Try to find matching section in CSV config
+          const possibleMatches = csvSectionKeys.filter(key =>
+            key.toLowerCase().replace(/s\s/g, ' ').includes(sectionName.toLowerCase().replace(/s\s/g, ' ')) ||
+            sectionName.toLowerCase().replace(/s\s/g, ' ').includes(key.toLowerCase().replace(/s\s/g, ' '))
+          );
+
+          if (possibleMatches.length > 0) {
+            possibleMatches.forEach(match => {
+              console.log(`\n✅ Matched CSV Section: "${match}"`);
+              if (entConfig[match].showOnly) {
+                console.log(`Total questions in CSV: ${entConfig[match].showOnly.length}`);
+                console.log('First 5 CSV Question Names:');
+                entConfig[match].showOnly.slice(0, 5).forEach((q, idx) => {
+                  console.log(`  [${idx}] "${q}"`);
+                });
+                if (entConfig[match].showOnly.length > 5) {
+                  console.log(`  ... and ${entConfig[match].showOnly.length - 5} more`);
+                }
+              }
+            });
+          } else {
+            console.log('⚠️ No matching CSV section found for DHIS2 section:', sectionName);
+            console.log('This means the filter will search ALL CSV sections for matching questions.');
+          }
+        } else {
+          console.log('❌ No ENT config found in facilityServiceFilters!');
         }
 
-      });
+        console.groupEnd();
+      }
+
+      const results = await Promise.all(
+
+        section.dataElements.map(async (psde, idx) => {
+
+          if (!psde || !psde.dataElement) return false;
+
+          const displayName = psde.dataElement.displayName;
+
+          // Hide specialisation/facility classification fields from users (they're handled by manual selector)
+          const isSpecialisationField = /specialisation|facility classification|facility type/i.test(displayName);
+          if (isSpecialisationField) {
+            return false; // Hide these fields from users
+          }
+
+          // Check if this is a Comments/Remarks data element
+          const isComment = /\s*(Comments?|Remarks?)\s*$/i.test(displayName);
+
+          if (isComment) {
+            // For Comments/Remarks elements, check if the main element would pass the filter
+            const mainElementName = displayName.replace(/\s*(Comments?|Remarks?)\s*$/i, '');
+
+            const mainElementPasses = await shouldShowDataElementForService(
+              mainElementName,
+              facilityType
+            );
+
+            // DEBUG: Log comment field filtering for ENT
+            if (isENT && isRelevantSection) {
+              console.log(`  [${idx}] Comment field "${displayName}" → main: "${mainElementName}" → ${mainElementPasses ? '✅ PASS' : '❌ FAIL'}`);
+            }
+
+            return mainElementPasses;
+          } else {
+            // For main elements, use the standard filter
+            const shouldShow = await shouldShowDataElementForService(
+              displayName,
+              facilityType
+            );
+
+            // DEBUG: Log main field filtering for ENT
+            if (isENT && isRelevantSection) {
+              console.log(`  [${idx}] Main field "${displayName}" → ${shouldShow ? '✅ PASS' : '❌ FAIL'}`);
+            }
+
+            return shouldShow;
+          }
+
+        })
+
+      );
+
+      // Apply the filter, but never let it make a section completely empty.
+      // If no data elements pass the filter for this section + facility type,
+      // fall back to showing all the section's data elements so inspectors
+      // can still capture data while we align DHIS2 names with the CSV.
+      let filtered = section.dataElements.filter((_, idx) => results[idx]);
+
+      if (isENT && isRelevantSection) {
+        console.log(`📊 Filter result for "${sectionName}": ${filtered.length} of ${section.dataElements.length} elements passed`);
+      }
+
+      if ((!filtered || filtered.length === 0) && section.dataElements.length > 0) {
+        console.warn('⚠️ Filter removed all data elements for section; falling back to showing all', {
+          section: section.displayName,
+          facilityType
+        });
+        filtered = section.dataElements;
+      }
+
+      setFilteredDataElements(filtered);
 
     };
 
-    // Get filtered data elements
+    filterAsync();
 
-    // const filteredDataElements = filterDataElements(section.dataElements);
+  }, [section.dataElements, section.displayName, facilityType]);
 
-    const [filteredDataElements, setFilteredDataElements] = useState([]);
+  // Calculate optimal page boundaries to avoid starting with comment fields
 
-    useEffect(() => {
+  const calculatePageBoundaries = () => {
 
-      const filterAsync = async () => {
+    if (!filteredDataElements || filteredDataElements.length === 0) {
 
-        if (!facilityType || !section.dataElements) {
-          setFilteredDataElements(section.dataElements || []);
+      return { pages: [], totalPages: 0 };
 
-          return;
+    }
 
-        }
+    // Check if this is one of the sections that should start expanded
 
-        // Exclude certain sections from filtering: show all their fields
-        const sectionName = (section.displayName || '');
-        const lowerName = sectionName.toLowerCase();
-        if (sectionName === 'Inspection Type' || lowerName.includes('document review')) {
-          setFilteredDataElements(section.dataElements || []);
-          return;
-        }
+    const isInspectionInfoSection = (section.displayName || '').toLowerCase() === 'inspection information';
 
-        // DEBUG: Log all DHIS2 data element names for Ear, Nose & Throat sections
-        const isENT = facilityType === 'Ear, Nose & Throat';
-        const isRelevantSection = /service|personnel|supplies|organisation|management|tens|hiv/i.test(sectionName);
+    const isInspectionTypeSection = (section.displayName || '').toLowerCase() === 'inspection type';
 
-        if (isENT && isRelevantSection && section.dataElements && section.dataElements.length > 0) {
-          console.group(`🔍 DEBUG: DHIS2 Data Elements for "${sectionName}" (ENT)`);
-          console.log('Total data elements in section:', section.dataElements.length);
-          console.log('\n📄 DHIS2 Data Element Names (using formName/displayFormName):');
-          section.dataElements.forEach((psde, idx) => {
-            if (psde && psde.dataElement) {
-              const de = psde.dataElement;
-              const usedName = de.displayName; // This is already formName || displayFormName || name
-              const deId = de.id;
-              const lastUpdated = de.lastUpdated || 'N/A';
-              const isHeader = isSectionHeaderName(usedName);
-              const endsWithDashes = usedName.endsWith('--');
-              console.log(`  [${idx}] ID: ${deId} | Name: "${usedName}" | Updated: ${lastUpdated} | IsHeader: ${isHeader} | EndsWith--: ${endsWithDashes}`);
-            }
-          });
+    // For Inspection Type section, show all fields on one page (no pagination)
 
-          // Also show what's in the CSV config for this section
-          console.log('\n📋 CSV Config (earnoseandthroat.js) - ALL SECTIONS:');
-          const { default: facilityServiceFilters } = await import('../config/facilityServiceFilters');
-          const entConfig = facilityServiceFilters['Ear, Nose & Throat'];
-          if (entConfig) {
-            // Show ALL CSV sections
-            const csvSectionKeys = Object.keys(entConfig);
-            console.log('All CSV sections:', csvSectionKeys);
+    if (isInspectionTypeSection) {
 
-            // Try to find matching section in CSV config
-            const possibleMatches = csvSectionKeys.filter(key =>
-              key.toLowerCase().replace(/s\s/g, ' ').includes(sectionName.toLowerCase().replace(/s\s/g, ' ')) ||
-              sectionName.toLowerCase().replace(/s\s/g, ' ').includes(key.toLowerCase().replace(/s\s/g, ' '))
-            );
+      return {
 
-            if (possibleMatches.length > 0) {
-              possibleMatches.forEach(match => {
-                console.log(`\n✅ Matched CSV Section: "${match}"`);
-                if (entConfig[match].showOnly) {
-                  console.log(`Total questions in CSV: ${entConfig[match].showOnly.length}`);
-                  console.log('First 5 CSV Question Names:');
-                  entConfig[match].showOnly.slice(0, 5).forEach((q, idx) => {
-                    console.log(`  [${idx}] "${q}"`);
-                  });
-                  if (entConfig[match].showOnly.length > 5) {
-                    console.log(`  ... and ${entConfig[match].showOnly.length - 5} more`);
-                  }
-                }
-              });
-            } else {
-              console.log('⚠️ No matching CSV section found for DHIS2 section:', sectionName);
-              console.log('This means the filter will search ALL CSV sections for matching questions.');
-            }
-          } else {
-            console.log('❌ No ENT config found in facilityServiceFilters!');
-          }
+        pages: [{
 
-          console.groupEnd();
-        }
+          start: 0,
 
-        const results = await Promise.all(
+          end: filteredDataElements.length,
 
-            section.dataElements.map(async (psde, idx) => {
+          size: filteredDataElements.length,
 
-              if (!psde || !psde.dataElement) return false;
+          fields: filteredDataElements
 
-              const displayName = psde.dataElement.displayName;
+        }],
 
-              // Hide specialisation/facility classification fields from users (they're handled by manual selector)
-              const isSpecialisationField = /specialisation|facility classification|facility type/i.test(displayName);
-              if (isSpecialisationField) {
-                return false; // Hide these fields from users
-              }
-
-              // Check if this is a Comments/Remarks data element
-              const isComment = /\s*(Comments?|Remarks?)\s*$/i.test(displayName);
-
-              if (isComment) {
-                // For Comments/Remarks elements, check if the main element would pass the filter
-                const mainElementName = displayName.replace(/\s*(Comments?|Remarks?)\s*$/i,'');
-
-                const mainElementPasses = await shouldShowDataElementForService(
-                    mainElementName,
-                    facilityType
-                );
-
-                // DEBUG: Log comment field filtering for ENT
-                if (isENT && isRelevantSection) {
-                  console.log(`  [${idx}] Comment field "${displayName}" → main: "${mainElementName}" → ${mainElementPasses ? '✅ PASS' : '❌ FAIL'}`);
-                }
-
-                return mainElementPasses;
-              } else {
-                // For main elements, use the standard filter
-                const shouldShow = await shouldShowDataElementForService(
-                    displayName,
-                    facilityType
-                );
-
-                // DEBUG: Log main field filtering for ENT
-                if (isENT && isRelevantSection) {
-                  console.log(`  [${idx}] Main field "${displayName}" → ${shouldShow ? '✅ PASS' : '❌ FAIL'}`);
-                }
-
-                return shouldShow;
-              }
-
-            })
-
-        );
-
-        // Apply the filter, but never let it make a section completely empty.
-        // If no data elements pass the filter for this section + facility type,
-        // fall back to showing all the section's data elements so inspectors
-        // can still capture data while we align DHIS2 names with the CSV.
-        let filtered = section.dataElements.filter((_, idx) => results[idx]);
-
-        if (isENT && isRelevantSection) {
-          console.log(`📊 Filter result for "${sectionName}": ${filtered.length} of ${section.dataElements.length} elements passed`);
-        }
-
-        if ((!filtered || filtered.length === 0) && section.dataElements.length > 0) {
-          console.warn('⚠️ Filter removed all data elements for section; falling back to showing all', {
-            section: section.displayName,
-            facilityType
-          });
-          filtered = section.dataElements;
-        }
-
-        setFilteredDataElements(filtered);
+        totalPages: 1
 
       };
 
-      filterAsync();
+    }
 
-    }, [section.dataElements, section.displayName, facilityType]);
+    const pages = [];
 
-    // Calculate optimal page boundaries to avoid starting with comment fields
+    let currentIndex = 0;
 
-    const calculatePageBoundaries = () => {
+    while (currentIndex < filteredDataElements.length) {
 
-      if (!filteredDataElements || filteredDataElements.length === 0) {
+      let pageSize = baseFieldsPerPage;
 
-        return { pages: [], totalPages: 0 };
+      let endIndex = currentIndex + pageSize;
 
+      // Check for bold data elements that should start on a new page
+      // Look ahead to see if there's a bold element within the current page
+      let foundBoldElement = false;
+      for (let i = currentIndex + 1; i < Math.min(endIndex, filteredDataElements.length); i++) {
+        const element = filteredDataElements[i];
+        if (isBoldDataElement(element.dataElement)) {
+          // Found a bold element - end the current page before it
+          endIndex = i;
+          pageSize = endIndex - currentIndex;
+          foundBoldElement = true;
+          break;
+        }
       }
 
-      // Check if this is one of the sections that should start expanded
-
-         const isInspectionInfoSection = (section.displayName || '').toLowerCase() === 'inspection information';
-
-         const isInspectionTypeSection = (section.displayName || '').toLowerCase() === 'inspection type';
-
-      // For Inspection Type section, show all fields on one page (no pagination)
-
-      if (isInspectionTypeSection) {
-
-        return {
-
-          pages: [{
-
-            start: 0,
-
-            end: filteredDataElements.length,
-
-            size: filteredDataElements.length,
-
-            fields: filteredDataElements
-
-          }],
-
-          totalPages: 1
-
-        };
-
-      }
-
-      const pages = [];
-
-      let currentIndex = 0;
-
-      while (currentIndex < filteredDataElements.length) {
-
-        let pageSize = baseFieldsPerPage;
-
-        let endIndex = currentIndex + pageSize;
-
-        // Check for bold data elements that should start on a new page
-        // Look ahead to see if there's a bold element within the current page
-        let foundBoldElement = false;
-        for (let i = currentIndex + 1; i < Math.min(endIndex, filteredDataElements.length); i++) {
-          const element = filteredDataElements[i];
-          if (isBoldDataElement(element.dataElement)) {
-            // Found a bold element - end the current page before it
-            endIndex = i;
-            pageSize = endIndex - currentIndex;
-            foundBoldElement = true;
-            break;
+      // If we didn't find a bold element, apply the original comment field logic
+      if (!foundBoldElement) {
+        // Check if the next field after this page would be a comment field
+        if (endIndex < filteredDataElements.length) {
+          const nextField = filteredDataElements[endIndex];
+          if (isCommentField(nextField.dataElement)) {
+            // Extend this page to include the comment field
+            endIndex++;
+            pageSize++;
           }
         }
-
-        // If we didn't find a bold element, apply the original comment field logic
-        if (!foundBoldElement) {
-          // Check if the next field after this page would be a comment field
-          if (endIndex < filteredDataElements.length) {
-            const nextField = filteredDataElements[endIndex];
-            if (isCommentField(nextField.dataElement)) {
-              // Extend this page to include the comment field
-              endIndex++;
-              pageSize++;
-            }
-          }
-        }
-
-        // Ensure we don't exceed total length
-
-        endIndex = Math.min(endIndex, filteredDataElements.length);
-
-        pageSize = endIndex - currentIndex;
-
-        // Don't create empty pages
-        if (pageSize > 0) {
-          pages.push({
-            start: currentIndex,
-            end: endIndex,
-            size: pageSize,
-            fields: filteredDataElements.slice(currentIndex, endIndex)
-          });
-        }
-
-        currentIndex = endIndex;
-
       }
 
-      return { pages, totalPages: pages.length };
+      // Ensure we don't exceed total length
 
-    };
+      endIndex = Math.min(endIndex, filteredDataElements.length);
 
-    const { pages, totalPages } = calculatePageBoundaries();
+      pageSize = endIndex - currentIndex;
 
-    const currentPageData = pages[currentPage] || { start: 0, end: 0, size: 0, fields: [] };
+      // Don't create empty pages
+      if (pageSize > 0) {
+        pages.push({
+          start: currentIndex,
+          end: endIndex,
+          size: pageSize,
+          fields: filteredDataElements.slice(currentIndex, endIndex)
+        });
+      }
 
-    const visibleFields = currentPageData.fields;
+      currentIndex = endIndex;
 
-    const startIndex = currentPageData.start;
+    }
 
-    const endIndex = currentPageData.end;
+    return { pages, totalPages: pages.length };
 
-    // Auto-scroll to section top helper function
-    const scrollToSectionTop = () => {
-      // Small delay to ensure page content has updated
-      setTimeout(() => {
-        const sectionElement = document.querySelector(`[data-section-id="${section.id}"]`);
-        if (sectionElement) {
-          sectionElement.scrollIntoView({
+  };
+
+  const { pages, totalPages } = calculatePageBoundaries();
+
+  const currentPageData = pages[currentPage] || { start: 0, end: 0, size: 0, fields: [] };
+
+  const visibleFields = currentPageData.fields;
+
+  const startIndex = currentPageData.start;
+
+  const endIndex = currentPageData.end;
+
+  // Auto-scroll to section top helper function
+  const scrollToSectionTop = () => {
+    // Small delay to ensure page content has updated
+    setTimeout(() => {
+      const sectionElement = document.querySelector(`[data-section-id="${section.id}"]`);
+      if (sectionElement) {
+        sectionElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+          inline: 'nearest'
+        });
+      } else {
+        // Fallback: scroll to section header
+        const sectionHeader = document.querySelector('.section-header');
+        if (sectionHeader) {
+          sectionHeader.scrollIntoView({
             behavior: 'smooth',
             block: 'start',
             inline: 'nearest'
           });
-        } else {
-          // Fallback: scroll to section header
-          const sectionHeader = document.querySelector('.section-header');
-          if (sectionHeader) {
-            sectionHeader.scrollIntoView({
-              behavior: 'smooth',
-              block: 'start',
-              inline: 'nearest'
-            });
-          }
         }
-      }, 100);
-    };
-
-    // Navigation functions
-
-    const goToNextPage = () => {
-
-      if (currentPage < totalPages - 1) {
-
-        setCurrentPage(prev => prev + 1);
-        scrollToSectionTop();
-
       }
+    }, 100);
+  };
 
-    };
+  // Navigation functions
 
-    const goToPreviousPage = () => {
+  const goToNextPage = () => {
 
-      if (currentPage > 0) {
+    if (currentPage < totalPages - 1) {
 
-        setCurrentPage(prev => prev - 1);
-        scrollToSectionTop();
-
-      }
-
-    };
-
-    const goToPage = (pageNumber) => {
-
-      if (pageNumber >= 0 && pageNumber < totalPages) {
-
-        setCurrentPage(pageNumber);
-        scrollToSectionTop();
-
-      }
-
-    };
-
-    // Get current page info for display
-
-    const getCurrentPageInfo = () => {
-
-      if (totalPages === 0) return { pageSize: 0, totalFields: 0 };
-
-      return {
-
-        pageSize: currentPageData.size,
-
-        totalFields: section.dataElements?.length || 0
-
-      };
-
-    };
-
-    // IMMEDIATE DEBUGGING - Log everything that comes into this component
-
-    console.log('🚨 FormSection RENDERED with props:', {
-
-      sectionName: section?.displayName,
-
-      sectionId: section?.id,
-
-      dataElementsCount: section?.dataElements?.length || 0,
-
-      dataElements: section?.dataElements,
-
-      formDataKeys: Object.keys(formData || {}),
-
-      errorsKeys: Object.keys(errors || {}),
-
-      readOnlyFieldsKeys: Object.keys(readOnlyFields || {}),
-
-      inspectionInfoConfirmed,
-
-      hasDataElements: !!(section?.dataElements && section.dataElements.length > 0),
-
-      currentPage,
-
-      totalPages,
-
-      visibleFieldsCount: visibleFields.length,
-
-      totalFields: section?.dataElements?.length || 0,
-
-      pageSize: getCurrentPageInfo().pageSize,
-
-      pageBoundaries: pages.map(p => `${p.start}-${p.end}(${p.size})`)
-
-    });
-
-    // Check if this is one of the sections that should start expanded
-
-    const isInspectionInfoSection = (section.displayName || '') === 'Inspection Information';
-
-    const sectionDisplayName = (section.displayName || '');
-    const isInspectionTypeSection = sectionDisplayName === 'Inspection Type';
-
-    const isDocumentReviewSection = sectionDisplayName.toLowerCase().includes('document review');
-
-    // Function to determine if a field should use dynamic service dropdown
-
-    // (Now defined at component level)
-
-                    // All fields are optional - no mandatory count needed
-
-                const mandatoryFieldsCount = 0;
-
-    // Always show sections with data elements
-
-    const hasDataElements = section.dataElements && section.dataElements.length > 0;
-
-    const shouldShow = hasDataElements || isInspectionInfoSection || isInspectionTypeSection || isDocumentReviewSection;
-
-    // Helper to decide visibility consistent with filter logic, including Comments pairing
-    const shouldShowForName = (name) => {
-      if (isInspectionTypeSection || isDocumentReviewSection) return true; // Exclude from filters
-      if (!name) return false;
-      // Always show headers regardless of service filter
-      if (isSectionHeaderName(name)) return true;
-      const lower = name.toLowerCase();
-      const isComment = lower.includes('comments') || lower.includes('comment') || lower.includes('remarks');
-      if (isComment) {
-        const mainElementName = name
-          .replace(/\s*Comments?\s*$/i, '')
-          .replace(/\s*Remarks?\s*$/i, '')
-          .trim();
-        return shouldShowDataElementForService(mainElementName, facilityType);
-      }
-      return shouldShowDataElementForService(name, facilityType);
-    };
-
-    // Compute unmatched (hidden) DEs for debug vis
-    const unmatchedDEs = (isInspectionTypeSection || isDocumentReviewSection) ? [] : ((section.dataElements || [])
-      .filter(psde => psde?.dataElement && !shouldShowForName(psde.dataElement.displayName))
-      .map(psde => psde.dataElement.displayName));
-    if (!shouldShow) {
-
-      return null;
+      setCurrentPage(prev => prev + 1);
+      scrollToSectionTop();
 
     }
 
-    return (
+  };
 
-      <div className="form-section" data-section-id={section.id}>
+  const goToPreviousPage = () => {
 
-        {/* Section Debug Panel - collapsed by default */}
-        {(
-          <details
-            open={false}
-            style={{ marginBottom: '8px' }}
+    if (currentPage > 0) {
+
+      setCurrentPage(prev => prev - 1);
+      scrollToSectionTop();
+
+    }
+
+  };
+
+  const goToPage = (pageNumber) => {
+
+    if (pageNumber >= 0 && pageNumber < totalPages) {
+
+      setCurrentPage(pageNumber);
+      scrollToSectionTop();
+
+    }
+
+  };
+
+  // Get current page info for display
+
+  const getCurrentPageInfo = () => {
+
+    if (totalPages === 0) return { pageSize: 0, totalFields: 0 };
+
+    return {
+
+      pageSize: currentPageData.size,
+
+      totalFields: section.dataElements?.length || 0
+
+    };
+
+  };
+
+  // IMMEDIATE DEBUGGING - Log everything that comes into this component
+
+  console.log('🚨 FormSection RENDERED with props:', {
+
+    sectionName: section?.displayName,
+
+    sectionId: section?.id,
+
+    dataElementsCount: section?.dataElements?.length || 0,
+
+    dataElements: section?.dataElements,
+
+    formDataKeys: Object.keys(formData || {}),
+
+    errorsKeys: Object.keys(errors || {}),
+
+    readOnlyFieldsKeys: Object.keys(readOnlyFields || {}),
+
+    inspectionInfoConfirmed,
+
+    hasDataElements: !!(section?.dataElements && section.dataElements.length > 0),
+
+    currentPage,
+
+    totalPages,
+
+    visibleFieldsCount: visibleFields.length,
+
+    totalFields: section?.dataElements?.length || 0,
+
+    pageSize: getCurrentPageInfo().pageSize,
+
+    pageBoundaries: pages.map(p => `${p.start}-${p.end}(${p.size})`)
+
+  });
+
+  // Check if this is one of the sections that should start expanded
+
+  const isInspectionInfoSection = (section.displayName || '') === 'Inspection Information';
+
+  const sectionDisplayName = (section.displayName || '');
+  const isInspectionTypeSection = sectionDisplayName === 'Inspection Type';
+
+  const isDocumentReviewSection = sectionDisplayName.toLowerCase().includes('document review');
+
+  // Function to determine if a field should use dynamic service dropdown
+
+  // (Now defined at component level)
+
+  // All fields are optional - no mandatory count needed
+
+  const mandatoryFieldsCount = 0;
+
+  // Always show sections with data elements
+
+  const hasDataElements = section.dataElements && section.dataElements.length > 0;
+
+  const shouldShow = hasDataElements || isInspectionInfoSection || isInspectionTypeSection || isDocumentReviewSection;
+
+  // Helper to decide visibility consistent with filter logic, including Comments pairing
+  const shouldShowForName = (name) => {
+    if (isInspectionTypeSection || isDocumentReviewSection) return true; // Exclude from filters
+    if (!name) return false;
+    // Always show headers regardless of service filter
+    if (isSectionHeaderName(name)) return true;
+    const lower = name.toLowerCase();
+    const isComment = lower.includes('comments') || lower.includes('comment') || lower.includes('remarks');
+    if (isComment) {
+      const mainElementName = name
+        .replace(/\s*Comments?\s*$/i, '')
+        .replace(/\s*Remarks?\s*$/i, '')
+        .trim();
+      return shouldShowDataElementForService(mainElementName, facilityType);
+    }
+    return shouldShowDataElementForService(name, facilityType);
+  };
+
+  // Compute unmatched (hidden) DEs for debug vis
+  const unmatchedDEs = (isInspectionTypeSection || isDocumentReviewSection) ? [] : ((section.dataElements || [])
+    .filter(psde => psde?.dataElement && !shouldShowForName(psde.dataElement.displayName))
+    .map(psde => psde.dataElement.displayName));
+  if (!shouldShow) {
+
+    return null;
+
+  }
+
+  return (
+
+    <div className="form-section" data-section-id={section.id}>
+
+      {/* Section Debug Panel - collapsed by default */}
+      {(
+        <details
+          open={false}
+          style={{ marginBottom: '8px' }}
+        >
+          <summary style={{ cursor: 'pointer', fontSize: '12px' }}>🔍 Section Debug: {section.displayName}</summary>
+          <div style={{
+            backgroundColor: '#e7f3ff',
+            border: '1px solid #b3d9ff',
+            borderRadius: '4px',
+            padding: '8px',
+            marginTop: '6px',
+            fontSize: '11px',
+            fontFamily: 'monospace'
+          }}>
+            <strong>Facility Type:</strong> {facilityType || 'null'} |
+            <strong>Elements:</strong> {filteredDataElements.length}/{section.dataElements?.length || 0} |
+            <strong>Page:</strong> {currentPage + 1}/{Math.ceil(filteredDataElements.length / baseFieldsPerPage)}
+
+            {/* Unmatched (hidden) Data Elements list */}
+            {showDebugPanel && unmatchedDEs && unmatchedDEs.length > 0 && (
+              <div style={{
+                marginTop: '6px',
+                backgroundColor: '#fff3cd',
+                border: '1px solid #ffeeba',
+                borderRadius: '4px',
+                padding: '6px'
+              }}>
+                <strong style={{ color: '#8a6d3b' }}>Unmatched (hidden) DEs:</strong> {unmatchedDEs.length}
+                <div style={{ maxHeight: '90px', overflow: 'auto', marginTop: '4px' }}>
+                  {unmatchedDEs.slice(0, 12).map((name, idx) => (
+                    <div key={`${section.id}-unmatched-${idx}`}>{name}</div>
+                  ))}
+                  {unmatchedDEs.length > 12 && (
+                    <div>... and {unmatchedDEs.length - 12} more</div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* DHIS2 DEs returned for Inspection Type section */}
+            {showDebugPanel && isInspectionTypeSection && section.dataElements && section.dataElements.length > 0 && (
+              <div style={{
+                marginTop: '6px',
+                backgroundColor: '#f8f9fa',
+                border: '1px solid #e2e3e5',
+                borderRadius: '4px',
+                padding: '6px'
+              }}>
+                <strong>DHIS2 Data Elements (Inspection Type):</strong> {section.dataElements.length}
+                <div style={{ maxHeight: '140px', overflow: 'auto', marginTop: '4px' }}>
+                  {section.dataElements.map((psde, idx) => (
+                    <div key={`${section.id}-dhis2-${psde?.dataElement?.id || idx}`}>
+                      {psde?.dataElement?.displayName || 'UNKNOWN'}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </details>
+      )}
+
+      <div className={`section-header ${isInspectionInfoSection || isInspectionTypeSection ? 'always-expanded-section' : 'collapsible-section'}`}>
+
+        <h3 className="section-title">
+
+          {section.displayName}
+
+          {/* Visible DE count badge */}
+          <span
+            className="visible-de-count"
+            title={`${filteredDataElements.length} data elements visible in this section`}
+            style={{
+              fontSize: '0.8em',
+              color: '#003875', // Botswana blue text
+              marginLeft: '8px',
+              backgroundColor: 'rgba(255, 255, 255, 0.9)', // White background with slight transparency
+              padding: '2px 6px',
+              borderRadius: '4px',
+              border: '1px solid rgba(255, 255, 255, 0.7)' // Light white border
+            }}
           >
-            <summary style={{ cursor: 'pointer', fontSize: '12px' }}>🔍 Section Debug: {section.displayName}</summary>
-        <div style={{
-          backgroundColor: '#e7f3ff',
-          border: '1px solid #b3d9ff',
-          borderRadius: '4px',
-          padding: '8px',
-              marginTop: '6px',
-          fontSize: '11px',
-          fontFamily: 'monospace'
-        }}>
-          <strong>Facility Type:</strong> {facilityType || 'null'} |
-          <strong>Elements:</strong> {filteredDataElements.length}/{section.dataElements?.length || 0} |
-          <strong>Page:</strong> {currentPage + 1}/{Math.ceil(filteredDataElements.length / baseFieldsPerPage)}
+            📄 {filteredDataElements.length} shown
+          </span>
 
-          {/* Unmatched (hidden) Data Elements list */}
-          {showDebugPanel && unmatchedDEs && unmatchedDEs.length > 0 && (
-            <div style={{
-              marginTop: '6px',
-              backgroundColor: '#fff3cd',
-              border: '1px solid #ffeeba',
-              borderRadius: '4px',
-              padding: '6px'
-            }}>
-              <strong style={{ color: '#8a6d3b' }}>Unmatched (hidden) DEs:</strong> {unmatchedDEs.length}
-              <div style={{ maxHeight: '90px', overflow: 'auto', marginTop: '4px' }}>
-                {unmatchedDEs.slice(0, 12).map((name, idx) => (
-                  <div key={`${section.id}-unmatched-${idx}`}>{name}</div>
-                ))}
-                {unmatchedDEs.length > 12 && (
-                  <div>... and {unmatchedDEs.length - 12} more</div>
-                )}
-              </div>
-            </div>
-          )}
+        </h3>
 
-          {/* DHIS2 DEs returned for Inspection Type section */}
-          {showDebugPanel && isInspectionTypeSection && section.dataElements && section.dataElements.length > 0 && (
-            <div style={{
-              marginTop: '6px',
-              backgroundColor: '#f8f9fa',
-              border: '1px solid #e2e3e5',
-              borderRadius: '4px',
-              padding: '6px'
-            }}>
-              <strong>DHIS2 Data Elements (Inspection Type):</strong> {section.dataElements.length}
-              <div style={{ maxHeight: '140px', overflow: 'auto', marginTop: '4px' }}>
-                {section.dataElements.map((psde, idx) => (
-                  <div key={`${section.id}-dhis2-${psde?.dataElement?.id || idx}`}>
-                    {psde?.dataElement?.displayName || 'UNKNOWN'}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-          </details>
+      </div>
+
+      <div className="section-content">
+
+        {section.description && (
+
+          <p className="section-description">{section.description}</p>
+
         )}
 
-        <div className={`section-header ${isInspectionInfoSection || isInspectionTypeSection ? 'always-expanded-section' : 'collapsible-section'}`}>
+        <div className="section-fields">
 
-          <h3 className="section-title">
+          {/* Debug info removed */}
 
-            {section.displayName}
+          {/* All debug sections removed */}
 
-            {/* Visible DE count badge */}
-            <span
-              className="visible-de-count"
-              title={`${filteredDataElements.length} data elements visible in this section`}
-              style={{
-                fontSize: '0.8em',
-                color: '#003875', // Botswana blue text
-                marginLeft: '8px',
-                backgroundColor: 'rgba(255, 255, 255, 0.9)', // White background with slight transparency
-                padding: '2px 6px',
-                borderRadius: '4px',
-                border: '1px solid rgba(255, 255, 255, 0.7)' // Light white border
-              }}
-            >
-              📄 {filteredDataElements.length} shown
-            </span>
+          {/* Render data elements with pagination */}
 
-          </h3>
+          {section.dataElements && section.dataElements.length > 0 ? (
 
-        </div>
+            <>
 
-        <div className="section-content">
+              {/* Render visible fields for current page */}
 
-          {section.description && (
+              {/* Department options are now calculated in useEffect */}
 
-            <p className="section-description">{section.description}</p>
+              {visibleFields.map((psde, index) => {
 
-          )}
+                // Safety check for psde and dataElement
 
-          <div className="section-fields">
+                if (!psde || !psde.dataElement) {
 
-            {/* Debug info removed */}
+                  console.warn('🚨 FormSection: Invalid psde or dataElement:', psde);
 
-            {/* All debug sections removed */}
+                  return null;
 
-            {/* Render data elements with pagination */}
+                }
 
-            {section.dataElements && section.dataElements.length > 0 ? (
-
-              <>
-
-                {/* Render visible fields for current page */}
-
-                {/* Department options are now calculated in useEffect */}
-
-                {visibleFields.map((psde, index) => {
-
-                  // Safety check for psde and dataElement
-
-                  if (!psde || !psde.dataElement) {
-
-                    console.warn('🚨 FormSection: Invalid psde or dataElement:', psde);
-
+                // Only allow Facility Service Departments field in Inspection Type section
+                if (psde.dataElement.displayName && psde.dataElement.displayName.toLowerCase().includes('facility service department')) {
+                  if (!section.displayName.toLowerCase().includes('inspection type')) {
                     return null;
-
                   }
-                  
-                  // Only allow Facility Service Departments field in Inspection Type section
-                  if (psde.dataElement.displayName && psde.dataElement.displayName.toLowerCase().includes('facility service department')) {
-                    if (!section.displayName.toLowerCase().includes('inspection type')) {
-                      return null;
-                    }
-                  }
+                }
 
-                  // Debug: Log all data elements in Inspection Type section
-                  if (section.displayName.toLowerCase().includes('inspection type')) {
+                // Debug: Log all data elements in Inspection Type section
+                if (section.displayName.toLowerCase().includes('inspection type')) {
 
-                    // Check if this is the Facility Service Departments field
-                    const serviceFieldType = enhancedServiceFieldDetection(psde.dataElement);
-                    if (psde.dataElement.displayName === 'Facility Service Departments' || serviceFieldType === 'facility_service_departments') {
-                    }
-                  }
-
-                  // No need to filter here - already filtered before pagination
-
+                  // Check if this is the Facility Service Departments field
                   const serviceFieldType = enhancedServiceFieldDetection(psde.dataElement);
-
-                  // Check if this is a dynamic service field (true or string type indicating special handling)
-
-                  const isDynamicServiceField = !!serviceFieldType && serviceFieldType !== 'facility_service_departments';
-
-                  const actualIndex = startIndex + index; // Global index for proper field identification
-
-                  // Log field rendering for debugging
-
-                  if (showDebugPanel) {
+                  if (psde.dataElement.displayName === 'Facility Service Departments' || serviceFieldType === 'facility_service_departments') {
                   }
+                }
 
-                  // Hide specific IDs in Inspection Type section while keeping them assigned
+                // No need to filter here - already filtered before pagination
 
-                  const dn = (psde?.dataElement?.displayName || '').toLowerCase();
+                const serviceFieldType = enhancedServiceFieldDetection(psde.dataElement);
 
-                  const shouldHideInspectionId = isInspectionTypeSection && (dn.includes('inspection') && dn.includes('id'));
+                // Check if this is a dynamic service field (true or string type indicating special handling)
 
-                  // Render subsection header (no input) if name ends with "--"
-                  const deName = psde?.dataElement?.displayName || '';
-                  if (isSectionHeaderName(deName)) {
-                    const headerText = normalizeSectionHeaderName(deName);
-                    console.log(`🎯 Rendering subsection header: "${headerText}" (original: "${deName}", ID: ${psde.dataElement.id})`);
-                    return (
-                      <div key={`header-${psde.dataElement.id}-${actualIndex}`} style={{
-                        fontWeight: 700,
-                        fontSize: '16px',
-                        margin: '24px 0 12px',
-                        padding: '8px 0',
-                        borderBottom: '2px solid #e0e0e0',
-                        color: '#333'
-                      }}>
-                        {headerText}
-                      </div>
-                    );
-                  }
+                const isDynamicServiceField = !!serviceFieldType && serviceFieldType !== 'facility_service_departments';
 
-                  // Check if this is a bold data element (but not a section header)
-                  const isBold = isBoldDataElement(psde.dataElement);
-                  const shouldRenderAsBold = isBold && !isSectionHeaderName(deName);
+                const actualIndex = startIndex + index; // Global index for proper field identification
 
-                  // Add page break indicator for bold elements that start a new page
-                  const isFirstFieldOnPage = actualIndex === startIndex;
-                  const showPageBreakIndicator = shouldRenderAsBold && !isFirstFieldOnPage;
+                // Log field rendering for debugging
 
+                if (showDebugPanel) {
+                }
+
+                // Hide specific IDs in Inspection Type section while keeping them assigned
+
+                const dn = (psde?.dataElement?.displayName || '').toLowerCase();
+
+                const shouldHideInspectionId = isInspectionTypeSection && (dn.includes('inspection') && dn.includes('id'));
+
+                // Render subsection header (no input) if name ends with "--"
+                const deName = psde?.dataElement?.displayName || '';
+                if (isSectionHeaderName(deName)) {
+                  const headerText = normalizeSectionHeaderName(deName);
+                  console.log(`🎯 Rendering subsection header: "${headerText}" (original: "${deName}", ID: ${psde.dataElement.id})`);
                   return (
-                    <div key={`field-container-${psde.dataElement.id}-${actualIndex}`} style={shouldHideInspectionId ? { display: 'none' } : undefined}>
-                      {/* Page break indicator for bold elements */}
-                      {showPageBreakIndicator && (
-                        <div style={{
-                          margin: '20px 0 10px',
-                          padding: '8px 12px',
-                          backgroundColor: '#e3f2fd',
-                          border: '1px solid #bbdefb',
-                          borderRadius: '4px',
-                          fontSize: '12px',
-                          color: '#1976d2',
-                          textAlign: 'center',
-                          fontWeight: '500'
-                        }}>
-                          📄 New Page Section
-                        </div>
-                      )}
+                    <div key={`header-${psde.dataElement.id}-${actualIndex}`} style={{
+                      fontWeight: 700,
+                      fontSize: '16px',
+                      margin: '24px 0 12px',
+                      padding: '8px 0',
+                      borderBottom: '2px solid #e0e0e0',
+                      color: '#333'
+                    }}>
+                      {headerText}
+                    </div>
+                  );
+                }
+
+                // Check if this is a bold data element (but not a section header)
+                const isBold = isBoldDataElement(psde.dataElement);
+                const shouldRenderAsBold = isBold && !isSectionHeaderName(deName);
+
+                // Add page break indicator for bold elements that start a new page
+                const isFirstFieldOnPage = actualIndex === startIndex;
+                const showPageBreakIndicator = shouldRenderAsBold && !isFirstFieldOnPage;
+
+                return (
+                  <div key={`field-container-${psde.dataElement.id}-${actualIndex}`} style={shouldHideInspectionId ? { display: 'none' } : undefined}>
+                    {/* Page break indicator for bold elements */}
+                    {showPageBreakIndicator && (
+                      <div style={{
+                        margin: '20px 0 10px',
+                        padding: '8px 12px',
+                        backgroundColor: '#e3f2fd',
+                        border: '1px solid #bbdefb',
+                        borderRadius: '4px',
+                        fontSize: '12px',
+                        color: '#1976d2',
+                        textAlign: 'center',
+                        fontWeight: '500'
+                      }}>
+                        📄 New Page Section
+                      </div>
+                    )}
 
                     <div>
 
@@ -2036,7 +2036,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
                         isLoading={isDynamicServiceField ? loadingServiceSections : false}
 
-                        readOnly={ (isInspectionTypeSection && psde.dataElement.displayName === 'Source') ? true : !!readOnlyFields[`dataElement_${psde.dataElement.id}`] }
+                        readOnly={(isInspectionTypeSection && psde.dataElement.displayName === 'Source') ? true : !!readOnlyFields[`dataElement_${psde.dataElement.id}`]}
 
                         getCurrentPosition={getCurrentPosition}
 
@@ -2055,350 +2055,365 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
                       />
 
                     </div>
-                    </div>
-
-                  );
-
-                }).filter(Boolean)}
-
-                {/* Pagination Navigation - Hide for Inspection Type section */}
-
-                {totalPages > 1 && !isInspectionTypeSection && (
-
-                  <div className="pagination-container" style={{
-
-                    display: 'flex',
-
-                    justifyContent: 'space-between',
-
-                    alignItems: 'center',
-
-                    margin: '24px 0',
-
-                    padding: '16px',
-
-                    backgroundColor: '#f8f9fa',
-
-                    borderRadius: '8px',
-
-                    border: '1px solid #dee2e6'
-
-                  }}>
-
-                    {/* Previous Button */}
-
-                    <button
-
-                      type="button"
-
-                      onClick={goToPreviousPage}
-
-                      disabled={currentPage === 0}
-
-                      className="btn btn-outline-secondary"
-
-                      style={{
-
-                        padding: '8px 16px',
-
-                        fontSize: '14px',
-
-                        opacity: currentPage === 0 ? 0.5 : 1,
-
-                        cursor: currentPage === 0 ? 'not-allowed' : 'pointer'
-
-                      }}
-
-                    >
-
-                      ← Previous
-
-                    </button>
-
-                    {/* Page Indicator */}
-                    <div className="page-indicator" style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '12px',
-                      fontSize: '14px',
-                      color: '#495057',
-                      fontWeight: '500'
-                    }}>
-                      <span>Page {currentPage + 1} of {totalPages}</span>
-
-                      {/* Page dots for visual indication */}
-                      <div style={{ display: 'flex', gap: '4px' }}>
-                        {Array.from({ length: Math.min(totalPages, 5) }, (_, index) => {
-                          const pageIndex = totalPages <= 5 ? index :
-                            currentPage < 3 ? index :
-                            currentPage > totalPages - 3 ? totalPages - 5 + index :
-                            currentPage - 2 + index;
-
-                          return (
-                            <div
-                              key={pageIndex}
-                              style={{
-                                width: '8px',
-                                height: '8px',
-                                borderRadius: '50%',
-                                backgroundColor: pageIndex === currentPage ? '#007bff' : '#dee2e6',
-                                cursor: 'pointer',
-                                transition: 'background-color 0.2s'
-                              }}
-                              onClick={() => setCurrentPage(pageIndex)}
-                              title={`Go to page ${pageIndex + 1}`}
-                            />
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    {/* Next Button */}
-
-                    <button
-
-                      type="button"
-
-                      onClick={goToNextPage}
-
-                      disabled={currentPage === totalPages - 1}
-
-                      className="btn btn-outline-secondary"
-
-                      style={{
-
-                        padding: '8px 16px',
-
-                        fontSize: '14px',
-
-                        opacity: currentPage === totalPages - 1 ? 0.5 : 1,
-
-                        cursor: currentPage === totalPages - 1 ? 'not-allowed' : 'pointer'
-
-                      }}
-
-                    >
-
-                      Next →
-
-                    </button>
-
                   </div>
 
-                )}
+                );
 
-                {/* Quick Page Navigation - Fields summary removed */}
+              }).filter(Boolean)}
 
-                {totalPages > 5 && (
+              {/* Pagination Navigation - Hide for Inspection Type section */}
 
-                  <div className="quick-page-nav" style={{
+              {totalPages > 1 && !isInspectionTypeSection && (
 
-                    textAlign: 'center',
+                <div className="pagination-container" style={{
 
-                    margin: '16px 0',
+                  display: 'flex',
 
-                    padding: '12px',
+                  justifyContent: 'space-between',
 
-                    backgroundColor: '#e3f2fd',
+                  alignItems: 'center',
 
-                    borderRadius: '6px'
+                  margin: '24px 0',
 
+                  padding: '16px',
+
+                  backgroundColor: '#f8f9fa',
+
+                  borderRadius: '8px',
+
+                  border: '1px solid #dee2e6'
+
+                }}>
+
+                  {/* Previous Button */}
+
+                  <button
+
+                    type="button"
+
+                    onClick={goToPreviousPage}
+
+                    disabled={currentPage === 0}
+
+                    className="btn btn-outline-secondary"
+
+                    style={{
+
+                      padding: '8px 16px',
+
+                      fontSize: '14px',
+
+                      opacity: currentPage === 0 ? 0.5 : 1,
+
+                      cursor: currentPage === 0 ? 'not-allowed' : 'pointer'
+
+                    }}
+
+                  >
+
+                    ← Previous
+
+                  </button>
+
+                  {/* Page Indicator */}
+                  <div className="page-indicator" style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    fontSize: '14px',
+                    color: '#495057',
+                    fontWeight: '500'
                   }}>
+                    <span>Page {currentPage + 1} of {totalPages}</span>
 
-                    <span style={{ fontSize: '12px', color: '#1976d2', marginRight: '12px' }}>
+                    {/* Page dots for visual indication */}
+                    <div style={{ display: 'flex', gap: '4px' }}>
+                      {Array.from({ length: Math.min(totalPages, 5) }, (_, index) => {
+                        const pageIndex = totalPages <= 5 ? index :
+                          currentPage < 3 ? index :
+                            currentPage > totalPages - 3 ? totalPages - 5 + index :
+                              currentPage - 2 + index;
 
-                      Jump to page:
+                        return (
+                          <div
+                            key={pageIndex}
+                            style={{
+                              width: '8px',
+                              height: '8px',
+                              borderRadius: '50%',
+                              backgroundColor: pageIndex === currentPage ? '#007bff' : '#dee2e6',
+                              cursor: 'pointer',
+                              transition: 'background-color 0.2s'
+                            }}
+                            onClick={() => setCurrentPage(pageIndex)}
+                            title={`Go to page ${pageIndex + 1}`}
+                          />
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Next Button */}
+
+                  <button
+
+                    type="button"
+
+                    onClick={goToNextPage}
+
+                    disabled={currentPage === totalPages - 1}
+
+                    className="btn btn-outline-secondary"
+
+                    style={{
+
+                      padding: '8px 16px',
+
+                      fontSize: '14px',
+
+                      opacity: currentPage === totalPages - 1 ? 0.5 : 1,
+
+                      cursor: currentPage === totalPages - 1 ? 'not-allowed' : 'pointer'
+
+                    }}
+
+                  >
+
+                    Next →
+
+                  </button>
+
+                </div>
+
+              )}
+
+              {/* Quick Page Navigation - Fields summary removed */}
+
+              {totalPages > 5 && (
+
+                <div className="quick-page-nav" style={{
+
+                  textAlign: 'center',
+
+                  margin: '16px 0',
+
+                  padding: '12px',
+
+                  backgroundColor: '#e3f2fd',
+
+                  borderRadius: '6px'
+
+                }}>
+
+                  <span style={{ fontSize: '12px', color: '#1976d2', marginRight: '12px' }}>
+
+                    Jump to page:
+
+                  </span>
+
+                  {Array.from({ length: Math.min(10, totalPages) }, (_, i) => (
+
+                    <button
+
+                      key={i}
+
+                      type="button"
+
+                      onClick={() => goToPage(i)}
+
+                      className={`btn ${currentPage === i ? 'btn-primary' : 'btn-outline-primary'}`}
+
+                      style={{
+
+                        padding: '4px 8px',
+
+                        margin: '0 2px',
+
+                        fontSize: '11px',
+
+                        minWidth: '32px'
+
+                      }}
+
+                    >
+
+                      {i + 1}
+
+                    </button>
+
+                  ))}
+
+                  {totalPages > 10 && (
+
+                    <span style={{ fontSize: '11px', color: '#666', marginLeft: '8px' }}>
+
+                      ... and {totalPages - 10} more
 
                     </span>
 
-                    {Array.from({ length: Math.min(10, totalPages) }, (_, i) => (
-
-                      <button
-
-                        key={i}
-
-                        type="button"
-
-                        onClick={() => goToPage(i)}
-
-                        className={`btn ${currentPage === i ? 'btn-primary' : 'btn-outline-primary'}`}
-
-                        style={{
-
-                          padding: '4px 8px',
-
-                          margin: '0 2px',
-
-                          fontSize: '11px',
-
-                          minWidth: '32px'
-
-                        }}
-
-                      >
-
-                        {i + 1}
-
-                      </button>
-
-                    ))}
-
-                    {totalPages > 10 && (
-
-                      <span style={{ fontSize: '11px', color: '#666', marginLeft: '8px' }}>
-
-                        ... and {totalPages - 10} more
-
-                      </span>
-
-                    )}
-
-                  </div>
-
-                )}
-
-              </>
-
-            ) : (
-
-              <div style={{ 
-
-                backgroundColor: '#fff3cd', 
-
-                border: '1px solid #ffc107', 
-
-                padding: '12px', 
-
-                margin: '8px 0',
-
-                borderRadius: '4px',
-
-                textAlign: 'center'
-
-              }}>
-
-                ⚠️ No data elements configured for this section
-
-              </div>
-
-            )}
-
-            {/* Add bottom spacing after the last data element */}
-
-            <div className="section-bottom-spacing"></div>
-
-            {/* Confirmation Button for Inspection Type Section */}
-
-            {isInspectionTypeSection && areAllInspectionFieldsComplete && areAllInspectionFieldsComplete() && (
-
-              <div className="form-section" data-inspection-type="true" style={{
-
-                backgroundColor: '#f8f9fa',
-
-                border: '2px solid #28a745',
-
-                borderRadius: '8px',
-
-                padding: '16px',
-
-                margin: '16px 0',
-
-                textAlign: 'center'
-
-              }}>
-
-                <div style={{ marginBottom: '12px' }}>
-
-                  <h4 style={{ color: '#28a745', margin: '0 0 8px 0' }}>
-
-                    ✅ Inspection Information & Type Complete
-
-                  </h4>
-
-                  <p style={{ color: '#666', margin: '0', fontSize: '14px' }}>
-
-                    Please confirm that all the information above is correct before proceeding
-
-                  </p>
+                  )}
 
                 </div>
 
-                <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', alignItems: 'center' }}>
+              )}
 
-                  <label style={{ 
+            </>
 
-                    display: 'flex', 
+          ) : (
 
-                    alignItems: 'center', 
+            <div style={{
 
-                    gap: '8px', 
+              backgroundColor: '#fff3cd',
 
-                    cursor: 'pointer',
+              border: '1px solid #ffc107',
 
-                    fontSize: '16px',
+              padding: '12px',
 
-                    color: '#333'
+              margin: '8px 0',
 
-                  }}>
+              borderRadius: '4px',
 
-                    <input
+              textAlign: 'center'
 
-                      type="checkbox"
+            }}>
 
-                      checked={inspectionInfoConfirmed}
+              ⚠️ No data elements configured for this section
 
-                      onChange={(e) => setInspectionInfoConfirmed && setInspectionInfoConfirmed(e.target.checked)}
+            </div>
 
-                      style={{ 
+          )}
 
-                        width: '20px', 
+          {/* Add bottom spacing after the last data element */}
 
-                        height: '20px',
+          <div className="section-bottom-spacing"></div>
 
-                        cursor: 'pointer'
+          {/* Confirmation Button for Inspection Type Section */}
 
-                      }}
+          {isInspectionTypeSection && areAllInspectionFieldsComplete && areAllInspectionFieldsComplete() && (
 
-                    />
+            <div className="form-section" data-inspection-type="true" style={{
 
-                    <span>I confirm that all inspection information and type are correct</span>
+              backgroundColor: '#f8f9fa',
 
-                  </label>
+              border: '2px solid #28a745',
 
-                </div>
+              borderRadius: '8px',
 
-                {inspectionInfoConfirmed && (
+              padding: '16px',
 
-                  <div style={{ 
+              margin: '16px 0',
 
-                    marginTop: '12px', 
+              textAlign: 'center'
 
-                    padding: '8px 16px', 
+            }}>
 
-                    backgroundColor: '#d4edda', 
+              <div style={{ marginBottom: '12px' }}>
 
-                    color: '#155724', 
+                <h4 style={{ color: '#28a745', margin: '0 0 8px 0' }}>
 
-                    borderRadius: '4px',
+                  ✅ Inspection Information & Type Complete
 
-                    border: '1px solid #c3e6cb',
+                </h4>
 
-                    fontSize: '14px'
+                <p style={{ color: '#666', margin: '0', fontSize: '14px' }}>
 
-                  }}>
+                  Please confirm that all the information above is correct before proceeding
 
-                    ✅ Confirmed! You can now proceed with the inspection form.
-
-                  </div>
-
-                )}
+                </p>
 
               </div>
 
-            )}
+              <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', alignItems: 'center' }}>
 
-            {/* Show message when confirmation is disabled due to missing facility service departments */}
-            {isInspectionTypeSection && areAllInspectionFieldsComplete && !areAllInspectionFieldsComplete() && (
+                <label style={{
+
+                  display: 'flex',
+
+                  alignItems: 'center',
+
+                  gap: '8px',
+
+                  cursor: 'pointer',
+
+                  fontSize: '16px',
+
+                  color: '#333'
+
+                }}>
+
+                  <input
+
+                    type="checkbox"
+
+                    checked={inspectionInfoConfirmed}
+
+                    onChange={(e) => setInspectionInfoConfirmed && setInspectionInfoConfirmed(e.target.checked)}
+
+                    style={{
+
+                      width: '20px',
+
+                      height: '20px',
+
+                      cursor: 'pointer'
+
+                    }}
+
+                  />
+
+                  <span>I confirm that all inspection information and type are correct</span>
+
+                </label>
+
+              </div>
+
+              {inspectionInfoConfirmed && (
+
+                <div style={{
+
+                  marginTop: '12px',
+
+                  padding: '8px 16px',
+
+                  backgroundColor: '#d4edda',
+
+                  color: '#155724',
+
+                  borderRadius: '4px',
+
+                  border: '1px solid #c3e6cb',
+
+                  fontSize: '14px'
+
+                }}>
+
+                  ✅ Confirmed! You can now proceed with the inspection form.
+
+                </div>
+
+              )}
+
+            </div>
+
+          )}
+
+          {/* Show message when confirmation is disabled due to missing facility service departments */}
+          {isInspectionTypeSection && areAllInspectionFieldsComplete && !areAllInspectionFieldsComplete() && (() => {
+            // Determine what's missing
+            const hasFacility = formData.orgUnit && formData.orgUnit.trim() !== '';
+            const hasDepartments = selectedServiceDepartments && selectedServiceDepartments.length > 0;
+
+            let warningMessage = 'Please complete the following before proceeding:';
+            const missingItems = [];
+
+            if (!hasFacility) {
+              missingItems.push('Select a <strong>Facility</strong>');
+            }
+            if (!hasDepartments) {
+              missingItems.push('Select at least one <strong>Facility Service Department</strong>');
+            }
+
+            return (
               <div className="form-section" data-inspection-type="disabled" style={{
                 backgroundColor: '#fff3cd',
                 border: '2px solid #ffc107',
@@ -2411,9 +2426,20 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
                   <h4 style={{ color: '#856404', margin: '0 0 8px 0' }}>
                     ⚠️ Confirmation Required
                   </h4>
-                  <p style={{ color: '#856404', margin: '0', fontSize: '14px' }}>
-                    Please select at least one <strong>Facility Service Department</strong> above before proceeding with the inspection.
+                  <p style={{ color: '#856404', margin: '0 0 8px 0', fontSize: '14px' }}>
+                    {warningMessage}
                   </p>
+                  <ul style={{
+                    color: '#856404',
+                    textAlign: 'left',
+                    margin: '0 auto',
+                    display: 'inline-block',
+                    paddingLeft: '20px'
+                  }}>
+                    {missingItems.map((item, index) => (
+                      <li key={index} dangerouslySetInnerHTML={{ __html: item }} />
+                    ))}
+                  </ul>
                 </div>
 
                 <div style={{
@@ -2445,549 +2471,550 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
                   </label>
                 </div>
               </div>
-            )}
-
-          </div>
+            );
+          })()}
 
         </div>
 
       </div>
 
-    );
+    </div>
 
-  } // End of FormSection component
+  );
 
-  // Function to generate DHIS2 standard ID (11 characters alphanumeric)
-  const generateDHIS2Id = () => {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result = '';
+} // End of FormSection component
 
-    // First character must be a letter (DHIS2 requirement)
-    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-    result += letters.charAt(Math.floor(Math.random() * letters.length));
+// Function to generate DHIS2 standard ID (11 characters alphanumeric)
+const generateDHIS2Id = () => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
 
-    // Remaining 10 characters can be letters or numbers
-    for (let i = 1; i < 11; i++) {
-      result += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
+  // First character must be a letter (DHIS2 requirement)
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  result += letters.charAt(Math.floor(Math.random() * letters.length));
 
-    return result;
-  };
+  // Remaining 10 characters can be letters or numbers
+  for (let i = 1; i < 11; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
 
-  // Main FormPage component
+  return result;
+};
 
-  function FormPage() {
+// Main FormPage component
 
-    // Debug panel now managed by state below
+function FormPage() {
 
-    // Removed cleanup for facility service departments rendered flag (no longer needed)
+  // Debug panel now managed by state below
 
-    // State for inspection information confirmation (moved to top to fix hoisting issue)
-    const [inspectionInfoConfirmed, setInspectionInfoConfirmed] = useState(false);
+  // Removed cleanup for facility service departments rendered flag (no longer needed)
 
-    const { eventId } = useParams();
+  // State for inspection information confirmation (moved to top to fix hoisting issue)
+  const [inspectionInfoConfirmed, setInspectionInfoConfirmed] = useState(false);
 
-    const navigate = useNavigate();
-    // Ensure we always have an eventId for incremental saving
-    // If no eventId, check for most recent draft first before generating new one
-    useEffect(() => {
-      const initializeEventId = async () => {
-        if (!eventId) {
-          try {
-            // Check for most recent draft form data
-            const mostRecent = await indexedDBService.getMostRecentFormData();
-            
-            if (mostRecent && mostRecent.eventId) {
-              console.log('📋 Found most recent draft, restoring eventId:', mostRecent.eventId);
-              // Navigate to existing draft instead of creating new one
-              navigate(`/form/${mostRecent.eventId}`, { replace: true });
-            } else {
-              // No existing draft found, generate new eventId
-              const generatedId = generateDHIS2Id();
-              console.log('🆕 No existing draft found, generating new eventId:', generatedId);
-              navigate(`/form/${generatedId}`, { replace: true });
-            }
-          } catch (error) {
-            console.error('❌ Error checking for existing drafts:', error);
-            // On error, generate new eventId as fallback
+  const { eventId } = useParams();
+
+  const navigate = useNavigate();
+  // Ensure we always have an eventId for incremental saving
+  // If no eventId, check for most recent draft first before generating new one
+  useEffect(() => {
+    const initializeEventId = async () => {
+      if (!eventId) {
+        try {
+          // Check for most recent draft form data
+          const mostRecent = await indexedDBService.getMostRecentFormData();
+
+          if (mostRecent && mostRecent.eventId) {
+            console.log('📋 Found most recent draft, restoring eventId:', mostRecent.eventId);
+            // Navigate to existing draft instead of creating new one
+            navigate(`/form/${mostRecent.eventId}`, { replace: true });
+          } else {
+            // No existing draft found, generate new eventId
             const generatedId = generateDHIS2Id();
+            console.log('🆕 No existing draft found, generating new eventId:', generatedId);
             navigate(`/form/${generatedId}`, { replace: true });
           }
-        }
-      };
-
-      initializeEventId();
-    }, [eventId, navigate]);
-
-    // const api = useAPI();
-
-    const {
-
-      configuration,
-
-      saveEvent,
-
-      showToast,
-
-      loading,
-
-      isOnline,
-
-      userAssignments,
-
-      user,
-
-      api,
-
-      setEventDate
-
-    } = useApp();
-
-    // State to track the facility type for filtering (from dataStore)
-
-    const [facilityType, setFacilityType] = useState(null);
-
-    // Set global facility type for use in field rendering
-    useEffect(() => {
-      window.__currentFacilityType = facilityType;
-    }, [facilityType]);
-
-    // State to track facility information from dataStore
-    const [facilityInfo, setFacilityInfo] = useState(null);
-    const [loadingFacilityInfo, setLoadingFacilityInfo] = useState(false);
-
-    // State to track selected facility service departments for section filtering
-    const [selectedServiceDepartments, setSelectedServiceDepartments] = useState([]);
-
-    // Manual specialization selection state
-    const [manualSpecialization, setManualSpecialization] = useState('');
-
-    // Save status indicator state
-    const [saveStatus, setSaveStatus] = useState({
-      isVisible: false,
-      message: '',
-      type: 'success'
-    });
-    
-    // State to force re-renders when specialization changes
-    const [lastUpdateTimestamp, setLastUpdateTimestamp] = useState(Date.now());
-
-    // Flag to prevent clearing service departments during IndexedDB loading
-    const [isLoadingFromIndexedDB, setIsLoadingFromIndexedDB] = useState(false);
-
-    // Debug panel state
-    const [showDebugPanel, setShowDebugPanel] = useState(false);
-    const [indexedDBData, setIndexedDBData] = useState(null);
-
-    // Function to refresh IndexedDB data for debug panel
-    const refreshIndexedDBData = async () => {
-      if (eventId) {
-        try {
-          const data = await loadFormData();
-          setIndexedDBData(data);
         } catch (error) {
-          console.error('Failed to load IndexedDB data:', error);
-          setIndexedDBData({ error: error.message });
+          console.error('❌ Error checking for existing drafts:', error);
+          // On error, generate new eventId as fallback
+          const generatedId = generateDHIS2Id();
+          navigate(`/form/${generatedId}`, { replace: true });
         }
       }
     };
 
-    // Available specialization options - aligned to canonical CSV facility types
-    const specializationOptions = CANONICAL_FACILITY_TYPES;
+    initializeEventId();
+  }, [eventId, navigate]);
 
-    // State to track loading of service sections
-    const [loadingServiceSections, setLoadingServiceSections] = useState(false);
+  // const api = useAPI();
 
-    // Handle manual specialization selection
-    const handleSpecializationChange = (selectedSpecialization) => {
+  const {
 
-      // Enhanced debugging
-      setManualSpecialization(selectedSpecialization);
-      setFacilityType(selectedSpecialization); // Update facility type for filtering
+    configuration,
 
-      // Update the form data for the specialization dataElement (qfmVD6tCOHu)
-      const specializationFieldName = 'dataElement_qfmVD6tCOHu';
+    saveEvent,
 
-      // Also update the formData to ensure consistency
-      setFormData(prev => ({
-        ...prev,
-        facilityClassification: selectedSpecialization,
-        [specializationFieldName]: selectedSpecialization
-      }));
+    showToast,
 
-      // Save the specialization field incrementally to IndexedDB
-      if (eventId) {
-        saveField(specializationFieldName, selectedSpecialization);
+    loading,
+
+    isOnline,
+
+    userAssignments,
+
+    user,
+
+    api,
+
+    setEventDate
+
+  } = useApp();
+
+  // State to track the facility type for filtering (from dataStore)
+
+  const [facilityType, setFacilityType] = useState(null);
+
+  // Set global facility type for use in field rendering
+  useEffect(() => {
+    window.__currentFacilityType = facilityType;
+  }, [facilityType]);
+
+  // State to track facility information from dataStore
+  const [facilityInfo, setFacilityInfo] = useState(null);
+  const [loadingFacilityInfo, setLoadingFacilityInfo] = useState(false);
+
+  // State to track selected facility service departments for section filtering
+  const [selectedServiceDepartments, setSelectedServiceDepartments] = useState([]);
+
+  // Manual specialization selection state
+  const [manualSpecialization, setManualSpecialization] = useState('');
+
+  // Save status indicator state
+  const [saveStatus, setSaveStatus] = useState({
+    isVisible: false,
+    message: '',
+    type: 'success'
+  });
+
+  // State to force re-renders when specialization changes
+  const [lastUpdateTimestamp, setLastUpdateTimestamp] = useState(Date.now());
+
+  // Flag to prevent clearing service departments during IndexedDB loading
+  const [isLoadingFromIndexedDB, setIsLoadingFromIndexedDB] = useState(false);
+
+  // Debug panel state
+  const [showDebugPanel, setShowDebugPanel] = useState(false);
+  const [indexedDBData, setIndexedDBData] = useState(null);
+
+  // Function to refresh IndexedDB data for debug panel
+  const refreshIndexedDBData = async () => {
+    if (eventId) {
+      try {
+        const data = await loadFormData();
+        setIndexedDBData(data);
+      } catch (error) {
+        console.error('Failed to load IndexedDB data:', error);
+        setIndexedDBData({ error: error.message });
       }
-      
-      // Clear any previously selected departments when specialization changes
-      // This ensures departments are only from the newly selected specialization
-      // But don't clear if we're loading from IndexedDB
-      if (!isLoadingFromIndexedDB) {
-        setSelectedServiceDepartments([]);
-      }
-      
-      // Clear the global department options to force recalculation
-      window.__departmentOptionsForSection = null;
-      
-      // Force re-render by updating a timestamp
-      setLastUpdateTimestamp(Date.now());
-      
-      // Force re-render of the Facility Service Departments field
-      if (window.forceFormRerender) {
-        window.forceFormRerender();
-      }
-      
-      // Use hardcoded departments instead of dynamic calculation
-      
-      // Get hardcoded departments for the selected specialization
-      const hardcodedDepartments = getDepartmentsForSpecialization(selectedSpecialization);
-      const departmentStats = getDepartmentStats(selectedSpecialization);
-      // Set the global department options to our hardcoded list
-      window.__departmentOptionsForSection = hardcodedDepartments;
-      
-      // Also store the specialization in global state
-      window.__currentSpecialization = selectedSpecialization;
-      window.__manualSpecialization = selectedSpecialization;
-      
-      // OVERRIDE any dynamic calculation by intercepting the global department options
-      // This ensures our hardcoded departments are always used
-      const originalDepartmentOptions = window.__departmentOptionsForSection;
-      window.__departmentOptionsForSection = hardcodedDepartments;
-      
-      // Also override any other global variables that might be used
-      window.__hardcodedDepartments = hardcodedDepartments;
-      window.__currentSpecialization = selectedSpecialization;
+    }
+  };
 
-      // Set up a global interceptor to ensure our hardcoded departments are always used
-      // This will override any dynamic calculation that happens after this point
-      const interceptor = () => {
-        if (window.__hardcodedDepartments && window.__hardcodedDepartments.length > 0) {
-          window.__departmentOptionsForSection = window.__hardcodedDepartments;
-          return window.__hardcodedDepartments;
-        }
-        return window.__departmentOptionsForSection;
-      };
-      
-      // Override the global department options getter
-      window.getDepartmentOptions = interceptor;
-      
-      // REMOVED: The periodic guard was causing performance issues and constant re-renders
-      // Instead, we'll rely on the one-time setup and proper state management
-      
-      // Legacy dynamic calculation (commented out - using hardcoded instead)
-      /*
-      if (configuration?.programStage?.sections) {
-        const filteredSections = configuration.programStage.sections.filter(section => {
-          return shouldShowSection(section.displayName, selectedSpecialization);
-        });
-        
-        console.log(`🔍 Immediately filtering sections for ${selectedSpecialization}:`, {
-          total: configuration.programStage.sections.length,
-          filtered: filteredSections.length,
-          sections: filteredSections.map(s => s.displayName)
-        });
-        
-        // Calculate department options immediately
-        const names = [];
-        const seenNames = new Set();
-        
-        for (const s of filteredSections) {
-          const total = s?.dataElements?.length || 0;
-          if (total === 0) continue;
-          
-          // Skip if we've already processed a section with this display name
-          if (seenNames.has(s.displayName)) {
-            continue;
-          }
-          
-          const shown = (s.dataElements || []).filter(psde2 => {
-            if (!psde2?.dataElement) return false;
-            const displayName2 = psde2.dataElement.displayName;
-            const isComment2 = /\s(Comments?|Remarks?)$/i.test(displayName2);
-            if (isComment2) {
-              const main2 = displayName2
-                .replace(/\sComments?\s*$/i, '')
-                .replace(/\sRemarks?\s*$/i, '')
-                .trim();
-              return shouldShowDataElementForService(main2, selectedSpecialization);
-            }
-            return shouldShowDataElementForService(displayName2, selectedSpecialization);
-          }).length;
-          
-          if (shown > 0) {
-            names.push(s.displayName);
-            seenNames.add(s.displayName);
-          }
-        }
-        
-        const departmentOptions = names;
-        window.__departmentOptionsForSection = departmentOptions;
+  // Available specialization options - aligned to canonical CSV facility types
+  const specializationOptions = CANONICAL_FACILITY_TYPES;
+
+  // State to track loading of service sections
+  const [loadingServiceSections, setLoadingServiceSections] = useState(false);
+
+  // Handle manual specialization selection
+  const handleSpecializationChange = (selectedSpecialization) => {
+
+    // Enhanced debugging
+    setManualSpecialization(selectedSpecialization);
+    setFacilityType(selectedSpecialization); // Update facility type for filtering
+
+    // Update the form data for the specialization dataElement (qfmVD6tCOHu)
+    const specializationFieldName = 'dataElement_qfmVD6tCOHu';
+
+    // Also update the formData to ensure consistency
+    setFormData(prev => ({
+      ...prev,
+      facilityClassification: selectedSpecialization,
+      [specializationFieldName]: selectedSpecialization
+    }));
+
+    // Save the specialization field incrementally to IndexedDB
+    if (eventId) {
+      saveField(specializationFieldName, selectedSpecialization);
+    }
+
+    // Clear any previously selected departments when specialization changes
+    // This ensures departments are only from the newly selected specialization
+    // But don't clear if we're loading from IndexedDB
+    if (!isLoadingFromIndexedDB) {
+      setSelectedServiceDepartments([]);
+    }
+
+    // Clear the global department options to force recalculation
+    window.__departmentOptionsForSection = null;
+
+    // Force re-render by updating a timestamp
+    setLastUpdateTimestamp(Date.now());
+
+    // Force re-render of the Facility Service Departments field
+    if (window.forceFormRerender) {
+      window.forceFormRerender();
+    }
+
+    // Use hardcoded departments instead of dynamic calculation
+
+    // Get hardcoded departments for the selected specialization
+    const hardcodedDepartments = getDepartmentsForSpecialization(selectedSpecialization);
+    const departmentStats = getDepartmentStats(selectedSpecialization);
+    // Set the global department options to our hardcoded list
+    window.__departmentOptionsForSection = hardcodedDepartments;
+
+    // Also store the specialization in global state
+    window.__currentSpecialization = selectedSpecialization;
+    window.__manualSpecialization = selectedSpecialization;
+
+    // OVERRIDE any dynamic calculation by intercepting the global department options
+    // This ensures our hardcoded departments are always used
+    const originalDepartmentOptions = window.__departmentOptionsForSection;
+    window.__departmentOptionsForSection = hardcodedDepartments;
+
+    // Also override any other global variables that might be used
+    window.__hardcodedDepartments = hardcodedDepartments;
+    window.__currentSpecialization = selectedSpecialization;
+
+    // Set up a global interceptor to ensure our hardcoded departments are always used
+    // This will override any dynamic calculation that happens after this point
+    const interceptor = () => {
+      if (window.__hardcodedDepartments && window.__hardcodedDepartments.length > 0) {
+        window.__departmentOptionsForSection = window.__hardcodedDepartments;
+        return window.__hardcodedDepartments;
       }
-      */
-      // Log what sections should be visible now
-      const visibleSections = getVisibleSectionsForFacility(selectedSpecialization);
+      return window.__departmentOptionsForSection;
     };
 
-    // Function to determine if a section should be shown based on selected service departments
-    const shouldShowSectionForServiceDepartments = (sectionName, selectedDepartments) => {
-      const safeName = (sectionName || '').toString();
-      const sectionLower = safeName.toLowerCase();
+    // Override the global department options getter
+    window.getDepartmentOptions = interceptor;
 
-      // Always show core inspection sections regardless of department selection
-      if (sectionLower.includes('inspection information') || sectionLower.includes('inspection type')) {
-        return true;
+    // REMOVED: The periodic guard was causing performance issues and constant re-renders
+    // Instead, we'll rely on the one-time setup and proper state management
+
+    // Legacy dynamic calculation (commented out - using hardcoded instead)
+    /*
+    if (configuration?.programStage?.sections) {
+      const filteredSections = configuration.programStage.sections.filter(section => {
+        return shouldShowSection(section.displayName, selectedSpecialization);
+      });
+      
+      console.log(`🔍 Immediately filtering sections for ${selectedSpecialization}:`, {
+        total: configuration.programStage.sections.length,
+        filtered: filteredSections.length,
+        sections: filteredSections.map(s => s.displayName)
+      });
+      
+      // Calculate department options immediately
+      const names = [];
+      const seenNames = new Set();
+      
+      for (const s of filteredSections) {
+        const total = s?.dataElements?.length || 0;
+        if (total === 0) continue;
+        
+        // Skip if we've already processed a section with this display name
+        if (seenNames.has(s.displayName)) {
+          continue;
+        }
+        
+        const shown = (s.dataElements || []).filter(psde2 => {
+          if (!psde2?.dataElement) return false;
+          const displayName2 = psde2.dataElement.displayName;
+          const isComment2 = /\s(Comments?|Remarks?)$/i.test(displayName2);
+          if (isComment2) {
+            const main2 = displayName2
+              .replace(/\sComments?\s*$/i, '')
+              .replace(/\sRemarks?\s*$/i, '')
+              .trim();
+            return shouldShowDataElementForService(main2, selectedSpecialization);
+          }
+          return shouldShowDataElementForService(displayName2, selectedSpecialization);
+        }).length;
+        
+        if (shown > 0) {
+          names.push(s.displayName);
+          seenNames.add(s.displayName);
+        }
+      }
+      
+      const departmentOptions = names;
+      window.__departmentOptionsForSection = departmentOptions;
+    }
+    */
+    // Log what sections should be visible now
+    const visibleSections = getVisibleSectionsForFacility(selectedSpecialization);
+  };
+
+  // Function to determine if a section should be shown based on selected service departments
+  const shouldShowSectionForServiceDepartments = (sectionName, selectedDepartments) => {
+    const safeName = (sectionName || '').toString();
+    const sectionLower = safeName.toLowerCase();
+
+    // Always show core inspection sections regardless of department selection
+    if (sectionLower.includes('inspection information') || sectionLower.includes('inspection type')) {
+      return true;
+    }
+
+    // If no departments have been selected yet, hide all other sections.
+    // This keeps the progress bar and main form from showing every department
+    // section as soon as a category is chosen; sections only appear once at
+    // least one Facility Service Department has been ticked.
+    if (!selectedDepartments || selectedDepartments.length === 0) {
+      return false;
+    }
+
+    // Enhanced mapping of service departments to relevant sections
+    const departmentSectionMapping = {
+      // Management and Organization (use exact, CSV-aligned names to avoid
+      // accidental matches on generic words like "MANAGEMENT" or "ADMIN")
+      'ORGANISATION AND MANAGEMENT': ['ORGANISATION AND MANAGEMENT'],
+      'STATUTORY REQUIREMENTS': ['STATUTORY REQUIREMENTS'],
+      'POLICIES AND PROCEDURES': ['POLICIES AND PROCEDURES'],
+
+      // Services and Personnel (CSV canonical departments). We match on the
+      // full, CSV-aligned names (or very tight aliases) only 1 no more
+      // generic words like "SERVICE" or "STAFF" that could hit unrelated
+      // sections.
+      'SERVICES PROVIDED': ['SERVICES PROVIDED', 'SERVICE PROVIDED'],
+      'PERSONNEL': ['PERSONNEL'],
+
+      // Environment and Infrastructure
+      'ENVIRONMENT': ['ENVIRONMENT', 'ENVIRONMENTAL', 'FACILITY ENVIRONMENT', 'INFRASTRUCTURE'],
+      'SAFETY AND WASTE MANAGEMENT': ['SAFETY', 'WASTE', 'MANAGEMENT', 'DISPOSAL', 'HAZARD'],
+
+      // Patient Areas
+      'RECEPTION AREA': ['RECEPTION', 'RECEPTION AREA', 'FRONT DESK', 'ENTRY'],
+      'PATIENT WAITING AREA': ['WAITING', 'WAITING AREA', 'PATIENT WAITING'],
+
+      // Clinical Rooms - General
+      'SCREENING ROOM': ['SCREENING', 'SCREENING ROOM'],
+      'CONSULTATION ROOM': ['CONSULTATION', 'CONSULTATION ROOM', 'CONSULT'],
+      'PROCEDURE ROOM': ['PROCEDURE', 'PROCEDURE ROOM', 'TREATMENT'],
+
+      // Clinical Rooms - Specialized
+      'GYNAECOLOGY EXAMINATION ROOM': ['GYNAECOLOGY', 'GYNAE', 'GYN', 'EXAMINATION'],
+      'ENT EXAMINATION ROOM': ['ENT', 'EAR', 'NOSE', 'THROAT'],
+      'OPHTHALMOLOGY EXAMINATION ROOM': ['OPHTHALMOLOGY', 'EYE', 'VISION'],
+      'DENTAL CHAIR AREA': ['DENTAL', 'CHAIR', 'DENTIST', 'ORAL'],
+      'X-RAY ROOM': ['X-RAY', 'XRAY', 'RADIOLOGY', 'IMAGING'],
+      'RADIOLOGY READING ROOM': ['RADIOLOGY', 'READING', 'IMAGING'],
+
+      // Support Rooms
+      'BLEEDING ROOM': ['BLEEDING', 'BLEEDING ROOM', 'BLOOD'],
+      'SLUICE ROOM': ['SLUICE', 'SLUICE ROOM', 'CLEANING'],
+      'TOILET FACILITITES': ['TOILET', 'FACILITIES', 'SANITATION', 'RESTROOM'],
+
+      // Laboratory Areas
+      'LABORATORY WORK AREA': ['LABORATORY', 'LAB', 'TESTING', 'ANALYSIS'],
+
+      // Pharmacy and Supplies
+      'PHARMACY/ DISPENSARY': ['PHARMACY/ DISPENSARY'],
+      'SUPPLIES': ['SUPPLIES'],
+
+      // Information Management
+      'RECORDS/ INFORMATION MANAGEMENT': ['RECORDS', 'INFORMATION', 'MANAGEMENT', 'DATA', 'FILING'],
+      'MEDICAL RECORDS ROOM': ['MEDICAL RECORDS', 'RECORDS', 'FILES'],
+
+      // Therapy Areas
+      'PHYSIOTHERAPY TREATMENT AREA': ['PHYSIOTHERAPY', 'PHYSIO', 'THERAPY', 'REHABILITATION'],
+      'PSYCHOLOGY CONSULTATION ROOM': ['PSYCHOLOGY', 'PSYCH', 'MENTAL HEALTH', 'COUNSELING'],
+      'REHABILITATION THERAPY AREA': ['REHABILITATION', 'REHAB', 'THERAPY'],
+
+      // Emergency and Critical Care
+      'EMERGENCY ROOM': ['EMERGENCY', 'ER', 'CASUALTY', 'TRAUMA'],
+      'OPERATING THEATRE': ['OPERATING', 'THEATRE', 'SURGERY', 'OR'],
+      'INTENSIVE CARE UNIT': ['INTENSIVE CARE', 'ICU', 'CRITICAL CARE'],
+
+      // Wards
+      'MATERNITY WARD': ['MATERNITY', 'OBSTETRIC', 'DELIVERY', 'LABOUR'],
+      'PEDIATRIC WARD': ['PEDIATRIC', 'PAEDIATRIC', 'CHILDREN', 'KIDS'],
+      'ISOLATION ROOM': ['ISOLATION', 'QUARANTINE', 'INFECTIOUS'],
+
+      // Storage and Administrative
+      'WASTE STORAGE AREA': ['WASTE STORAGE', 'WASTE', 'DISPOSAL'],
+      'CLEANING STORAGE AREA': ['CLEANING STORAGE', 'CLEANING', 'HOUSEKEEPING'],
+      'STAFF REST ROOM': ['STAFF REST', 'REST ROOM', 'BREAK ROOM'],
+      'ADMINISTRATIVE OFFICE': ['ADMINISTRATIVE', 'OFFICE', 'ADMIN'],
+
+      // Quality and Satisfaction
+      'CUSTOMER SATISFACTION': ['CUSTOMER', 'SATISFACTION', 'PATIENT SATISFACTION', 'FEEDBACK'],
+
+      // CSV-driven departments that map 1:1 to sections
+      // For HIV SCREENING we require an exact, CSV-aligned section name so
+      // that selecting this department only pulls in the explicit
+      // "HIV SCREENING" section and does NOT also match generic rooms.
+      'HIV SCREENING': ['HIV SCREENING'],
+      // TENS is represented in DHIS2 as a "CUSTOMER SATISFACTION" style section,
+      // so we map it to that exact section name as well.
+      'TENS': ['TENS', 'CUSTOMER SATISFACTION'],
+
+      // Catch-all
+      'OTHER': [] // OTHER shows all sections
+    };
+
+    // Check if any selected department maps to this section
+
+    for (const department of selectedDepartments) {
+      if (department === 'OTHER') {
+        return true; // OTHER shows all sections
       }
 
-      // If no departments have been selected yet, hide all other sections.
-      // This keeps the progress bar and main form from showing every department
-      // section as soon as a category is chosen; sections only appear once at
-      // least one Facility Service Department has been ticked.
-      if (!selectedDepartments || selectedDepartments.length === 0) {
+      const keywords = departmentSectionMapping[department] || [];
+
+      // Match on full, CSV-aligned names (or tight aliases) using a
+      // case-insensitive contains check. This is effectively "exact" at the
+      // level of whole section names because we only put full section names in
+      // the mapping (no more generic tokens like "SCREENING" or "STAFF").
+      const safeUpper = safeName.toUpperCase();
+
+      for (const keyword of keywords) {
+        const token = String(keyword).trim().toUpperCase();
+        if (token && safeUpper.includes(token)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  };
+
+  // Set up global handler for updating the facilityType state
+
+  useEffect(() => {
+
+    window.updateSelectedFacilityService = (value) => {
+
+      const normalized = normalizeFacilityClassification(value);
+      setFacilityType(normalized || value);
+
+    };
+
+    // Global function to update selected service departments
+    window.updateSelectedServiceDepartments = (departments) => {
+      setSelectedServiceDepartments(departments);
+    };
+
+    return () => {
+      // Cleanup global functions
+      delete window.updateSelectedFacilityService;
+      delete window.updateSelectedServiceDepartments;
+    };
+
+  }, []);
+
+  // TODO: Monitor formData changes to update selected service departments
+  // Temporarily disabled to fix initialization error
+  // useEffect(() => {
+  //   const facilityServiceDepartmentsField = 'dataElement_jpcDY2i8ZDE';
+  //   if (formData && formData[facilityServiceDepartmentsField]) {
+  //     try {
+  //       const parsedDepartments = JSON.parse(formData[facilityServiceDepartmentsField]);
+  //       if (Array.isArray(parsedDepartments)) {
+  //         setSelectedServiceDepartments(parsedDepartments);
+  //       }
+  //     } catch (e) {
+  //       console.warn('Failed to parse service departments');
+  //     }
+  //   }
+  // }, [formData]);
+
+  // Function to filter out unwanted sections (including those starting with "Pre")
+
+  const filterUnwantedSections = (sections) => {
+
+    if (!sections || !Array.isArray(sections)) return [];
+
+    // Filter out unwanted sections including those starting with "Pre"
+
+    const filtered = sections.filter(section => {
+      const displayName = section.displayName || '';
+
+      // Check if section starts with "Pre" (case-insensitive)
+      if (displayName.toLowerCase().startsWith('pre')) {
         return false;
       }
 
-      // Enhanced mapping of service departments to relevant sections
-      const departmentSectionMapping = {
-        // Management and Organization (use exact, CSV-aligned names to avoid
-        // accidental matches on generic words like "MANAGEMENT" or "ADMIN")
-        'ORGANISATION AND MANAGEMENT': ['ORGANISATION AND MANAGEMENT'],
-        'STATUTORY REQUIREMENTS': ['STATUTORY REQUIREMENTS'],
-        'POLICIES AND PROCEDURES': ['POLICIES AND PROCEDURES'],
-
-        // Services and Personnel (CSV canonical departments). We match on the
-        // full, CSV-aligned names (or very tight aliases) only 1 no more
-        // generic words like "SERVICE" or "STAFF" that could hit unrelated
-        // sections.
-        'SERVICES PROVIDED': ['SERVICES PROVIDED', 'SERVICE PROVIDED'],
-        'PERSONNEL': ['PERSONNEL'],
-
-        // Environment and Infrastructure
-        'ENVIRONMENT': ['ENVIRONMENT', 'ENVIRONMENTAL', 'FACILITY ENVIRONMENT', 'INFRASTRUCTURE'],
-        'SAFETY AND WASTE MANAGEMENT': ['SAFETY', 'WASTE', 'MANAGEMENT', 'DISPOSAL', 'HAZARD'],
-
-        // Patient Areas
-        'RECEPTION AREA': ['RECEPTION', 'RECEPTION AREA', 'FRONT DESK', 'ENTRY'],
-        'PATIENT WAITING AREA': ['WAITING', 'WAITING AREA', 'PATIENT WAITING'],
-
-        // Clinical Rooms - General
-        'SCREENING ROOM': ['SCREENING', 'SCREENING ROOM'],
-        'CONSULTATION ROOM': ['CONSULTATION', 'CONSULTATION ROOM', 'CONSULT'],
-        'PROCEDURE ROOM': ['PROCEDURE', 'PROCEDURE ROOM', 'TREATMENT'],
-
-        // Clinical Rooms - Specialized
-        'GYNAECOLOGY EXAMINATION ROOM': ['GYNAECOLOGY', 'GYNAE', 'GYN', 'EXAMINATION'],
-        'ENT EXAMINATION ROOM': ['ENT', 'EAR', 'NOSE', 'THROAT'],
-        'OPHTHALMOLOGY EXAMINATION ROOM': ['OPHTHALMOLOGY', 'EYE', 'VISION'],
-        'DENTAL CHAIR AREA': ['DENTAL', 'CHAIR', 'DENTIST', 'ORAL'],
-        'X-RAY ROOM': ['X-RAY', 'XRAY', 'RADIOLOGY', 'IMAGING'],
-        'RADIOLOGY READING ROOM': ['RADIOLOGY', 'READING', 'IMAGING'],
-
-        // Support Rooms
-        'BLEEDING ROOM': ['BLEEDING', 'BLEEDING ROOM', 'BLOOD'],
-        'SLUICE ROOM': ['SLUICE', 'SLUICE ROOM', 'CLEANING'],
-        'TOILET FACILITITES': ['TOILET', 'FACILITIES', 'SANITATION', 'RESTROOM'],
-
-        // Laboratory Areas
-        'LABORATORY WORK AREA': ['LABORATORY', 'LAB', 'TESTING', 'ANALYSIS'],
-
-        // Pharmacy and Supplies
-        'PHARMACY/ DISPENSARY': ['PHARMACY/ DISPENSARY'],
-        'SUPPLIES': ['SUPPLIES'],
-
-        // Information Management
-        'RECORDS/ INFORMATION MANAGEMENT': ['RECORDS', 'INFORMATION', 'MANAGEMENT', 'DATA', 'FILING'],
-        'MEDICAL RECORDS ROOM': ['MEDICAL RECORDS', 'RECORDS', 'FILES'],
-
-        // Therapy Areas
-        'PHYSIOTHERAPY TREATMENT AREA': ['PHYSIOTHERAPY', 'PHYSIO', 'THERAPY', 'REHABILITATION'],
-        'PSYCHOLOGY CONSULTATION ROOM': ['PSYCHOLOGY', 'PSYCH', 'MENTAL HEALTH', 'COUNSELING'],
-        'REHABILITATION THERAPY AREA': ['REHABILITATION', 'REHAB', 'THERAPY'],
-
-        // Emergency and Critical Care
-        'EMERGENCY ROOM': ['EMERGENCY', 'ER', 'CASUALTY', 'TRAUMA'],
-        'OPERATING THEATRE': ['OPERATING', 'THEATRE', 'SURGERY', 'OR'],
-        'INTENSIVE CARE UNIT': ['INTENSIVE CARE', 'ICU', 'CRITICAL CARE'],
-
-        // Wards
-        'MATERNITY WARD': ['MATERNITY', 'OBSTETRIC', 'DELIVERY', 'LABOUR'],
-        'PEDIATRIC WARD': ['PEDIATRIC', 'PAEDIATRIC', 'CHILDREN', 'KIDS'],
-        'ISOLATION ROOM': ['ISOLATION', 'QUARANTINE', 'INFECTIOUS'],
-
-        // Storage and Administrative
-        'WASTE STORAGE AREA': ['WASTE STORAGE', 'WASTE', 'DISPOSAL'],
-        'CLEANING STORAGE AREA': ['CLEANING STORAGE', 'CLEANING', 'HOUSEKEEPING'],
-        'STAFF REST ROOM': ['STAFF REST', 'REST ROOM', 'BREAK ROOM'],
-        'ADMINISTRATIVE OFFICE': ['ADMINISTRATIVE', 'OFFICE', 'ADMIN'],
-
-        // Quality and Satisfaction
-        'CUSTOMER SATISFACTION': ['CUSTOMER', 'SATISFACTION', 'PATIENT SATISFACTION', 'FEEDBACK'],
-
-        // CSV-driven departments that map 1:1 to sections
-        // For HIV SCREENING we require an exact, CSV-aligned section name so
-        // that selecting this department only pulls in the explicit
-        // "HIV SCREENING" section and does NOT also match generic rooms.
-        'HIV SCREENING': ['HIV SCREENING'],
-        // TENS is represented in DHIS2 as a "CUSTOMER SATISFACTION" style section,
-        // so we map it to that exact section name as well.
-        'TENS': ['TENS', 'CUSTOMER SATISFACTION'],
-
-        // Catch-all
-        'OTHER': [] // OTHER shows all sections
-      };
-
-      // Check if any selected department maps to this section
-
-      for (const department of selectedDepartments) {
-        if (department === 'OTHER') {
-          return true; // OTHER shows all sections
-        }
-
-        const keywords = departmentSectionMapping[department] || [];
-
-        // Match on full, CSV-aligned names (or tight aliases) using a
-        // case-insensitive contains check. This is effectively "exact" at the
-        // level of whole section names because we only put full section names in
-        // the mapping (no more generic tokens like "SCREENING" or "STAFF").
-        const safeUpper = safeName.toUpperCase();
-
-        for (const keyword of keywords) {
-          const token = String(keyword).trim().toUpperCase();
-          if (token && safeUpper.includes(token)) {
-            return true;
-          }
-        }
+      // Also filter out these specific sections
+      if (displayName === "Final_Inspection_Event" ||
+        displayName === "Preliminary-Report" ||
+        displayName === "Inspectors Details") {
+        return false;
       }
 
-      return false;
-    };
+      return true;
+    });
 
-    // Set up global handler for updating the facilityType state
+    console.log('🔍 filterUnwantedSections: Filtered sections:', {
+      original: sections.length,
+      filtered: filtered.length,
+      removed: sections.length - filtered.length,
+      removedSections: sections
+        .filter(s => !filtered.includes(s))
+        .map(s => s.displayName)
+    });
 
-    useEffect(() => {
+    return filtered;
 
-      window.updateSelectedFacilityService = (value) => {
+  };
 
-        const normalized = normalizeFacilityClassification(value);
-        setFacilityType(normalized || value);
+  // Function to parse CSV and extract facility classifications
 
-      };
+  const parseCSVClassifications = (csvContent) => {
 
-      // Global function to update selected service departments
-      window.updateSelectedServiceDepartments = (departments) => {
-        setSelectedServiceDepartments(departments);
-      };
+    try {
 
-      return () => {
-        // Cleanup global functions
-        delete window.updateSelectedFacilityService;
-        delete window.updateSelectedServiceDepartments;
-      };
+      // Split CSV content into lines
 
-    }, []);
+      const lines = csvContent.split('\n');
 
-    // TODO: Monitor formData changes to update selected service departments
-    // Temporarily disabled to fix initialization error
-    // useEffect(() => {
-    //   const facilityServiceDepartmentsField = 'dataElement_jpcDY2i8ZDE';
-    //   if (formData && formData[facilityServiceDepartmentsField]) {
-    //     try {
-    //       const parsedDepartments = JSON.parse(formData[facilityServiceDepartmentsField]);
-    //       if (Array.isArray(parsedDepartments)) {
-    //         setSelectedServiceDepartments(parsedDepartments);
-    //       }
-    //     } catch (e) {
-    //       console.warn('Failed to parse service departments');
-    //     }
-    //   }
-    // }, [formData]);
+      if (lines.length < 2) return [];
 
-    // Function to filter out unwanted sections (including those starting with "Pre")
+      // Get the second line (index 1) which contains the actual facility classification names
 
-    const filterUnwantedSections = (sections) => {
+      // Skip the first line which just has numbers
 
-      if (!sections || !Array.isArray(sections)) return [];
+      const classificationRow = lines[1].split(',');
 
-      // Filter out unwanted sections including those starting with "Pre"
+      // Extract facility classifications (skip the first empty column)
 
-      const filtered = sections.filter(section => {
-        const displayName = section.displayName || '';
-        
-        // Check if section starts with "Pre" (case-insensitive)
-        if (displayName.toLowerCase().startsWith('pre')) {
-          return false;
-        }
-        
-        // Also filter out these specific sections
-        if (displayName === "Final_Inspection_Event" || 
-            displayName === "Preliminary-Report" ||
-            displayName === "Inspectors Details") {
-          return false;
-        }
-        
-        return true;
-      });
+      const classifications = classificationRow.slice(1).map(col => col.trim()).filter(col => col.length > 0);
 
-      console.log('🔍 filterUnwantedSections: Filtered sections:', {
-        original: sections.length,
-        filtered: filtered.length,
-        removed: sections.length - filtered.length,
-        removedSections: sections
-          .filter(s => !filtered.includes(s))
-          .map(s => s.displayName)
-      });
+      return classifications;
 
-      return filtered;
+    } catch (error) {
 
-    };
+      console.error('Error parsing CSV:', error);
 
-    // Function to parse CSV and extract facility classifications
+      return [];
 
-    const parseCSVClassifications = (csvContent) => {
+    }
 
-      try {
+  };
 
-        // Split CSV content into lines
+  // Function to load facility classifications from CSV
 
-        const lines = csvContent.split('\n');
+  const loadFacilityClassifications = async () => {
 
-        if (lines.length < 2) return [];
+    setLoadingFacilityClassifications(true);
 
-        // Get the second line (index 1) which contains the actual facility classification names
+    try {
 
-        // Skip the first line which just has numbers
+      // For now, we'll use the hardcoded CSV content
 
-        const classificationRow = lines[1].split(',');
+      // In a real implementation, you might fetch this from an API or file
 
-        // Extract facility classifications (skip the first empty column)
-
-        const classifications = classificationRow.slice(1).map(col => col.trim()).filter(col => col.length > 0);
-
-        return classifications;
-
-      } catch (error) {
-
-        console.error('Error parsing CSV:', error);
-
-        return [];
-
-      }
-
-    };
-
-    // Function to load facility classifications from CSV
-
-    const loadFacilityClassifications = async () => {
-
-      setLoadingFacilityClassifications(true);
-
-      try {
-
-        // For now, we'll use the hardcoded CSV content
-
-        // In a real implementation, you might fetch this from an API or file
-
-        const csvContent = `,1,2,3,4,5,6,7,8,9,10,11
+      const csvContent = `,1,2,3,4,5,6,7,8,9,10,11
 
 ,Gynae Clinics,laboratory,Psychology clinic,Eye (opthalmologyoptometry  optician) Clinics,physiotheraphy,dental clinic,ENT clinic,Rehabilitation Centre,Potrait clinic,Radiology,clinic
 
@@ -3099,96 +3126,230 @@ Outreach services,?,?,?,?,?,?,?,?,?,?,?
 
 Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
-        const rawClassifications = parseCSVClassifications(csvContent);
+      const rawClassifications = parseCSVClassifications(csvContent);
 
-        // Normalize and de-duplicate against canonical facility types from CSV
-        const normalizedClassifications = Array.from(
-          new Set(
-            rawClassifications
-              .map((name) => normalizeFacilityClassification(name))
-              .filter(Boolean)
-          )
-        );
+      // Normalize and de-duplicate against canonical facility types from CSV
+      const normalizedClassifications = Array.from(
+        new Set(
+          rawClassifications
+            .map((name) => normalizeFacilityClassification(name))
+            .filter(Boolean)
+        )
+      );
 
-        setFacilityClassifications(normalizedClassifications);
+      setFacilityClassifications(normalizedClassifications);
 
-      } catch (error) {
+    } catch (error) {
 
-        console.error('Error loading facility classifications:', error);
+      console.error('Error loading facility classifications:', error);
 
-        showToast('Failed to load facility classifications', 'error');
+      showToast('Failed to load facility classifications', 'error');
 
-      } finally {
+    } finally {
 
-        setLoadingFacilityClassifications(false);
+      setLoadingFacilityClassifications(false);
+
+    }
+
+  };
+
+  // Helper function to format coordinates in DHIS2 compliant format
+
+  const formatCoordinatesForDHIS2 = (input) => {
+
+    // Remove any existing brackets and extra spaces
+
+    const cleanInput = input.replace(/[\[\]\s]/g, '');
+
+    // Split by comma
+
+    const parts = cleanInput.split(',');
+
+    if (parts.length !== 2) {
+
+      return null; // Invalid format
+
+    }
+
+    const [first, second] = parts;
+
+    const longitude = parseFloat(first);
+
+    const latitude = parseFloat(second);
+
+    // Validate ranges
+
+    if (isNaN(longitude) || isNaN(latitude)) {
+
+      return null;
+
+    }
+
+    if (longitude < -180 || longitude > 180) {
+
+      return null; // Invalid longitude
+
+    }
+
+    if (latitude < -90 || latitude > 90) {
+
+      return null; // Invalid latitude
+
+    }
+
+    // Return in DHIS2 format: [longitude,latitude]
+
+    return `[${longitude.toFixed(6)},${latitude.toFixed(6)}]`;
+
+  };
+
+  // GPS coordinate function
+
+  const getCurrentPosition = (fieldId, onChange) => {
+
+    if (!navigator.geolocation) {
+
+      showToast('Geolocation is not supported by this browser', 'error');
+
+      return;
+
+    }
+
+    showToast('Getting GPS coordinates...', 'info');
+
+    navigator.geolocation.getCurrentPosition(
+
+      (position) => {
+
+        const { latitude, longitude } = position.coords;
+
+        // DHIS2 compliant format: [longitude,latitude] as a string
+
+        const coordinates = `[${longitude.toFixed(6)},${latitude.toFixed(6)}]`;
+
+        // Update the form field
+
+        onChange({ target: { value: coordinates } });
+
+        // Update GPS state for debugging
+
+        setGpsCoordinates({
+
+          latitude: latitude.toFixed(6),
+
+          longitude: longitude.toFixed(6),
+
+          accuracy: position.coords.accuracy ? `${position.coords.accuracy.toFixed(2)}m` : 'Unknown',
+
+          timestamp: new Date(position.timestamp).toLocaleString(),
+
+          fieldId: fieldId
+
+        });
+
+        showToast(`GPS coordinates captured: ${coordinates} (DHIS2 compliant)`, 'success');
+
+        console.log('🔍 GPS coordinates captured:', {
+
+          latitude: latitude.toFixed(6),
+
+          longitude: longitude.toFixed(6),
+
+          coordinates: coordinates,
+
+          accuracy: position.coords.accuracy ? `${position.coords.accuracy.toFixed(2)}m` : 'Unknown',
+
+          timestamp: new Date(position.timestamp).toLocaleString(),
+
+          fieldId: fieldId
+
+        });
+
+      },
+
+      (error) => {
+
+        let errorMessage = 'Failed to get GPS coordinates';
+
+        switch (error.code) {
+
+          case error.PERMISSION_DENIED:
+
+            errorMessage = 'GPS access denied. Please allow location access.';
+
+            break;
+
+          case error.POSITION_UNAVAILABLE:
+
+            errorMessage = 'GPS location information unavailable.';
+
+            break;
+
+          case error.TIMEOUT:
+
+            errorMessage = 'GPS request timed out.';
+
+            break;
+
+          default:
+
+            errorMessage = `GPS error: ${error.message}`;
+
+        }
+
+        showToast(errorMessage, 'error');
+
+        console.error('GPS error:', error);
+
+      },
+
+      {
+
+        enableHighAccuracy: true,
+
+        timeout: 10000,
+
+        maximumAge: 60000
 
       }
 
-    };
+    );
 
-    // Helper function to format coordinates in DHIS2 compliant format
+  };
 
-    const formatCoordinatesForDHIS2 = (input) => {
+  // Function to automatically assign GPS coordinates to all coordinate fields
 
-      // Remove any existing brackets and extra spaces
+  const autoAssignGPSCoordinates = async () => {
 
-      const cleanInput = input.replace(/[\[\]\s]/g, '');
+    if (!navigator.geolocation) {
 
-      // Split by comma
+      return;
 
-      const parts = cleanInput.split(',');
+    }
 
-      if (parts.length !== 2) {
+    if (!configuration?.programStage?.allDataElements) {
 
-        return null; // Invalid format
+      return;
 
-      }
+    }
 
-      const [first, second] = parts;
+    // Find all coordinate fields
 
-      const longitude = parseFloat(first);
+    const coordinateFields = configuration.programStage.allDataElements.filter(psde => {
 
-      const latitude = parseFloat(second);
+      const fieldName = (psde.dataElement.displayName || psde.dataElement.shortName || '').toLowerCase();
 
-      // Validate ranges
+      return fieldName.includes('coordinates') || fieldName.includes('coordinate') || fieldName.includes('gps') || fieldName.includes('location');
 
-      if (isNaN(longitude) || isNaN(latitude)) {
+    });
 
-        return null;
+    if (coordinateFields.length === 0) {
 
-      }
+      return;
 
-      if (longitude < -180 || longitude > 180) {
+    }
 
-        return null; // Invalid longitude
-
-      }
-
-      if (latitude < -90 || latitude > 90) {
-
-        return null; // Invalid latitude
-
-      }
-
-      // Return in DHIS2 format: [longitude,latitude]
-
-      return `[${longitude.toFixed(6)},${latitude.toFixed(6)}]`;
-
-    };
-
-    // GPS coordinate function
-
-    const getCurrentPosition = (fieldId, onChange) => {
-
-      if (!navigator.geolocation) {
-
-        showToast('Geolocation is not supported by this browser', 'error');
-
-        return;
-
-      }
-
-      showToast('Getting GPS coordinates...', 'info');
+    return new Promise((resolve, reject) => {
 
       navigator.geolocation.getCurrentPosition(
 
@@ -3196,13 +3357,29 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
           const { latitude, longitude } = position.coords;
 
-          // DHIS2 compliant format: [longitude,latitude] as a string
-
           const coordinates = `[${longitude.toFixed(6)},${latitude.toFixed(6)}]`;
 
-          // Update the form field
+          // Update all coordinate fields in formData
 
-          onChange({ target: { value: coordinates } });
+          const updates = {};
+
+          coordinateFields.forEach(psde => {
+
+            const fieldName = `dataElement_${psde.dataElement.id}`;
+
+            updates[fieldName] = coordinates;
+
+          });
+
+          // Update form data with all coordinate values
+
+          setFormData(prev => ({
+
+            ...prev,
+
+            ...updates
+
+          }));
 
           // Update GPS state for debugging
 
@@ -3216,33 +3393,21 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
             timestamp: new Date(position.timestamp).toLocaleString(),
 
-            fieldId: fieldId
+            fieldId: 'auto-assigned',
+
+            dhis2Format: coordinates
 
           });
 
-          showToast(`GPS coordinates captured: ${coordinates} (DHIS2 compliant)`, 'success');
+          showToast(`Auto-assigned GPS coordinates to ${coordinateFields.length} field(s): ${coordinates}`, 'success');
 
-          console.log('🔍 GPS coordinates captured:', {
-
-            latitude: latitude.toFixed(6),
-
-            longitude: longitude.toFixed(6),
-
-            coordinates: coordinates,
-
-            accuracy: position.coords.accuracy ? `${position.coords.accuracy.toFixed(2)}m` : 'Unknown',
-
-            timestamp: new Date(position.timestamp).toLocaleString(),
-
-            fieldId: fieldId
-
-          });
+          resolve(coordinates);
 
         },
 
         (error) => {
 
-          let errorMessage = 'Failed to get GPS coordinates';
+          let errorMessage = 'Failed to auto-assign GPS coordinates';
 
           switch (error.code) {
 
@@ -3270,9 +3435,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
           }
 
+          console.error('❌ GPS auto-assignment error:', error);
+
           showToast(errorMessage, 'error');
 
-          console.error('GPS error:', error);
+          reject(error);
 
         },
 
@@ -3288,1653 +3455,1507 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
       );
 
-    };
-
-    // Function to automatically assign GPS coordinates to all coordinate fields
-
-    const autoAssignGPSCoordinates = async () => {
-
-      if (!navigator.geolocation) {
-
-        return;
-
-      }
-
-      if (!configuration?.programStage?.allDataElements) {
-
-        return;
-
-      }
-
-      // Find all coordinate fields
-
-      const coordinateFields = configuration.programStage.allDataElements.filter(psde => {
-
-        const fieldName = (psde.dataElement.displayName || psde.dataElement.shortName || '').toLowerCase();
-
-        return fieldName.includes('coordinates') || fieldName.includes('coordinate') || fieldName.includes('gps') || fieldName.includes('location');
-
-      });
-
-      if (coordinateFields.length === 0) {
-
-        return;
-
-      }
-
-      return new Promise((resolve, reject) => {
-
-        navigator.geolocation.getCurrentPosition(
-
-          (position) => {
-
-            const { latitude, longitude } = position.coords;
-
-            const coordinates = `[${longitude.toFixed(6)},${latitude.toFixed(6)}]`;
-
-            // Update all coordinate fields in formData
-
-            const updates = {};
-
-            coordinateFields.forEach(psde => {
-
-              const fieldName = `dataElement_${psde.dataElement.id}`;
-
-              updates[fieldName] = coordinates;
-
-            });
-
-            // Update form data with all coordinate values
-
-            setFormData(prev => ({
-
-              ...prev,
-
-              ...updates
-
-            }));
-
-            // Update GPS state for debugging
-
-            setGpsCoordinates({
-
-              latitude: latitude.toFixed(6),
-
-              longitude: longitude.toFixed(6),
-
-              accuracy: position.coords.accuracy ? `${position.coords.accuracy.toFixed(2)}m` : 'Unknown',
-
-              timestamp: new Date(position.timestamp).toLocaleString(),
-
-              fieldId: 'auto-assigned',
-
-              dhis2Format: coordinates
-
-            });
-
-            showToast(`Auto-assigned GPS coordinates to ${coordinateFields.length} field(s): ${coordinates}`, 'success');
-
-            resolve(coordinates);
-
-          },
-
-          (error) => {
-
-            let errorMessage = 'Failed to auto-assign GPS coordinates';
-
-            switch (error.code) {
-
-              case error.PERMISSION_DENIED:
-
-                errorMessage = 'GPS access denied. Please allow location access.';
-
-                break;
-
-              case error.POSITION_UNAVAILABLE:
-
-                errorMessage = 'GPS location information unavailable.';
-
-                break;
-
-              case error.TIMEOUT:
-
-                errorMessage = 'GPS request timed out.';
-
-                break;
-
-              default:
-
-                errorMessage = `GPS error: ${error.message}`;
-
-            }
-
-            console.error('❌ GPS auto-assignment error:', error);
-
-            showToast(errorMessage, 'error');
-
-            reject(error);
-
-          },
-
-          {
-
-            enableHighAccuracy: true,
-
-            timeout: 10000,
-
-            maximumAge: 60000
-
-          }
-
-        );
-
-      });
-
-    };
-
-    // Add debug effect
-
-    useEffect(() => {
-
-    }, [userAssignments]);
-
-    const [formData, setFormData] = useState({
-
-      orgUnit: '',
-
-      eventDate: (() => {
-
-        // Ensure we always have a valid date
-
-        const today = new Date();
-
-        if (!isNaN(today.getTime())) {
-
-          return today.toISOString().split('T')[0];
-
-        }
-
-        // Fallback to a known good date if current date fails
-
-        return '2025-01-01';
-
-      })(),
-
     });
 
-    // Cache for facility info to prevent repeated API calls
-    const facilityInfoCache = useMemo(() => new Map(), []);
+  };
 
-    // Global cache for inspection assignments to prevent repeated API calls
-    const inspectionAssignmentsCache = useMemo(() => {
-      let cache = null;
-      let lastFetch = 0;
-      const CACHE_DURATION = 30000; // 30 seconds
+  // Add debug effect
 
-      return {
-        async get() {
-          const now = Date.now();
-          if (cache && (now - lastFetch) < CACHE_DURATION) {
-            return cache;
-          }
+  useEffect(() => {
 
-          cache = await api.getInspectionAssignments();
-          lastFetch = now;
+  }, [userAssignments]);
+
+  const [formData, setFormData] = useState({
+
+    orgUnit: '',
+
+    eventDate: (() => {
+
+      // Ensure we always have a valid date
+
+      const today = new Date();
+
+      if (!isNaN(today.getTime())) {
+
+        return today.toISOString().split('T')[0];
+
+      }
+
+      // Fallback to a known good date if current date fails
+
+      return '2025-01-01';
+
+    })(),
+
+  });
+
+  // Cache for facility info to prevent repeated API calls
+  const facilityInfoCache = useMemo(() => new Map(), []);
+
+  // Global cache for inspection assignments to prevent repeated API calls
+  const inspectionAssignmentsCache = useMemo(() => {
+    let cache = null;
+    let lastFetch = 0;
+    const CACHE_DURATION = 30000; // 30 seconds
+
+    return {
+      async get() {
+        const now = Date.now();
+        if (cache && (now - lastFetch) < CACHE_DURATION) {
           return cache;
-        },
-        clear() {
-          cache = null;
-          lastFetch = 0;
-        }
-      };
-    }, [api]);
-
-    // Get facility information from dataStore when form loads
-    useEffect(() => {
-      const getFacilityInfoFromDataStore = async () => {
-        // Wait for all required dependencies to be available
-        if (!formData.orgUnit || !api || !configuration) {
-          setFacilityInfo(null);
-          return;
         }
 
-        // Check cache first
-        if (facilityInfoCache.has(formData.orgUnit)) {
-          setFacilityInfo(facilityInfoCache.get(formData.orgUnit));
-          setLoadingFacilityInfo(false);
-          return;
+        cache = await api.getInspectionAssignments();
+        lastFetch = now;
+        return cache;
+      },
+      clear() {
+        cache = null;
+        lastFetch = 0;
+      }
+    };
+  }, [api]);
+
+  // Get facility information from dataStore when form loads
+  useEffect(() => {
+    const getFacilityInfoFromDataStore = async () => {
+      // Wait for all required dependencies to be available
+      if (!formData.orgUnit || !api || !configuration) {
+        setFacilityInfo(null);
+        return;
+      }
+
+      // Check cache first
+      if (facilityInfoCache.has(formData.orgUnit)) {
+        setFacilityInfo(facilityInfoCache.get(formData.orgUnit));
+        setLoadingFacilityInfo(false);
+        return;
+      }
+
+      setLoadingFacilityInfo(true);
+      setFacilityInfo(null); // Clear previous facility info
+
+      try {
+
+        // First try to get from userAssignments (which may have more complete info)
+        let facilityData = null;
+
+        // Get current userAssignments from context to avoid dependency issues
+        const currentUserAssignments = userAssignments;
+        if (currentUserAssignments && currentUserAssignments.length > 0) {
+          const userAssignment = currentUserAssignments.find(assignment =>
+            assignment.facility && assignment.facility.id === formData.orgUnit
+          );
+
+          if (userAssignment && userAssignment.facility) {
+
+            const extractedType = userAssignment.facility.facilityType || userAssignment.facility.type;
+
+            facilityData = {
+              facilityId: userAssignment.facility.id,
+              facilityName: userAssignment.facility.displayName || userAssignment.facility.name,
+              type: extractedType,
+              trackedEntityInstance: userAssignment.facility.trackedEntityInstance
+            };
+          }
         }
 
-        setLoadingFacilityInfo(true);
-        setFacilityInfo(null); // Clear previous facility info
+        // If not found in userAssignments, try inspection dataStore
+        if (!facilityData) {
+          const inspectionData = await inspectionAssignmentsCache.get();
 
-        try {
-
-          // First try to get from userAssignments (which may have more complete info)
-          let facilityData = null;
-
-          // Get current userAssignments from context to avoid dependency issues
-          const currentUserAssignments = userAssignments;
-          if (currentUserAssignments && currentUserAssignments.length > 0) {
-            const userAssignment = currentUserAssignments.find(assignment =>
-              assignment.facility && assignment.facility.id === formData.orgUnit
+          if (inspectionData && inspectionData.inspections) {
+            const facilityInspection = inspectionData.inspections.find(
+              inspection => inspection.facilityId === formData.orgUnit
             );
 
-            if (userAssignment && userAssignment.facility) {
+            if (facilityInspection) {
 
-              const extractedType = userAssignment.facility.facilityType || userAssignment.facility.type;
+              const extractedType = facilityInspection.facilityType || facilityInspection.type;
 
               facilityData = {
-                facilityId: userAssignment.facility.id,
-                facilityName: userAssignment.facility.displayName || userAssignment.facility.name,
+                facilityId: facilityInspection.facilityId,
+                facilityName: facilityInspection.facilityName,
                 type: extractedType,
-                trackedEntityInstance: userAssignment.facility.trackedEntityInstance
+                trackedEntityInstance: facilityInspection.trackedEntityInstance
               };
-            }
-          }
-
-          // If not found in userAssignments, try inspection dataStore
-          if (!facilityData) {
-            const inspectionData = await inspectionAssignmentsCache.get();
-
-            if (inspectionData && inspectionData.inspections) {
-              const facilityInspection = inspectionData.inspections.find(
-                inspection => inspection.facilityId === formData.orgUnit
-              );
-
-              if (facilityInspection) {
-
-                const extractedType = facilityInspection.facilityType || facilityInspection.type;
-
-                facilityData = {
-                  facilityId: facilityInspection.facilityId,
-                  facilityName: facilityInspection.facilityName,
-                  type: extractedType,
-                  trackedEntityInstance: facilityInspection.trackedEntityInstance
-                };
-              } else {
-                console.log('🔍 Available facilities in dataStore:', inspectionData.inspections?.map(i => ({
-                  facilityId: i.facilityId,
-                  facilityName: i.facilityName,
-                  facilityType: i.facilityType,
-                  type: i.type
-                })));
-              }
-            }
-          }
-
-          if (facilityData) {
-            // Store complete facility information for UI display
-            setFacilityInfo(facilityData);
-            // Cache the result
-            facilityInfoCache.set(formData.orgUnit, facilityData);
-
-            // Set the facility type to use for filtering
-            if (facilityData.type) {
-              const normalizedType = normalizeFacilityClassification(facilityData.type);
-              setFacilityType(normalizedType || facilityData.type);
-              console.log('🔍 FACILITY TYPE DEBUG: Type set to:', {
-                type: facilityData.type,
-                normalizedType,
-                typeLength: facilityData.type.length,
-                typeType: typeof facilityData.type,
-                exactValue: JSON.stringify(facilityData.type)
-              });
             } else {
-              console.warn('⚠️ No facility type found in facilityData:', facilityData);
+              console.log('🔍 Available facilities in dataStore:', inspectionData.inspections?.map(i => ({
+                facilityId: i.facilityId,
+                facilityName: i.facilityName,
+                facilityType: i.facilityType,
+                type: i.type
+              })));
             }
+          }
+        }
 
-            // Store current facility ID for dashboard filtering
-            if (facilityData.facilityId) {
-              localStorage.setItem('lastSelectedFacility', facilityData.facilityId);
-            }
+        if (facilityData) {
+          // Store complete facility information for UI display
+          setFacilityInfo(facilityData);
+          // Cache the result
+          facilityInfoCache.set(formData.orgUnit, facilityData);
 
-            // REMOVED: Auto-populating facility type field to prevent circular dependency
-            // This was causing the useEffect to trigger repeatedly because it modifies formData
-            // which is a dependency of this same useEffect, creating an infinite loop
-            // The facility type should be set through other means (manual selection, IndexedDB loading, etc.)
+          // Set the facility type to use for filtering
+          if (facilityData.type) {
+            const normalizedType = normalizeFacilityClassification(facilityData.type);
+            setFacilityType(normalizedType || facilityData.type);
+            console.log('🔍 FACILITY TYPE DEBUG: Type set to:', {
+              type: facilityData.type,
+              normalizedType,
+              typeLength: facilityData.type.length,
+              typeType: typeof facilityData.type,
+              exactValue: JSON.stringify(facilityData.type)
+            });
           } else {
-            setFacilityInfo(null);
-            // Cache the null result to prevent repeated calls
-            facilityInfoCache.set(formData.orgUnit, null);
+            console.warn('⚠️ No facility type found in facilityData:', facilityData);
           }
-        } catch (error) {
-          console.error('❌ Error getting facility information from dataStore:', error);
-          setFacilityInfo(null);
-        } finally {
-          setLoadingFacilityInfo(false);
-        }
-      };
 
-      // Add a small delay to ensure all components are initialized
-      const timeoutId = setTimeout(getFacilityInfoFromDataStore, 100);
-
-      return () => clearTimeout(timeoutId);
-    }, [formData.orgUnit, api, configuration]); // Only re-run when orgUnit, api, or configuration changes
-
-    // Debug logging for facility info state
-    useEffect(() => {
-    }, [formData.orgUnit, facilityInfo, facilityType, loadingFacilityInfo, userAssignments, api, configuration]);
-    
-    // Update sections when specialization changes
-    useEffect(() => {
-      if (facilityType || manualSpecialization) {
-        const currentClassification = getCurrentFacilityClassification();
-        
-        // Force re-filtering of sections by updating the serviceSections state
-        if (configuration?.programStage?.sections) {
-          const filteredSections = configuration.programStage.sections.filter(section => {
-            return shouldShowSection(section.displayName, currentClassification);
-          });
-          
-          console.log(`🔍 Filtered sections for ${currentClassification}:`, {
-            total: configuration.programStage.sections.length,
-            filtered: filteredSections.length,
-            sections: filteredSections.map(s => s.displayName)
-          });
-          
-          // Update the service sections
-          setServiceSections(filteredSections);
-        }
-      }
-    }, [facilityType, manualSpecialization, lastUpdateTimestamp, configuration]);
-
-    const [readOnlyFields, setReadOnlyFields] = useState({});
-
-    const [errors, setErrors] = useState({});
-
-    const [fieldComments, setFieldComments] = useState({});
-
-    const [intervieweeSignature, setIntervieweeSignature] = useState(null);
-
-    // Initialize incremental save functionality
-    const {
-      saveField,
-      saveFieldImmediate,
-      loadFormData,
-      updateSectionMetadata,
-      flushPendingSaves
-    } = useIncrementalSave(eventId, {
-      debounceMs: 300,
-      onSaveSuccess: (result) => {
-        // Show visual save indicator
-        setSaveStatus({
-          isVisible: true,
-          message: `Saved ${result.savedFields} field(s)`,
-          type: 'success'
-        });
-        // Hide after 2 seconds
-        setTimeout(() => setSaveStatus(prev => ({ ...prev, isVisible: false })), 2000);
-      },
-      onSaveError: (error) => {
-        console.error('❌ Incremental save failed:', error);
-        showToast('Failed to save form data locally', 'error');
-        setSaveStatus({
-          isVisible: true,
-          message: 'Save failed',
-          type: 'error'
-        });
-        setTimeout(() => setSaveStatus(prev => ({ ...prev, isVisible: false })), 3000);
-      },
-      enableLogging: true
-    });
-
-    // Load existing form data from IndexedDB on mount
-    useEffect(() => {
-      const loadExistingData = async () => {
-        if (eventId) {
-          try {
-            const existingData = await loadFormData();
-            if (existingData && existingData.formData) {
-
-              // Set loading flag to prevent clearing service departments
-              setIsLoadingFromIndexedDB(true);
-              setFormData(prev => ({
-                ...prev,
-                ...existingData.formData
-              }));
-
-              // Load comments if they exist
-              if (existingData.metadata?.fieldComments) {
-                setFieldComments(existingData.metadata.fieldComments);
-              }
-
-              // Load specialization and service departments together to prevent multiple updates
-              const specializationFieldName = 'dataElement_qfmVD6tCOHu';
-              const savedSpecialization = existingData.formData[specializationFieldName] ||
-                                         existingData.formData.facilityClassification;
-
-              const serviceDepartmentsFieldName = 'dataElement_facility_service_departments';
-              const savedServiceDepartments = existingData.formData[serviceDepartmentsFieldName];
-
-              let parsedDepartments = [];
-              if (savedServiceDepartments) {
-                try {
-                  parsedDepartments = typeof savedServiceDepartments === 'string'
-                    ? JSON.parse(savedServiceDepartments)
-                    : savedServiceDepartments;
-
-                  if (!Array.isArray(parsedDepartments)) {
-                    parsedDepartments = [];
-                  }
-                } catch (error) {
-                  console.warn('Failed to parse saved service departments:', error);
-                  parsedDepartments = [];
-                }
-              }
-
-              // Batch all updates together to prevent multiple re-renders
-              if (savedSpecialization || parsedDepartments.length > 0) {
-                // Update specialization if available
-                if (savedSpecialization) {
-                  const normalizedSaved =
-                    normalizeFacilityClassification(savedSpecialization) || savedSpecialization;
-                  setManualSpecialization(normalizedSaved);
-                  setFacilityType(normalizedSaved);
-
-                  // Update global state for consistency
-                  window.__currentSpecialization = normalizedSaved;
-                  window.__manualSpecialization = normalizedSaved;
-                }
-
-                // Update service departments if available
-                if (parsedDepartments.length > 0) {
-                  setSelectedServiceDepartments(parsedDepartments);
-
-                  // Update global state for consistency
-                  window.__selectedServiceDepartments = parsedDepartments;
-                }
-
-                // Single timestamp update for both changes
-                setLastUpdateTimestamp(Date.now());
-              }
-
-              // Clear loading flag after all updates are complete
-              setTimeout(() => {
-                setIsLoadingFromIndexedDB(false);
-              }, 200); // Small delay to ensure all state updates are processed
-
-              showToast('Loaded saved form data', 'success');
-
-              // Log what was loaded for debugging
-              console.log('📋 Form data loading summary:', {
-                totalFields: Object.keys(existingData.formData).length,
-                hasSpecialization: !!savedSpecialization,
-                specialization: savedSpecialization,
-                hasServiceDepartments: !!savedServiceDepartments,
-                serviceDepartments: savedServiceDepartments
-              });
-            }
-          } catch (error) {
-            console.error('❌ Failed to load existing form data:', error);
+          // Store current facility ID for dashboard filtering
+          if (facilityData.facilityId) {
+            localStorage.setItem('lastSelectedFacility', facilityData.facilityId);
           }
-        }
-      };
 
-      loadExistingData();
-    }, [eventId, loadFormData, showToast]);
-
-    // Handle comment changes for data elements
-    const handleCommentChange = (dataElementId, comment) => {
-      setFieldComments(prev => {
-        const updated = { ...prev };
-        if (comment && comment.trim()) {
-          updated[dataElementId] = comment.trim();
+          // REMOVED: Auto-populating facility type field to prevent circular dependency
+          // This was causing the useEffect to trigger repeatedly because it modifies formData
+          // which is a dependency of this same useEffect, creating an infinite loop
+          // The facility type should be set through other means (manual selection, IndexedDB loading, etc.)
         } else {
-          delete updated[dataElementId];
-        }
-
-        // Save comments to the designated Survey Comments data element
-        saveCommentsToDataElement(updated);
-
-        // Save comments incrementally to IndexedDB
-        if (eventId) {
-          saveField(`comment_${dataElementId}`, comment?.trim() || '');
-        }
-
-        return updated;
-      });
-    };
-
-    // Save comments to the Survey Comments data element in JSON format
-    const saveCommentsToDataElement = (comments) => {
-      // Find the Survey Comments data element
-      // We'll look for any data element that might be used for comments
-      const surveyCommentsElement = findSurveyCommentsElement();
-
-      if (surveyCommentsElement && Object.keys(comments).length > 0) {
-        const commentsJson = JSON.stringify(comments);
-
-        // Update form data with the comments JSON
-        setFormData(prev => ({
-          ...prev,
-          [`dataElement_${surveyCommentsElement.dataElement.id}`]: commentsJson
-        }));
-      }
-    };
-
-    // Find the Survey Comments data element - using specific ID
-    const findSurveyCommentsElement = () => {
-      if (!configuration?.programStage?.allDataElements) return null;
-
-      // Use the specific data element ID for storing comments
-      const COMMENTS_DATA_ELEMENT_ID = "EaIXCub2vjL";
-
-      const commentsElement = configuration.programStage.allDataElements.find(psde => {
-        return psde.dataElement.id === COMMENTS_DATA_ELEMENT_ID;
-      });
-
-      if (commentsElement) {
-      } else {
-        console.warn('⚠️ Survey Comments data element not found with ID:', COMMENTS_DATA_ELEMENT_ID);
-      }
-
-      return commentsElement;
-    };
-
-    // Load existing comments when form data changes
-    useEffect(() => {
-      const surveyCommentsElement = findSurveyCommentsElement();
-      if (surveyCommentsElement && formData) {
-        const commentsFieldKey = `dataElement_${surveyCommentsElement.dataElement.id}`;
-        const commentsJson = formData[commentsFieldKey];
-
-        if (commentsJson && typeof commentsJson === 'string') {
-          try {
-            const parsedComments = JSON.parse(commentsJson);
-            if (typeof parsedComments === 'object' && parsedComments !== null) {
-              setFieldComments(parsedComments);
-            }
-          } catch (error) {
-            console.warn('Failed to parse existing comments:', error);
-          }
-        }
-      }
-    }, [formData, configuration]);
-
-    // Handle signature changes
-    const handleSignatureChange = (signatureDataURL) => {
-      setIntervieweeSignature(signatureDataURL);
-
-      // Save signature immediately to IndexedDB (critical field)
-      if (eventId) {
-        saveFieldImmediate('intervieweeSignature', signatureDataURL);
-      }
-    };
-
-    // Debug panel removed - no longer needed
-
-    const [isDraft, setIsDraft] = useState(false);
-
-    // Controls whether the Floating Progress bar is collapsed
-    const [isProgressCollapsed, setIsProgressCollapsed] = useState(false);
-
-    // const [currentUser, setCurrentUser] = useState(null);
-
-    const [serviceSections, setServiceSections] = useState([]);
-
-    // Initialize department options immediately when component loads
-    // This ensures hardcoded departments are available before any FormField renders
-    const initializeDepartmentOptions = () => {
-      const baseClassification = manualSpecialization || facilityType || 'Obstetrics & Gynaecology';
-      const currentSpecialization =
-        normalizeFacilityClassification(baseClassification) || 'Obstetrics & Gynaecology';
-      const hardcodedDepartments = getDepartmentsForSpecialization(currentSpecialization);
-
-      console.log(
-        `🚀 IMMEDIATE INIT: Setting department options for "${currentSpecialization}":`,
-        {
-          count: hardcodedDepartments.length,
-          departments: hardcodedDepartments.slice(0, 3) // Show first 3 for debugging
-        }
-      );
-
-      if (hardcodedDepartments.length > 0) {
-        window.__departmentOptionsForSection = hardcodedDepartments;
-      }
-    };
-
-    // Call immediately on every render to ensure departments are always available
-    initializeDepartmentOptions();
-
-    // Calculate department options when serviceSections or facilityType changes
-    useEffect(() => {
-      try {
-        if (facilityType) {
-
-          // First, try to get hardcoded departments for the current specialization
-          const baseClassification = manualSpecialization || facilityType || 'Obstetrics & Gynaecology';
-          const currentSpecialization =
-            normalizeFacilityClassification(baseClassification) || 'Obstetrics & Gynaecology';
-          const hardcodedDepartments = getDepartmentsForSpecialization(currentSpecialization);
-
-          console.log(`🎯 Checking hardcoded departments for "${currentSpecialization}":`, {
-            count: hardcodedDepartments.length,
-            departments: hardcodedDepartments.slice(0, 5) // Show first 5 for debugging
-          });
-
-          if (hardcodedDepartments.length > 0) {
-            // Use hardcoded departments
-            window.__departmentOptionsForSection = hardcodedDepartments;
-            return;
-          }
-
-          // Fallback to dynamic calculation only if no hardcoded departments are available
-          if (serviceSections && Array.isArray(serviceSections)) {
-
-            const names = [];
-            const seenNames = new Set(); // Track seen names to prevent duplicates
-
-            for (const s of serviceSections) {
-              const total = s?.dataElements?.length || 0;
-              if (total === 0) continue;
-
-              // Only include sections that should be visible for the current facility type
-              const shouldShowThisSection = shouldShowSection(
-                s.displayName,
-                currentSpecialization
-              );
-              if (!shouldShowThisSection) {
-                continue;
-              }
-
-              // Skip if we've already processed a section with this display name
-              if (seenNames.has(s.displayName)) {
-                continue;
-              }
-
-              const shown = (s.dataElements || []).filter((psde2) => {
-                if (!psde2?.dataElement) return false;
-                const displayName2 = psde2.dataElement.displayName;
-                const isComment2 = /\s(Comments?|Remarks?)$/i.test(displayName2);
-                if (isComment2) {
-                  const main2 = displayName2
-                    .replace(/\sComments?\s*$/i, '')
-                    .replace(/\sRemarks?\s*$/i, '')
-                    .trim();
-                  return shouldShowDataElementForService(main2, currentSpecialization);
-                }
-                return shouldShowDataElementForService(displayName2, currentSpecialization);
-              }).length;
-
-              if (shown > 0) {
-                names.push(s.displayName);
-                seenNames.add(s.displayName); // Mark as seen
-              }
-            }
-
-            // No need for additional deduplication since we prevented duplicates above
-            const departmentOptions = names;
-
-            window.__departmentOptionsForSection = departmentOptions;
-          } else {
-            window.__departmentOptionsForSection = [];
-          }
+          setFacilityInfo(null);
+          // Cache the null result to prevent repeated calls
+          facilityInfoCache.set(formData.orgUnit, null);
         }
       } catch (error) {
-        console.error('Error calculating department options:', error);
-        window.__departmentOptionsForSection = [];
+        console.error('❌ Error getting facility information from dataStore:', error);
+        setFacilityInfo(null);
+      } finally {
+        setLoadingFacilityInfo(false);
       }
-    }, [facilityType, serviceSections, manualSpecialization]);
+    };
 
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    // Add a small delay to ensure all components are initialized
+    const timeoutId = setTimeout(getFacilityInfoFromDataStore, 100);
 
-    const [formStats, setFormStats] = useState({ percentage: 0, filled: 0, total: 0 });
+    return () => clearTimeout(timeoutId);
+  }, [formData.orgUnit, api, configuration]); // Only re-run when orgUnit, api, or configuration changes
 
-    const [trackedEntityInstance, setTrackedEntityInstance] = useState(null);
+  // Debug logging for facility info state
+  useEffect(() => {
+  }, [formData.orgUnit, facilityInfo, facilityType, loadingFacilityInfo, userAssignments, api, configuration]);
 
-    const [gpsCoordinates, setGpsCoordinates] = useState(null);
+  // Update sections when specialization changes
+  useEffect(() => {
+    if (facilityType || manualSpecialization) {
+      const currentClassification = getCurrentFacilityClassification();
 
-    // State for organization units (for the dropdown)
+      // Force re-filtering of sections by updating the serviceSections state
+      if (configuration?.programStage?.sections) {
+        const filteredSections = configuration.programStage.sections.filter(section => {
+          return shouldShowSection(section.displayName, currentClassification);
+        });
 
-    const [organizationUnits, setOrganizationUnits] = useState([]);
+        console.log(`🔍 Filtered sections for ${currentClassification}:`, {
+          total: configuration.programStage.sections.length,
+          filtered: filteredSections.length,
+          sections: filteredSections.map(s => s.displayName)
+        });
 
-    const [loadingOrganizationUnits, setLoadingOrganizationUnits] = useState(false);
+        // Update the service sections
+        setServiceSections(filteredSections);
+      }
+    }
+  }, [facilityType, manualSpecialization, lastUpdateTimestamp, configuration]);
 
-    // State for facility classifications (from CSV)
+  const [readOnlyFields, setReadOnlyFields] = useState({});
 
-    const [facilityClassifications, setFacilityClassifications] = useState([]);
+  const [errors, setErrors] = useState({});
 
-    const [loadingFacilityClassifications, setLoadingFacilityClassifications] = useState(false);
+  const [fieldComments, setFieldComments] = useState({});
 
-    // State for inspection information confirmation (moved to top of FormPage function)
+  const [intervieweeSignature, setIntervieweeSignature] = useState(null);
 
-    // Scroll to first section after inspection info confirmation
-    useEffect(() => {
-      if (inspectionInfoConfirmed) {
-        // Small delay to ensure DOM is updated with new sections
-        setTimeout(() => {
-          // Try to find the confirmation status message first (most reliable)
-          const statusMessage = document.querySelector('[data-confirmation-status="true"]');
+  // Initialize incremental save functionality
+  const {
+    saveField,
+    saveFieldImmediate,
+    loadFormData,
+    updateSectionMetadata,
+    flushPendingSaves
+  } = useIncrementalSave(eventId, {
+    debounceMs: 300,
+    onSaveSuccess: (result) => {
+      // Show visual save indicator
+      setSaveStatus({
+        isVisible: true,
+        message: `Saved ${result.savedFields} field(s)`,
+        type: 'success'
+      });
+      // Hide after 2 seconds
+      setTimeout(() => setSaveStatus(prev => ({ ...prev, isVisible: false })), 2000);
+    },
+    onSaveError: (error) => {
+      console.error('❌ Incremental save failed:', error);
+      showToast('Failed to save form data locally', 'error');
+      setSaveStatus({
+        isVisible: true,
+        message: 'Save failed',
+        type: 'error'
+      });
+      setTimeout(() => setSaveStatus(prev => ({ ...prev, isVisible: false })), 3000);
+    },
+    enableLogging: true
+  });
 
-          if (statusMessage) {
-            statusMessage.scrollIntoView({
+  // Load existing form data from IndexedDB on mount
+  useEffect(() => {
+    const loadExistingData = async () => {
+      if (eventId) {
+        try {
+          const existingData = await loadFormData();
+          if (existingData && existingData.formData) {
+
+            // Set loading flag to prevent clearing service departments
+            setIsLoadingFromIndexedDB(true);
+            setFormData(prev => ({
+              ...prev,
+              ...existingData.formData
+            }));
+
+            // Load comments if they exist
+            if (existingData.metadata?.fieldComments) {
+              setFieldComments(existingData.metadata.fieldComments);
+            }
+
+            // Load specialization and service departments together to prevent multiple updates
+            const specializationFieldName = 'dataElement_qfmVD6tCOHu';
+            const savedSpecialization = existingData.formData[specializationFieldName] ||
+              existingData.formData.facilityClassification;
+
+            const serviceDepartmentsFieldName = 'dataElement_facility_service_departments';
+            const savedServiceDepartments = existingData.formData[serviceDepartmentsFieldName];
+
+            let parsedDepartments = [];
+            if (savedServiceDepartments) {
+              try {
+                parsedDepartments = typeof savedServiceDepartments === 'string'
+                  ? JSON.parse(savedServiceDepartments)
+                  : savedServiceDepartments;
+
+                if (!Array.isArray(parsedDepartments)) {
+                  parsedDepartments = [];
+                }
+              } catch (error) {
+                console.warn('Failed to parse saved service departments:', error);
+                parsedDepartments = [];
+              }
+            }
+
+            // Batch all updates together to prevent multiple re-renders
+            if (savedSpecialization || parsedDepartments.length > 0) {
+              // Update specialization if available
+              if (savedSpecialization) {
+                const normalizedSaved =
+                  normalizeFacilityClassification(savedSpecialization) || savedSpecialization;
+                setManualSpecialization(normalizedSaved);
+                setFacilityType(normalizedSaved);
+
+                // Update global state for consistency
+                window.__currentSpecialization = normalizedSaved;
+                window.__manualSpecialization = normalizedSaved;
+              }
+
+              // Update service departments if available
+              if (parsedDepartments.length > 0) {
+                setSelectedServiceDepartments(parsedDepartments);
+
+                // Update global state for consistency
+                window.__selectedServiceDepartments = parsedDepartments;
+              }
+
+              // Single timestamp update for both changes
+              setLastUpdateTimestamp(Date.now());
+            }
+
+            // Clear loading flag after all updates are complete
+            setTimeout(() => {
+              setIsLoadingFromIndexedDB(false);
+            }, 200); // Small delay to ensure all state updates are processed
+
+            showToast('Loaded saved form data', 'success');
+
+            // Log what was loaded for debugging
+            console.log('📋 Form data loading summary:', {
+              totalFields: Object.keys(existingData.formData).length,
+              hasSpecialization: !!savedSpecialization,
+              specialization: savedSpecialization,
+              hasServiceDepartments: !!savedServiceDepartments,
+              serviceDepartments: savedServiceDepartments
+            });
+          }
+        } catch (error) {
+          console.error('❌ Failed to load existing form data:', error);
+        }
+      }
+    };
+
+    loadExistingData();
+  }, [eventId, loadFormData, showToast]);
+
+  // Handle comment changes for data elements
+  const handleCommentChange = (dataElementId, comment) => {
+    setFieldComments(prev => {
+      const updated = { ...prev };
+      if (comment && comment.trim()) {
+        updated[dataElementId] = comment.trim();
+      } else {
+        delete updated[dataElementId];
+      }
+
+      // Save comments to the designated Survey Comments data element
+      saveCommentsToDataElement(updated);
+
+      // Save comments incrementally to IndexedDB
+      if (eventId) {
+        saveField(`comment_${dataElementId}`, comment?.trim() || '');
+      }
+
+      return updated;
+    });
+  };
+
+  // Save comments to the Survey Comments data element in JSON format
+  const saveCommentsToDataElement = (comments) => {
+    // Find the Survey Comments data element
+    // We'll look for any data element that might be used for comments
+    const surveyCommentsElement = findSurveyCommentsElement();
+
+    if (surveyCommentsElement && Object.keys(comments).length > 0) {
+      const commentsJson = JSON.stringify(comments);
+
+      // Update form data with the comments JSON
+      setFormData(prev => ({
+        ...prev,
+        [`dataElement_${surveyCommentsElement.dataElement.id}`]: commentsJson
+      }));
+    }
+  };
+
+  // Find the Survey Comments data element - using specific ID
+  const findSurveyCommentsElement = () => {
+    if (!configuration?.programStage?.allDataElements) return null;
+
+    // Use the specific data element ID for storing comments
+    const COMMENTS_DATA_ELEMENT_ID = "EaIXCub2vjL";
+
+    const commentsElement = configuration.programStage.allDataElements.find(psde => {
+      return psde.dataElement.id === COMMENTS_DATA_ELEMENT_ID;
+    });
+
+    if (commentsElement) {
+    } else {
+      console.warn('⚠️ Survey Comments data element not found with ID:', COMMENTS_DATA_ELEMENT_ID);
+    }
+
+    return commentsElement;
+  };
+
+  // Load existing comments when form data changes
+  useEffect(() => {
+    const surveyCommentsElement = findSurveyCommentsElement();
+    if (surveyCommentsElement && formData) {
+      const commentsFieldKey = `dataElement_${surveyCommentsElement.dataElement.id}`;
+      const commentsJson = formData[commentsFieldKey];
+
+      if (commentsJson && typeof commentsJson === 'string') {
+        try {
+          const parsedComments = JSON.parse(commentsJson);
+          if (typeof parsedComments === 'object' && parsedComments !== null) {
+            setFieldComments(parsedComments);
+          }
+        } catch (error) {
+          console.warn('Failed to parse existing comments:', error);
+        }
+      }
+    }
+  }, [formData, configuration]);
+
+  // Handle signature changes
+  const handleSignatureChange = (signatureDataURL) => {
+    setIntervieweeSignature(signatureDataURL);
+
+    // Save signature immediately to IndexedDB (critical field)
+    if (eventId) {
+      saveFieldImmediate('intervieweeSignature', signatureDataURL);
+    }
+  };
+
+  // Debug panel removed - no longer needed
+
+  const [isDraft, setIsDraft] = useState(false);
+
+  // Controls whether the Floating Progress bar is collapsed
+  const [isProgressCollapsed, setIsProgressCollapsed] = useState(false);
+
+  // const [currentUser, setCurrentUser] = useState(null);
+
+  const [serviceSections, setServiceSections] = useState([]);
+
+  // Initialize department options immediately when component loads
+  // This ensures hardcoded departments are available before any FormField renders
+  const initializeDepartmentOptions = () => {
+    const baseClassification = manualSpecialization || facilityType || 'Obstetrics & Gynaecology';
+    const currentSpecialization =
+      normalizeFacilityClassification(baseClassification) || 'Obstetrics & Gynaecology';
+    const hardcodedDepartments = getDepartmentsForSpecialization(currentSpecialization);
+
+    console.log(
+      `🚀 IMMEDIATE INIT: Setting department options for "${currentSpecialization}":`,
+      {
+        count: hardcodedDepartments.length,
+        departments: hardcodedDepartments.slice(0, 3) // Show first 3 for debugging
+      }
+    );
+
+    if (hardcodedDepartments.length > 0) {
+      window.__departmentOptionsForSection = hardcodedDepartments;
+    }
+  };
+
+  // Call immediately on every render to ensure departments are always available
+  initializeDepartmentOptions();
+
+  // Calculate department options when serviceSections or facilityType changes
+  useEffect(() => {
+    try {
+      if (facilityType) {
+
+        // First, try to get hardcoded departments for the current specialization
+        const baseClassification = manualSpecialization || facilityType || 'Obstetrics & Gynaecology';
+        const currentSpecialization =
+          normalizeFacilityClassification(baseClassification) || 'Obstetrics & Gynaecology';
+        const hardcodedDepartments = getDepartmentsForSpecialization(currentSpecialization);
+
+        console.log(`🎯 Checking hardcoded departments for "${currentSpecialization}":`, {
+          count: hardcodedDepartments.length,
+          departments: hardcodedDepartments.slice(0, 5) // Show first 5 for debugging
+        });
+
+        if (hardcodedDepartments.length > 0) {
+          // Use hardcoded departments
+          window.__departmentOptionsForSection = hardcodedDepartments;
+          return;
+        }
+
+        // Fallback to dynamic calculation only if no hardcoded departments are available
+        if (serviceSections && Array.isArray(serviceSections)) {
+
+          const names = [];
+          const seenNames = new Set(); // Track seen names to prevent duplicates
+
+          for (const s of serviceSections) {
+            const total = s?.dataElements?.length || 0;
+            if (total === 0) continue;
+
+            // Only include sections that should be visible for the current facility type
+            const shouldShowThisSection = shouldShowSection(
+              s.displayName,
+              currentSpecialization
+            );
+            if (!shouldShowThisSection) {
+              continue;
+            }
+
+            // Skip if we've already processed a section with this display name
+            if (seenNames.has(s.displayName)) {
+              continue;
+            }
+
+            const shown = (s.dataElements || []).filter((psde2) => {
+              if (!psde2?.dataElement) return false;
+              const displayName2 = psde2.dataElement.displayName;
+              const isComment2 = /\s(Comments?|Remarks?)$/i.test(displayName2);
+              if (isComment2) {
+                const main2 = displayName2
+                  .replace(/\sComments?\s*$/i, '')
+                  .replace(/\sRemarks?\s*$/i, '')
+                  .trim();
+                return shouldShowDataElementForService(main2, currentSpecialization);
+              }
+              return shouldShowDataElementForService(displayName2, currentSpecialization);
+            }).length;
+
+            if (shown > 0) {
+              names.push(s.displayName);
+              seenNames.add(s.displayName); // Mark as seen
+            }
+          }
+
+          // No need for additional deduplication since we prevented duplicates above
+          const departmentOptions = names;
+
+          window.__departmentOptionsForSection = departmentOptions;
+        } else {
+          window.__departmentOptionsForSection = [];
+        }
+      }
+    } catch (error) {
+      console.error('Error calculating department options:', error);
+      window.__departmentOptionsForSection = [];
+    }
+  }, [facilityType, serviceSections, manualSpecialization]);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [formStats, setFormStats] = useState({ percentage: 0, filled: 0, total: 0 });
+
+  const [trackedEntityInstance, setTrackedEntityInstance] = useState(null);
+
+  const [gpsCoordinates, setGpsCoordinates] = useState(null);
+
+  // State for organization units (for the dropdown)
+
+  const [organizationUnits, setOrganizationUnits] = useState([]);
+
+  const [loadingOrganizationUnits, setLoadingOrganizationUnits] = useState(false);
+
+  // State for facility classifications (from CSV)
+
+  const [facilityClassifications, setFacilityClassifications] = useState([]);
+
+  const [loadingFacilityClassifications, setLoadingFacilityClassifications] = useState(false);
+
+  // State for inspection information confirmation (moved to top of FormPage function)
+
+  // Scroll to first section after inspection info confirmation
+  useEffect(() => {
+    if (inspectionInfoConfirmed) {
+      // Small delay to ensure DOM is updated with new sections
+      setTimeout(() => {
+        // Try to find the confirmation status message first (most reliable)
+        const statusMessage = document.querySelector('[data-confirmation-status="true"]');
+
+        if (statusMessage) {
+          statusMessage.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+            inline: 'nearest'
+          });
+        } else {
+          // Fallback: try to find the first form section that's not an inspection type section
+          const allSections = document.querySelectorAll('.form-section');
+          let targetSection = null;
+
+          for (const section of allSections) {
+            // Skip inspection type sections and find the first regular section
+            if (!section.hasAttribute('data-inspection-type') &&
+              !section.querySelector('input[type="checkbox"]')) {
+              targetSection = section;
+              break;
+            }
+          }
+
+          if (targetSection) {
+            targetSection.scrollIntoView({
               behavior: 'smooth',
               block: 'start',
               inline: 'nearest'
             });
           } else {
-            // Fallback: try to find the first form section that's not an inspection type section
-            const allSections = document.querySelectorAll('.form-section');
-            let targetSection = null;
-
-            for (const section of allSections) {
-              // Skip inspection type sections and find the first regular section
-              if (!section.hasAttribute('data-inspection-type') &&
-                  !section.querySelector('input[type="checkbox"]')) {
-                targetSection = section;
-                break;
-              }
-            }
-
-            if (targetSection) {
-              targetSection.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start',
-                inline: 'nearest'
-              });
-            } else {
-            }
-          }
-        }, 500); // 500ms delay to ensure sections are fully rendered
-      }
-    }, [inspectionInfoConfirmed]);
-
-    // State for form submission confirmation
-
-    const [isConfirmed, setIsConfirmed] = useState(false);
-
-    // State for payload dialog
-    const [showPayloadDialog, setShowPayloadDialog] = useState(false);
-    const [payloadData, setPayloadData] = useState(null);
-
-    // Function to get current facility classification
-
-    const getCurrentFacilityClassification = () => {
-      // 1. Prioritize manual specialization selection
-      if (manualSpecialization) {
-        return normalizeFacilityClassification(manualSpecialization);
-      }
-
-      // 2. Try to get from formData
-      if (formData.facilityClassification) {
-        return normalizeFacilityClassification(formData.facilityClassification);
-      }
-
-      // 3. Try to get from the DHIS2 field if it exists
-      if (configuration?.programStage?.allDataElements) {
-        const facilityClassificationElement = configuration.programStage.allDataElements.find((psde) => {
-          const fieldName = (psde.dataElement.displayName || psde.dataElement.shortName || '').toLowerCase();
-          return fieldName.includes('facility classification') || fieldName.includes('facility type');
-        });
-
-        if (facilityClassificationElement) {
-          const fieldKey = `dataElement_${facilityClassificationElement.dataElement.id}`;
-          const dhisValue = formData[fieldKey];
-          if (dhisValue) {
-            return normalizeFacilityClassification(dhisValue);
           }
         }
+      }, 500); // 500ms delay to ensure sections are fully rendered
+    }
+  }, [inspectionInfoConfirmed]);
+
+  // State for form submission confirmation
+
+  const [isConfirmed, setIsConfirmed] = useState(false);
+
+  // State for payload dialog
+  const [showPayloadDialog, setShowPayloadDialog] = useState(false);
+  const [payloadData, setPayloadData] = useState(null);
+
+  // Function to get current facility classification
+
+  const getCurrentFacilityClassification = () => {
+    // 1. Prioritize manual specialization selection
+    if (manualSpecialization) {
+      return normalizeFacilityClassification(manualSpecialization);
+    }
+
+    // 2. Try to get from formData
+    if (formData.facilityClassification) {
+      return normalizeFacilityClassification(formData.facilityClassification);
+    }
+
+    // 3. Try to get from the DHIS2 field if it exists
+    if (configuration?.programStage?.allDataElements) {
+      const facilityClassificationElement = configuration.programStage.allDataElements.find((psde) => {
+        const fieldName = (psde.dataElement.displayName || psde.dataElement.shortName || '').toLowerCase();
+        return fieldName.includes('facility classification') || fieldName.includes('facility type');
+      });
+
+      if (facilityClassificationElement) {
+        const fieldKey = `dataElement_${facilityClassificationElement.dataElement.id}`;
+        const dhisValue = formData[fieldKey];
+        if (dhisValue) {
+          return normalizeFacilityClassification(dhisValue);
+        }
       }
+    }
 
-      // 4. Fallback to facilityType state
-      if (facilityType) {
-        return normalizeFacilityClassification(facilityType);
-      }
+    // 4. Fallback to facilityType state
+    if (facilityType) {
+      return normalizeFacilityClassification(facilityType);
+    }
 
-      return null;
-    };
+    return null;
+  };
 
-    const fetchTrackedEntityInstance = async (facilityId) => {
+  const fetchTrackedEntityInstance = async (facilityId) => {
 
-      try {
+    try {
 
-        // Use the same program ID as defined in the API service
+      // Use the same program ID as defined in the API service
 
-        const FACILITY_REGISTRY_PROGRAM_ID = 'EE8yeLVo6cN';
+      const FACILITY_REGISTRY_PROGRAM_ID = 'EE8yeLVo6cN';
 
-        const apiEndpoint = `/api/trackedEntityInstances?ou=${facilityId}&program=${FACILITY_REGISTRY_PROGRAM_ID}&fields=trackedEntityInstance&ouMode=DESCENDANTS`;
+      const apiEndpoint = `/api/trackedEntityInstances?ou=${facilityId}&program=${FACILITY_REGISTRY_PROGRAM_ID}&fields=trackedEntityInstance&ouMode=DESCENDANTS`;
 
-        // Enhanced debugging for API call
+      // Enhanced debugging for API call
 
-        // Use the API service instead of direct fetch
+      // Use the API service instead of direct fetch
 
-        const response = await api.request(apiEndpoint);
+      const response = await api.request(apiEndpoint);
 
-        if (response.trackedEntityInstances && response.trackedEntityInstances.length > 0) {
+      if (response.trackedEntityInstances && response.trackedEntityInstances.length > 0) {
 
-          const tei = response.trackedEntityInstances[0].trackedEntityInstance;
+        const tei = response.trackedEntityInstances[0].trackedEntityInstance;
 
-          if (tei && tei.trim() !== '') {
+        if (tei && tei.trim() !== '') {
 
           setTrackedEntityInstance(tei);
 
-          } else {
-
-            setTrackedEntityInstance(null);
-
-          }
-
         } else {
-
-          console.log('⚠️ Response structure:', {
-
-            hasTrackedEntityInstances: !!response?.trackedEntityInstances,
-
-            trackedEntityInstancesType: typeof response?.trackedEntityInstances,
-
-            trackedEntityInstancesLength: response?.trackedEntityInstances?.length || 0,
-
-            responseKeys: Object.keys(response || {})
-
-          });
 
           setTrackedEntityInstance(null);
 
         }
 
-      } catch (error) {
+      } else {
 
-        console.error('❌ ===== TEI RETRIEVAL ERROR DEBUG =====');
+        console.log('⚠️ Response structure:', {
 
-        console.error('❌ Error Type:', error.constructor.name);
+          hasTrackedEntityInstances: !!response?.trackedEntityInstances,
 
-        console.error('❌ Error Message:', error.message);
+          trackedEntityInstancesType: typeof response?.trackedEntityInstances,
 
-        console.error('❌ Error Stack:', error.stack);
+          trackedEntityInstancesLength: response?.trackedEntityInstances?.length || 0,
 
-        console.error('❌ Full Error Object:', error);
+          responseKeys: Object.keys(response || {})
 
-        console.error('❌ ===== TEI RETRIEVAL ERROR DEBUG END =====');
+        });
 
         setTrackedEntityInstance(null);
 
       }
 
-    };
+    } catch (error) {
 
-    useEffect(() => {
+      console.error('❌ ===== TEI RETRIEVAL ERROR DEBUG =====');
 
-      setEventDate(formData.eventDate);
+      console.error('❌ Error Type:', error.constructor.name);
 
-    }, [formData.eventDate]);
+      console.error('❌ Error Message:', error.message);
 
-    // Build unique facilities from userAssignments
+      console.error('❌ Error Stack:', error.stack);
 
-    // const safeUserAssignments = Array.isArray(userAssignments) ? userAssignments : [];
+      console.error('❌ Full Error Object:', error);
 
-    // const uniqueFacilities = [
+      console.error('❌ ===== TEI RETRIEVAL ERROR DEBUG END =====');
 
-    //   ...new Set(
+      setTrackedEntityInstance(null);
 
-    //     safeUserAssignments
-
-    //       .map(a => typeof a.facility === 'string' ? a.facility.trim() : '')
-
-    //       .filter(facility => facility)
-
-    //   )
-
-    // ];
-
-    // Get today's date in Botswana timezone (UTC+2)
-
-    const getBotswanaDate = () => {
-
-      try {
-
-        const now = new Date();
-
-        if (isNaN(now.getTime())) {
-
-          console.warn('⚠️ Current date is invalid, using fallback');
-
-          return '2025-01-01';
-
-        }
-
-        // Botswana is UTC+2, so add 2 hours to get local time
-
-        const botswanaTime = new Date(now.getTime() + (2 * 60 * 60 * 1000));
-
-        if (isNaN(botswanaTime.getTime())) {
-
-          console.warn('⚠️ Botswana time calculation failed, using current date');
-
-          return now.toISOString().split('T')[0];
-
-        }
-
-        return botswanaTime.toISOString().split('T')[0];
-
-      } catch (error) {
-
-        console.error('❌ Error in getBotswanaDate:', error);
-
-        return '2025-01-01'; // Fallback date
-
-      }
-
-    };
-
-    // Robust date parsing function to handle different date formats
-
-    const parseDate = (dateString) => {
-
-      if (!dateString) return null;
-
-      // Try parsing as ISO string first
-
-      let date = new Date(dateString);
-
-      if (!isNaN(date.getTime())) return date;
-
-      // Try parsing as DD/MM/YYYY or MM/DD/YYYY
-
-      const parts = dateString.split(/[\/\-]/);
-
-      if (parts.length === 3) {
-
-        // Try different combinations
-
-        const combinations = [
-
-          [parts[0], parts[1], parts[2]], // DD/MM/YYYY
-
-          [parts[1], parts[0], parts[2]], // MM/DD/YYYY
-
-          [parts[2], parts[0], parts[1]], // YYYY/MM/DD
-
-          [parts[2], parts[1], parts[0]]  // YYYY/DD/MM
-
-        ];
-
-        for (const [day, month, year] of combinations) {
-
-          date = new Date(year, month - 1, day);
-
-          if (!isNaN(date.getTime())) return date;
-
-        }
-
-      }
-
-      return null;
-
-    };
-
-    const today = getBotswanaDate();
-
-    const safeUserAssignments = Array.isArray(userAssignments) ? userAssignments : [];
-
-    //get services
-
-      // 1. Collect and flatten all sections
-
-      const allSections = safeUserAssignments
-
-          .flatMap(a => Array.isArray(a.assignment.sections) ? a.assignment.sections : []);
-
-      // console.log("allSections", allSections);
-
-      // 2. Map to names (handle both string and object)
-
-      const sectionNames = allSections.map(section =>
-
-          typeof section === 'object' && section !== null
-
-              ? section.name
-
-              : section
-
-      );
-
-      // 3. Remove duplicates
-
-      const uniqueServices = Array.from(new Set(sectionNames.filter(Boolean)));
-
-    // Get facilities with today's date in inspection period
-
-    const activeFacilities = safeUserAssignments.filter(a => {
-
-      const { startDate, endDate } = a.assignment.inspectionPeriod || {};
-
-      if (!startDate || !endDate) {
-
-        return false;
-
-      }
-
-      try {
-
-        // Use robust date parsing function
-
-        const start = parseDate(startDate);
-
-        const end = parseDate(endDate);
-
-        const todayDate = parseDate(today);
-
-        // Check if dates are valid
-
-        if (!start || !end || !todayDate) {
-
-          return false;
-
-        }
-
-        // Reset time to start of day for accurate date comparison
-
-        start.setHours(0, 0, 0, 0);
-
-        end.setHours(23, 59, 59, 999); // End of day
-
-        todayDate.setHours(12, 0, 0, 0); // Middle of day
-
-        const isActive = start <= todayDate && todayDate <= end;
-
-        return isActive;
-
-      } catch (error) {
-
-        return false;
-
-      }
-
-    }).map(a => ({
-
-      id: a.facility.id,
-
-      name: a.facility.name
-
-    }));
-
-    // Debug logging removed
-
-    const uniqueFacilities = activeFacilities; // Only show facilities with active assignments for today
-
-    // Toggle for debugging: show all facilities vs only active ones
-
-    const [showAllFacilities, setShowAllFacilities] = useState(false);
-
-    // Check if we have any active facilities
-
-    const hasActiveFacilities = activeFacilities.length > 0;
-
-    if (showDebugPanel) {
     }
 
-    // Helper function to determine if a field is mandatory
+  };
 
-    const isFieldMandatory = (psde) => {
+  useEffect(() => {
 
-      // All fields are now optional - no mandatory requirements
+    setEventDate(formData.eventDate);
+
+  }, [formData.eventDate]);
+
+  // Build unique facilities from userAssignments
+
+  // const safeUserAssignments = Array.isArray(userAssignments) ? userAssignments : [];
+
+  // const uniqueFacilities = [
+
+  //   ...new Set(
+
+  //     safeUserAssignments
+
+  //       .map(a => typeof a.facility === 'string' ? a.facility.trim() : '')
+
+  //       .filter(facility => facility)
+
+  //   )
+
+  // ];
+
+  // Get today's date in Botswana timezone (UTC+2)
+
+  const getBotswanaDate = () => {
+
+    try {
+
+      const now = new Date();
+
+      if (isNaN(now.getTime())) {
+
+        console.warn('⚠️ Current date is invalid, using fallback');
+
+        return '2025-01-01';
+
+      }
+
+      // Botswana is UTC+2, so add 2 hours to get local time
+
+      const botswanaTime = new Date(now.getTime() + (2 * 60 * 60 * 1000));
+
+      if (isNaN(botswanaTime.getTime())) {
+
+        console.warn('⚠️ Botswana time calculation failed, using current date');
+
+        return now.toISOString().split('T')[0];
+
+      }
+
+      return botswanaTime.toISOString().split('T')[0];
+
+    } catch (error) {
+
+      console.error('❌ Error in getBotswanaDate:', error);
+
+      return '2025-01-01'; // Fallback date
+
+    }
+
+  };
+
+  // Robust date parsing function to handle different date formats
+
+  const parseDate = (dateString) => {
+
+    if (!dateString) return null;
+
+    // Try parsing as ISO string first
+
+    let date = new Date(dateString);
+
+    if (!isNaN(date.getTime())) return date;
+
+    // Try parsing as DD/MM/YYYY or MM/DD/YYYY
+
+    const parts = dateString.split(/[\/\-]/);
+
+    if (parts.length === 3) {
+
+      // Try different combinations
+
+      const combinations = [
+
+        [parts[0], parts[1], parts[2]], // DD/MM/YYYY
+
+        [parts[1], parts[0], parts[2]], // MM/DD/YYYY
+
+        [parts[2], parts[0], parts[1]], // YYYY/MM/DD
+
+        [parts[2], parts[1], parts[0]]  // YYYY/DD/MM
+
+      ];
+
+      for (const [day, month, year] of combinations) {
+
+        date = new Date(year, month - 1, day);
+
+        if (!isNaN(date.getTime())) return date;
+
+      }
+
+    }
+
+    return null;
+
+  };
+
+  const today = getBotswanaDate();
+
+  const safeUserAssignments = Array.isArray(userAssignments) ? userAssignments : [];
+
+  //get services
+
+  // 1. Collect and flatten all sections
+
+  const allSections = safeUserAssignments
+
+    .flatMap(a => Array.isArray(a.assignment.sections) ? a.assignment.sections : []);
+
+  // console.log("allSections", allSections);
+
+  // 2. Map to names (handle both string and object)
+
+  const sectionNames = allSections.map(section =>
+
+    typeof section === 'object' && section !== null
+
+      ? section.name
+
+      : section
+
+  );
+
+  // 3. Remove duplicates
+
+  const uniqueServices = Array.from(new Set(sectionNames.filter(Boolean)));
+
+  // Get facilities with today's date in inspection period
+
+  const activeFacilities = safeUserAssignments.filter(a => {
+
+    const { startDate, endDate } = a.assignment.inspectionPeriod || {};
+
+    if (!startDate || !endDate) {
+
+      return false;
+
+    }
+
+    try {
+
+      // Use robust date parsing function
+
+      const start = parseDate(startDate);
+
+      const end = parseDate(endDate);
+
+      const todayDate = parseDate(today);
+
+      // Check if dates are valid
+
+      if (!start || !end || !todayDate) {
 
         return false;
 
-    };
-
-    const finalFacilities = showAllFacilities 
-
-      ? safeUserAssignments
-
-          .filter(assignment => assignment.facility && assignment.facility.id)
-
-          .map(assignment => ({
-
-            id: assignment.facility.id,
-
-            name: assignment.facility.name
-
-          }))
-
-      : uniqueFacilities; // Only show active facilities, no fallback
-
-    // Debug logging removed
-
-    // console.log("fac",safeUserAssignments)
-
-      // Get the selected assignment for the chosen facility
-
-    const selectedAssignment = safeUserAssignments.find(a => a.facility.id === (typeof formData.orgUnit === 'string' ? formData.orgUnit : formData.orgUnit?.id));
-
-    // Get service options from the selected assignment
-
-    const serviceOptions = selectedAssignment ? selectedAssignment.assignment.sections : [];
-
-    // Enhanced debug log to check the format of serviceOptions
-
-    console.log('🔍 DEBUG: serviceOptions format:', {
-
-      serviceOptions,
-
-      type: Array.isArray(serviceOptions) ? 'array' : typeof serviceOptions,
-
-      firstItem: serviceOptions[0],
-
-      firstItemType: serviceOptions[0] ? typeof serviceOptions[0] : 'undefined',
-
-      firstItemProperties: serviceOptions[0] ? Object.keys(serviceOptions[0]) : [],
-
-      allItemsAsStrings: serviceOptions.map(item => 
-
-        typeof item === 'object' ? 
-
-          (item.displayName || item.name || item.id || JSON.stringify(item)) : 
-
-          String(item)
-
-      )
-
-    });
-
-    const assignmentType = selectedAssignment ? selectedAssignment.assignment.type : null;
-
-    const assignmentInspectionId = selectedAssignment ? selectedAssignment.assignment.inspectionId : null;
-
-    // Get inspection period from the selected assignment
-
-    const inspectionPeriod = selectedAssignment && selectedAssignment.assignment
-
-      ? selectedAssignment.assignment.inspectionPeriod
-
-      : null;
-
-    // Load existing event if editing
-
-    useEffect(() => {
-
-      if (eventId && configuration) {
-
-        // TODO: Load existing event data
-
-        // This would fetch from storage and populate formData
-
       }
 
-    }, [eventId, configuration]);
+      // Reset time to start of day for accurate date comparison
 
-    // Fetch current user on mount
+      start.setHours(0, 0, 0, 0);
 
-    // done in initialize app of context
+      end.setHours(23, 59, 59, 999); // End of day
 
-    // useEffect(() => {
+      todayDate.setHours(12, 0, 0, 0); // Middle of day
 
-    //   const fetchCurrentUser = async () => {
+      const isActive = start <= todayDate && todayDate <= end;
 
-    //     try {
+      return isActive;
 
-    //       const user = await api.getMe();
+    } catch (error) {
 
-    //       // console.log('👤 Current user for service sections:', user);
+      return false;
 
-    //       // setCurrentUser(user); // This line is removed as per the new_code
+    }
 
-    //     } catch (error) {
+  }).map(a => ({
 
-    //       console.error('❌ Failed to fetch current user:', error);
+    id: a.facility.id,
 
-    //     }
+    name: a.facility.name
 
-    //   };
+  }));
 
-    //   if (api) {
+  // Debug logging removed
 
-    //     fetchCurrentUser();
+  const uniqueFacilities = activeFacilities; // Only show facilities with active assignments for today
 
-    //   }
+  // Toggle for debugging: show all facilities vs only active ones
 
-    // }, [api]);
+  const [showAllFacilities, setShowAllFacilities] = useState(false);
 
-    // Initialize organization unit to empty string when app loads
+  // Check if we have any active facilities
 
-    useEffect(() => {
+  const hasActiveFacilities = activeFacilities.length > 0;
 
-      if (configuration && !formData.orgUnit) {
+  if (showDebugPanel) {
+  }
 
-        setFormData(prev => ({
+  // Helper function to determine if a field is mandatory
 
-          ...prev,
+  const isFieldMandatory = (psde) => {
 
-          orgUnit: ''
+    // All fields are now optional - no mandatory requirements
 
-        }));
+    return false;
 
-      }
+  };
 
-    }, [configuration, formData.orgUnit]);
+  const finalFacilities = showAllFacilities
 
-    // Auto-select first available facility when user assignments load
+    ? safeUserAssignments
 
-    useEffect(() => {
+      .filter(assignment => assignment.facility && assignment.facility.id)
 
-      if (safeUserAssignments.length > 0 && !formData.orgUnit && activeFacilities.length > 0) {
+      .map(assignment => ({
 
-        const firstActiveFacility = activeFacilities[0];
+        id: assignment.facility.id,
 
-        if (firstActiveFacility && firstActiveFacility.id) {
+        name: assignment.facility.name
 
-          setFormData(prev => ({
+      }))
 
-            ...prev,
+    : uniqueFacilities; // Only show active facilities, no fallback
 
-            orgUnit: firstActiveFacility.id
+  // Debug logging removed
 
-          }));
+  // console.log("fac",safeUserAssignments)
 
-          // Also auto-set the event date to today if not set
+  // Get the selected assignment for the chosen facility
 
-          if (!formData.eventDate) {
+  const selectedAssignment = safeUserAssignments.find(a => a.facility.id === (typeof formData.orgUnit === 'string' ? formData.orgUnit : formData.orgUnit?.id));
 
-            const today = new Date().toISOString().split('T')[0];
+  // Get service options from the selected assignment
 
-            setFormData(prev => ({
+  const serviceOptions = selectedAssignment ? selectedAssignment.assignment.sections : [];
 
-              ...prev,
+  // Enhanced debug log to check the format of serviceOptions
 
-              eventDate: today
+  console.log('🔍 DEBUG: serviceOptions format:', {
 
-            }));
+    serviceOptions,
 
-          }
+    type: Array.isArray(serviceOptions) ? 'array' : typeof serviceOptions,
 
-          // Trigger facility classification fetch for the auto-selected facility
+    firstItem: serviceOptions[0],
 
-          setTimeout(() => {
+    firstItemType: serviceOptions[0] ? typeof serviceOptions[0] : 'undefined',
 
-            if (api) {
+    firstItemProperties: serviceOptions[0] ? Object.keys(serviceOptions[0]) : [],
 
-              fetchFacilityClassification(firstActiveFacility.id);
+    allItemsAsStrings: serviceOptions.map(item =>
 
-            }
+      typeof item === 'object' ?
 
-          }, 100); // Small delay to ensure formData is updated
+        (item.displayName || item.name || item.id || JSON.stringify(item)) :
 
-        }
+        String(item)
 
-      }
+    )
 
-    }, [safeUserAssignments, activeFacilities, api]); // Removed formData.orgUnit to prevent circular dependency
+  });
 
-    // Auto-assign GPS coordinates when form loads
+  const assignmentType = selectedAssignment ? selectedAssignment.assignment.type : null;
 
-    useEffect(() => {
+  const assignmentInspectionId = selectedAssignment ? selectedAssignment.assignment.inspectionId : null;
 
-      if (configuration && configuration.programStage && configuration.programStage.allDataElements) {
+  // Get inspection period from the selected assignment
 
-        autoAssignGPSCoordinates().catch(error => {
+  const inspectionPeriod = selectedAssignment && selectedAssignment.assignment
 
-        });
+    ? selectedAssignment.assignment.inspectionPeriod
 
-      }
+    : null;
 
-    }, [configuration]);
+  // Load existing event if editing
 
-    // Filter and set initial sections when configuration loads
+  useEffect(() => {
 
-    useEffect(() => {
+    if (eventId && configuration) {
 
-      if (configuration?.programStage?.sections) {
+      // TODO: Load existing event data
 
-        const filteredSections = filterUnwantedSections(configuration.programStage.sections);
+      // This would fetch from storage and populate formData
 
-        // Debug: Log all data elements to find Facility Service Departments
-        configuration.programStage.sections.forEach(section => {
-          if (section.dataElements) {
-            section.dataElements.forEach(psde => {
-              if (psde.dataElement) {
-                if (psde.dataElement.displayName.toLowerCase().includes('service') ||
-                    psde.dataElement.displayName.toLowerCase().includes('department')) {
-                }
-              }
-            });
-          }
-        });
+    }
 
-                if (showDebugPanel) {
+  }, [eventId, configuration]);
 
-          console.log('🔍 Initial section filtering:', {
+  // Fetch current user on mount
 
-            totalSections: configuration.programStage.sections.length,
+  // done in initialize app of context
 
-            filteredSections: filteredSections.length,
+  // useEffect(() => {
 
-            excludedSections: configuration.programStage.sections
+  //   const fetchCurrentUser = async () => {
 
-              .filter(section => 
+  //     try {
 
-                section.displayName === "Final_Inspection_Event" || 
+  //       const user = await api.getMe();
 
-                section.displayName === "Preliminary-Report" ||
+  //       // console.log('👤 Current user for service sections:', user);
 
-                section.displayName === "Inspectors Details" ||
+  //       // setCurrentUser(user); // This line is removed as per the new_code
 
-                section.displayName.startsWith("Pre-Inspection:")
+  //     } catch (error) {
 
-              )
+  //       console.error('❌ Failed to fetch current user:', error);
 
-              .map(s => s.displayName)
+  //     }
 
-          });
+  //   };
 
-        }
+  //   if (api) {
 
-        setServiceSections(filteredSections);
+  //     fetchCurrentUser();
 
-        // Load facility classifications from CSV
+  //   }
 
-        loadFacilityClassifications();
+  // }, [api]);
 
-      }
+  // Initialize organization unit to empty string when app loads
 
-    }, [configuration, showDebugPanel]);
+  useEffect(() => {
 
-    // Fetch service sections when facility or user changes
-
-    useEffect(() => {
-
-      // This useEffect is no longer needed as serviceOptions are now directly available
-
-      const fetchServiceSections = async () => {
-
-        const currentUser = user;
-
-        if (showDebugPanel) {
-        }
-
-        if (!formData.orgUnit || !currentUser?.username) {
-
-          if (showDebugPanel) {
-
-          }
-
-          setServiceSections(filterUnwantedSections(configuration?.programStage?.sections));
-
-          return;
-
-        }
-
-        setLoadingServiceSections(true);
-
-        try {
-
-          const facilityId = typeof formData.orgUnit === 'string' ? formData.orgUnit : formData.orgUnit?.id;
-
-          if (showDebugPanel) {
-
-          }
-
-          const assignedSectionNames = await api.getServiceSectionsForInspector(
-
-            facilityId,
-
-            currentUser.username || currentUser.displayName
-
-          );
-
-          const allProgramSections = configuration?.programStage?.sections || [];
-
-          if (showDebugPanel) {
-
-          }
-
-          // Filter sections based on assigned service sections
-
-          const filteredSections = allProgramSections.filter(section => {
-            // Always include Inspection Type section
-            if (section.displayName && section.displayName.toLowerCase() === "inspection type") {
-              if (showDebugPanel) {
-              }
-              return true;
-            }
-
-            // Always include sections that don't start with "Pre-Inspection:"
-
-            if (!section.displayName.startsWith("Pre-Inspection:")) {
-
-              if (showDebugPanel) {
-
-              }
-
-              return true;
-
-            }
-
-            // For Pre-Inspection sections, check if they're in the assigned sections
-
-            const isAssigned = assignedSectionNames.includes(section.displayName);
-
-            if (showDebugPanel) {
-
-            }
-
-            return isAssigned;
-
-          });
-
-          // Apply final filtering to remove unwanted sections
-
-          let finalFilteredSections = filterUnwantedSections(filteredSections);
-          
-          // Ensure Inspection Type section is always included
-          const inspectionTypeSection = allProgramSections.find(
-            section => section.displayName && section.displayName.toLowerCase() === "inspection type"
-          );
-          
-          if (inspectionTypeSection && !finalFilteredSections.some(s => s.displayName && s.displayName.toLowerCase() === "inspection type")) {
-            finalFilteredSections = [inspectionTypeSection, ...finalFilteredSections];
-          }
-
-          // ADDITIONAL DEBUGGING: Log what sections we're setting
-
-          console.log('🔍 FINAL DEBUG: Setting serviceSections to:', {
-
-            finalFilteredSections: finalFilteredSections.length,
-
-            sectionNames: finalFilteredSections.map(s => s.displayName),
-
-            hasDataElements: finalFilteredSections.map(s => ({
-
-              name: s.displayName,
-
-              dataElementsCount: s.dataElements?.length || 0
-
-            }))
-
-          });
-
-          setServiceSections(finalFilteredSections);
-
-          if (showDebugPanel) {
-
-            console.log('✅ Service sections loaded for render:', {
-
-              assignedSections: assignedSectionNames,
-
-              allProgramSections: allProgramSections.length,
-
-              filteredSections: filteredSections.length,
-
-              sections: filteredSections.map(s => s.displayName)
-
-            });
-
-          }
-
-        } catch (error) {
-
-          console.error('❌ Failed to fetch service sections:', error);
-
-          // No fallback - set empty service sections when fetch fails
-
-          setServiceSections([]);
-
-        }
-
-        setLoadingServiceSections(false);
-
-      };
-
-      fetchServiceSections();
-
-    }, [formData.orgUnit, user, configuration, api]);
-
-    // Move this block after all hooks to avoid conditional hook call error
-
-    // if (!configuration) { ... }
-
-    // Calculate form completion percentage and stats
-
-    const calculateFormStats = () => {
-
-      if (!configuration) return { percentage: 0, filled: 0, total: 0 };
-
-      // Use currently rendered sections when available; fallback to configuration
-
-      const sectionsSource = Array.isArray(serviceSections) && serviceSections.length > 0
-
-        ? serviceSections
-
-        : configuration?.programStage?.sections || [];
-
-      const normalize = (value) => (value || '').toString().trim().toLowerCase();
-
-      const isPreInspection = (section) => normalize(section?.displayName).startsWith('pre-inspection');
-
-      const isDocumentReview = (section) => normalize(section?.displayName).includes('document review');
-
-      const hasAnyDataInSection = (section) => {
-
-        if (!section?.dataElements) return false;
-
-        return section.dataElements.some((psde) => {
-
-          const fieldName = `dataElement_${psde.dataElement.id}`;
-
-          const value = formData[fieldName];
-
-          return value !== undefined && value !== null && value.toString().trim() !== '';
-
-        });
-
-      };
-
-      const documentReviewSections = sectionsSource.filter((s) => isDocumentReview(s));
-
-      const nonPreNonDocSections = sectionsSource.filter((s) => !isPreInspection(s) && !isDocumentReview(s));
-
-      // If any data has been entered in Document Review section(s), only count those.
-
-      // Otherwise, count the rest of the sections excluding pre-inspection ones.
-
-      const useDocumentReviewOnly = documentReviewSections.some((s) => hasAnyDataInSection(s));
-
-      const countedSections = useDocumentReviewOnly ? documentReviewSections : nonPreNonDocSections;
-
-      let totalFields = 0;
-
-      let filledFields = 0;
-
-      // Always include the two basic fields
-
-      totalFields += 2; // orgUnit and eventDate
-
-      if (formData.orgUnit) filledFields++;
-
-      if (formData.eventDate) filledFields++;
-
-      countedSections.forEach((section) => {
-
-        (section.dataElements || []).forEach((psde) => {
-
-          totalFields += 1;
-
-          const fieldName = `dataElement_${psde.dataElement.id}`;
-
-          const value = formData[fieldName];
-
-          if (value !== undefined && value !== null && value.toString().trim() !== '') {
-
-            filledFields += 1;
-
-          }
-
-        });
-
-      });
-
-      const percentage = totalFields === 0 ? 0 : Math.round((filledFields / totalFields) * 100);
-
-      return { percentage, filled: filledFields, total: totalFields };
-
-    };
-
-    // Update form stats when form data changes
-
-    useEffect(() => {
-
-      if (configuration) {
-
-        const stats = calculateFormStats();
-
-        setFormStats(stats);
-
-      }
-
-    }, [formData, configuration]);
-
-    const handleFieldChange = (fieldName, value) => {
+    if (configuration && !formData.orgUnit) {
 
       setFormData(prev => ({
 
         ...prev,
 
-        [fieldName]: value
+        orgUnit: ''
 
       }));
 
-      // Save field incrementally to IndexedDB
-      if (eventId) {
-        saveField(fieldName, value);
-      }
+    }
 
-      // Clear field error when user starts typing
+  }, [configuration, formData.orgUnit]);
 
-      if (errors[fieldName]) {
+  // Auto-select first available facility when user assignments load
 
-        setErrors(prev => ({
+  useEffect(() => {
+
+    if (safeUserAssignments.length > 0 && !formData.orgUnit && activeFacilities.length > 0) {
+
+      const firstActiveFacility = activeFacilities[0];
+
+      if (firstActiveFacility && firstActiveFacility.id) {
+
+        setFormData(prev => ({
 
           ...prev,
 
-          [fieldName]: null
+          orgUnit: firstActiveFacility.id
 
         }));
 
+        // Also auto-set the event date to today if not set
+
+        if (!formData.eventDate) {
+
+          const today = new Date().toISOString().split('T')[0];
+
+          setFormData(prev => ({
+
+            ...prev,
+
+            eventDate: today
+
+          }));
+
+        }
+
+        // Trigger facility classification fetch for the auto-selected facility
+
+        setTimeout(() => {
+
+          if (api) {
+
+            fetchFacilityClassification(firstActiveFacility.id);
+
+          }
+
+        }, 100); // Small delay to ensure formData is updated
+
       }
 
-      // Set tracked entity instance from dataStore when facility is selected
+    }
 
-      if (fieldName === 'orgUnit' && value) {
+  }, [safeUserAssignments, activeFacilities, api]); // Removed formData.orgUnit to prevent circular dependency
 
-        // Find the selected facility in userAssignments to get its trackedEntityInstance
+  // Auto-assign GPS coordinates when form loads
 
-        const selectedFacility = userAssignments.find(assignment => 
+  useEffect(() => {
 
-          assignment.facility.id === value
+    if (configuration && configuration.programStage && configuration.programStage.allDataElements) {
+
+      autoAssignGPSCoordinates().catch(error => {
+
+      });
+
+    }
+
+  }, [configuration]);
+
+  // Filter and set initial sections when configuration loads
+
+  useEffect(() => {
+
+    if (configuration?.programStage?.sections) {
+
+      const filteredSections = filterUnwantedSections(configuration.programStage.sections);
+
+      // Debug: Log all data elements to find Facility Service Departments
+      configuration.programStage.sections.forEach(section => {
+        if (section.dataElements) {
+          section.dataElements.forEach(psde => {
+            if (psde.dataElement) {
+              if (psde.dataElement.displayName.toLowerCase().includes('service') ||
+                psde.dataElement.displayName.toLowerCase().includes('department')) {
+              }
+            }
+          });
+        }
+      });
+
+      if (showDebugPanel) {
+
+        console.log('🔍 Initial section filtering:', {
+
+          totalSections: configuration.programStage.sections.length,
+
+          filteredSections: filteredSections.length,
+
+          excludedSections: configuration.programStage.sections
+
+            .filter(section =>
+
+              section.displayName === "Final_Inspection_Event" ||
+
+              section.displayName === "Preliminary-Report" ||
+
+              section.displayName === "Inspectors Details" ||
+
+              section.displayName.startsWith("Pre-Inspection:")
+
+            )
+
+            .map(s => s.displayName)
+
+        });
+
+      }
+
+      setServiceSections(filteredSections);
+
+      // Load facility classifications from CSV
+
+      loadFacilityClassifications();
+
+    }
+
+  }, [configuration, showDebugPanel]);
+
+  // Fetch service sections when facility or user changes
+
+  useEffect(() => {
+
+    // This useEffect is no longer needed as serviceOptions are now directly available
+
+    const fetchServiceSections = async () => {
+
+      const currentUser = user;
+
+      if (showDebugPanel) {
+      }
+
+      if (!formData.orgUnit || !currentUser?.username) {
+
+        if (showDebugPanel) {
+
+        }
+
+        setServiceSections(filterUnwantedSections(configuration?.programStage?.sections));
+
+        return;
+
+      }
+
+      setLoadingServiceSections(true);
+
+      try {
+
+        const facilityId = typeof formData.orgUnit === 'string' ? formData.orgUnit : formData.orgUnit?.id;
+
+        if (showDebugPanel) {
+
+        }
+
+        const assignedSectionNames = await api.getServiceSectionsForInspector(
+
+          facilityId,
+
+          currentUser.username || currentUser.displayName
 
         );
 
-        if (selectedFacility) {
+        const allProgramSections = configuration?.programStage?.sections || [];
 
-          if (selectedFacility.facility.trackedEntityInstance) {
+        if (showDebugPanel) {
 
-            setTrackedEntityInstance(selectedFacility.facility.trackedEntityInstance);
+        }
 
-          } else {
+        // Filter sections based on assigned service sections
 
-            fetchTrackedEntityInstance(value);
+        const filteredSections = allProgramSections.filter(section => {
+          // Always include Inspection Type section
+          if (section.displayName && section.displayName.toLowerCase() === "inspection type") {
+            if (showDebugPanel) {
+            }
+            return true;
+          }
+
+          // Always include sections that don't start with "Pre-Inspection:"
+
+          if (!section.displayName.startsWith("Pre-Inspection:")) {
+
+            if (showDebugPanel) {
+
+            }
+
+            return true;
 
           }
+
+          // For Pre-Inspection sections, check if they're in the assigned sections
+
+          const isAssigned = assignedSectionNames.includes(section.displayName);
+
+          if (showDebugPanel) {
+
+          }
+
+          return isAssigned;
+
+        });
+
+        // Apply final filtering to remove unwanted sections
+
+        let finalFilteredSections = filterUnwantedSections(filteredSections);
+
+        // Ensure Inspection Type section is always included
+        const inspectionTypeSection = allProgramSections.find(
+          section => section.displayName && section.displayName.toLowerCase() === "inspection type"
+        );
+
+        if (inspectionTypeSection && !finalFilteredSections.some(s => s.displayName && s.displayName.toLowerCase() === "inspection type")) {
+          finalFilteredSections = [inspectionTypeSection, ...finalFilteredSections];
+        }
+
+        // ADDITIONAL DEBUGGING: Log what sections we're setting
+
+        console.log('🔍 FINAL DEBUG: Setting serviceSections to:', {
+
+          finalFilteredSections: finalFilteredSections.length,
+
+          sectionNames: finalFilteredSections.map(s => s.displayName),
+
+          hasDataElements: finalFilteredSections.map(s => ({
+
+            name: s.displayName,
+
+            dataElementsCount: s.dataElements?.length || 0
+
+          }))
+
+        });
+
+        setServiceSections(finalFilteredSections);
+
+        if (showDebugPanel) {
+
+          console.log('✅ Service sections loaded for render:', {
+
+            assignedSections: assignedSectionNames,
+
+            allProgramSections: allProgramSections.length,
+
+            filteredSections: filteredSections.length,
+
+            sections: filteredSections.map(s => s.displayName)
+
+          });
+
+        }
+
+      } catch (error) {
+
+        console.error('❌ Failed to fetch service sections:', error);
+
+        // No fallback - set empty service sections when fetch fails
+
+        setServiceSections([]);
+
+      }
+
+      setLoadingServiceSections(false);
+
+    };
+
+    fetchServiceSections();
+
+  }, [formData.orgUnit, user?.username, configuration?.program?.id]);
+
+  // Move this block after all hooks to avoid conditional hook call error
+
+  // if (!configuration) { ... }
+
+  // Calculate form completion percentage and stats
+
+  const calculateFormStats = () => {
+
+    if (!configuration) return { percentage: 0, filled: 0, total: 0 };
+
+    // Use currently rendered sections when available; fallback to configuration
+
+    const sectionsSource = Array.isArray(serviceSections) && serviceSections.length > 0
+
+      ? serviceSections
+
+      : configuration?.programStage?.sections || [];
+
+    const normalize = (value) => (value || '').toString().trim().toLowerCase();
+
+    const isPreInspection = (section) => normalize(section?.displayName).startsWith('pre-inspection');
+
+    const isDocumentReview = (section) => normalize(section?.displayName).includes('document review');
+
+    const hasAnyDataInSection = (section) => {
+
+      if (!section?.dataElements) return false;
+
+      return section.dataElements.some((psde) => {
+
+        const fieldName = `dataElement_${psde.dataElement.id}`;
+
+        const value = formData[fieldName];
+
+        return value !== undefined && value !== null && value.toString().trim() !== '';
+
+      });
+
+    };
+
+    const documentReviewSections = sectionsSource.filter((s) => isDocumentReview(s));
+
+    const nonPreNonDocSections = sectionsSource.filter((s) => !isPreInspection(s) && !isDocumentReview(s));
+
+    // If any data has been entered in Document Review section(s), only count those.
+
+    // Otherwise, count the rest of the sections excluding pre-inspection ones.
+
+    const useDocumentReviewOnly = documentReviewSections.some((s) => hasAnyDataInSection(s));
+
+    const countedSections = useDocumentReviewOnly ? documentReviewSections : nonPreNonDocSections;
+
+    let totalFields = 0;
+
+    let filledFields = 0;
+
+    // Always include the two basic fields
+
+    totalFields += 2; // orgUnit and eventDate
+
+    if (formData.orgUnit) filledFields++;
+
+    if (formData.eventDate) filledFields++;
+
+    countedSections.forEach((section) => {
+
+      (section.dataElements || []).forEach((psde) => {
+
+        totalFields += 1;
+
+        const fieldName = `dataElement_${psde.dataElement.id}`;
+
+        const value = formData[fieldName];
+
+        if (value !== undefined && value !== null && value.toString().trim() !== '') {
+
+          filledFields += 1;
+
+        }
+
+      });
+
+    });
+
+    const percentage = totalFields === 0 ? 0 : Math.round((filledFields / totalFields) * 100);
+
+    return { percentage, filled: filledFields, total: totalFields };
+
+  };
+
+  // Update form stats when form data changes
+
+  useEffect(() => {
+
+    if (configuration) {
+
+      const stats = calculateFormStats();
+
+      setFormStats(stats);
+
+    }
+
+  }, [formData, configuration]);
+
+  const handleFieldChange = (fieldName, value) => {
+
+    setFormData(prev => ({
+
+      ...prev,
+
+      [fieldName]: value
+
+    }));
+
+    // Save field incrementally to IndexedDB
+    if (eventId) {
+      saveField(fieldName, value);
+    }
+
+    // Clear field error when user starts typing
+
+    if (errors[fieldName]) {
+
+      setErrors(prev => ({
+
+        ...prev,
+
+        [fieldName]: null
+
+      }));
+
+    }
+
+    // Set tracked entity instance from dataStore when facility is selected
+
+    if (fieldName === 'orgUnit' && value) {
+
+      // Find the selected facility in userAssignments to get its trackedEntityInstance
+
+      const selectedFacility = userAssignments.find(assignment =>
+
+        assignment.facility.id === value
+
+      );
+
+      if (selectedFacility) {
+
+        if (selectedFacility.facility.trackedEntityInstance) {
+
+          setTrackedEntityInstance(selectedFacility.facility.trackedEntityInstance);
 
         } else {
 
@@ -4942,342 +4963,225 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
         }
 
-        // Also fetch and set the facility classification
+      } else {
 
-        fetchFacilityClassification(value);
-
-        // Auto-populate inspection date when facility is selected
-        if (!formData.eventDate) {
-          const today = new Date();
-          const todayString = today.toISOString().split('T')[0];
-          
-          setFormData(prev => ({
-            ...prev,
-            eventDate: todayString
-          }));
-          
-          // Save the auto-populated date
-          if (eventId) {
-            saveField('eventDate', todayString);
-          }
-        }
+        fetchTrackedEntityInstance(value);
 
       }
 
-    };
+      // Also fetch and set the facility classification
 
-    // Set Type from assignment and lock field when facility/orgUnit changes
+      fetchFacilityClassification(value);
 
-    useEffect(() => {
+      // Auto-populate inspection date when facility is selected
+      if (!formData.eventDate) {
+        const today = new Date();
+        const todayString = today.toISOString().split('T')[0];
 
-      if (!configuration) return;
+        setFormData(prev => ({
+          ...prev,
+          eventDate: todayString
+        }));
 
-      const typeElement = configuration.programStage.allDataElements?.find(psde => {
+        // Save the auto-populated date
+        if (eventId) {
+          saveField('eventDate', todayString);
+        }
+      }
 
-        const name = (psde.dataElement.displayName || psde.dataElement.shortName || '').toLowerCase();
+    }
 
-        return name === 'type' || name.includes('facility type') || name.includes('inspection type');
+  };
 
-      });
+  // Set Type from assignment and lock field when facility/orgUnit changes
 
-      if (typeElement) {
+  useEffect(() => {
 
-        const fieldKey = `dataElement_${typeElement.dataElement.id}`;
+    if (!configuration) return;
 
-        if (assignmentType) {
+    const typeElement = configuration.programStage.allDataElements?.find(psde => {
 
-          // Only set Type field if there's a matching option in optionSet - no fallback
+      const name = (psde.dataElement.displayName || psde.dataElement.shortName || '').toLowerCase();
 
-          const options = typeElement.dataElement.optionSet?.options || [];
+      return name === 'type' || name.includes('facility type') || name.includes('inspection type');
 
-          if (Array.isArray(options) && options.length > 0) {
+    });
 
-            const normalized = (v) => (v ?? '').toString().trim().toLowerCase();
+    if (typeElement) {
 
-            const matched = options.find(opt =>
+      const fieldKey = `dataElement_${typeElement.dataElement.id}`;
 
-              normalized(opt.displayName) === normalized(assignmentType) ||
+      if (assignmentType) {
 
-              normalized(opt.code) === normalized(assignmentType) ||
+        // Only set Type field if there's a matching option in optionSet - no fallback
 
-              normalized(opt.id) === normalized(assignmentType)
+        const options = typeElement.dataElement.optionSet?.options || [];
 
-            );
+        if (Array.isArray(options) && options.length > 0) {
 
-            // Only set value if a matching option is found - no fallback to raw assignmentType
+          const normalized = (v) => (v ?? '').toString().trim().toLowerCase();
 
-            if (matched) {
+          const matched = options.find(opt =>
 
-              const valueToSet = matched.code || matched.id;
+            normalized(opt.displayName) === normalized(assignmentType) ||
 
-          setFormData(prev => ({
+            normalized(opt.code) === normalized(assignmentType) ||
 
-            ...prev,
+            normalized(opt.id) === normalized(assignmentType)
 
-            [fieldKey]: valueToSet
+          );
 
-          }));
+          // Only set value if a matching option is found - no fallback to raw assignmentType
 
-            } else {
+          if (matched) {
 
-              console.warn(`⚠️ No matching option found for assignmentType "${assignmentType}" in Type field optionSet. Field will remain empty.`);
+            const valueToSet = matched.code || matched.id;
 
-            }
+            setFormData(prev => ({
+
+              ...prev,
+
+              [fieldKey]: valueToSet
+
+            }));
 
           } else {
 
-            console.warn(`⚠️ Type field has no optionSet options. Cannot set value for assignmentType "${assignmentType}".`);
+            console.warn(`⚠️ No matching option found for assignmentType "${assignmentType}" in Type field optionSet. Field will remain empty.`);
 
           }
-
-        }
-
-        // Always lock the field regardless of whether a value exists
-
-        setReadOnlyFields(prev => ({ ...prev, [fieldKey]: true }));
-
-      }
-
-    }, [configuration, assignmentType, formData.orgUnit]);
-
-    // Service field detection is now handled by the module-level enhancedServiceFieldDetection function
-
-    // Set Inspection-id from assignment and lock field when facility/orgUnit changes
-
-    useEffect(() => {
-
-      if (!configuration) return;
-
-      const idElement = configuration.programStage.allDataElements?.find(psde => {
-
-        const display = (psde.dataElement.displayName || '').toLowerCase();
-
-        const short = (psde.dataElement.shortName || '').toLowerCase();
-
-        return (
-
-          display === 'inspection-id' || short === 'inspection-id' ||
-
-          display === 'inspection id' || short === 'inspection id' ||
-
-          display.includes('inspection-id') || short.includes('inspection-id') ||
-
-          display.includes('inspection id') || short.includes('inspection id')
-
-        );
-
-      });
-
-      if (idElement) {
-
-        const fieldKey = `dataElement_${idElement.dataElement.id}`;
-
-        // If the field has an optionSet, there's usually no optionSet for IDs; set raw string value
-
-        if (assignmentInspectionId !== null && assignmentInspectionId !== undefined && assignmentInspectionId !== '') {
-
-          setFormData(prev => ({
-
-            ...prev,
-
-            [fieldKey]: assignmentInspectionId
-
-          }));
-
-        }
-
-        // Always lock the field regardless of whether a value exists
-
-        setReadOnlyFields(prev => ({ ...prev, [fieldKey]: true }));
-
-      }
-
-    }, [configuration, assignmentInspectionId, formData.orgUnit]);
-
-    // Check if mandatory fields are filled
-
-    const areAllMandatoryFieldsFilled = () => {
-
-      // All fields are now optional - no mandatory requirements
-
-      return true;
-
-    };
-
-    const validateForm = () => {
-
-      const newErrors = {};
-
-      // All fields are now optional - no validation required
-
-      setErrors(newErrors);
-
-      return true;
-
-    };
-
-    const handleSave = async (saveDraft = false) => {
-
-      if (!saveDraft && !validateForm()) {
-
-        showToast('Please fix the errors before submitting', 'error');
-
-        return;
-
-      }
-
-      setIsSubmitting(true);
-
-      try {
-
-        // Prepare event data
-        // Always ensure we have a proper DHIS2 event ID
-        const finalEventId = eventId || generateDHIS2Id();
-
-        const eventData = {
-
-          event: finalEventId,
-
-          program: program.id,
-
-          programStage: programStage.id,
-
-          orgUnit: formData.orgUnit,
-
-          eventDate: formData.eventDate,
-
-          status: saveDraft ? 'SCHEDULE' : 'COMPLETED',
-
-          dataValues: []
-
-        };
-
-        // Always ensure trackedEntityInstance is included
-
-        // Try to get trackedEntityInstance from multiple sources
-        let teiToUse = trackedEntityInstance;
-
-        // If trackedEntityInstance is not set, try to get it from facilityInfo
-        if (!teiToUse && facilityInfo && facilityInfo.trackedEntityInstance) {
-          teiToUse = facilityInfo.trackedEntityInstance;
-        }
-
-        // If still no TEI, try to get it from userAssignments
-        if (!teiToUse && formData.orgUnit) {
-          const userAssignment = userAssignments?.find(assignment =>
-            assignment.facility && assignment.facility.id === formData.orgUnit
-          );
-          if (userAssignment && userAssignment.facility.trackedEntityInstance) {
-            teiToUse = userAssignment.facility.trackedEntityInstance;
-          }
-        }
-
-        if (teiToUse) {
-
-          eventData.trackedEntityInstance = teiToUse;
 
         } else {
 
-          // Show warning to user about missing TEI
-          if (!saveDraft) {
-            const userConfirmed = window.confirm(
-              '⚠️ WARNING: No facility registry link found for this facility.\n\n' +
-              'This inspection will be submitted without a facility link, which may cause "Unknown Organisation" in DHIS2.\n\n' +
-              'Do you want to continue with the submission?'
-            );
-
-            if (!userConfirmed) {
-              setIsSubmitting(false);
-              return;
-            }
-          }
+          console.warn(`⚠️ Type field has no optionSet options. Cannot set value for assignmentType "${assignmentType}".`);
 
         }
 
-        // Add data values
+      }
 
-        Object.entries(formData).forEach(([key, value]) => {
+      // Always lock the field regardless of whether a value exists
 
-          if (key.startsWith('dataElement_') && value !== '') {
+      setReadOnlyFields(prev => ({ ...prev, [fieldKey]: true }));
 
-            const dataElementId = key.replace('dataElement_', '');
+    }
 
-            eventData.dataValues.push({
+  }, [configuration, assignmentType, formData.orgUnit]);
 
-              dataElement: dataElementId,
+  // Service field detection is now handled by the module-level enhancedServiceFieldDetection function
 
-              value: value.toString()
+  // Set Inspection-id from assignment and lock field when facility/orgUnit changes
 
-            });
+  useEffect(() => {
 
-          }
+    if (!configuration) return;
 
-        });
+    const idElement = configuration.programStage.allDataElements?.find(psde => {
 
-        // Clean up event data - remove any undefined or null values
+      const display = (psde.dataElement.displayName || '').toLowerCase();
 
-        Object.keys(eventData).forEach(key => {
+      const short = (psde.dataElement.shortName || '').toLowerCase();
 
-          if (eventData[key] === undefined || eventData[key] === null) {
+      return (
 
-            delete eventData[key];
+        display === 'inspection-id' || short === 'inspection-id' ||
 
-          }
+        display === 'inspection id' || short === 'inspection id' ||
 
-        });
+        display.includes('inspection-id') || short.includes('inspection-id') ||
 
-        const savedEvent = await saveEvent(eventData, saveDraft);
+        display.includes('inspection id') || short.includes('inspection id')
 
-        setIsDraft(saveDraft);
+      );
 
-        // Always navigate to dashboard after successful save (both draft and final)
-        navigate('/home');
+    });
 
-      } catch (error) {
+    if (idElement) {
 
-        console.error('Failed to save event:', error);
+      const fieldKey = `dataElement_${idElement.dataElement.id}`;
 
-        showToast(`Failed to save: ${error.message}`, 'error');
+      // If the field has an optionSet, there's usually no optionSet for IDs; set raw string value
 
-        // Always navigate to dashboard even on failure (both draft and final)
-        navigate('/home');
+      if (assignmentInspectionId !== null && assignmentInspectionId !== undefined && assignmentInspectionId !== '') {
 
-      } finally {
+        setFormData(prev => ({
 
-        setIsSubmitting(false);
+          ...prev,
+
+          [fieldKey]: assignmentInspectionId
+
+        }));
 
       }
 
-    };
+      // Always lock the field regardless of whether a value exists
 
-    const handleSubmit = async (e) => {
+      setReadOnlyFields(prev => ({ ...prev, [fieldKey]: true }));
 
-      e.preventDefault();
+    }
 
-      // Flush any pending saves before submission
-      await flushPendingSaves();
+  }, [configuration, assignmentInspectionId, formData.orgUnit]);
 
-      // Check if signature is provided
-      if (!intervieweeSignature) {
-        showToast('Please provide the interviewee signature before submitting the inspection.', 'error');
-        return;
-      }
+  // Check if mandatory fields are filled
 
-      // Create payload data to show in dialog
+  const areAllMandatoryFieldsFilled = () => {
+
+    // All fields are now optional - no mandatory requirements
+
+    return true;
+
+  };
+
+  const validateForm = () => {
+
+    const newErrors = {};
+
+    // All fields are now optional - no validation required
+
+    setErrors(newErrors);
+
+    return true;
+
+  };
+
+  const handleSave = async (saveDraft = false) => {
+
+    if (!saveDraft && !validateForm()) {
+
+      showToast('Please fix the errors before submitting', 'error');
+
+      return;
+
+    }
+
+    setIsSubmitting(true);
+
+    try {
+
+      // Prepare event data
       // Always ensure we have a proper DHIS2 event ID
       const finalEventId = eventId || generateDHIS2Id();
 
       const eventData = {
+
         event: finalEventId,
+
         program: program.id,
+
         programStage: programStage.id,
+
         orgUnit: formData.orgUnit,
+
         eventDate: formData.eventDate,
-        status: 'COMPLETED',
+
+        status: saveDraft ? 'SCHEDULE' : 'COMPLETED',
+
         dataValues: []
+
       };
 
       // Always ensure trackedEntityInstance is included
+
+      // Try to get trackedEntityInstance from multiple sources
       let teiToUse = trackedEntityInstance;
 
       // If trackedEntityInstance is not set, try to get it from facilityInfo
@@ -5295,242 +5199,419 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
         }
       }
 
-      // Always add trackedEntityInstance to payload (even if null/undefined for debugging)
-      eventData.trackedEntityInstance = teiToUse;
+      if (teiToUse) {
 
-      // Add data values (skip section headers)
-      const isSectionHeaderById = (dataElementId) => {
-        try {
-          const sections = configuration?.programStage?.sections || [];
-          for (const section of sections) {
-            const des = section?.dataElements || [];
-            for (const psde of des) {
-              const de = psde?.dataElement;
-              if (de && de.id === dataElementId) {
-                return isSectionHeaderName(de.displayName || de.name || '');
-              }
-            }
+        eventData.trackedEntityInstance = teiToUse;
+
+      } else {
+
+        // Show warning to user about missing TEI
+        if (!saveDraft) {
+          const userConfirmed = window.confirm(
+            '⚠️ WARNING: No facility registry link found for this facility.\n\n' +
+            'This inspection will be submitted without a facility link, which may cause "Unknown Organisation" in DHIS2.\n\n' +
+            'Do you want to continue with the submission?'
+          );
+
+          if (!userConfirmed) {
+            setIsSubmitting(false);
+            return;
           }
-        } catch (e) {
-          console.warn('Failed to check if data element is header', e);
         }
-        return false;
-      };
 
-      Object.entries(formData).forEach(([key, value]) => {
-        if (!key.startsWith('dataElement_')) return;
-        if (value === '') return;
-        const dataElementId = key.replace('dataElement_', '');
-        if (isSectionHeaderById(dataElementId)) return; // skip headers
-        eventData.dataValues.push({
-          dataElement: dataElementId,
-          value: value.toString()
-        });
-      });
-
-      // Add signature to payload if provided
-      if (intervieweeSignature) {
-        const SIGNATURE_DATA_ELEMENT_ID = "FCdfyqKxzx6";
-        eventData.dataValues.push({
-          dataElement: SIGNATURE_DATA_ELEMENT_ID,
-          value: intervieweeSignature
-        });
       }
 
-      // Clean up event data - remove any undefined or null values
-      Object.keys(eventData).forEach(key => {
-        if (eventData[key] === undefined || eventData[key] === null) {
-          delete eventData[key];
+      // Add data values
+
+      Object.entries(formData).forEach(([key, value]) => {
+
+        if (key.startsWith('dataElement_') && value !== '') {
+
+          const dataElementId = key.replace('dataElement_', '');
+
+          eventData.dataValues.push({
+
+            dataElement: dataElementId,
+
+            value: value.toString()
+
+          });
+
         }
+
       });
 
-      // Show payload dialog
-      setPayloadData(eventData);
-      setShowPayloadDialog(true);
+      // Clean up event data - remove any undefined or null values
 
-    };
+      Object.keys(eventData).forEach(key => {
 
-    // Function to actually submit the inspection (called from dialog)
-    const handleActualSubmit = () => {
-      setShowPayloadDialog(false);
-      handleSave(false);
-    };
+        if (eventData[key] === undefined || eventData[key] === null) {
 
-    const handleSaveDraft = () => {
+          delete eventData[key];
 
-      handleSave(true);
+        }
 
-    };
+      });
 
-    // Helper function to get missing mandatory fields details
+      const savedEvent = await saveEvent(eventData, saveDraft);
 
-    const getMissingMandatoryFields = () => {
+      setIsDraft(saveDraft);
 
-      // All fields are now optional - no missing mandatory fields
+      // Always navigate to dashboard after successful save (both draft and final)
+      navigate('/home');
 
-      return {
+    } catch (error) {
 
-        count: 0,
+      console.error('Failed to save event:', error);
 
-        fields: []
+      showToast(`Failed to save: ${error.message}`, 'error');
 
-      };
+      // Always navigate to dashboard even on failure (both draft and final)
+      navigate('/home');
 
-    };
+    } finally {
 
-    // Get missing mandatory fields details
-
-    const missingMandatoryFields = getMissingMandatoryFields();
-
-    // Log Inspection Scheduled: Dates for debugging
-
-    if (inspectionPeriod) {
+      setIsSubmitting(false);
 
     }
 
-    // Place the configuration check here, after all hooks
+  };
 
-    if (!configuration) {
+  const handleSubmit = async (e) => {
 
-      return (
+    e.preventDefault();
 
-        <div className="loading-container">
+    // Flush any pending saves before submission
+    await flushPendingSaves();
 
-          <div className="loading-content">
+    // Check if signature is provided
+    if (!intervieweeSignature) {
+      showToast('Please provide the interviewee signature before submitting the inspection.', 'error');
+      return;
+    }
 
-            <div className="spinner"></div>
+    // Create payload data to show in dialog
+    // Always ensure we have a proper DHIS2 event ID
+    const finalEventId = eventId || generateDHIS2Id();
 
-            <p>Loading Facility-Registry inspection forms...</p>
+    const eventData = {
+      event: finalEventId,
+      program: program.id,
+      programStage: programStage.id,
+      orgUnit: formData.orgUnit,
+      eventDate: formData.eventDate,
+      status: 'COMPLETED',
+      dataValues: []
+    };
 
-          </div>
+    // Always ensure trackedEntityInstance is included
+    let teiToUse = trackedEntityInstance;
+
+    // If trackedEntityInstance is not set, try to get it from facilityInfo
+    if (!teiToUse && facilityInfo && facilityInfo.trackedEntityInstance) {
+      teiToUse = facilityInfo.trackedEntityInstance;
+    }
+
+    // If still no TEI, try to get it from userAssignments
+    if (!teiToUse && formData.orgUnit) {
+      const userAssignment = userAssignments?.find(assignment =>
+        assignment.facility && assignment.facility.id === formData.orgUnit
+      );
+      if (userAssignment && userAssignment.facility.trackedEntityInstance) {
+        teiToUse = userAssignment.facility.trackedEntityInstance;
+      }
+    }
+
+    // Always add trackedEntityInstance to payload (even if null/undefined for debugging)
+    eventData.trackedEntityInstance = teiToUse;
+
+    // Add data values (skip section headers)
+    const isSectionHeaderById = (dataElementId) => {
+      try {
+        const sections = configuration?.programStage?.sections || [];
+        for (const section of sections) {
+          const des = section?.dataElements || [];
+          for (const psde of des) {
+            const de = psde?.dataElement;
+            if (de && de.id === dataElementId) {
+              return isSectionHeaderName(de.displayName || de.name || '');
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('Failed to check if data element is header', e);
+      }
+      return false;
+    };
+
+    Object.entries(formData).forEach(([key, value]) => {
+      if (!key.startsWith('dataElement_')) return;
+      if (value === '') return;
+      const dataElementId = key.replace('dataElement_', '');
+      if (isSectionHeaderById(dataElementId)) return; // skip headers
+      eventData.dataValues.push({
+        dataElement: dataElementId,
+        value: value.toString()
+      });
+    });
+
+    // Add signature to payload if provided
+    if (intervieweeSignature) {
+      const SIGNATURE_DATA_ELEMENT_ID = "FCdfyqKxzx6";
+      eventData.dataValues.push({
+        dataElement: SIGNATURE_DATA_ELEMENT_ID,
+        value: intervieweeSignature
+      });
+    }
+
+    // Clean up event data - remove any undefined or null values
+    Object.keys(eventData).forEach(key => {
+      if (eventData[key] === undefined || eventData[key] === null) {
+        delete eventData[key];
+      }
+    });
+
+    // Show payload dialog
+    setPayloadData(eventData);
+    setShowPayloadDialog(true);
+
+  };
+
+  // Function to actually submit the inspection (called from dialog)
+  const handleActualSubmit = () => {
+    setShowPayloadDialog(false);
+    handleSave(false);
+  };
+
+  const handleSaveDraft = () => {
+
+    handleSave(true);
+
+  };
+
+  // Helper function to get missing mandatory fields details
+
+  const getMissingMandatoryFields = () => {
+
+    // All fields are now optional - no missing mandatory fields
+
+    return {
+
+      count: 0,
+
+      fields: []
+
+    };
+
+  };
+
+  // Get missing mandatory fields details
+
+  const missingMandatoryFields = getMissingMandatoryFields();
+
+  // Log Inspection Scheduled: Dates for debugging
+
+  if (inspectionPeriod) {
+
+  }
+
+  // Place the configuration check here, after all hooks
+
+  if (!configuration) {
+
+    return (
+
+      <div className="loading-container">
+
+        <div className="loading-content">
+
+          <div className="spinner"></div>
+
+          <p>Loading Facility-Registry inspection forms...</p>
 
         </div>
 
-      );
+      </div>
+
+    );
+
+  }
+
+  const { program, programStage, organisationUnits } = configuration;
+
+  // Safe date parsing with validation
+
+  const _today = new Date(formData.eventDate);
+
+  const _start = inspectionPeriod?.startDate ? new Date(inspectionPeriod.startDate) : null;
+
+  const _end = inspectionPeriod?.endDate ? new Date(inspectionPeriod.endDate) : null;
+
+  // Check if dates are valid before using them
+
+  const isTodayValid = !isNaN(_today.getTime());
+
+  const isStartValid = _start && !isNaN(_start.getTime());
+
+  const isEndValid = _end && !isNaN(_end.getTime());
+
+  // TEMPORARILY BYPASS DATE VALIDATION FOR TESTING
+
+  const date_valid = true; // !inspectionPeriod ? true : (isStartValid && isEndValid && _today >= _start && _today <= _end);
+
+  // ADDITIONAL DEBUGGING: Log the exact condition values with safe date handling
+
+  console.log("🔍 DATE VALIDATION DEBUG:", {
+
+    date_valid,
+
+    _today: isTodayValid ? _today.toISOString() : 'INVALID_DATE',
+
+    _start: isStartValid ? _start.toISOString() : 'INVALID_DATE',
+
+    _end: isEndValid ? _end.toISOString() : 'INVALID_DATE',
+
+    _today_ge_start: isTodayValid && isStartValid ? _today >= _start : false,
+
+    _today_le_end: isTodayValid && isEndValid ? _today <= _end : false,
+
+    hasInspectionPeriod: !!inspectionPeriod,
+
+    inspectionPeriod: inspectionPeriod,
+
+    dateValidation: {
+
+      isTodayValid,
+
+      isStartValid,
+
+      isEndValid,
+
+      rawEventDate: formData.eventDate,
+
+      rawStartDate: inspectionPeriod?.startDate,
+
+      rawEndDate: inspectionPeriod?.endDate
 
     }
 
-    const { program, programStage, organisationUnits } = configuration;
+  });
 
-    // Safe date parsing with validation
+  // ADDITIONAL DEBUGGING: Log the main condition values
 
-    const _today = new Date(formData.eventDate);
+  console.log("🔍 MAIN CONDITION DEBUG:", {
 
-    const _start = inspectionPeriod?.startDate ? new Date(inspectionPeriod.startDate) : null;
+    serviceSections: !!serviceSections,
 
-    const _end = inspectionPeriod?.endDate ? new Date(inspectionPeriod.endDate) : null;
+    serviceSectionsLength: serviceSections?.length || 0,
 
-    // Check if dates are valid before using them
+    date_valid,
 
-    const isTodayValid = !isNaN(_today.getTime());
+    conditionResult: !!(serviceSections && date_valid && serviceSections.length > 0)
 
-    const isStartValid = _start && !isNaN(_start.getTime());
+  });
 
-    const isEndValid = _end && !isNaN(_end.getTime());
+  // Cache for facility classification to prevent repeated API calls
+  const classificationCache = useMemo(() => new Map(), []);
 
-    // TEMPORARILY BYPASS DATE VALIDATION FOR TESTING
+  // Function to fetch facility classification from dataStore
+  const fetchFacilityClassification = async (facilityId) => {
 
-    const date_valid = true; // !inspectionPeriod ? true : (isStartValid && isEndValid && _today >= _start && _today <= _end);
+    if (!facilityId || !api) return;
 
-    // ADDITIONAL DEBUGGING: Log the exact condition values with safe date handling
+    // Check cache first
+    if (classificationCache.has(facilityId)) {
+      const cachedClassification = classificationCache.get(facilityId);
+      if (cachedClassification) {
+        const normalizedCached = normalizeFacilityClassification(cachedClassification);
+        setFacilityType(normalizedCached || cachedClassification);
+      }
+      return;
+    }
 
-    console.log("🔍 DATE VALIDATION DEBUG:", {
+    try {
 
-      date_valid,
-
-      _today: isTodayValid ? _today.toISOString() : 'INVALID_DATE',
-
-      _start: isStartValid ? _start.toISOString() : 'INVALID_DATE',
-
-      _end: isEndValid ? _end.toISOString() : 'INVALID_DATE',
-
-      _today_ge_start: isTodayValid && isStartValid ? _today >= _start : false,
-
-      _today_le_end: isTodayValid && isEndValid ? _today <= _end : false,
-
-      hasInspectionPeriod: !!inspectionPeriod,
-
-      inspectionPeriod: inspectionPeriod,
-
-      dateValidation: {
-
-        isTodayValid,
-
-        isStartValid,
-
-        isEndValid,
-
-        rawEventDate: formData.eventDate,
-
-        rawStartDate: inspectionPeriod?.startDate,
-
-        rawEndDate: inspectionPeriod?.endDate
+      if (showDebugPanel) {
 
       }
 
-    });
+      // Try multiple approaches to get facility type/classification
 
-    // ADDITIONAL DEBUGGING: Log the main condition values
+      let classification = null;
 
-    console.log("🔍 MAIN CONDITION DEBUG:", {
-
-      serviceSections: !!serviceSections,
-
-      serviceSectionsLength: serviceSections?.length || 0,
-
-      date_valid,
-
-      conditionResult: !!(serviceSections && date_valid && serviceSections.length > 0)
-
-    });
-
-    // Cache for facility classification to prevent repeated API calls
-    const classificationCache = useMemo(() => new Map(), []);
-
-    // Function to fetch facility classification from dataStore
-    const fetchFacilityClassification = async (facilityId) => {
-
-      if (!facilityId || !api) return;
-
-      // Check cache first
-      if (classificationCache.has(facilityId)) {
-        const cachedClassification = classificationCache.get(facilityId);
-        if (cachedClassification) {
-          const normalizedCached = normalizeFacilityClassification(cachedClassification);
-          setFacilityType(normalizedCached || cachedClassification);
-        }
-        return;
-      }
+      // Approach 1: Try to get facility type directly from inspection data
 
       try {
+
+        // Fetch from inspection dataStore directly - this is the authoritative source
+
+        const inspectionData = await inspectionAssignmentsCache.get();
+
+        const facilityInspection = inspectionData.inspections?.find(
+
+          inspection => inspection.facilityId === facilityId
+
+        );
+
+        if (facilityInspection && facilityInspection.type) {
+
+          classification = facilityInspection.type;
+
+          if (showDebugPanel) {
+
+          }
+
+        }
+
+      } catch (error) {
 
         if (showDebugPanel) {
 
         }
 
-        // Try multiple approaches to get facility type/classification
+      }
 
-        let classification = null;
+      // Approach 2: Try to get from inspection assignments data (which we already have)
 
-        // Approach 1: Try to get facility type directly from inspection data
+      if (!classification) {
 
         try {
 
-          // Fetch from inspection dataStore directly - this is the authoritative source
+          // First check if we already have the facility in our assignments
 
-          const inspectionData = await inspectionAssignmentsCache.get();
+          const facilityAssignment = safeUserAssignments.find(a =>
 
-          const facilityInspection = inspectionData.inspections?.find(
-
-            inspection => inspection.facilityId === facilityId
+            a.facility.id === facilityId
 
           );
 
-          if (facilityInspection && facilityInspection.type) {
+          if (facilityAssignment && facilityAssignment.assignment && facilityAssignment.assignment.type) {
 
-            classification = facilityInspection.type;
+            classification = facilityAssignment.assignment.type;
+
+            if (showDebugPanel) {
+
+            }
+
+          } else {
+
+            // If not in our assignments, try to fetch from inspection dataStore
+
+            const inspectionData = await inspectionAssignmentsCache.get();
+
+            const facilityInspection = inspectionData.inspections?.find(
+
+              inspection => inspection.facilityId === facilityId
+
+            );
+
+            if (facilityInspection && facilityInspection.type) {
+
+              classification = facilityInspection.type;
 
               if (showDebugPanel) {
+
+              }
 
             }
 
@@ -5544,442 +5625,393 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
         }
 
-        // Approach 2: Try to get from inspection assignments data (which we already have)
+      }
 
-        if (!classification) {
+      // Approach 3: Try to get from organization unit metadata
 
-          try {
+      if (!classification) {
 
-            // First check if we already have the facility in our assignments
+        try {
 
-            const facilityAssignment = safeUserAssignments.find(a => 
+          const orgUnitResponse = await api.request(`/api/organisationUnits/${facilityId}?fields=id,name,displayName,level,parent,organisationUnitGroups`);
 
-              a.facility.id === facilityId
+          if (orgUnitResponse && orgUnitResponse.organisationUnitGroups) {
+
+            // Look for organization unit groups that might indicate facility type
+
+            const facilityTypeGroup = orgUnitResponse.organisationUnitGroups.find(group =>
+
+              group.displayName && (
+
+                group.displayName.toLowerCase().includes('clinic') ||
+
+                group.displayName.toLowerCase().includes('hospital') ||
+
+                group.displayName.toLowerCase().includes('laboratory') ||
+
+                group.displayName.toLowerCase().includes('pharmacy')
+
+              )
 
             );
 
-            if (facilityAssignment && facilityAssignment.assignment && facilityAssignment.assignment.type) {
+            if (facilityTypeGroup) {
 
-              classification = facilityAssignment.assignment.type;
+              classification = facilityTypeGroup.displayName;
 
-                if (showDebugPanel) {
-
-              }
-
-            } else {
-
-              // If not in our assignments, try to fetch from inspection dataStore
-
-              const inspectionData = await inspectionAssignmentsCache.get();
-
-              const facilityInspection = inspectionData.inspections?.find(
-
-                inspection => inspection.facilityId === facilityId
-
-              );
-
-              if (facilityInspection && facilityInspection.type) {
-
-                classification = facilityInspection.type;
-
-                if (showDebugPanel) {
-
-                }
+              if (showDebugPanel) {
 
               }
 
             }
 
-          } catch (error) {
+          }
 
-            if (showDebugPanel) {
+        } catch (error) {
 
-            }
+          if (showDebugPanel) {
 
           }
 
         }
-
-        // Approach 3: Try to get from organization unit metadata
-
-        if (!classification) {
-
-          try {
-
-            const orgUnitResponse = await api.request(`/api/organisationUnits/${facilityId}?fields=id,name,displayName,level,parent,organisationUnitGroups`);
-
-            if (orgUnitResponse && orgUnitResponse.organisationUnitGroups) {
-
-              // Look for organization unit groups that might indicate facility type
-
-              const facilityTypeGroup = orgUnitResponse.organisationUnitGroups.find(group => 
-
-                group.displayName && (
-
-                  group.displayName.toLowerCase().includes('clinic') ||
-
-                  group.displayName.toLowerCase().includes('hospital') ||
-
-                  group.displayName.toLowerCase().includes('laboratory') ||
-
-                  group.displayName.toLowerCase().includes('pharmacy')
-
-                )
-
-              );
-
-              if (facilityTypeGroup) {
-
-                classification = facilityTypeGroup.displayName;
-
-                if (showDebugPanel) {
-
-                }
-
-              }
-
-            }
-
-          } catch (error) {
-
-            if (showDebugPanel) {
-
-            }
-
-          }
-
-        }
-
-               // Set the classification if found, otherwise set a default
-
-        const classificationToSetRaw = classification || 'Obstetrics & Gynaecology'; // Default to first canonical option from CSV
-        const classificationToSet =
-          normalizeFacilityClassification(classificationToSetRaw) || classificationToSetRaw;
-
-        // Find the DHIS2 "Facility Classification" data element and populate it
-
-        if (configuration?.programStage?.allDataElements) {
-
-          const facilityClassificationElement = configuration.programStage.allDataElements.find(psde => {
-
-            const fieldName = (psde.dataElement.displayName || psde.dataElement.shortName || '').toLowerCase();
-
-            return fieldName.includes('facility classification') || fieldName.includes('facility type');
-
-          });
-
-          if (facilityClassificationElement) {
-
-            const fieldKey = `dataElement_${facilityClassificationElement.dataElement.id}`;
-
-            setFormData(prev => ({
-
-              ...prev,
-
-              [fieldKey]: classificationToSet
-
-            }));
-
-            if (showDebugPanel) {
-
-            }
-
-            showToast(`Facility classification auto-populated: ${classificationToSet}`, 'success');
-
-          } else {
-
-            if (showDebugPanel) {
-
-            }
-
-          }
-
-        }
-
-        // Also keep the custom field for internal use (if needed elsewhere)
-
-        setFormData(prev => ({
-
-          ...prev,
-
-          facilityClassification: classificationToSet
-
-        }));
-
-      } catch (error) {
-
-        if (showDebugPanel) {
-
-        }
-
-               // Set a default classification if all attempts fail
-
-        const defaultClassificationRaw = 'Obstetrics & Gynaecology';
-        const defaultClassification =
-          normalizeFacilityClassification(defaultClassificationRaw) || defaultClassificationRaw;
-
-        // Find and populate the DHIS2 "Facility Classification" field with default
-
-        if (configuration?.programStage?.allDataElements) {
-
-          const facilityClassificationElement = configuration.programStage.allDataElements.find(psde => {
-
-            const fieldName = (psde.dataElement.displayName || psde.dataElement.shortName || '').toLowerCase();
-
-            return fieldName.includes('facility classification') || fieldName.includes('facility type');
-
-          });
-
-          if (facilityClassificationElement) {
-
-            const fieldKey = `dataElement_${facilityClassificationElement.dataElement.id}`;
-
-            setFormData(prev => ({
-
-              ...prev,
-
-              [fieldKey]: defaultClassification
-
-            }));
-
-            if (showDebugPanel) {
-
-            }
-
-          }
-
-        }
-
-        // Also keep the custom field for internal use
-
-        setFormData(prev => ({
-
-          ...prev,
-
-          facilityClassification: defaultClassification
-
-        }));
-
-        showToast(`Facility classification set to default: ${defaultClassification}`, 'info');
 
       }
 
-      // Cache the result (either found classification or default)
-      const finalClassificationRaw =
-        (typeof classification !== 'undefined' && classification) || 'Obstetrics & Gynaecology';
-      const finalClassification =
-        normalizeFacilityClassification(finalClassificationRaw) || finalClassificationRaw;
-      classificationCache.set(facilityId, finalClassification);
-      setFacilityType(finalClassification);
+      // Set the classification if found, otherwise set a default
 
-    };
+      const classificationToSetRaw = classification || 'Obstetrics & Gynaecology'; // Default to first canonical option from CSV
+      const classificationToSet =
+        normalizeFacilityClassification(classificationToSetRaw) || classificationToSetRaw;
 
-    // Function to check if all inspection information fields are complete
+      // Find the DHIS2 "Facility Classification" data element and populate it
 
-    const areAllInspectionFieldsComplete = () => {
+      if (configuration?.programStage?.allDataElements) {
 
-      // Check if facility service departments have been selected
-      // This is required before allowing confirmation
-      const hasFacilityServiceDepartments = selectedServiceDepartments && selectedServiceDepartments.length > 0;
-      return hasFacilityServiceDepartments;
+        const facilityClassificationElement = configuration.programStage.allDataElements.find(psde => {
 
-    };
+          const fieldName = (psde.dataElement.displayName || psde.dataElement.shortName || '').toLowerCase();
 
-    // Function to get section completion status for progress tracking
-    const getSectionStatus = (section) => {
-      if (!section?.dataElements) return { completed: false, total: 0, filled: 0, percentage: 0 };
+          return fieldName.includes('facility classification') || fieldName.includes('facility type');
 
-      let total = 0;
-      let filled = 0;
+        });
 
-      // Get current facility type for filtering
-      const currentFacilityType = manualSpecialization || facilityType;
+        if (facilityClassificationElement) {
 
-      section.dataElements.forEach((psde) => {
-        if (!psde?.dataElement) return;
+          const fieldKey = `dataElement_${facilityClassificationElement.dataElement.id}`;
 
-        // Apply the same filtering logic used in FormSection rendering
-        // Only count data elements that should be visible for this facility type
-        if (currentFacilityType) {
-          // Check if this data element should be shown for the current facility type
-          if (!shouldShowDataElementForService(psde.dataElement.displayName, currentFacilityType)) {
-            return; // Skip this data element - it shouldn't be counted
+          setFormData(prev => ({
+
+            ...prev,
+
+            [fieldKey]: classificationToSet
+
+          }));
+
+          if (showDebugPanel) {
+
           }
-        }
 
-        total++;
-        const fieldName = `dataElement_${psde.dataElement.id}`;
-        const value = formData[fieldName];
+          showToast(`Facility classification auto-populated: ${classificationToSet}`, 'success');
 
-        // Check if field is filled (same logic as isFieldFilled helper)
-        if (value !== null && value !== undefined) {
-          if (typeof value === 'string' && value.trim().length > 0) filled++;
-          else if (typeof value === 'boolean') filled++; // Boolean fields are always considered filled
-          else if (Array.isArray(value) && value.length > 0) filled++;
-          else if (value !== '') filled++;
-        }
-      });
+        } else {
 
-      const percentage = total === 0 ? 0 : Math.round((filled / total) * 100);
-      const completed = total > 0 && filled === total;
+          if (showDebugPanel) {
 
-      return { completed, total, filled, percentage };
-    };
-
-    // Memoized function to get visible sections - keeps progress bar in sync
-    // with facility classification + selected facility service departments.
-    const getVisibleSections = useCallback(() => {
-      if (!serviceSections || serviceSections.length === 0) return [];
-
-      const currentClassification =
-        typeof getCurrentFacilityClassification === 'function'
-          ? getCurrentFacilityClassification()
-          : null;
-
-      const filteredByConfig = serviceSections.filter((section) => {
-        const name = section.displayName || '';
-
-        // Apply visibility rules based on facility classification
-        if (currentClassification) {
-          const shouldShowByClassification = shouldShowSection(
-            name,
-            currentClassification
-          );
-
-          if (!shouldShowByClassification) {
-            return false;
           }
+
         }
 
-        // Apply filtering based on selected service departments
-        const shouldShowByDepartments = shouldShowSectionForServiceDepartments(
+      }
+
+      // Also keep the custom field for internal use (if needed elsewhere)
+
+      setFormData(prev => ({
+
+        ...prev,
+
+        facilityClassification: classificationToSet
+
+      }));
+
+    } catch (error) {
+
+      if (showDebugPanel) {
+
+      }
+
+      // Set a default classification if all attempts fail
+
+      const defaultClassificationRaw = 'Obstetrics & Gynaecology';
+      const defaultClassification =
+        normalizeFacilityClassification(defaultClassificationRaw) || defaultClassificationRaw;
+
+      // Find and populate the DHIS2 "Facility Classification" field with default
+
+      if (configuration?.programStage?.allDataElements) {
+
+        const facilityClassificationElement = configuration.programStage.allDataElements.find(psde => {
+
+          const fieldName = (psde.dataElement.displayName || psde.dataElement.shortName || '').toLowerCase();
+
+          return fieldName.includes('facility classification') || fieldName.includes('facility type');
+
+        });
+
+        if (facilityClassificationElement) {
+
+          const fieldKey = `dataElement_${facilityClassificationElement.dataElement.id}`;
+
+          setFormData(prev => ({
+
+            ...prev,
+
+            [fieldKey]: defaultClassification
+
+          }));
+
+          if (showDebugPanel) {
+
+          }
+
+        }
+
+      }
+
+      // Also keep the custom field for internal use
+
+      setFormData(prev => ({
+
+        ...prev,
+
+        facilityClassification: defaultClassification
+
+      }));
+
+      showToast(`Facility classification set to default: ${defaultClassification}`, 'info');
+
+    }
+
+    // Cache the result (either found classification or default)
+    const finalClassificationRaw =
+      (typeof classification !== 'undefined' && classification) || 'Obstetrics & Gynaecology';
+    const finalClassification =
+      normalizeFacilityClassification(finalClassificationRaw) || finalClassificationRaw;
+    classificationCache.set(facilityId, finalClassification);
+    setFacilityType(finalClassification);
+
+  };
+
+  // Function to check if all inspection information fields are complete
+
+  const areAllInspectionFieldsComplete = () => {
+
+    // Check if facility/orgUnit has been selected
+    const hasFacilitySelected = formData.orgUnit && formData.orgUnit.trim() !== '';
+
+    // Check if facility service departments have been selected
+    // This is required before allowing confirmation
+    const hasFacilityServiceDepartments = selectedServiceDepartments && selectedServiceDepartments.length > 0;
+
+    // Both facility and service departments must be selected
+    return hasFacilitySelected && hasFacilityServiceDepartments;
+
+  };
+
+  // Function to get section completion status for progress tracking
+  const getSectionStatus = (section) => {
+    if (!section?.dataElements) return { completed: false, total: 0, filled: 0, percentage: 0 };
+
+    let total = 0;
+    let filled = 0;
+
+    // Get current facility type for filtering
+    const currentFacilityType = manualSpecialization || facilityType;
+
+    section.dataElements.forEach((psde) => {
+      if (!psde?.dataElement) return;
+
+      // Apply the same filtering logic used in FormSection rendering
+      // Only count data elements that should be visible for this facility type
+      if (currentFacilityType) {
+        // Check if this data element should be shown for the current facility type
+        if (!shouldShowDataElementForService(psde.dataElement.displayName, currentFacilityType)) {
+          return; // Skip this data element - it shouldn't be counted
+        }
+      }
+
+      total++;
+      const fieldName = `dataElement_${psde.dataElement.id}`;
+      const value = formData[fieldName];
+
+      // Check if field is filled (same logic as isFieldFilled helper)
+      if (value !== null && value !== undefined) {
+        if (typeof value === 'string' && value.trim().length > 0) filled++;
+        else if (typeof value === 'boolean') filled++; // Boolean fields are always considered filled
+        else if (Array.isArray(value) && value.length > 0) filled++;
+        else if (value !== '') filled++;
+      }
+    });
+
+    const percentage = total === 0 ? 0 : Math.round((filled / total) * 100);
+    const completed = total > 0 && filled === total;
+
+    return { completed, total, filled, percentage };
+  };
+
+  // Memoized function to get visible sections - keeps progress bar in sync
+  // with facility classification + selected facility service departments.
+  const getVisibleSections = useCallback(() => {
+    if (!serviceSections || serviceSections.length === 0) return [];
+
+    const currentClassification =
+      typeof getCurrentFacilityClassification === 'function'
+        ? getCurrentFacilityClassification()
+        : null;
+
+    const filteredByConfig = serviceSections.filter((section) => {
+      const name = section.displayName || '';
+
+      // Apply visibility rules based on facility classification
+      if (currentClassification) {
+        const shouldShowByClassification = shouldShowSection(
           name,
-          selectedServiceDepartments
+          currentClassification
         );
 
-        return shouldShowByDepartments;
-      });
-
-      // If we still have no sections, keep the progress bar empty so that
-      // sections only appear once there is at least one applicable section for
-      // the current facility type + selected departments.
-      if (filteredByConfig.length === 0) {
-        return [];
+        if (!shouldShowByClassification) {
+          return false;
+        }
       }
 
-      return filteredByConfig;
-    }, [
-      serviceSections,
-      selectedServiceDepartments,
-      getCurrentFacilityClassification
-    ]);
+      // Apply filtering based on selected service departments
+      const shouldShowByDepartments = shouldShowSectionForServiceDepartments(
+        name,
+        selectedServiceDepartments
+      );
 
-    // Floating Progress Component
-    const FloatingProgress = () => {
-      // Use parent state so collapse/expand persists across re-renders
-      const isCollapsed = isProgressCollapsed;
+      return shouldShowByDepartments;
+    });
 
-      // Calculate visible sections using the shared helper
-      const visibleSections = getVisibleSections();
+    // If we still have no sections, keep the progress bar empty so that
+    // sections only appear once there is at least one applicable section for
+    // the current facility type + selected departments.
+    if (filteredByConfig.length === 0) {
+      return [];
+    }
 
-      // Don't show progress bar if essential data isn't loaded yet
-      if (!serviceSections || serviceSections.length === 0 || visibleSections.length === 0) {
-        return null;
-      }
+    return filteredByConfig;
+  }, [
+    serviceSections,
+    selectedServiceDepartments,
+    getCurrentFacilityClassification
+  ]);
 
-      const overallStats = visibleSections.reduce((acc, section) => {
-        const status = getSectionStatus(section);
-        acc.total += status.total;
-        acc.filled += status.filled;
-        acc.completed += status.completed ? 1 : 0;
-        return acc;
-      }, { total: 0, filled: 0, completed: 0 });
+  // Floating Progress Component
+  const FloatingProgress = () => {
+    // Use parent state so collapse/expand persists across re-renders
+    const isCollapsed = isProgressCollapsed;
 
-      const overallPercentage = overallStats.total === 0 ? 0 : Math.round((overallStats.filled / overallStats.total) * 100);
+    // Calculate visible sections using the shared helper
+    const visibleSections = getVisibleSections();
 
-      return (
-        <div style={{
-          position: 'fixed',
-          left: '20px',
-          top: '50%',
-          transform: 'translateY(-50%)',
-          backgroundColor: '#fff',
-          border: '2px solid #e0e0e0',
-          borderRadius: '12px',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-          zIndex: 10000,
-          minWidth: isCollapsed ? '50px' : '200px',
-          maxWidth: isCollapsed ? '50px' : '220px',
-          maxHeight: '80vh',
-          display: 'flex',
-          flexDirection: 'column',
-          transition: 'all 0.3s ease'
-        }}>
-          {/* Header */}
+    // Don't show progress bar if essential data isn't loaded yet
+    if (!serviceSections || serviceSections.length === 0 || visibleSections.length === 0) {
+      return null;
+    }
+
+    const overallStats = visibleSections.reduce((acc, section) => {
+      const status = getSectionStatus(section);
+      acc.total += status.total;
+      acc.filled += status.filled;
+      acc.completed += status.completed ? 1 : 0;
+      return acc;
+    }, { total: 0, filled: 0, completed: 0 });
+
+    const overallPercentage = overallStats.total === 0 ? 0 : Math.round((overallStats.filled / overallStats.total) * 100);
+
+    return (
+      <div style={{
+        position: 'fixed',
+        left: '20px',
+        top: '50%',
+        transform: 'translateY(-50%)',
+        backgroundColor: '#fff',
+        border: '2px solid #e0e0e0',
+        borderRadius: '12px',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+        zIndex: 10000,
+        minWidth: isCollapsed ? '50px' : '200px',
+        maxWidth: isCollapsed ? '50px' : '220px',
+        maxHeight: '80vh',
+        display: 'flex',
+        flexDirection: 'column',
+        transition: 'all 0.3s ease'
+      }}>
+        {/* Header */}
+        <div
+          style={{
+            padding: '8px 12px',
+            borderBottom: isCollapsed ? 'none' : '1px solid #e0e0e0',
+            backgroundColor: '#f8f9fa',
+            borderRadius: '10px 10px 0 0',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            cursor: 'pointer'
+          }}
+          onClick={() => setIsProgressCollapsed(prev => !prev)}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {!isCollapsed && (
+              <>
+                <span style={{ fontSize: '14px', fontWeight: '600', color: '#333' }}>
+                  Progress
+                </span>
+                <span style={{
+                  fontSize: '12px',
+                  color: '#666',
+                  backgroundColor: overallPercentage === 100 ? '#d4edda' : '#fff3cd',
+                  padding: '2px 6px',
+                  borderRadius: '10px',
+                  border: `1px solid ${overallPercentage === 100 ? '#c3e6cb' : '#ffeaa7'}`
+                }}>
+                  {overallPercentage}%
+                </span>
+              </>
+            )}
+          </div>
+          <span style={{
+            fontSize: '16px',
+            color: '#666',
+            transform: isCollapsed ? 'rotate(0deg)' : 'rotate(180deg)',
+            transition: 'transform 0.3s ease'
+          }}>
+            {isCollapsed ? '📋' : '▼'}
+          </span>
+        </div>
+
+        {/* Content */}
+        {!isCollapsed && (
           <div
             style={{
-              padding: '8px 12px',
-              borderBottom: isCollapsed ? 'none' : '1px solid #e0e0e0',
-              backgroundColor: '#f8f9fa',
-              borderRadius: '10px 10px 0 0',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              cursor: 'pointer'
+              padding: '8px 0',
+              maxHeight: '60vh',
+              overflowY: 'auto',
+              overflowX: 'hidden'
             }}
-            onClick={() => setIsProgressCollapsed(prev => !prev)}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              {!isCollapsed && (
-                <>
-                  <span style={{ fontSize: '14px', fontWeight: '600', color: '#333' }}>
-                    Progress
-                  </span>
-                  <span style={{
-                    fontSize: '12px',
-                    color: '#666',
-                    backgroundColor: overallPercentage === 100 ? '#d4edda' : '#fff3cd',
-                    padding: '2px 6px',
-                    borderRadius: '10px',
-                    border: `1px solid ${overallPercentage === 100 ? '#c3e6cb' : '#ffeaa7'}`
-                  }}>
-                    {overallPercentage}%
-                  </span>
-                </>
-              )}
-            </div>
-            <span style={{
-              fontSize: '16px',
-              color: '#666',
-              transform: isCollapsed ? 'rotate(0deg)' : 'rotate(180deg)',
-              transition: 'transform 0.3s ease'
-            }}>
-              {isCollapsed ? '📋' : '▼'}
-            </span>
-          </div>
+            {visibleSections.map((section, index) => {
+              const status = getSectionStatus(section);
+              const isComplete = status.completed;
+              const hasData = status.filled > 0;
 
-          {/* Content */}
-          {!isCollapsed && (
-            <div
-              style={{
-                padding: '8px 0',
-                maxHeight: '60vh',
-                overflowY: 'auto',
-                overflowX: 'hidden'
-              }}
-            >
-              {visibleSections.map((section, index) => {
-                const status = getSectionStatus(section);
-                const isComplete = status.completed;
-                const hasData = status.filled > 0;
-
-                return (
-                  <div key={section.id || index} style={{
-                    padding: '6px 12px',
-                    borderBottom: index < visibleSections.length - 1 ? '1px solid #f0f0f0' : 'none',
-                    cursor: 'pointer',
-                    transition: 'background-color 0.2s ease'
-                  }}
+              return (
+                <div key={section.id || index} style={{
+                  padding: '6px 12px',
+                  borderBottom: index < visibleSections.length - 1 ? '1px solid #f0f0f0' : 'none',
+                  cursor: 'pointer',
+                  transition: 'background-color 0.2s ease'
+                }}
                   onMouseEnter={(e) => e.target.style.backgroundColor = '#f8f9fa'}
                   onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
                   onClick={() => {
@@ -5989,379 +6021,379 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                       sectionElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }
                   }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                      <span style={{ fontSize: '16px' }}>
-                        {isComplete ? '✅' : hasData ? '🔄' : '⭕'}
-                      </span>
-                      <span style={{
-                        fontSize: '13px',
-                        fontWeight: '500',
-                        color: isComplete ? '#28a745' : hasData ? '#ffc107' : '#6c757d',
-                        flex: 1,
-                        lineHeight: '1.2'
-                      }}>
-                        {section.displayName}
-                      </span>
-                    </div>
-                    <div style={{ marginLeft: '24px', fontSize: '11px', color: '#666' }}>
-                      {status.filled}/{status.total} fields ({status.percentage}%)
-                    </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                    <span style={{ fontSize: '16px' }}>
+                      {isComplete ? '✅' : hasData ? '🔄' : '⭕'}
+                    </span>
+                    <span style={{
+                      fontSize: '13px',
+                      fontWeight: '500',
+                      color: isComplete ? '#28a745' : hasData ? '#ffc107' : '#6c757d',
+                      flex: 1,
+                      lineHeight: '1.2'
+                    }}>
+                      {section.displayName}
+                    </span>
                   </div>
-                );
-              })}
+                  <div style={{ marginLeft: '24px', fontSize: '11px', color: '#666' }}>
+                    {status.filled}/{status.total} fields ({status.percentage}%)
+                  </div>
+                </div>
+              );
+            })}
 
-              {/* Overall Summary */}
-              <div style={{
-                margin: '8px 12px 6px',
-                padding: '8px',
-                backgroundColor: '#f8f9fa',
-                borderRadius: '6px',
-                border: '1px solid #e0e0e0'
-              }}>
-                <div style={{ fontSize: '12px', fontWeight: '600', color: '#333', marginBottom: '4px' }}>
-                  Overall Progress
-                </div>
-                <div style={{ fontSize: '11px', color: '#666' }}>
-                  {overallStats.completed}/{visibleSections.length} sections complete
-                </div>
-                <div style={{ fontSize: '11px', color: '#666' }}>
-                  {overallStats.filled}/{overallStats.total} total fields
-                </div>
+            {/* Overall Summary */}
+            <div style={{
+              margin: '8px 12px 6px',
+              padding: '8px',
+              backgroundColor: '#f8f9fa',
+              borderRadius: '6px',
+              border: '1px solid #e0e0e0'
+            }}>
+              <div style={{ fontSize: '12px', fontWeight: '600', color: '#333', marginBottom: '4px' }}>
+                Overall Progress
+              </div>
+              <div style={{ fontSize: '11px', color: '#666' }}>
+                {overallStats.completed}/{visibleSections.length} sections complete
+              </div>
+              <div style={{ fontSize: '11px', color: '#666' }}>
+                {overallStats.filled}/{overallStats.total} total fields
               </div>
             </div>
-          )}
-        </div>
-      );
-    };
+          </div>
+        )}
+      </div>
+    );
+  };
 
-    return (
+  return (
 
-      <div className="screen">
-        {/* Floating Progress Component */}
-        <FloatingProgress />
+    <div className="screen">
+      {/* Floating Progress Component */}
+      <FloatingProgress />
 
-        <div className="form-container">
+      <div className="form-container">
 
-          <div className="form-header">
+        <div className="form-header">
 
-            <h2>Facility Inspection Form</h2>
+          <h2>Facility Inspection Form</h2>
 
-                     {/* Facility Filtering Status Summary */}
+          {/* Facility Filtering Status Summary */}
 
-             <div style={{ 
+          <div style={{
 
-              //  backgroundColor: hasActiveFacilities ? '#d4edda' : '#f8d7da', 
+            //  backgroundColor: hasActiveFacilities ? '#d4edda' : '#f8d7da', 
 
-              //  border: `1px solid ${hasActiveFacilities ? '#c3e6cb' : '#f5c6cb'}`, 
+            //  border: `1px solid ${hasActiveFacilities ? '#c3e6cb' : '#f5c6cb'}`, 
 
-              //  borderRadius: '4px', 
+            //  borderRadius: '4px', 
 
-              //  padding: '8px 12px',
+            //  padding: '8px 12px',
 
-              //  marginBottom: '16px',
+            //  marginBottom: '16px',
 
-              //  fontSize: '12px',
+            //  fontSize: '12px',
 
-              //  color: hasActiveFacilities ? '#155724' : '#721c24'
+            //  color: hasActiveFacilities ? '#155724' : '#721c24'
 
-             }}>
+          }}>
 
-               <strong></strong> {
+            <strong></strong> {
 
-                //  hasActiveFacilities 
+              //  hasActiveFacilities 
 
-                //    ? `✅ ${activeFacilities.length} active facilities found for today (${today})`
+              //    ? `✅ ${activeFacilities.length} active facilities found for today (${today})`
 
-                //    : `❌ No active facilities found for today (${today}). Please check inspection period dates.`
+              //    : `❌ No active facilities found for today (${today}). Please check inspection period dates.`
 
-               }
+            }
 
-               {!hasActiveFacilities && (
+            {!hasActiveFacilities && (
 
-                 <button
+              <button
 
-                   type="button"
+                type="button"
 
-                   onClick={() => {/* Debug panel is always enabled */}}
+                onClick={() => {/* Debug panel is always enabled */ }}
 
-                   style={{
+                style={{
 
-                     backgroundColor: 'transparent',
+                  backgroundColor: 'transparent',
 
-                     color: '#721c24',
+                  color: '#721c24',
 
-                     border: '1px solid #721c24',
+                  border: '1px solid #721c24',
 
-                     borderRadius: '4px',
+                  borderRadius: '4px',
 
-                     padding: '2px 6px',
+                  padding: '2px 6px',
 
-                     fontSize: '10px',
+                  fontSize: '10px',
 
-                     cursor: 'pointer',
+                  cursor: 'pointer',
 
-                     marginLeft: '8px'
+                  marginLeft: '8px'
 
-                   }}
+                }}
 
-                 >
+              >
 
-                   🔍 Debug
+                🔍 Debug
 
-                 </button>
+              </button>
 
-               )}
-
-             </div>
-
-            <div>
-
-              {/* Removed Facility-Registry heading as requested */}
-
-              <p className="form-subtitle">{configuration?.programStage?.displayName}</p>
-
-              {/* Removed program description as requested */}
-
-            </div>
-
-            <div className="form-actions">
-              
-            </div>
+            )}
 
           </div>
 
-          {/* Debug Panel completely removed */}
+          <div>
 
-                   <form onSubmit={handleSubmit} className="inspection-form">
+            {/* Removed Facility-Registry heading as requested */}
 
-             {/* Facility Information Display - Always show */}
-             <details className="facility-info-display">
-               <summary className="facility-info-header">
-                 🏥 Facility Information
-               </summary>
+            <p className="form-subtitle">{configuration?.programStage?.displayName}</p>
 
-               <div className="facility-info-content">
-                 {loadingFacilityInfo ? (
-                   <div style={{
-                     display: 'flex',
-                     alignItems: 'center',
-                     justifyContent: 'center',
-                     padding: '20px',
-                     color: '#6c757d'
-                   }}>
-                     <div style={{
-                       display: 'inline-block',
-                       width: '20px',
-                       height: '20px',
-                       border: '3px solid #f3f3f3',
-                       borderTop: '3px solid #007bff',
-                       borderRadius: '50%',
-                       animation: 'spin 1s linear infinite',
-                       marginRight: '12px'
-                     }}></div>
-                     <span>Loading facility information...</span>
-                   </div>
-                 ) : facilityInfo ? (
-                   <div className="facility-info-grid">
-                     <div className="facility-info-row">
-                       <span className="facility-info-label">Facility Name:</span>
-                       <span className="facility-info-value facility-name">{facilityInfo.facilityName}</span>
-                     </div>
+            {/* Removed program description as requested */}
 
-                     <div className="facility-info-row">
-                       <span className="facility-info-label">Tracked Entity Instance:</span>
-                       <span className="facility-info-value">{trackedEntityInstance || facilityInfo?.trackedEntityInstance || 'None'}</span>
-                     </div>
+          </div>
 
-                     {/* Specialisation row is now hidden - users use manual selector instead */}
-                   </div>
-                 ) : manualSpecialization ? (
-                   <div className="facility-info-grid">
-                     <div className="facility-info-row">
-                       <span className="facility-info-label">Facility Name:</span>
-                       <span className="facility-info-value facility-name">
-                         {formData.orgUnit ?
-                           (configuration?.organisationUnits?.find(ou => ou.id === formData.orgUnit)?.displayName || 'Selected Facility')
-                           : 'No facility selected'}
-                       </span>
-                     </div>
+          <div className="form-actions">
 
-                     <div className="facility-info-row">
-                       <span className="facility-info-label">Tracked Entity Instance:</span>
-                       <span className="facility-info-value">{trackedEntityInstance || facilityInfo?.trackedEntityInstance || 'None'}</span>
-                     </div>
+          </div>
 
-                     {/* Specialisation row is now hidden - users use manual selector instead */}
-                   </div>
-                 ) : (
-                   <div style={{
-                     display: 'flex',
-                     alignItems: 'center',
-                     justifyContent: 'center',
-                     padding: '20px',
-                     color: '#6c757d',
-                     fontStyle: 'italic'
-                   }}>
-                     <div style={{ marginRight: '12px' }}>📋</div>
-                     <span>Please select a facility to view information</span>
-                   </div>
-                 )}
-               </div>
-             </details>
+        </div>
 
-             {/* Save Status Indicator */}
-             {saveStatus.isVisible && (
-               <div className={`save-status-indicator ${saveStatus.type}`}>
-                 <div className="save-status-content">
-                   {saveStatus.type === 'success' ? '💾' : '❌'} {saveStatus.message}
-                 </div>
-               </div>
-             )}
+        {/* Debug Panel completely removed */}
 
-             {/* Debug Panel Toggle Button */}
-             <button
-               type="button"
-               onClick={() => {
-                 setShowDebugPanel(!showDebugPanel);
-                 if (!showDebugPanel) refreshIndexedDBData();
-               }}
-               style={{
-                 position: 'fixed',
-                 bottom: '20px',
-                 left: '20px',
-                 zIndex: 1000,
-                 padding: '8px 12px',
-                 backgroundColor: '#007bff',
-                 color: 'white',
-                 border: 'none',
-                 borderRadius: '4px',
-                 fontSize: '12px',
-                 cursor: 'pointer'
-               }}
-             >
-               {showDebugPanel ? 'Hide' : 'Show'} Saved Data
-             </button>
+        <form onSubmit={handleSubmit} className="inspection-form">
 
-             {/* IndexedDB Debug Panel */}
-             {showDebugPanel && (
-               <div style={{
-                 position: 'fixed',
-                 bottom: '60px',
-                 left: '20px',
-                 width: '400px',
-                 maxHeight: '300px',
-                 backgroundColor: 'white',
-                 border: '2px solid #007bff',
-                 borderRadius: '8px',
-                 padding: '16px',
-                 zIndex: 1000,
-                 overflow: 'auto',
-                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
-               }}>
-                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                   <h4 style={{ margin: 0, color: '#007bff' }}>📊 Saved Data</h4>
-                   <button
-                     onClick={refreshIndexedDBData}
-                     style={{
-                       padding: '4px 8px',
-                       fontSize: '11px',
-                       backgroundColor: '#28a745',
-                       color: 'white',
-                       border: 'none',
-                       borderRadius: '3px',
-                       cursor: 'pointer'
-                     }}
-                   >
-                     🔄 Refresh
-                   </button>
-                 </div>
+          {/* Facility Information Display - Always show */}
+          <details className="facility-info-display">
+            <summary className="facility-info-header">
+              🏥 Facility Information
+            </summary>
 
-                 {indexedDBData ? (
-                   <div style={{ fontSize: '12px', fontFamily: 'monospace' }}>
-                     <div><strong>Event ID:</strong> {indexedDBData.eventId}</div>
-                     <div><strong>Last Updated:</strong> {indexedDBData.lastUpdated}</div>
-                     <div><strong>Fields Count:</strong> {Object.keys(indexedDBData.formData || {}).length}</div>
-                     <div><strong>Is Draft:</strong> {indexedDBData.metadata?.isDraft ? 'Yes' : 'No'}</div>
+            <div className="facility-info-content">
+              {loadingFacilityInfo ? (
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '20px',
+                  color: '#6c757d'
+                }}>
+                  <div style={{
+                    display: 'inline-block',
+                    width: '20px',
+                    height: '20px',
+                    border: '3px solid #f3f3f3',
+                    borderTop: '3px solid #007bff',
+                    borderRadius: '50%',
+                    animation: 'spin 1s linear infinite',
+                    marginRight: '12px'
+                  }}></div>
+                  <span>Loading facility information...</span>
+                </div>
+              ) : facilityInfo ? (
+                <div className="facility-info-grid">
+                  <div className="facility-info-row">
+                    <span className="facility-info-label">Facility Name:</span>
+                    <span className="facility-info-value facility-name">{facilityInfo.facilityName}</span>
+                  </div>
 
-                     <details style={{ marginTop: '8px' }}>
-                       <summary style={{ cursor: 'pointer', fontWeight: 'bold' }}>Form Data</summary>
-                       <pre style={{
-                         backgroundColor: '#f8f9fa',
-                         padding: '8px',
-                         borderRadius: '4px',
-                         fontSize: '10px',
-                         maxHeight: '150px',
-                         overflow: 'auto',
-                         marginTop: '4px'
-                       }}>
-                         {JSON.stringify(indexedDBData.formData, null, 2)}
-                       </pre>
-                     </details>
-                   </div>
-                 ) : (
-                   <div style={{ color: '#666', fontSize: '12px' }}>
-                     No data loaded. Click Refresh to load current data.
-                   </div>
-                 )}
-               </div>
-             )}
+                  <div className="facility-info-row">
+                    <span className="facility-info-label">Tracked Entity Instance:</span>
+                    <span className="facility-info-value">{trackedEntityInstance || facilityInfo?.trackedEntityInstance || 'None'}</span>
+                  </div>
 
-             {/* Manual Specialization Selector */}
-             <div className="specialization-selector-section">
-               <div className="form-section">
-                 <div className="form-field">
+                  {/* Specialisation row is now hidden - users use manual selector instead */}
+                </div>
+              ) : manualSpecialization ? (
+                <div className="facility-info-grid">
+                  <div className="facility-info-row">
+                    <span className="facility-info-label">Facility Name:</span>
+                    <span className="facility-info-value facility-name">
+                      {formData.orgUnit ?
+                        (configuration?.organisationUnits?.find(ou => ou.id === formData.orgUnit)?.displayName || 'Selected Facility')
+                        : 'No facility selected'}
+                    </span>
+                  </div>
 
-                   <label htmlFor="specialization-select" className="form-label">
-                     Choose Category:
-                   </label>
-                   <select
-                     id="specialization-select"
-                     value={manualSpecialization || ''}
-                     onChange={(e) => handleSpecializationChange(e.target.value)}
-                     className="form-select"
-                     disabled={inspectionInfoConfirmed}
-                   >
-                     <option value="">Select a specialization...</option>
-                     {specializationOptions.map((option, index) => (
-                       <option key={index} value={option}>
-                         {option}
-                       </option>
-                     ))}
-                   </select>
-                 </div>
+                  <div className="facility-info-row">
+                    <span className="facility-info-label">Tracked Entity Instance:</span>
+                    <span className="facility-info-value">{trackedEntityInstance || facilityInfo?.trackedEntityInstance || 'None'}</span>
+                  </div>
 
-                 {manualSpecialization && (
-                   <div className="specialization-status">
-                     <div className="status-indicator success">
-                       ✅ Specialization set to: <strong>{manualSpecialization}</strong>
-                     </div>
-                     <div className="status-note">
-                       Form sections and questions will be filtered based on this specialization.
-                     </div>
-                   </div>
-                 )}
-               </div>
-             </div>
+                  {/* Specialisation row is now hidden - users use manual selector instead */}
+                </div>
+              ) : (
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '20px',
+                  color: '#6c757d',
+                  fontStyle: 'italic'
+                }}>
+                  <div style={{ marginRight: '12px' }}>📋</div>
+                  <span>Please select a facility to view information</span>
+                </div>
+              )}
+            </div>
+          </details>
 
-             {/* Form metadata section - only show when not confirmed */}
+          {/* Save Status Indicator */}
+          {saveStatus.isVisible && (
+            <div className={`save-status-indicator ${saveStatus.type}`}>
+              <div className="save-status-content">
+                {saveStatus.type === 'success' ? '💾' : '❌'} {saveStatus.message}
+              </div>
+            </div>
+          )}
 
-             {!inspectionInfoConfirmed && (
+          {/* Debug Panel Toggle Button */}
+          <button
+            type="button"
+            onClick={() => {
+              setShowDebugPanel(!showDebugPanel);
+              if (!showDebugPanel) refreshIndexedDBData();
+            }}
+            style={{
+              position: 'fixed',
+              bottom: '20px',
+              left: '20px',
+              zIndex: 1000,
+              padding: '8px 12px',
+              backgroundColor: '#007bff',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              fontSize: '12px',
+              cursor: 'pointer'
+            }}
+          >
+            {showDebugPanel ? 'Hide' : 'Show'} Saved Data
+          </button>
 
-               <div className="form-section">
+          {/* IndexedDB Debug Panel */}
+          {showDebugPanel && (
+            <div style={{
+              position: 'fixed',
+              bottom: '60px',
+              left: '20px',
+              width: '400px',
+              maxHeight: '300px',
+              backgroundColor: 'white',
+              border: '2px solid #007bff',
+              borderRadius: '8px',
+              padding: '16px',
+              zIndex: 1000,
+              overflow: 'auto',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                <h4 style={{ margin: 0, color: '#007bff' }}>📊 Saved Data</h4>
+                <button
+                  onClick={refreshIndexedDBData}
+                  style={{
+                    padding: '4px 8px',
+                    fontSize: '11px',
+                    backgroundColor: '#28a745',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '3px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  🔄 Refresh
+                </button>
+              </div>
 
-                 <button
+              {indexedDBData ? (
+                <div style={{ fontSize: '12px', fontFamily: 'monospace' }}>
+                  <div><strong>Event ID:</strong> {indexedDBData.eventId}</div>
+                  <div><strong>Last Updated:</strong> {indexedDBData.lastUpdated}</div>
+                  <div><strong>Fields Count:</strong> {Object.keys(indexedDBData.formData || {}).length}</div>
+                  <div><strong>Is Draft:</strong> {indexedDBData.metadata?.isDraft ? 'Yes' : 'No'}</div>
 
-                   type="button"
+                  <details style={{ marginTop: '8px' }}>
+                    <summary style={{ cursor: 'pointer', fontWeight: 'bold' }}>Form Data</summary>
+                    <pre style={{
+                      backgroundColor: '#f8f9fa',
+                      padding: '8px',
+                      borderRadius: '4px',
+                      fontSize: '10px',
+                      maxHeight: '150px',
+                      overflow: 'auto',
+                      marginTop: '4px'
+                    }}>
+                      {JSON.stringify(indexedDBData.formData, null, 2)}
+                    </pre>
+                  </details>
+                </div>
+              ) : (
+                <div style={{ color: '#666', fontSize: '12px' }}>
+                  No data loaded. Click Refresh to load current data.
+                </div>
+              )}
+            </div>
+          )}
 
-                   className="section-header always-expanded-section"
+          {/* Manual Specialization Selector */}
+          <div className="specialization-selector-section">
+            <div className="form-section">
+              <div className="form-field">
 
-                   style={{ cursor: 'default' }}
+                <label htmlFor="specialization-select" className="form-label">
+                  Choose Category:
+                </label>
+                <select
+                  id="specialization-select"
+                  value={manualSpecialization || ''}
+                  onChange={(e) => handleSpecializationChange(e.target.value)}
+                  className="form-select"
+                  disabled={inspectionInfoConfirmed}
+                >
+                  <option value="">Select a specialization...</option>
+                  {specializationOptions.map((option, index) => (
+                    <option key={index} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-                 >
+              {manualSpecialization && (
+                <div className="specialization-status">
+                  <div className="status-indicator success">
+                    ✅ Specialization set to: <strong>{manualSpecialization}</strong>
+                  </div>
+                  <div className="status-note">
+                    Form sections and questions will be filtered based on this specialization.
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
 
-                   <h3 className="section-title">Inspection Information</h3>
+          {/* Form metadata section - only show when not confirmed */}
 
-                 </button>
+          {!inspectionInfoConfirmed && (
+
+            <div className="form-section">
+
+              <button
+
+                type="button"
+
+                className="section-header always-expanded-section"
+
+                style={{ cursor: 'default' }}
+
+              >
+
+                <h3 className="section-title">Inspection Information</h3>
+
+              </button>
 
               <div className="section-content">
 
@@ -6399,272 +6431,272 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                   {/* Manual refresh button for troubleshooting */}
 
-                      {/* Facility Classification and Section Visibility Debug Panel */}
+                  {/* Facility Classification and Section Visibility Debug Panel */}
 
-                      {showDebugPanel && (
+                  {showDebugPanel && (
 
-                        <div style={{ 
+                    <div style={{
 
-                          marginTop: '8px',
+                      marginTop: '8px',
 
-                          padding: '8px',
+                      padding: '8px',
 
-                          backgroundColor: '#f8f9fa',
+                      backgroundColor: '#f8f9fa',
 
-                          border: '1px solid #dee2e6',
+                      border: '1px solid #dee2e6',
 
-                          borderRadius: '4px',
+                      borderRadius: '4px',
 
-                          fontSize: '11px'
+                      fontSize: '11px'
 
-                        }}>
+                    }}>
 
-                          <h6 style={{ margin: '0 0 6px 0', fontSize: '12px', color: '#495057' }}>
+                      <h6 style={{ margin: '0 0 6px 0', fontSize: '12px', color: '#495057' }}>
 
-                            🏥 Facility Classification & Section Visibility
+                        🏥 Facility Classification & Section Visibility
 
-                          </h6>
+                      </h6>
 
-                          {(() => {
+                      {(() => {
 
-                            const currentClassification = getCurrentFacilityClassification();
+                        const currentClassification = getCurrentFacilityClassification();
 
-                            if (currentClassification) {
+                        if (currentClassification) {
 
-                              const allSections = serviceSections || [];
+                          const allSections = serviceSections || [];
 
-                              const visibleSections = allSections.filter(section => 
+                          const visibleSections = allSections.filter(section =>
 
-                                shouldShowSection(section.displayName, currentClassification)
+                            shouldShowSection(section.displayName, currentClassification)
 
-                              );
+                          );
 
-                              const hiddenSections = allSections.filter(section => 
+                          const hiddenSections = allSections.filter(section =>
 
-                                !shouldShowSection(section.displayName, currentClassification)
+                            !shouldShowSection(section.displayName, currentClassification)
 
-                              );
+                          );
 
-                              return (
+                          return (
 
-                                <div>
+                            <div>
 
-                                  <div style={{ marginBottom: '4px' }}>
+                              <div style={{ marginBottom: '4px' }}>
 
-                                    <strong>Type:</strong> {currentClassification}
-
-                  </div>
-
-                                  <div style={{ marginBottom: '4px' }}>
-
-                                    <strong>Visible:</strong> {visibleSections.length} | <strong>Hidden:</strong> {hiddenSections.length}
-
-                                  </div>
-
-                                  {hiddenSections.length > 0 && (
-
-                                    <div style={{ fontSize: '10px', color: '#dc3545' }}>
-
-                                      <strong>Hidden:</strong> {hiddenSections.map(s => s.displayName).join(', ')}
-
-                                    </div>
-
-                                  )}
-
-                                </div>
-
-                              );
-
-                            }
-
-                            return (
-
-                              <div style={{ color: '#6c757d' }}>
-
-                                No classification set
+                                <strong>Type:</strong> {currentClassification}
 
                               </div>
 
-                            );
+                              <div style={{ marginBottom: '4px' }}>
 
-                          })()}
+                                <strong>Visible:</strong> {visibleSections.length} | <strong>Hidden:</strong> {hiddenSections.length}
 
-                        </div>
+                              </div>
 
-                      )}
+                              {hiddenSections.length > 0 && (
 
-                  </div>
+                                <div style={{ fontSize: '10px', color: '#dc3545' }}>
 
-                                   <div className="form-field">
+                                  <strong>Hidden:</strong> {hiddenSections.map(s => s.displayName).join(', ')}
 
-                     <label htmlFor="orgUnit" className="form-label">
+                                </div>
 
-                       Facility/Organisation Unit <span style={{ color: 'red' }}>*</span>
+                              )}
 
-                     </label>
+                            </div>
 
-                    {/* Help message for facility selection */}
+                          );
 
-                    {!formData.orgUnit && (
+                        }
 
-                      <div style={{
+                        return (
 
-                        backgroundColor: '#fff3cd',
+                          <div style={{ color: '#6c757d' }}>
 
-                        border: '1px solid #ffeaa7',
+                            No classification set
 
-                        borderRadius: '4px',
+                          </div>
 
-                        padding: '8px 12px',
+                        );
 
-                        marginBottom: '8px',
+                      })()}
 
-                        fontSize: '14px',
+                    </div>
 
-                        color: '#856404'
+                  )}
 
-                      }}>
+                </div>
 
-                        🔓 <strong>Select a facility to unlock the inspection form</strong>
+                <div className="form-field">
 
-                        <br />
+                  <label htmlFor="orgUnit" className="form-label">
 
-                        Choose a facility from the dropdown below to proceed with the inspection
+                    Facility/Organisation Unit <span style={{ color: 'red' }}>*</span>
 
-                      </div>
+                  </label>
 
-                    )}
+                  {/* Help message for facility selection */}
 
-                    <select
+                  {!formData.orgUnit && (
 
-                      id="orgUnit"
+                    <div style={{
 
-                      value={formData.orgUnit}
+                      backgroundColor: '#fff3cd',
 
-                      onChange={e => handleFieldChange('orgUnit', e.target.value)}
+                      border: '1px solid #ffeaa7',
 
-                      className={`form-select ${errors.orgUnit ? 'error' : ''}`}
+                      borderRadius: '4px',
 
-                    >
+                      padding: '8px 12px',
 
-                      <option value="">Select Facility</option>
+                      marginBottom: '8px',
 
-                      {finalFacilities.length > 0 ? finalFacilities.map(facility => (
+                      fontSize: '14px',
 
-                        <option key={facility.id} value={facility.id}>{facility.name}</option>
+                      color: '#856404'
 
-                      )) : <option value="" disabled>No facilities assigned</option>}
+                    }}>
 
-                    </select>
+                      🔓 <strong>Select a facility to unlock the inspection form</strong>
 
-                    {errors.orgUnit && <div className="field-error">{errors.orgUnit}</div>}
+                      <br />
 
-                  </div>
+                      Choose a facility from the dropdown below to proceed with the inspection
 
-                  {/* Inspection Date field - HIDDEN from user but still functional */}
-                  <div className="form-field" style={{ display: 'none' }}>
+                    </div>
 
-                     <label htmlFor="eventDate" className="form-label">
+                  )}
 
-                       Inspection Date <span style={{ color: 'red' }}>*</span>
+                  <select
 
-                     </label>
+                    id="orgUnit"
 
-                    {/* Help message for date selection */}
+                    value={formData.orgUnit}
 
-                    {!formData.eventDate && (
+                    onChange={e => handleFieldChange('orgUnit', e.target.value)}
 
-                      <div style={{
+                    className={`form-select ${errors.orgUnit ? 'error' : ''}`}
 
-                        backgroundColor: '#fff3cd',
+                  >
 
-                        border: '1px solid #ffeaa7',
+                    <option value="">Select Facility</option>
 
-                        borderRadius: '4px',
+                    {finalFacilities.length > 0 ? finalFacilities.map(facility => (
 
-                        padding: '8px 12px',
+                      <option key={facility.id} value={facility.id}>{facility.name}</option>
 
-                        marginBottom: '8px',
+                    )) : <option value="" disabled>No facilities assigned</option>}
 
-                        fontSize: '14px',
+                  </select>
 
-                        color: '#856404'
+                  {errors.orgUnit && <div className="field-error">{errors.orgUnit}</div>}
 
-                      }}>
+                </div>
 
-                        <strong>Select an inspection date</strong>
+                {/* Inspection Date field - HIDDEN from user but still functional */}
+                <div className="form-field" style={{ display: 'none' }}>
 
-                        <br />
+                  <label htmlFor="eventDate" className="form-label">
 
-                        Choose a date within the inspection period to proceed
+                    Inspection Date <span style={{ color: 'red' }}>*</span>
 
-                      </div>
+                  </label>
 
-                    )}
+                  {/* Help message for date selection */}
 
-                                     <input
+                  {!formData.eventDate && (
 
-                     type="date"
+                    <div style={{
 
-                     id="eventDate"
+                      backgroundColor: '#fff3cd',
 
-                     value={formData.eventDate}
+                      border: '1px solid #ffeaa7',
 
-                     onChange={e => handleFieldChange('eventDate', e.target.value)}
+                      borderRadius: '4px',
 
-                     className={`form-input ${errors.eventDate ? 'error' : ''}`}
+                      padding: '8px 12px',
 
-                     max={(() => {
+                      marginBottom: '8px',
 
-                       try {
+                      fontSize: '14px',
 
-                         if (inspectionPeriod?.endDate) {
+                      color: '#856404'
 
-                           const maxDate = new Date(inspectionPeriod.endDate);
+                    }}>
 
-                           return !isNaN(maxDate.getTime()) ? maxDate.toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
+                      <strong>Select an inspection date</strong>
 
-                         }
+                      <br />
 
-                         const today = new Date();
+                      Choose a date within the inspection period to proceed
 
-                          return !isNaN(today.getTime()) ? today.toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
+                    </div>
 
-                       } catch (error) {
+                  )}
 
-                         console.warn('⚠️ Error setting max date:', error);
+                  <input
 
-                         return '2025-12-31';
+                    type="date"
 
-                       }
+                    id="eventDate"
 
-                     })()}
+                    value={formData.eventDate}
 
-                     min={(() => {
+                    onChange={e => handleFieldChange('eventDate', e.target.value)}
 
-                       try {
+                    className={`form-input ${errors.eventDate ? 'error' : ''}`}
 
-                         if (inspectionPeriod?.startDate) {
+                    max={(() => {
 
-                           const minDate = new Date(inspectionPeriod.startDate);
+                      try {
 
-                            return !isNaN(minDate.getTime()) ? minDate.toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
+                        if (inspectionPeriod?.endDate) {
 
-                         }
+                          const maxDate = new Date(inspectionPeriod.endDate);
 
-                         return '2025-01-01';
+                          return !isNaN(maxDate.getTime()) ? maxDate.toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
 
-                       } catch (error) {
+                        }
 
-                         console.warn('⚠️ Error setting min date:', error);
+                        const today = new Date();
 
-                         return '2025-01-01';
+                        return !isNaN(today.getTime()) ? today.toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
 
-                       }
+                      } catch (error) {
 
-                     })()}
+                        console.warn('⚠️ Error setting max date:', error);
 
-                   />
+                        return '2025-12-31';
+
+                      }
+
+                    })()}
+
+                    min={(() => {
+
+                      try {
+
+                        if (inspectionPeriod?.startDate) {
+
+                          const minDate = new Date(inspectionPeriod.startDate);
+
+                          return !isNaN(minDate.getTime()) ? minDate.toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
+
+                        }
+
+                        return '2025-01-01';
+
+                      } catch (error) {
+
+                        console.warn('⚠️ Error setting min date:', error);
+
+                        return '2025-01-01';
+
+                      }
+
+                    })()}
+
+                  />
 
                   {errors.eventDate && <div className="field-error">{errors.eventDate}</div>}
 
@@ -6680,564 +6712,568 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
           {/* Program stage sections */}
 
-             { serviceSections && date_valid && serviceSections.length > 0 ? (
+          {serviceSections && date_valid && serviceSections.length > 0 ? (
 
-               <>
+            <>
 
-                 {/* Debug info for sections removed */}
+              {/* Debug info for sections removed */}
 
-                                                                       {/* Show only Inspection Information and Inspection Type sections until confirmation */}
+              {/* Show only Inspection Information and Inspection Type sections until confirmation */}
 
-                 {!inspectionInfoConfirmed && serviceSections && serviceSections.length > 0 && serviceSections
+              {!inspectionInfoConfirmed && serviceSections && serviceSections.length > 0 && serviceSections
 
-                   .filter(section => {
+                .filter(section => {
 
-                     const sectionName = (section.displayName || '').toLowerCase();
+                  const sectionName = (section.displayName || '').toLowerCase();
 
-                     return sectionName.includes('inspection information') || sectionName.includes('inspection type');
+                  return sectionName.includes('inspection information') || sectionName.includes('inspection type');
 
-                   })
+                })
 
-                   .filter(section => {
+                .filter(section => {
 
-                     // Apply conditional filtering based on facility classification
+                  // Apply conditional filtering based on facility classification
 
-                     const currentClassification = getCurrentFacilityClassification();
+                  const currentClassification = getCurrentFacilityClassification();
 
-                     const shouldShow = shouldShowSection(section.displayName, currentClassification);
+                  const shouldShow = shouldShowSection(section.displayName, currentClassification);
 
-                     if (!shouldShow) {
+                  if (!shouldShow) {
 
-                     }
+                  }
 
-                     return shouldShow;
+                  return shouldShow;
 
-                   })
-                   .filter(section => {
-                     // Apply filtering based on selected service departments
-                     const shouldShowForDepartments = shouldShowSectionForServiceDepartments(section.displayName, selectedServiceDepartments);
+                })
+                .filter(section => {
+                  // Apply filtering based on selected service departments
+                  const shouldShowForDepartments = shouldShowSectionForServiceDepartments(section.displayName, selectedServiceDepartments);
 
-                     if (!shouldShowForDepartments) {
-                     }
+                  if (!shouldShowForDepartments) {
+                  }
 
-                     return shouldShowForDepartments;
-                   })
+                  return shouldShowForDepartments;
+                })
 
-                   .map((section, index) => (
+                .map((section, index) => (
 
-                                         <FormSection
+                  <FormSection
 
-                      key={`${section.id}-${index}-${section.displayName}`}
+                    key={`${section.id}-${index}-${section.displayName}`}
 
-                      section={section}
+                    section={section}
 
-                      formData={formData}
+                    formData={formData}
 
-                      onChange={handleFieldChange}
+                    onChange={handleFieldChange}
 
-                      errors={errors}
+                    errors={errors}
 
-                      serviceSections={serviceOptions}
+                    serviceSections={serviceOptions}
 
-                      loadingServiceSections={loadingServiceSections}
+                    loadingServiceSections={loadingServiceSections}
 
-                      readOnlyFields={readOnlyFields}
+                    readOnlyFields={readOnlyFields}
 
-                      getCurrentPosition={getCurrentPosition}
+                    getCurrentPosition={getCurrentPosition}
 
-                      formatCoordinatesForDHIS2={formatCoordinatesForDHIS2}
+                    formatCoordinatesForDHIS2={formatCoordinatesForDHIS2}
 
-                      showDebugPanel={showDebugPanel}
+                    showDebugPanel={showDebugPanel}
 
-                      facilityClassifications={facilityClassifications}
+                    facilityClassifications={facilityClassifications}
 
-                      loadingFacilityClassifications={loadingFacilityClassifications}
+                    loadingFacilityClassifications={loadingFacilityClassifications}
 
-                      inspectionInfoConfirmed={inspectionInfoConfirmed}
+                    inspectionInfoConfirmed={inspectionInfoConfirmed}
 
-                      setInspectionInfoConfirmed={setInspectionInfoConfirmed}
+                    setInspectionInfoConfirmed={setInspectionInfoConfirmed}
 
-                      areAllInspectionFieldsComplete={areAllInspectionFieldsComplete}
+                    areAllInspectionFieldsComplete={areAllInspectionFieldsComplete}
 
-                      getCurrentFacilityClassification={getCurrentFacilityClassification}
+                    getCurrentFacilityClassification={getCurrentFacilityClassification}
 
-                      facilityType={facilityType}
+                    facilityType={facilityType}
 
-                      onCommentChange={handleCommentChange}
+                    onCommentChange={handleCommentChange}
 
-                      comments={fieldComments}
+                    comments={fieldComments}
 
-                     />
+                    selectedServiceDepartments={selectedServiceDepartments}
 
-                   ))}
+                  />
 
-               {/* Show remaining sections only after confirmation */}
+                ))}
 
-               {inspectionInfoConfirmed && (
+              {/* Show remaining sections only after confirmation */}
 
-                 <>
+              {inspectionInfoConfirmed && (
 
-                   {/* Status message */}
+                <>
 
-                   <div className="form-section" data-confirmation-status="true" style={{
+                  {/* Status message */}
 
-                     backgroundColor: '#d4edda',
+                  <div className="form-section" data-confirmation-status="true" style={{
 
-                     border: '2px solid #28a745',
+                    backgroundColor: '#d4edda',
 
-                     borderRadius: '8px',
+                    border: '2px solid #28a745',
 
-                     padding: '16px',
+                    borderRadius: '8px',
 
-                     margin: '16px 0',
+                    padding: '16px',
 
-                     textAlign: 'center'
+                    margin: '16px 0',
 
-                   }}>
+                    textAlign: 'center'
 
-                     <h4 style={{ color: '#28a745', margin: '0 0 8px 0' }}>
+                  }}>
 
-                       ✅ Inspection Information & Type Confirmed
+                    <h4 style={{ color: '#28a745', margin: '0 0 8px 0' }}>
 
-                     </h4>
+                      ✅ Inspection Information & Type Confirmed
 
-                     <p style={{ color: '#155724', margin: '0', fontSize: '14px' }}>
+                    </h4>
 
-                       You can now proceed with the remaining inspection sections
+                    <p style={{ color: '#155724', margin: '0', fontSize: '14px' }}>
 
-                     </p>
+                      You can now proceed with the remaining inspection sections
 
-                   </div>
+                    </p>
 
-                                       {/* Show all other sections */}
+                  </div>
 
-                    {serviceSections && serviceSections.length > 0 && serviceSections
+                  {/* Show all other sections */}
 
-                      .filter(section => {
+                  {serviceSections && serviceSections.length > 0 && serviceSections
 
-                        const sectionName = (section.displayName || '').toLowerCase();
+                    .filter(section => {
 
-                        return !sectionName.includes('inspection type') && !sectionName.includes('inspection information');
+                      const sectionName = (section.displayName || '').toLowerCase();
 
-                      })
+                      return !sectionName.includes('inspection type') && !sectionName.includes('inspection information');
 
-                      .filter(section => {
+                    })
 
-                        // Apply conditional filtering based on facility classification
+                    .filter(section => {
 
-                        const currentClassification = getCurrentFacilityClassification();
+                      // Apply conditional filtering based on facility classification
 
-                        const shouldShow = shouldShowSection(section.displayName, currentClassification);
+                      const currentClassification = getCurrentFacilityClassification();
 
-                        if (!shouldShow) {
+                      const shouldShow = shouldShowSection(section.displayName, currentClassification);
 
-                        }
+                      if (!shouldShow) {
 
-                        return shouldShow;
+                      }
 
-                      })
-                      .filter(section => {
-                        // Apply filtering based on selected service departments
-                        const shouldShowForDepartments = shouldShowSectionForServiceDepartments(section.displayName, selectedServiceDepartments);
+                      return shouldShow;
 
-                        if (!shouldShowForDepartments) {
-                        }
+                    })
+                    .filter(section => {
+                      // Apply filtering based on selected service departments
+                      const shouldShowForDepartments = shouldShowSectionForServiceDepartments(section.displayName, selectedServiceDepartments);
 
-                        return shouldShowForDepartments;
-                      })
+                      if (!shouldShowForDepartments) {
+                      }
 
-                      .map((section, index) => (
+                      return shouldShowForDepartments;
+                    })
 
-                        <FormSection
+                    .map((section, index) => (
 
-                          key={`${section.id}-${index}-${section.displayName}`}
+                      <FormSection
 
-                          section={section}
+                        key={`${section.id}-${index}-${section.displayName}`}
 
-                          formData={formData}
+                        section={section}
 
-                          onChange={handleFieldChange}
+                        formData={formData}
 
-                          errors={errors}
+                        onChange={handleFieldChange}
 
-                          serviceSections={serviceOptions}
+                        errors={errors}
 
-                          loadingServiceSections={loadingServiceSections}
+                        serviceSections={serviceOptions}
 
-                          readOnlyFields={readOnlyFields}
+                        loadingServiceSections={loadingServiceSections}
 
-                          getCurrentPosition={getCurrentPosition}
+                        readOnlyFields={readOnlyFields}
 
-                          formatCoordinatesForDHIS2={formatCoordinatesForDHIS2}
+                        getCurrentPosition={getCurrentPosition}
 
-                          showDebugPanel={showDebugPanel}
+                        formatCoordinatesForDHIS2={formatCoordinatesForDHIS2}
 
-                          facilityClassifications={facilityClassifications}
+                        showDebugPanel={showDebugPanel}
 
-                          loadingFacilityClassifications={loadingFacilityClassifications}
+                        facilityClassifications={facilityClassifications}
 
-                          inspectionInfoConfirmed={inspectionInfoConfirmed}
+                        loadingFacilityClassifications={loadingFacilityClassifications}
 
-                          setInspectionInfoConfirmed={setInspectionInfoConfirmed}
+                        inspectionInfoConfirmed={inspectionInfoConfirmed}
 
-                          areAllInspectionFieldsComplete={areAllInspectionFieldsComplete}
+                        setInspectionInfoConfirmed={setInspectionInfoConfirmed}
 
-                          getCurrentFacilityClassification={getCurrentFacilityClassification}
+                        areAllInspectionFieldsComplete={areAllInspectionFieldsComplete}
 
-                          facilityType={facilityType}
+                        getCurrentFacilityClassification={getCurrentFacilityClassification}
 
-                          onCommentChange={handleCommentChange}
+                        facilityType={facilityType}
 
-                          comments={fieldComments}
+                        onCommentChange={handleCommentChange}
 
-                        />
+                        comments={fieldComments}
 
-                      ))}
+                        selectedServiceDepartments={selectedServiceDepartments}
 
-                 </>
+                      />
 
-               )}
+                    ))}
 
-             </>
+                </>
 
-           ) : (
+              )}
 
-          <div className="form-section">
+            </>
 
-            <button
+          ) : (
 
-              type="button"
+            <div className="form-section">
 
-              className="section-header always-expanded-section"
+              <button
 
-              style={{ cursor: 'default' }}
+                type="button"
 
-            >
+                className="section-header always-expanded-section"
 
-              <h3 className="section-title">Configuration Issue</h3>
+                style={{ cursor: 'default' }}
 
-            </button>
+              >
 
-            <div className="section-content">
+                <h3 className="section-title">Configuration Issue</h3>
 
-              <div className="section-fields">
+              </button>
 
-                <div className="error-message">
+              <div className="section-content">
 
-                  <p>⚠️ The Inspections program stage doesn&#39;t have any data elements configured.</p>
+                <div className="section-fields">
 
-                  <p>Please contact your DHIS2 administrator to configure the inspection form fields.</p>
+                  <div className="error-message">
+
+                    <p>⚠️ The Inspections program stage doesn&#39;t have any data elements configured.</p>
+
+                    <p>Please contact your DHIS2 administrator to configure the inspection form fields.</p>
+
+                  </div>
+
+                  {/* Debug info removed */}
 
                 </div>
-
-                {/* Debug info removed */}
 
               </div>
 
             </div>
 
-          </div>
+          )}
 
-        )}
+        </form>
 
-      </form>
+        {/* Form footer with actions */}
 
-      {/* Form footer with actions */}
+        <div className="form-footer">
 
-      <div className="form-footer">
-
-        {/* Signature Capture Section - Only show after inspection info confirmation */}
-        {inspectionInfoConfirmed && (
-          <div style={{
-            gridColumn: '1 / -1',
-            padding: '20px',
-            backgroundColor: '#f8f9fa',
-            border: '2px solid #e9ecef',
-            borderRadius: '12px',
-            marginBottom: '20px'
-          }}>
-            <CustomSignatureCanvas
-              onSignatureChange={handleSignatureChange}
-              existingSignature={intervieweeSignature}
-              disabled={false}
-            />
-
-          {/* Confirmation Checkbox - show after signature */}
-          {intervieweeSignature && (
-            <div className="confirmation-checkbox" style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              padding: '16px',
-              background: 'var(--md-surface-variant)',
-              borderRadius: '8px',
-              marginTop: '20px',
+          {/* Signature Capture Section - Only show after inspection info confirmation */}
+          {inspectionInfoConfirmed && (
+            <div style={{
+              gridColumn: '1 / -1',
+              padding: '20px',
+              backgroundColor: '#f8f9fa',
+              border: '2px solid #e9ecef',
+              borderRadius: '12px',
               marginBottom: '20px'
             }}>
-              <input
-                type="checkbox"
-                id="confirmation-checkbox"
-                checked={isConfirmed}
-                onChange={(e) => setIsConfirmed(e.target.checked)}
-                style={{ width: '18px', height: '18px' }}
+              <CustomSignatureCanvas
+                onSignatureChange={handleSignatureChange}
+                existingSignature={intervieweeSignature}
+                disabled={false}
               />
-              <label htmlFor="confirmation-checkbox" style={{
-                margin: 0,
-                fontSize: '0.9rem',
-                color: 'var(--md-on-surface-variant)',
-                cursor: 'pointer'
-              }}>
-                I confirm that I have completed the inspection and reviewed all information
-              </label>
+
+              {/* Confirmation Checkbox - show after signature */}
+              {intervieweeSignature && (
+                <div className="confirmation-checkbox" style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  padding: '16px',
+                  background: 'var(--md-surface-variant)',
+                  borderRadius: '8px',
+                  marginTop: '20px',
+                  marginBottom: '20px'
+                }}>
+                  <input
+                    type="checkbox"
+                    id="confirmation-checkbox"
+                    checked={isConfirmed}
+                    onChange={(e) => setIsConfirmed(e.target.checked)}
+                    style={{ width: '18px', height: '18px' }}
+                  />
+                  <label htmlFor="confirmation-checkbox" style={{
+                    margin: 0,
+                    fontSize: '0.9rem',
+                    color: 'var(--md-on-surface-variant)',
+                    cursor: 'pointer'
+                  }}>
+                    I confirm that I have completed the inspection and reviewed all information
+                  </label>
+                </div>
+              )}
+
+              {/* Submit and Save buttons - show after confirmation */}
+              {isConfirmed && (
+                <div style={{
+                  display: 'flex',
+                  gap: '12px',
+                  justifyContent: 'center',
+                  marginTop: '16px'
+                }}>
+                  <button
+                    type="button"
+                    onClick={handleSubmit}
+                    className="btn btn-primary"
+                    disabled={isSubmitting}
+                    title="Submit inspection form"
+                  >
+                    {isSubmitting ? 'Submitting...' : 'Submit Inspection'}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleSaveDraft}
+                    className="btn btn-secondary"
+                    disabled={isSubmitting || (!isOnline && !isDraft)}
+                    title="Save as draft"
+                  >
+                    {isSubmitting ? 'Saving...' : 'Save Draft'}
+                  </button>
+                </div>
+              )}
             </div>
           )}
 
-          {/* Submit and Save buttons - show after confirmation */}
-          {isConfirmed && (
-            <div style={{
-              display: 'flex',
-              gap: '12px',
-              justifyContent: 'center',
-              marginTop: '16px'
+          {!isOnline && (
+
+            <div className="offline-notice" style={{
+
+              gridColumn: '1 / -1',
+
+              textAlign: 'center',
+
+              padding: '8px',
+
+              background: 'var(--md-surface-variant)',
+
+              borderRadius: '8px',
+
+              color: 'var(--md-on-surface-variant)',
+
+              fontSize: '0.875rem'
+
             }}>
-              <button
-                type="button"
-                onClick={handleSubmit}
-                className="btn btn-primary"
-                disabled={isSubmitting}
-                title="Submit inspection form"
-              >
-                {isSubmitting ? 'Submitting...' : 'Submit Inspection'}
-              </button>
 
-              <button
-                type="button"
-                onClick={handleSaveDraft}
-                className="btn btn-secondary"
-                disabled={isSubmitting || (!isOnline && !isDraft)}
-                title="Save as draft"
-              >
-                {isSubmitting ? 'Saving...' : 'Save Draft'}
-              </button>
+              📴 Offline - Inspection will sync when connected
+
             </div>
+
           )}
+
+          {isDraft && (
+
+            <div className="draft-notice" style={{
+
+              gridColumn: '1 / -1',
+
+              textAlign: 'center',
+
+              padding: '8px',
+
+              background: 'var(--md-surface-variant)',
+
+              borderRadius: '8px',
+
+              color: 'var(--md-on-surface-variant)',
+
+              fontSize: '0.875rem'
+
+            }}>
+
+              💾 Inspection draft saved locally
+
+            </div>
+
+          )}
+
         </div>
-        )}
 
-        {!isOnline && (
-
-          <div className="offline-notice" style={{
-
-            gridColumn: '1 / -1',
-
-            textAlign: 'center',
-
-            padding: '8px',
-
-            background: 'var(--md-surface-variant)',
-
-            borderRadius: '8px',
-
-            color: 'var(--md-on-surface-variant)',
-
-            fontSize: '0.875rem'
-
+        {/* Payload Dialog */}
+        {showPayloadDialog && (
+          <div className="payload-dialog-overlay" style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000
           }}>
+            <div className="payload-dialog" style={{
+              backgroundColor: 'white',
+              borderRadius: '8px',
+              padding: '24px',
+              maxWidth: '800px',
+              maxHeight: '80vh',
+              overflow: 'auto',
+              margin: '20px',
+              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)'
+            }}>
+              <div className="payload-dialog-header" style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '20px',
+                borderBottom: '2px solid #e9ecef',
+                paddingBottom: '16px'
+              }}>
+                <h3 style={{ margin: 0, color: '#2c3e50' }}>📋 Inspection Payload</h3>
+                <button
+                  onClick={() => setShowPayloadDialog(false)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    fontSize: '24px',
+                    cursor: 'pointer',
+                    color: '#6c757d'
+                  }}
+                >
+                  ×
+                </button>
+              </div>
 
-            📴 Offline - Inspection will sync when connected
+              <div className="payload-content" style={{
+                marginBottom: '24px'
+              }}>
+                {/* Collapsible payload section */}
+                <details style={{ marginBottom: '16px' }}>
+                  <summary style={{
+                    cursor: 'pointer',
+                    padding: '12px',
+                    backgroundColor: '#f8f9fa',
+                    border: '1px solid #e9ecef',
+                    borderRadius: '4px',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    fontSize: '14px',
+                    color: '#495057',
+                    userSelect: 'none'
+                  }}>
+                    <span>📄 This is the data that will be submitted to DHIS2 (click to expand)</span>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        navigator.clipboard.writeText(JSON.stringify(payloadData, null, 2));
+                        showToast('Payload copied to clipboard!', 'success');
+                      }}
+                      style={{
+                        padding: '4px 8px',
+                        border: '1px solid #007bff',
+                        backgroundColor: 'white',
+                        color: '#007bff',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        fontSize: '12px',
+                        marginLeft: '12px'
+                      }}
+                      title="Copy payload to clipboard"
+                    >
+                      📋 Copy
+                    </button>
+                  </summary>
+                  <div style={{
+                    padding: '16px',
+                    backgroundColor: '#f8f9fa',
+                    border: '1px solid #e9ecef',
+                    borderTop: 'none',
+                    borderRadius: '0 0 4px 4px'
+                  }}>
+                    <pre style={{
+                      backgroundColor: 'white',
+                      padding: '16px',
+                      borderRadius: '4px',
+                      border: '1px solid #e9ecef',
+                      fontSize: '12px',
+                      fontFamily: 'Monaco, Consolas, "Courier New", monospace',
+                      overflow: 'auto',
+                      maxHeight: '400px',
+                      margin: 0,
+                      whiteSpace: 'pre-wrap',
+                      wordBreak: 'break-word'
+                    }}>
+                      {JSON.stringify(payloadData, null, 2)}
+                    </pre>
+                  </div>
+                </details>
+              </div>
 
+              <div className="payload-dialog-actions" style={{
+                display: 'flex',
+                gap: '12px',
+                justifyContent: 'flex-end',
+                borderTop: '1px solid #e9ecef',
+                paddingTop: '16px'
+              }}>
+                <button
+                  onClick={() => setShowPayloadDialog(false)}
+                  style={{
+                    padding: '8px 16px',
+                    border: '1px solid #6c757d',
+                    backgroundColor: 'white',
+                    color: '#6c757d',
+                    borderRadius: '4px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleActualSubmit}
+                  disabled={isSubmitting}
+                  style={{
+                    padding: '8px 16px',
+                    border: 'none',
+                    backgroundColor: '#28a745',
+                    color: 'white',
+                    borderRadius: '4px',
+                    cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                    opacity: isSubmitting ? 0.6 : 1
+                  }}
+                >
+                  {isSubmitting ? 'Submitting...' : 'Confirm & Submit'}
+                </button>
+              </div>
+            </div>
           </div>
-
-        )}
-
-        {isDraft && (
-
-          <div className="draft-notice" style={{
-
-            gridColumn: '1 / -1',
-
-            textAlign: 'center',
-
-            padding: '8px',
-
-            background: 'var(--md-surface-variant)',
-
-            borderRadius: '8px',
-
-            color: 'var(--md-on-surface-variant)',
-
-            fontSize: '0.875rem'
-
-          }}>
-
-            💾 Inspection draft saved locally
-
-          </div>
-
         )}
 
       </div>
 
-      {/* Payload Dialog */}
-      {showPayloadDialog && (
-        <div className="payload-dialog-overlay" style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 1000
-        }}>
-          <div className="payload-dialog" style={{
-            backgroundColor: 'white',
-            borderRadius: '8px',
-            padding: '24px',
-            maxWidth: '800px',
-            maxHeight: '80vh',
-            overflow: 'auto',
-            margin: '20px',
-            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)'
-          }}>
-            <div className="payload-dialog-header" style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '20px',
-              borderBottom: '2px solid #e9ecef',
-              paddingBottom: '16px'
-            }}>
-              <h3 style={{ margin: 0, color: '#2c3e50' }}>📋 Inspection Payload</h3>
-              <button
-                onClick={() => setShowPayloadDialog(false)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  fontSize: '24px',
-                  cursor: 'pointer',
-                  color: '#6c757d'
-                }}
-              >
-                ×
-              </button>
-            </div>
-
-            <div className="payload-content" style={{
-              marginBottom: '24px'
-            }}>
-              {/* Collapsible payload section */}
-              <details style={{ marginBottom: '16px' }}>
-                <summary style={{
-                  cursor: 'pointer',
-                  padding: '12px',
-                  backgroundColor: '#f8f9fa',
-                  border: '1px solid #e9ecef',
-                  borderRadius: '4px',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  fontSize: '14px',
-                  color: '#495057',
-                  userSelect: 'none'
-                }}>
-                  <span>📄 This is the data that will be submitted to DHIS2 (click to expand)</span>
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      navigator.clipboard.writeText(JSON.stringify(payloadData, null, 2));
-                      showToast('Payload copied to clipboard!', 'success');
-                    }}
-                    style={{
-                      padding: '4px 8px',
-                      border: '1px solid #007bff',
-                      backgroundColor: 'white',
-                      color: '#007bff',
-                      borderRadius: '4px',
-                      cursor: 'pointer',
-                      fontSize: '12px',
-                      marginLeft: '12px'
-                    }}
-                    title="Copy payload to clipboard"
-                  >
-                    📋 Copy
-                  </button>
-                </summary>
-                <div style={{
-                  padding: '16px',
-                  backgroundColor: '#f8f9fa',
-                  border: '1px solid #e9ecef',
-                  borderTop: 'none',
-                  borderRadius: '0 0 4px 4px'
-                }}>
-                  <pre style={{
-                    backgroundColor: 'white',
-                    padding: '16px',
-                    borderRadius: '4px',
-                    border: '1px solid #e9ecef',
-                    fontSize: '12px',
-                    fontFamily: 'Monaco, Consolas, "Courier New", monospace',
-                    overflow: 'auto',
-                    maxHeight: '400px',
-                    margin: 0,
-                    whiteSpace: 'pre-wrap',
-                    wordBreak: 'break-word'
-                  }}>
-                    {JSON.stringify(payloadData, null, 2)}
-                  </pre>
-                </div>
-              </details>
-            </div>
-
-            <div className="payload-dialog-actions" style={{
-              display: 'flex',
-              gap: '12px',
-              justifyContent: 'flex-end',
-              borderTop: '1px solid #e9ecef',
-              paddingTop: '16px'
-            }}>
-              <button
-                onClick={() => setShowPayloadDialog(false)}
-                style={{
-                  padding: '8px 16px',
-                  border: '1px solid #6c757d',
-                  backgroundColor: 'white',
-                  color: '#6c757d',
-                  borderRadius: '4px',
-                  cursor: 'pointer'
-                }}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleActualSubmit}
-                disabled={isSubmitting}
-                style={{
-                  padding: '8px 16px',
-                  border: 'none',
-                  backgroundColor: '#28a745',
-                  color: 'white',
-                  borderRadius: '4px',
-                  cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                  opacity: isSubmitting ? 0.6 : 1
-                }}
-              >
-                {isSubmitting ? 'Submitting...' : 'Confirm & Submit'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
     </div>
 
-  </div>
-
-);
+  );
 
 }
 

@@ -15,7 +15,8 @@ export function HomePage() {
     retryEvent,
     deleteEvent,
     showToast,
-    userAssignments
+    userAssignments,
+    logout
   } = useApp();
 
   const storage = useStorage();
@@ -48,7 +49,7 @@ export function HomePage() {
   useEffect(() => {
     const loadEvents = async () => {
       if (!storage.isReady) return;
-      
+
       try {
         setIsLoading(true);
         const allEvents = await storage.getAllEvents();
@@ -84,8 +85,8 @@ export function HomePage() {
         )?.displayName?.toLowerCase() || '';
 
         return eventDate.includes(search) ||
-               orgUnitName.includes(search) ||
-               (event.status || event.syncStatus || '').toLowerCase().includes(search);
+          orgUnitName.includes(search) ||
+          (event.status || event.syncStatus || '').toLowerCase().includes(search);
       });
     }
 
@@ -103,16 +104,14 @@ export function HomePage() {
     return result;
   };
 
-  const handleNewForm = () => {
+  const handleNewForm = async () => {
     if (!configuration) {
       showToast('Configuration not loaded yet', 'warning');
       return;
     }
-    
-    // Generate a new ID and force a full reload to ensure a completely clean state
-    // This bypasses any "restore draft" logic that might trigger on /form
-    const newId = generateDHIS2Id();
-    window.location.href = /form/;
+
+    // As requested, "New Inspection" should log the user out
+    await logout();
   };
 
   const handleEditForm = (event) => {
@@ -253,9 +252,9 @@ export function HomePage() {
             <p className="program-description">{configuration.program.description}</p>
           )}
         </div>
-        
+
         <div className="quick-actions">
-          <button 
+          <button
             className="btn btn-primary btn-large new-form-btn"
             onClick={handleNewForm}
           >
@@ -273,7 +272,7 @@ export function HomePage() {
             <p>Total Inspections</p>
           </div>
         </div>
-        
+
         <div className="stat-card pending">
           <div className="stat-icon">⏱</div>
           <div className="stat-content">
@@ -281,7 +280,7 @@ export function HomePage() {
             <p>Pending Sync</p>
           </div>
         </div>
-        
+
         <div className="stat-card synced">
           <div className="stat-icon">✓</div>
           <div className="stat-content">
@@ -314,8 +313,8 @@ export function HomePage() {
               </p>
             )}
           </div>
-          
-          <button 
+
+          <button
             className="btn btn-secondary"
             onClick={handleSync}
             disabled={!isOnline}
@@ -433,7 +432,7 @@ export function HomePage() {
             </select>
           </div>
         </div>
-        
+
         <div className="forms-list">
           {isLoading ? (
             <div className="loading-list">
@@ -460,8 +459,8 @@ export function HomePage() {
             filteredEvents
               .sort((a, b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt))
               .map((event) => (
-                <div 
-                  key={event.event} 
+                <div
+                  key={event.event}
                   className="form-item"
                   onClick={() => handleEditForm(event)}
                 >
@@ -479,7 +478,7 @@ export function HomePage() {
                         </span>
                       </div>
                     </div>
-                    
+
                     <div className="form-details">
                       <p className="org-unit">
                         Building: {getFacilityName(event.orgUnit)}
@@ -490,42 +489,42 @@ export function HomePage() {
                           <span> • Updated: {formatDateTime(event.updatedAt)}</span>
                         )}
                       </p>
-                      
+
                       {event.dataValues && event.dataValues.length > 0 && (
                         <p className="data-summary">
                           Data: {event.dataValues.length} field(s) completed
                         </p>
                       )}
 
-                        {/* Show submitted value for facility service departments */}
-                        {event.dataValues && (
-                            (() => {
-                                const field = event.dataValues.find(dv => dv.dataElement === 'jpcDY2i8ZDE');
-                                if (!field) return null;
+                      {/* Show submitted value for facility service departments */}
+                      {event.dataValues && (
+                        (() => {
+                          const field = event.dataValues.find(dv => dv.dataElement === 'jpcDY2i8ZDE');
+                          if (!field) return null;
 
-                                // Try to parse as JSON array, fallback to string display
-                                let displayValue = field.value;
-                                try {
-                                  const parsedValue = JSON.parse(field.value);
-                                  if (Array.isArray(parsedValue)) {
-                                    displayValue = parsedValue.length > 0
-                                      ? `${parsedValue.length} selected: ${parsedValue.join(', ')}`
-                                      : 'None selected';
-                                  }
-                                } catch (e) {
-                                  // Keep original value if not valid JSON
-                                }
+                          // Try to parse as JSON array, fallback to string display
+                          let displayValue = field.value;
+                          try {
+                            const parsedValue = JSON.parse(field.value);
+                            if (Array.isArray(parsedValue)) {
+                              displayValue = parsedValue.length > 0
+                                ? `${parsedValue.length} selected: ${parsedValue.join(', ')}`
+                                : 'None selected';
+                            }
+                          } catch (e) {
+                            // Keep original value if not valid JSON
+                          }
 
-                                return (
-                                    <p className="submitted-value">
-                                        Settings: Facility Service Departments: {displayValue}
-                                    </p>
-                                );
-                            })()
-                        )}
+                          return (
+                            <p className="submitted-value">
+                              Settings: Facility Service Departments: {displayValue}
+                            </p>
+                          );
+                        })()
+                      )}
                     </div>
                   </div>
-                  
+
                   <div className="form-actions">
                     {/* Preview Button - only show if event has data */}
                     {event.dataValues && event.dataValues.length > 0 && (
