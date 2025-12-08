@@ -36,14 +36,27 @@ export function HomePage() {
       // Store in localStorage for persistence
       localStorage.setItem('lastSelectedFacility', facilityId);
     } else {
-      // Try to get from localStorage if no URL parameter
-      const lastFacility = localStorage.getItem('lastSelectedFacility');
-      if (lastFacility) {
-        setSelectedFacilityId(lastFacility);
-        console.log('🏥 Dashboard using last selected facility from localStorage:', lastFacility);
+      // HARDCODED FOR TESTING: Auto-select Mulago facility
+      const mulagoFacility = userAssignments?.find(assignment =>
+        assignment.facility?.name?.toLowerCase().includes('mulago') ||
+        assignment.facility?.displayName?.toLowerCase().includes('mulago')
+      );
+
+      if (mulagoFacility) {
+        const mulagoId = mulagoFacility.facility.id;
+        setSelectedFacilityId(mulagoId);
+        localStorage.setItem('lastSelectedFacility', mulagoId);
+        console.log('🏥 TESTING MODE: Auto-selected Mulago facility:', mulagoId, mulagoFacility.facility.name);
+      } else {
+        // Try to get from localStorage if no URL parameter and Mulago not found
+        const lastFacility = localStorage.getItem('lastSelectedFacility');
+        if (lastFacility) {
+          setSelectedFacilityId(lastFacility);
+          console.log('🏥 Dashboard using last selected facility from localStorage:', lastFacility);
+        }
       }
     }
-  }, [searchParams]);
+  }, [searchParams, userAssignments]);
 
   // Load events from storage
   useEffect(() => {

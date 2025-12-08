@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist for facilities2.0.csv
- * Generated on: 2025-11-25 11:54:31
+ * Generated on: 2025-12-04 19:52:28
  * Facility Type: Ear, Nose & Throat
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -12,7 +12,6 @@ const EarNoseandThroat = {
         "showOnly": [
             "Does the Facility have an organisational structure",
             "Is the director a medically trained person?",
-            "Does the facility comply with regulatory requirements? --",
             "Business registration",
             "ta clearance certificate",
             "Valid private pactice license",
@@ -31,7 +30,6 @@ const EarNoseandThroat = {
             "Practitioners licence",
             "Fire clearance",
             "residence permit",
-            "Does the Facility have policies and procedures for the following?--",
             "Patient referral",
             "Assessment of patients",
             "Management of high risk patients",
@@ -54,7 +52,6 @@ const EarNoseandThroat = {
             "Complaints procedure",
             "Outreach services",
             "Waste management",
-            "Does the Facility have the following reference materials?--",
             "Treatment protocols/ guidelines",
             "Testing and treatment techniques",
             "Copies of relevant statutory instruments",
@@ -62,7 +59,6 @@ const EarNoseandThroat = {
     },
     "SERVICES PROVIDED": {
         "showOnly": [
-            "What are the services provided at the Facility?--",
             "General services; Specify",
             "Specialist services; Specify",
             "Other services (Specify); .....",
@@ -87,7 +83,6 @@ const EarNoseandThroat = {
             "Administrative Staff (Specify)",
             "Support staff (Specify)",
             "Are professionals registered with the relevant Councils?",
-            "Did personnel files have the following?--",
             "Signed job effectiveness description",
             "Education credentials",
             "A signed confidentiality clause",
@@ -96,6 +91,10 @@ const EarNoseandThroat = {
             "Signed contracts or offer letters",
             "Medical eamination certificates",
             "Evidence of continous Professional Development",
+        ]
+    },
+    "FACILITY-ENVIONMENT": {
+        "showOnly": [
             "Does the facility have wheelchair accessibility?",
             "Is it fenced, secure and easily accessible",
             "Is there space for parking? Specify",
@@ -112,6 +111,10 @@ const EarNoseandThroat = {
             "Is there backup system for electricity?",
             "Is there backup system for water?",
             "Where there are ramps, are there safety features?",
+        ]
+    },
+    "FACILITY-RECEPTION/WAITING AREA": {
+        "showOnly": [
             "Does reception area have space? Elaborate.",
             "Is the telephone/ cell phone available?",
             "Is a reception desk with chair available",
@@ -123,7 +126,10 @@ const EarNoseandThroat = {
             "Is there patient charter available in Setswana and English?",
             "Is there available drinking water source?",
             "Are educational materials available for clients",
-            "Is screening room equipped with the following?--",
+        ]
+    },
+    "FACILITY- SCREENING ROOM": {
+        "showOnly": [
             "Chairs and table",
             "Sphygmomanometer",
             "Thermometer",
@@ -138,9 +144,12 @@ const EarNoseandThroat = {
             "Hand wash facilities",
             "Appropriate hand drying facilities",
             "Appropriate hand wash soap",
+        ]
+    },
+    "FACILITY- CONSULTATION/TREATMENT ROOM": {
+        "showOnly": [
             "Does the consultation room have adequate space?",
             "Does the consultation room have wheelchair accessibility",
-            "Does the consultation room have the following --",
             "At least 3 Chairs",
             "Alcohol swabs",
             "Appropriate hand drying facilities",
@@ -195,12 +204,14 @@ const EarNoseandThroat = {
             "Waste bins with lids for clinical waste",
             "Weighing scale (both adult and paediatric)*",
             "-ray viewing bo",
-            "Emergency equipment--",
             "emergency trolley with chelist with atleast",
             "Does the Emergency trolloey have atleast the following; Defibrilator/ Automated Eternal Difibrilator (AED), laryngoscope set, endotracheal tubes, ambu bags, syringes, needles, cannulas, alcohol swab, drugs, IV fluids, oygen cylinder and masks of different sizes, etc",
+        ]
+    },
+    "FACILITY-PROCEDURE ROOM": {
+        "showOnly": [
             "Does the procedure room have adequate space?",
             "Is the room wheelchair accessible",
-            "Does the procedure room have the following --",
             "Alcohol swabs",
             "Antiseptic ointments, creams, solutions etc.",
             "Appropriate hand drying facilities",
@@ -239,10 +250,13 @@ const EarNoseandThroat = {
             "Urinary catheters (different sizes)",
             "Waste bin with lids for domestic waste",
             "Waste bins with lids for clinical waste",
+        ]
+    },
+    "SLUICE ROOM": {
+        "showOnly": [
             "Does the room have space? Elaborate.",
             "Does the room have ventilation? Elaborate",
             "Does the room have wheelchair accessibility?",
-            "Is the room equipped with the following--",
             "Canvas bag trolley with cover",
             "Canvas bag trolley with cover for non soiled linen",
             "Canvas bag trolley with cover for soiled linen",
@@ -253,27 +267,33 @@ const EarNoseandThroat = {
             "Non sterile gloves",
             "Stainless steel sink with running water",
             "stainless steel waste discarding sink or sluice machine",
+        ]
+    },
+    "BLEEDING ROOM": {
+        "showOnly": [
             "Does the bleeding room have space? Elaborate.",
             "Does the room have wheelchair accessibility?",
-            "Is the room equipped with the following --",
-            "· 2 chairs",
-            "· Needles and syringes (different sizes)",
-            "· Vacutainers of different colours",
-            "· Tourniquet",
-            "· Plaster",
-            "· Cotton swab",
-            "· Disinfectant",
-            "· Sharps container",
-            "· Clinical waste bin with lid",
-            "· Domestic waste bin with lid",
-            "· Hand wash basin with running hot and cold water",
-            ". Hand wash soap",
-            "· Appropriate hand drying facilities",
-            "· Disposable gloves",
-            "· Cooler bo",
-            "· Ice packs",
+            "2 chairs",
+            "Needles and syringes (different sizes)",
+            "Vacutainers of different colours",
+            "Tourniquet",
+            "Plaster",
+            "Cotton swab",
+            "Disinfectant",
+            "Sharps container",
+            "Clinical waste bin with lid",
+            "Domestic waste bin with lid",
+            "Hand wash basin with running hot and cold water",
+            "Hand wash soap",
+            "Appropriate hand drying facilities",
+            "Disposable gloves",
+            "Cooler bo",
+            "Ice packs",
             "Specimen racks",
-            "Toilet facilities--",
+        ]
+    },
+    "TOILET FACILITIES": {
+        "showOnly": [
             "Is there a minimum of two toilets available (for male and",
             "Female patients)?",
             "Are they labelled male and female?",
@@ -286,15 +306,18 @@ const EarNoseandThroat = {
             "Does the female toilet have sanitary pads disposal?",
             "Are toilets aesthetically pleasing?",
             "Is there provision for paediatric clients?",
-            "Safety and waste management --",
+        ]
+    },
+    "SAFETY AND WASTE MANAGEMENT": {
+        "showOnly": [
             "Does the Facility have a policy on waste management?",
             "Does the Facility have SOPs on waste management?",
             "Does the Facility have a waste disposal system? Specify:",
-            ". Domestic Waste",
-            ". Clinical Waste",
-            ". Does the Facility have a policy and procedures on safety?",
-            ". Is there a policy and procedure on accidental eposure to HIV?",
-            ". Does the Facility have fire protection equipment?",
+            "Domestic Waste",
+            "Clinical Waste",
+            "Does the Facility have a policy and procedures on safety?",
+            "Is there a policy and procedure on accidental eposure to HIV?",
+            "Does the Facility have fire protection equipment?",
             ".Fire etinguishers",
             ".Emergency eits",
             "Additional:",
@@ -305,22 +328,21 @@ const EarNoseandThroat = {
             "Does the Facility have a written program for maintaining fire protection equipment ?",
             "Does the Facility have adequate security?",
             ".A larm system?",
-            ". Burglar bars?",
-            ". Lockable gates?",
+            "Burglar bars?",
+            "Lockable gates?",
         ]
     },
     "SUPPLIES": {
         "showOnly": [
             "Does the Facility have the following policies",
-            "· supplies and purchasing",
-            "· management of epired supplies",
+            "supplies and purchasing",
+            "management of epired supplies",
             "Does the Facility have adequate supplies for services provided/",
             "Is there a stock control system?",
         ]
     },
     "TENS": {
         "showOnly": [
-            "Customer satisfaction--",
             "Is there a customer feedback mechanism",
             "Suggestion bo",
             "Customer surveys",

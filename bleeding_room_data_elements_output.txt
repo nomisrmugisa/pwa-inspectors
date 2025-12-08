@@ -1,0 +1,73 @@
+BLEEDING ROOM Section - 19 Data Elements
+====================================================================================================
+
+1. Does the bleeding room have space? Elaborate.
+   Applicable to: Obstetrics & Gynaecology, laboratory, Eye (Opthalmology /Optometry), Ear, Nose & Throat, Rehabilitation Centre, General Practice, Paediatric, Nursing Home
+
+2. Does the room have wheelchair accessibility?
+   Applicable to: Obstetrics & Gynaecology, laboratory, Eye (Opthalmology /Optometry), Ear, Nose & Throat, Rehabilitation Centre, General Practice, Paediatric, Nursing Home
+
+3. 2 chairs
+   Applicable to: Obstetrics & Gynaecology, laboratory, Eye (Opthalmology /Optometry), Ear, Nose & Throat, Rehabilitation Centre, General Practice, Paediatric, Nursing Home
+
+4. Needles and syringes (different sizes)
+   Applicable to: Obstetrics & Gynaecology, laboratory, Eye (Opthalmology /Optometry), Ear, Nose & Throat, Rehabilitation Centre, General Practice, Paediatric, Nursing Home
+
+5. Vacutainers of different colours
+   Applicable to: Obstetrics & Gynaecology, laboratory, Eye (Opthalmology /Optometry), Ear, Nose & Throat, Rehabilitation Centre, General Practice, Paediatric, Nursing Home
+
+6. Tourniquet
+   Applicable to: Obstetrics & Gynaecology, laboratory, Eye (Opthalmology /Optometry), Ear, Nose & Throat, Rehabilitation Centre, General Practice, Paediatric, Nursing Home
+
+7. Plaster
+   Applicable to: Obstetrics & Gynaecology, laboratory, Eye (Opthalmology /Optometry), Ear, Nose & Throat, Rehabilitation Centre, General Practice, Paediatric, Nursing Home
+
+8. Cotton swab
+   Applicable to: Obstetrics & Gynaecology, laboratory, Eye (Opthalmology /Optometry), Ear, Nose & Throat, Rehabilitation Centre, General Practice, Paediatric, Nursing Home
+
+9. Disinfectant
+   Applicable to: Obstetrics & Gynaecology, laboratory, Eye (Opthalmology /Optometry), Ear, Nose & Throat, Rehabilitation Centre, General Practice, Paediatric, Nursing Home
+
+10. Sharps container
+   Applicable to: Obstetrics & Gynaecology, laboratory, Eye (Opthalmology /Optometry), Ear, Nose & Throat, Rehabilitation Centre, General Practice, Paediatric, Nursing Home
+
+11. Clinical waste bin with lid
+   Applicable to: Obstetrics & Gynaecology, laboratory, Eye (Opthalmology /Optometry), Ear, Nose & Throat, Rehabilitation Centre, General Practice, Paediatric, Nursing Home
+
+12. Domestic waste bin with lid
+   Applicable to: Obstetrics & Gynaecology, laboratory, Eye (Opthalmology /Optometry), Ear, Nose & Throat, Rehabilitation Centre, General Practice, Paediatric, Nursing Home
+
+13. Hand wash basin with running hot and cold water
+   Applicable to: Obstetrics & Gynaecology, laboratory, Eye (Opthalmology /Optometry), Ear, Nose & Throat, Rehabilitation Centre, General Practice, Paediatric, Nursing Home
+
+14. Hand wash soap
+   Applicable to: Obstetrics & Gynaecology, laboratory, Eye (Opthalmology /Optometry), Ear, Nose & Throat, Rehabilitation Centre, General Practice, Paediatric, Nursing Home
+
+15. Appropriate hand drying facilities
+   Applicable to: Obstetrics & Gynaecology, laboratory, Eye (Opthalmology /Optometry), Ear, Nose & Throat, Rehabilitation Centre, General Practice, Paediatric, Nursing Home
+
+16. Disposable gloves
+   Applicable to: Obstetrics & Gynaecology, laboratory, Eye (Opthalmology /Optometry), Ear, Nose & Throat, Rehabilitation Centre, General Practice, Paediatric, Nursing Home
+
+17. Cooler bo
+   Applicable to: Obstetrics & Gynaecology, laboratory, Eye (Opthalmology /Optometry), Ear, Nose & Throat, Rehabilitation Centre, General Practice, Paediatric, Nursing Home
+
+18. Ice packs
+   Applicable to: Obstetrics & Gynaecology, laboratory, Eye (Opthalmology /Optometry), Ear, Nose & Throat, Rehabilitation Centre, General Practice, Paediatric, Nursing Home
+
+19. Specimen racks
+   Applicable to: Obstetrics & Gynaecology, laboratory, Eye (Opthalmology /Optometry), Ear, Nose & Throat, Rehabilitation Centre, General Practice, Paediatric, Nursing Home
+
+====================================================================================================
+
+Summary: 19 data elements in BLEEDING ROOM section
+
+Facility types with BLEEDING ROOM section:
+   - Ear, Nose & Throat: 19 questions
+   - Eye (Opthalmology /Optometry): 19 questions
+   - General Practice: 19 questions
+   - Nursing Home: 19 questions
+   - Obstetrics & Gynaecology: 19 questions
+   - Paediatric: 19 questions
+   - Rehabilitation Centre: 19 questions
+   - laboratory: 19 questions

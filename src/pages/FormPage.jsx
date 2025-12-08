@@ -2485,6 +2485,7 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
 } // End of FormSection component
 
 // Function to generate DHIS2 standard ID (11 characters alphanumeric)
+// Function to generate DHIS2 standard ID (11 characters alphanumeric)
 const generateDHIS2Id = () => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';
@@ -2501,6 +2502,158 @@ const generateDHIS2Id = () => {
   return result;
 };
 
+const DEPARTMENT_SECTION_MAPPING = {
+  // Management and Organization
+  'ORGANISATION AND MANAGEMENT': ['ORGANISATION AND MANAGEMENT'],
+  'STATUTORY REQUIREMENTS': ['STATUTORY REQUIREMENTS'],
+  'POLICIES AND PROCEDURES': ['POLICIES AND PROCEDURES'],
+
+  // Services and Personnel
+  'SERVICES PROVIDED': ['SERVICES PROVIDED'],
+  'PERSONNEL': ['PERSONNEL'],
+
+  // Environment and Infrastructure
+  'ENVIRONMENT': ['ENVIRONMENT'],
+  'SAFETY AND WASTE MANAGEMENT': ['SAFETY AND WASTE MANAGEMENT'],
+
+  // Patient Areas
+  // Patient Areas
+  'RECEPTION AREA': ['RECEPTION AREA'],
+  'PATIENT WAITING AREA': ['PATIENT WAITING AREA'],
+  'FACILITY-RECEPTION/WAITING AREA': ['FACILITY-RECEPTION/WAITING AREA'],
+  'FACILITY-ENVIRONMENT': ['FACILITY-ENVIRONMENT'],
+  'FACILITY-ENVIONMENT': ['FACILITY-ENVIONMENT'],
+  'FACILITY-EVIRONMENT': ['FACILITY-EVIRONMENT'],
+  'FACILITY-PROCEDURE ROOM': ['FACILITY-PROCEDURE ROOM'],
+
+  // Clinical Rooms - General
+  'SCREENING ROOM': ['SCREENING ROOM'],
+  'FACILITY SCREENING ROOM': ['FACILITY SCREENING ROOM'],
+  'FACILITY- SCREENING ROOM': ['FACILITY- SCREENING ROOM'],
+  'FACILITY-SCREENING ROOM': ['FACILITY-SCREENING ROOM'],
+  'FACILITY - SCREENING ROOM': ['FACILITY - SCREENING ROOM'],
+  'CONSULTATION ROOM': ['CONSULTATION ROOM'],
+  'FACILITY CONSULTATION/TREATMENT ROOM': ['FACILITY CONSULTATION/TREATMENT ROOM'],
+  'FACILITY- CONSULTATION/TREATMENT ROOM': ['FACILITY- CONSULTATION/TREATMENT ROOM'],
+  'FACILITY-CONSULTATION/TREATMENT ROOM': ['FACILITY-CONSULTATION/TREATMENT ROOM'],
+  'FACILITY - CONSULTATION/TREATMENT ROOM': ['FACILITY - CONSULTATION/TREATMENT ROOM'],
+  'PROCEDURE ROOM': ['PROCEDURE ROOM'],
+
+  // Clinical Rooms - Specialized
+  'GYNAECOLOGY EXAMINATION ROOM': ['GYNAECOLOGY EXAMINATION ROOM'],
+  'ENT EXAMINATION ROOM': ['ENT EXAMINATION ROOM'],
+  'OPHTHALMOLOGY EXAMINATION ROOM': ['OPHTHALMOLOGY EXAMINATION ROOM'],
+  'DENTAL CHAIR AREA': ['DENTAL CHAIR AREA'],
+  'X-RAY ROOM': ['X-RAY ROOM'],
+  'RADIOLOGY READING ROOM': ['RADIOLOGY READING ROOM'],
+
+  // Support Rooms
+  'BLEEDING ROOM': ['BLEEDING ROOM'],
+  'SLUICE ROOM': ['SLUICE ROOM'],
+  'TOILET FACILITITES': ['TOILET FACILITITES'],
+  'TOILET FACILITIES': ['TOILET FACILITIES'],
+
+  // Laboratory Areas
+  'LABORATORY WORK AREA': ['LABORATORY WORK AREA'],
+
+  // Pharmacy and Supplies
+  'PHARMACY/ DISPENSARY': ['PHARMACY/ DISPENSARY'],
+  'SUPPLIES': ['SUPPLIES'],
+
+  // Information Management
+  'RECORDS/ INFORMATION MANAGEMENT': ['RECORDS/ INFORMATION MANAGEMENT'],
+  'MEDICAL RECORDS ROOM': ['MEDICAL RECORDS ROOM'],
+
+  // Therapy Areas
+  'PHYSIOTHERAPY TREATMENT AREA': ['PHYSIOTHERAPY TREATMENT AREA'],
+  'PSYCHOLOGY CONSULTATION ROOM': ['PSYCHOLOGY CONSULTATION ROOM'],
+  'REHABILITATION THERAPY AREA': ['REHABILITATION THERAPY AREA'],
+
+  // Emergency and Critical Care
+  'EMERGENCY ROOM': ['EMERGENCY ROOM'],
+  'OPERATING THEATRE': ['OPERATING THEATRE'],
+  'INTENSIVE CARE UNIT': ['INTENSIVE CARE UNIT'],
+
+  // Wards
+  'MATERNITY WARD': ['MATERNITY WARD'],
+  'PEDIATRIC WARD': ['PEDIATRIC WARD'],
+  'ISOLATION ROOM': ['ISOLATION ROOM'],
+
+  // Storage and Administrative
+  'WASTE STORAGE AREA': ['WASTE STORAGE AREA'],
+  'CLEANING STORAGE AREA': ['CLEANING STORAGE AREA'],
+  'STAFF REST ROOM': ['STAFF REST ROOM'],
+  'ADMINISTRATIVE OFFICE': ['ADMINISTRATIVE OFFICE'],
+
+  // Quality and Satisfaction
+  'CUSTOMER SATISFACTION': ['CUSTOMER SATISFACTION'],
+
+  // Special
+  'HIV SCREENING': ['HIV SCREENING'],
+  'TENS': ['TENS'],
+
+  // Catch-all
+  'OTHER': [] // OTHER shows all sections
+};
+
+const DepartmentDebugInfo = ({ selectedDepartments, onClose }) => {
+  const mapping = DEPARTMENT_SECTION_MAPPING;
+  const availableOptions = window.__departmentOptionsForSection || [];
+
+  return (
+    <div style={{
+      position: 'fixed',
+      bottom: '20px',
+      right: '20px',
+      width: '400px',
+      maxHeight: '80vh',
+      backgroundColor: 'white',
+      border: '2px solid #ff4444',
+      borderRadius: '8px',
+      boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
+      zIndex: 10001,
+      overflow: 'auto',
+      display: 'flex',
+      flexDirection: 'column'
+    }}>
+      <div style={{ padding: '10px', background: '#ff4444', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <strong>🐞 Department Debugger</strong>
+        <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', fontSize: '16px' }}>✕</button>
+      </div>
+      <div style={{ padding: '10px' }}>
+        <div style={{ marginBottom: '10px', fontSize: '12px', color: '#666' }}>
+          This panel shows the exact raw values from DHIS2 to help diagnose matching issues.
+        </div>
+        <h4>Selected Departments ({selectedDepartments.length})</h4>
+        <ul style={{ listStyle: 'none', padding: 0 }}>
+          {selectedDepartments.map((dept, i) => {
+            const mapped = mapping[dept];
+            return (
+              <li key={i} style={{ marginBottom: '10px', padding: '8px', border: '1px solid #eee', borderRadius: '4px', backgroundColor: mapped ? '#f0fff4' : '#fff5f5' }}>
+                <div style={{ fontWeight: 'bold', color: '#333', wordBreak: 'break-all' }}>"{dept}"</div>
+                <div style={{ fontSize: '12px', color: mapped ? 'green' : 'red', marginTop: '4px' }}>
+                  {mapped ? `✅ Mapped to: ${mapped.join(', ')}` : '❌ NO MAPPING FOUND'}
+                </div>
+                <div style={{ fontSize: '10px', color: '#999', marginTop: '4px', fontFamily: 'monospace' }}>
+                  Char codes: {dept.split('').map(c => c.charCodeAt(0)).join(', ')}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+        <hr style={{ margin: '15px 0', borderTop: '1px solid #eee' }} />
+        <h4>Available Options ({availableOptions.length})</h4>
+        <details>
+          <summary style={{ cursor: 'pointer', color: '#007bff' }}>Show All Options</summary>
+          <pre style={{ fontSize: '10px', whiteSpace: 'pre-wrap', backgroundColor: '#f8f9fa', padding: '10px', borderRadius: '4px', marginTop: '5px' }}>
+            {JSON.stringify(availableOptions, null, 2)}
+          </pre>
+        </details>
+      </div>
+    </div>
+  );
+};
+
 // Main FormPage component
 
 function FormPage() {
@@ -2512,6 +2665,7 @@ function FormPage() {
   // State for inspection information confirmation (moved to top to fix hoisting issue)
   const [inspectionInfoConfirmed, setInspectionInfoConfirmed] = useState(false);
 
+  const [showDebug, setShowDebug] = useState(false);
   const { eventId } = useParams();
 
   const navigate = useNavigate();
@@ -2714,26 +2868,6 @@ function FormPage() {
         filtered: filteredSections.length,
         sections: filteredSections.map(s => s.displayName)
       });
-      
-      // Calculate department options immediately
-      const names = [];
-      const seenNames = new Set();
-      
-      for (const s of filteredSections) {
-        const total = s?.dataElements?.length || 0;
-        if (total === 0) continue;
-        
-        // Skip if we've already processed a section with this display name
-        if (seenNames.has(s.displayName)) {
-          continue;
-        }
-        
-        const shown = (s.dataElements || []).filter(psde2 => {
-          if (!psde2?.dataElement) return false;
-          const displayName2 = psde2.dataElement.displayName;
-          const isComment2 = /\s(Comments?|Remarks?)$/i.test(displayName2);
-          if (isComment2) {
-            const main2 = displayName2
               .replace(/\sComments?\s*$/i, '')
               .replace(/\sRemarks?\s*$/i, '')
               .trim();
@@ -2775,129 +2909,47 @@ function FormPage() {
     }
 
     // Enhanced mapping of service departments to relevant sections
-    const departmentSectionMapping = {
-      // Management and Organization (use exact, CSV-aligned names to avoid
-      // accidental matches on generic words like "MANAGEMENT" or "ADMIN")
-      'ORGANISATION AND MANAGEMENT': ['ORGANISATION AND MANAGEMENT'],
-      'STATUTORY REQUIREMENTS': ['STATUTORY REQUIREMENTS'],
-      'POLICIES AND PROCEDURES': ['POLICIES AND PROCEDURES'],
-
-      // Services and Personnel (CSV canonical departments). We match on the
-      // full, CSV-aligned names (or very tight aliases) only 1 no more
-      // generic words like "SERVICE" or "STAFF" that could hit unrelated
-      // sections.
-      'SERVICES PROVIDED': ['SERVICES PROVIDED', 'SERVICE PROVIDED'],
-      'PERSONNEL': ['PERSONNEL'],
-
-      // Environment and Infrastructure
-      'ENVIRONMENT': ['ENVIRONMENT', 'ENVIRONMENTAL', 'FACILITY ENVIRONMENT', 'INFRASTRUCTURE'],
-      'SAFETY AND WASTE MANAGEMENT': ['SAFETY', 'WASTE', 'MANAGEMENT', 'DISPOSAL', 'HAZARD'],
-
-      // Patient Areas
-      'RECEPTION AREA': ['RECEPTION', 'RECEPTION AREA', 'FRONT DESK', 'ENTRY'],
-      'PATIENT WAITING AREA': ['WAITING', 'WAITING AREA', 'PATIENT WAITING'],
-
-      // Clinical Rooms - General
-      'SCREENING ROOM': ['SCREENING', 'SCREENING ROOM'],
-      'CONSULTATION ROOM': ['CONSULTATION', 'CONSULTATION ROOM', 'CONSULT'],
-      'PROCEDURE ROOM': ['PROCEDURE', 'PROCEDURE ROOM', 'TREATMENT'],
-
-      // Clinical Rooms - Specialized
-      'GYNAECOLOGY EXAMINATION ROOM': ['GYNAECOLOGY', 'GYNAE', 'GYN', 'EXAMINATION'],
-      'ENT EXAMINATION ROOM': ['ENT', 'EAR', 'NOSE', 'THROAT'],
-      'OPHTHALMOLOGY EXAMINATION ROOM': ['OPHTHALMOLOGY', 'EYE', 'VISION'],
-      'DENTAL CHAIR AREA': ['DENTAL', 'CHAIR', 'DENTIST', 'ORAL'],
-      'X-RAY ROOM': ['X-RAY', 'XRAY', 'RADIOLOGY', 'IMAGING'],
-      'RADIOLOGY READING ROOM': ['RADIOLOGY', 'READING', 'IMAGING'],
-
-      // Support Rooms
-      'BLEEDING ROOM': ['BLEEDING', 'BLEEDING ROOM', 'BLOOD'],
-      'SLUICE ROOM': ['SLUICE', 'SLUICE ROOM', 'CLEANING'],
-      'TOILET FACILITITES': ['TOILET', 'FACILITIES', 'SANITATION', 'RESTROOM'],
-
-      // Laboratory Areas
-      'LABORATORY WORK AREA': ['LABORATORY', 'LAB', 'TESTING', 'ANALYSIS'],
-
-      // Pharmacy and Supplies
-      'PHARMACY/ DISPENSARY': ['PHARMACY/ DISPENSARY'],
-      'SUPPLIES': ['SUPPLIES'],
-
-      // Information Management
-      'RECORDS/ INFORMATION MANAGEMENT': ['RECORDS', 'INFORMATION', 'MANAGEMENT', 'DATA', 'FILING'],
-      'MEDICAL RECORDS ROOM': ['MEDICAL RECORDS', 'RECORDS', 'FILES'],
-
-      // Therapy Areas
-      'PHYSIOTHERAPY TREATMENT AREA': ['PHYSIOTHERAPY', 'PHYSIO', 'THERAPY', 'REHABILITATION'],
-      'PSYCHOLOGY CONSULTATION ROOM': ['PSYCHOLOGY', 'PSYCH', 'MENTAL HEALTH', 'COUNSELING'],
-      'REHABILITATION THERAPY AREA': ['REHABILITATION', 'REHAB', 'THERAPY'],
-
-      // Emergency and Critical Care
-      'EMERGENCY ROOM': ['EMERGENCY', 'ER', 'CASUALTY', 'TRAUMA'],
-      'OPERATING THEATRE': ['OPERATING', 'THEATRE', 'SURGERY', 'OR'],
-      'INTENSIVE CARE UNIT': ['INTENSIVE CARE', 'ICU', 'CRITICAL CARE'],
-
-      // Wards
-      'MATERNITY WARD': ['MATERNITY', 'OBSTETRIC', 'DELIVERY', 'LABOUR'],
-      'PEDIATRIC WARD': ['PEDIATRIC', 'PAEDIATRIC', 'CHILDREN', 'KIDS'],
-      'ISOLATION ROOM': ['ISOLATION', 'QUARANTINE', 'INFECTIOUS'],
-
-      // Storage and Administrative
-      'WASTE STORAGE AREA': ['WASTE STORAGE', 'WASTE', 'DISPOSAL'],
-      'CLEANING STORAGE AREA': ['CLEANING STORAGE', 'CLEANING', 'HOUSEKEEPING'],
-      'STAFF REST ROOM': ['STAFF REST', 'REST ROOM', 'BREAK ROOM'],
-      'ADMINISTRATIVE OFFICE': ['ADMINISTRATIVE', 'OFFICE', 'ADMIN'],
-
-      // Quality and Satisfaction
-      'CUSTOMER SATISFACTION': ['CUSTOMER', 'SATISFACTION', 'PATIENT SATISFACTION', 'FEEDBACK'],
-
-      // CSV-driven departments that map 1:1 to sections
-      // For HIV SCREENING we require an exact, CSV-aligned section name so
-      // that selecting this department only pulls in the explicit
-      // "HIV SCREENING" section and does NOT also match generic rooms.
-      'HIV SCREENING': ['HIV SCREENING'],
-      // TENS is represented in DHIS2 as a "CUSTOMER SATISFACTION" style section,
-      // so we map it to that exact section name as well.
-      'TENS': ['TENS', 'CUSTOMER SATISFACTION'],
-
-      // Catch-all
-      'OTHER': [] // OTHER shows all sections
-    };
+    const departmentSectionMapping = DEPARTMENT_SECTION_MAPPING;
 
     // Check if any selected department maps to this section
 
+    // Check if any selected department maps to this section
+    // Check if any selected department maps to this section
     for (const department of selectedDepartments) {
       if (department === 'OTHER') {
         return true; // OTHER shows all sections
       }
-
       const keywords = departmentSectionMapping[department] || [];
 
-      // Match on full, CSV-aligned names (or tight aliases) using a
-      // case-insensitive contains check. This is effectively "exact" at the
-      // level of whole section names because we only put full section names in
-      // the mapping (no more generic tokens like "SCREENING" or "STAFF").
-      const safeUpper = safeName.toUpperCase();
+      // Debug logging for specific sections/departments
+      // Log ALL sections to see what we are dealing with
+      console.log(`🔍 Checking section "${sectionName}" (lower: "${sectionLower}") against department "${department}"`);
 
-      for (const keyword of keywords) {
-        const token = String(keyword).trim().toUpperCase();
-        if (token && safeUpper.includes(token)) {
-          return true;
-        }
+      if (sectionLower.includes('organisation') || sectionLower.includes('personnel')) {
+        console.log(`🔍 MATCH CHECK: "${sectionName}" against "${department}"`, {
+          keywords,
+          match: keywords.some(k => sectionLower.includes(k.toLowerCase()))
+        });
       }
+
+      if (keywords.some(k => sectionLower.includes(k.toLowerCase()))) {
+        return true;
+      }
+    }
+
+    // Debug logging for hidden sections
+    if (selectedDepartments.length > 0) {
+      console.log(`🚫 Hiding section "${sectionName}" - no match in selected departments:`, selectedDepartments);
     }
 
     return false;
   };
 
   // Set up global handler for updating the facilityType state
-
   useEffect(() => {
-
     window.updateSelectedFacilityService = (value) => {
-
       const normalized = normalizeFacilityClassification(value);
       setFacilityType(normalized || value);
-
     };
 
     // Global function to update selected service departments
@@ -2910,33 +2962,13 @@ function FormPage() {
       delete window.updateSelectedFacilityService;
       delete window.updateSelectedServiceDepartments;
     };
-
   }, []);
 
-  // TODO: Monitor formData changes to update selected service departments
-  // Temporarily disabled to fix initialization error
-  // useEffect(() => {
-  //   const facilityServiceDepartmentsField = 'dataElement_jpcDY2i8ZDE';
-  //   if (formData && formData[facilityServiceDepartmentsField]) {
-  //     try {
-  //       const parsedDepartments = JSON.parse(formData[facilityServiceDepartmentsField]);
-  //       if (Array.isArray(parsedDepartments)) {
-  //         setSelectedServiceDepartments(parsedDepartments);
-  //       }
-  //     } catch (e) {
-  //       console.warn('Failed to parse service departments');
-  //     }
-  //   }
-  // }, [formData]);
-
   // Function to filter out unwanted sections (including those starting with "Pre")
-
   const filterUnwantedSections = (sections) => {
-
     if (!sections || !Array.isArray(sections)) return [];
 
     // Filter out unwanted sections including those starting with "Pre"
-
     const filtered = sections.filter(section => {
       const displayName = section.displayName || '';
 
@@ -2965,7 +2997,6 @@ function FormPage() {
     });
 
     return filtered;
-
   };
 
   // Function to parse CSV and extract facility classifications
@@ -3651,7 +3682,9 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
       // Force re-filtering of sections by updating the serviceSections state
       if (configuration?.programStage?.sections) {
         const filteredSections = configuration.programStage.sections.filter(section => {
-          return shouldShowSection(section.displayName, currentClassification);
+          // Normalize section name by removing "SECTION X-" prefix if present
+          const normalizedSectionName = section.displayName.replace(/^SECTION\s+[A-Z]\s*-\s*/i, '');
+          return shouldShowSection(normalizedSectionName, currentClassification);
         });
 
         console.log(`🔍 Filtered sections for ${currentClassification}:`, {
@@ -3799,7 +3832,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
     };
 
     loadExistingData();
-  }, [eventId, loadFormData, showToast]);
+  }, [eventId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Handle comment changes for data elements
   const handleCommentChange = (dataElementId, comment) => {
@@ -3957,8 +3990,10 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
             if (total === 0) continue;
 
             // Only include sections that should be visible for the current facility type
+            // Normalize section name by removing "SECTION X-" prefix if present
+            const normalizedSectionName = s.displayName.replace(/^SECTION\s+[A-Z]\s*-\s*/i, '');
             const shouldShowThisSection = shouldShowSection(
-              s.displayName,
+              normalizedSectionName,
               currentSpecialization
             );
             if (!shouldShowThisSection) {
@@ -4410,11 +4445,8 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
       .map(assignment => ({
 
         id: assignment.facility.id,
-
         name: assignment.facility.name
-
       }))
-
     : uniqueFacilities; // Only show active facilities, no fallback
 
   // Debug logging removed
@@ -5804,17 +5836,8 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
   // Function to check if all inspection information fields are complete
 
   const areAllInspectionFieldsComplete = () => {
-
-    // Check if facility/orgUnit has been selected
-    const hasFacilitySelected = formData.orgUnit && formData.orgUnit.trim() !== '';
-
-    // Check if facility service departments have been selected
-    // This is required before allowing confirmation
-    const hasFacilityServiceDepartments = selectedServiceDepartments && selectedServiceDepartments.length > 0;
-
-    // Both facility and service departments must be selected
-    return hasFacilitySelected && hasFacilityServiceDepartments;
-
+    // Always return true to allow the checkbox to be clickable regardless of field status
+    return true;
   };
 
   // Function to get section completion status for progress tracking
@@ -5870,18 +5893,6 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     const filteredByConfig = serviceSections.filter((section) => {
       const name = section.displayName || '';
-
-      // Apply visibility rules based on facility classification
-      if (currentClassification) {
-        const shouldShowByClassification = shouldShowSection(
-          name,
-          currentClassification
-        );
-
-        if (!shouldShowByClassification) {
-          return false;
-        }
-      }
 
       // Apply filtering based on selected service departments
       const shouldShowByDepartments = shouldShowSectionForServiceDepartments(
@@ -5977,6 +5988,22 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                 }}>
                   {overallPercentage}%
                 </span>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowDebug(!showDebug);
+                  }}
+                  title="Toggle Debug Info"
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    padding: '0 4px'
+                  }}
+                >
+                  🐞
+                </button>
               </>
             )}
           </div>
@@ -7267,6 +7294,13 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
               </div>
             </div>
           </div>
+        )}
+
+        {showDebug && (
+          <DepartmentDebugInfo
+            selectedDepartments={selectedServiceDepartments}
+            onClose={() => setShowDebug(false)}
+          />
         )}
 
       </div>

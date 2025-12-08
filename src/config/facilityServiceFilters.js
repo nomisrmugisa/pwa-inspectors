@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist for facilities2.0.csv
- * Generated on: 2025-11-25 11:54:31
+ * Generated on: 2025-12-04 19:52:28
  *
  * This file imports all individual clinic filter files and combines them
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -50,20 +50,6 @@ const facilityServiceFilters = {
     'Service Nursing Home': NursingHome,
 };
 
-/**
- * Normalize a string for case-insensitive comparison by:
- * - Converting to lowercase
- * - Trimming whitespace
- * - Removing extra spaces
- */
-function normalizeForComparison(str) {
-    if (!str) return '';
-    return str
-        .toLowerCase()
-        .trim()
-        .replace(/\s+/g, ' '); // Replace multiple spaces with single space
-}
-
 export function shouldShowDataElementForService(dataElementName, selectedService) {
     if (!selectedService || !facilityServiceFilters[selectedService]) {
         return true; // Show all if no service selected or service not found
@@ -71,24 +57,10 @@ export function shouldShowDataElementForService(dataElementName, selectedService
 
     const serviceFilters = facilityServiceFilters[selectedService];
 
-    // Normalize the data element name for case-insensitive comparison
-    const normalizedDEName = normalizeForComparison(dataElementName);
-
     // Check if the data element should be shown for this service
     for (const section in serviceFilters) {
-        if (serviceFilters[section].showOnly) {
-            // Check for exact match first (faster)
-            if (serviceFilters[section].showOnly.includes(dataElementName)) {
-                return true;
-            }
-
-            // Then check case-insensitive match
-            for (const csvQuestion of serviceFilters[section].showOnly) {
-                const normalizedCSV = normalizeForComparison(csvQuestion);
-                if (normalizedDEName === normalizedCSV) {
-                    return true;
-                }
-            }
+        if (serviceFilters[section].showOnly && serviceFilters[section].showOnly.includes(dataElementName)) {
+            return true;
         }
     }
 

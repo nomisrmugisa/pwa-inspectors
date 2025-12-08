@@ -357,3 +357,4 @@ Step 7: Continue working on your inspection
 **All records persist** in IndexedDB until you explicitly delete them!
 
 
+

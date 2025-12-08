@@ -1,0 +1,1316 @@
+cilit[
+  {
+    "id": "1756773762430",
+    "status": "Pending Confirmation from all Inspectors",
+    "endDate": "2025-09-03",
+    "createdAt": "2025-09-02T00:42:42.430Z",
+    "startDate": "2025-09-02",
+    "updatedAt": "2025-09-02T10:36:57.863Z",
+    "approvedAt": null,
+    "approvedBy": "",
+    "facilityId": "QZJSQR5JKW9",
+    "assignments": [
+      {
+        "id": "assign-1756773762430-lead",
+        "role": "lead",
+        "sections": [],
+        "confirmed": "",
+        "inspectorId": "RtSQkJxTRww",
+        "inspectorName": "Joe Smith"
+      },
+      {
+        "id": "assign-1756773762430-QbWrL3Il7gL",
+        "role": null,
+        "sections": [],
+        "confirmed": "confirmed",
+        "updatedAt": "2025-09-02T10:36:57.862Z",
+        "confirmedAt": "2025-09-02T10:36:57.862Z",
+        "inspectorId": "QbWrL3Il7gL",
+        "inspectorName": "Inspector 1 OP",
+        "rejectionComment": ""
+      }
+    ],
+    "facilityName": "Noriyah Braatz Practice",
+    "facilityType": "",
+    "inspectionID": "nercnbhoaya",
+    "leadInspector": {
+      "id": "RtSQkJxTRww",
+      "name": "Joe Smith"
+    },
+    "inspectionType": "Routine Inspection",
+    "directorApproval": "Pending Approval",
+    "directorComments": "",
+    "finalApproverApproved": false,
+    "inspectorAdminApproved": false,
+    "finalApproverApprovedAt": null,
+    "finalApproverApprovedBy": "",
+    "inspectorAdminApprovedAt": null,
+    "inspectorAdminApprovedBy": ""
+  },
+  {
+    "id": "FzWxXpqa6PP",
+    "status": "scheduled",
+    "endDate": "2025-09-05T22:00:00.000Z",
+    "createdAt": "2025-09-02T01:00:47.484Z",
+    "startDate": "2025-09-01T22:00:00.000Z",
+    "updatedAt": "2025-09-02T01:00:47.484Z",
+    "approvedAt": "2025-09-02T01:00:47.484Z",
+    "approvedBy": "admin",
+    "facilityId": "OJD941XY47P",
+    "assignments": [
+      {
+        "id": "assign-pKu3DWRV56u-INSP_ROLE_STANDARD_INSPECTOR",
+        "role": "INSP_ROLE_STANDARD_INSPECTOR",
+        "sections": [
+          {
+            "id": "jTKnE6EXzPH",
+            "date": "2025-08-30",
+            "name": "Service Gynae Clinics",
+            "time": "22:00"
+          }
+        ],
+        "confirmed": "approved",
+        "updatedAt": "2025-09-02T01:00:47.484Z",
+        "approvedAt": "2025-09-02T01:00:47.484Z",
+        "inspectorId": "QbWrL3Il7gL",
+        "inspectorName": "Reviewer3"
+      },
+      {
+        "id": "assign-rx1yvhPrCR6-INSP_ROLE_LEAD_INSPECTOR",
+        "role": "INSP_ROLE_LEAD_INSPECTOR",
+        "sections": [
+          {
+            "id": "jTKnE6EXzPH",
+            "date": "2025-08-30",
+            "name": "Service Gynae Clinics",
+            "time": "22:00"
+          }
+        ],
+        "confirmed": "approved",
+        "updatedAt": "2025-09-02T01:00:47.484Z",
+        "approvedAt": "2025-09-02T01:00:47.484Z",
+        "inspectorId": "QbWrL3Il7gL",
+        "inspectorName": "inspector6"
+      }
+    ],
+    "facilityName": "Good Radiance Facility",
+    "facilityType": "Gynae Clinics",
+    "inspectionID": "jd6HkzrFGNF",
+    "leadInspector": {
+      "id": "QbWrL3Il7gL",
+      "name": "Inspector 1 OP"
+    },
+    "inspectionType": "Routine Inspection",
+    "directorApproval": "Pending Approval",
+    "finalApproverApproved": false,
+    "trackedEntityInstance": "cKY9vSGNlTS",
+    "inspectorAdminApproved": false,
+    "finalApproverApprovedAt": null,
+    "finalApproverApprovedBy": "",
+    "inspectorAdminApprovedAt": null,
+    "inspectorAdminApprovedBy": ""
+  },
+  {
+    "id": "1756805549337",
+    "endDate": "2025-09-16",
+    "startDate": "2025-09-15",
+    "facilityId": "PRMO30GCKGU",
+    "assignments": [
+      {
+        "role": null,
+        "sections": [
+          "Service ENT clinic",
+          "Service Eye (opthalmologyoptometry  optician) Clinics",
+          "Service Gynae Clinics",
+          "Service Potrait clinic",
+          "Service Provided",
+          "Service Psychology clinic",
+          "Service Radiology",
+          "Service Rehabilitation Centre",
+          "Service dental clinic",
+          "Service laboratory",
+          "Service physiotheraphy",
+          "Services Rationale for Opening Practice"
+        ],
+        "inspectorId": "RaVKLKpzNj4",
+        "inspectorName": "Ontse Siinya"
+      },
+      {
+        "role": null,
+        "sections": [
+          "Service ENT clinic",
+          "Service Eye (opthalmologyoptometry  optician) Clinics",
+          "Service Gynae Clinics",
+          "Service Potrait clinic",
+          "Service Provided",
+          "Service Psychology clinic",
+          "Service Radiology",
+          "Service Rehabilitation Centre",
+          "Service dental clinic",
+          "Service laboratory",
+          "Service physiotheraphy",
+          "Services Rationale for Opening Practice"
+        ],
+        "inspectorId": "CIvoLVWxFcu",
+        "inspectorName": "SIMON SRK-8310-wed-8"
+      }
+    ],
+    "facilityName": "Donnovin HEALTH CARE CLINIC",
+    "inspectionID": "9/15/2025-9/16/2025-Donnovin HEALTH CARE CLINIC-Re-Inspection",
+    "inspectionType": "Re-Inspection"
+  },
+  {
+    "id": "1756806309364",
+    "status": "Pending Confirmation from all Inspectors",
+    "endDate": "2025-09-02",
+    "createdAt": "2025-09-02T09:45:34.981Z",
+    "startDate": "2025-09-02",
+    "updatedAt": "2025-09-02T09:48:28.947Z",
+    "approvedAt": null,
+    "approvedBy": "",
+    "facilityId": "GBU49PXVKBI",
+    "assignments": [
+      {
+        "id": "assign-1756806334981-lead",
+        "role": "lead",
+        "sections": [],
+        "confirmed": "confirmed",
+        "updatedAt": "2025-09-02T09:48:28.947Z",
+        "confirmedAt": "2025-09-02T09:48:28.947Z",
+        "inspectorId": "T0zvY1pj6Ve",
+        "inspectorName": "Inspector4 jnet"
+      },
+      {
+        "id": "assign-1756806334981-qcU8LPJ72yP",
+        "role": null,
+        "sections": [],
+        "confirmed": "",
+        "inspectorId": "qcU8LPJ72yP",
+        "inspectorName": "Inspector5 onapis",
+        "rejectionComment": ""
+      }
+    ],
+    "facilityName": "Sediti V5 Clinic",
+    "facilityType": "NURSE-LED PRIVATE PRACTICE",
+    "inspectionID": "icinsseopti",
+    "leadInspector": {
+      "id": "T0zvY1pj6Ve",
+      "name": "Inspector4 jnet"
+    },
+    "inspectionType": "Re-Inspection",
+    "directorApproval": "Pending Approval",
+    "directorComments": "",
+    "finalApproverApproved": false,
+    "inspectorAdminApproved": false,
+    "finalApproverApprovedAt": null,
+    "finalApproverApprovedBy": "",
+    "inspectorAdminApprovedAt": null,
+    "inspectorAdminApprovedBy": ""
+  },
+  {
+    "id": "1756806373568",
+    "status": "Pending Confirmation from all Inspectors",
+    "endDate": "2025-09-02",
+    "createdAt": "2025-09-02T09:46:13.568Z",
+    "startDate": "2025-09-02",
+    "updatedAt": "2025-09-02T09:46:13.568Z",
+    "approvedAt": null,
+    "approvedBy": "",
+    "facilityId": "GBU49PXVKBI",
+    "assignments": [
+      {
+        "id": "assign-1756806373568-lead",
+        "role": "lead",
+        "sections": [],
+        "confirmed": "",
+        "inspectorId": "T0zvY1pj6Ve",
+        "inspectorName": "Inspector4 jnet"
+      },
+      {
+        "id": "assign-1756806373568-qcU8LPJ72yP",
+        "role": null,
+        "sections": [],
+        "confirmed": "",
+        "inspectorId": "qcU8LPJ72yP",
+        "inspectorName": "Inspector5 onapis",
+        "rejectionComment": ""
+      }
+    ],
+    "facilityName": "Sediti V5 Clinic",
+    "facilityType": "NURSE-LED PRIVATE PRACTICE",
+    "inspectionID": "evtclein5ni",
+    "leadInspector": {
+      "id": "T0zvY1pj6Ve",
+      "name": "Inspector4 jnet"
+    },
+    "inspectionType": "Re-Inspection",
+    "directorApproval": "Pending Approval",
+    "directorComments": "",
+    "finalApproverApproved": false,
+    "inspectorAdminApproved": false,
+    "finalApproverApprovedAt": null,
+    "finalApproverApprovedBy": "",
+    "inspectorAdminApprovedAt": null,
+    "inspectorAdminApprovedBy": ""
+  },
+  {
+    "id": "1756806858572",
+    "status": "Pending Confirmation from all Inspectors",
+    "endDate": "2025-09-03",
+    "createdAt": "2025-09-02T09:54:48.279Z",
+    "startDate": "2025-09-02",
+    "updatedAt": "2025-09-02T09:54:48.279Z",
+    "approvedAt": null,
+    "approvedBy": "",
+    "facilityId": "VO4DAWIY1E0",
+    "assignments": [
+      {
+        "id": "assign-1756806888279-lead",
+        "role": "lead",
+        "sections": [],
+        "confirmed": "",
+        "inspectorId": "ColHNY2hkwO",
+        "inspectorName": "Inspector6 ocen"
+      },
+      {
+        "id": "assign-1756806888279-T0zvY1pj6Ve",
+        "role": null,
+        "sections": [],
+        "confirmed": "",
+        "inspectorId": "T0zvY1pj6Ve",
+        "inspectorName": "Inspector4 jnet",
+        "rejectionComment": ""
+      },
+      {
+        "id": "assign-1756806888279-p73YMHqe5jk",
+        "role": null,
+        "sections": [],
+        "confirmed": "",
+        "inspectorId": "p73YMHqe5jk",
+        "inspectorName": "Inspector6 ocen",
+        "rejectionComment": ""
+      },
+      {
+        "id": "assign-1756806888279-qcU8LPJ72yP",
+        "role": null,
+        "sections": [],
+        "confirmed": "",
+        "inspectorId": "qcU8LPJ72yP",
+        "inspectorName": "Inspector5 onapis",
+        "rejectionComment": ""
+      }
+    ],
+    "facilityName": "Pure Heart Nursing home",
+    "facilityType": "Gynae Clinics",
+    "inspectionID": "rseoisipnni",
+    "leadInspector": {
+      "id": "ColHNY2hkwO",
+      "name": "Inspector6 ocen"
+    },
+    "inspectionType": "Routine Inspection",
+    "directorApproval": "Pending Approval",
+    "finalApproverApproved": false,
+    "trackedEntityInstance": "cKY9vSGNlTS",
+    "inspectorAdminApproved": false,
+    "finalApproverApprovedAt": null,
+    "finalApproverApprovedBy": "",
+    "inspectorAdminApprovedAt": null,
+    "inspectorAdminApprovedBy": ""
+  },
+  {
+    "id": "1756807628610",
+    "status": "Pending Confirmation from all Inspectors",
+    "endDate": "2025-09-12",
+    "createdAt": "2025-09-02T10:17:51.577Z",
+    "startDate": "2025-09-08",
+    "updatedAt": "2025-09-02T10:27:12.080Z",
+    "approvedAt": null,
+    "approvedBy": "",
+    "facilityId": "ZHTHZ2TU3OM",
+    "assignments": [
+      {
+        "id": "assign-1756808271577-lead",
+        "role": "lead",
+        "sections": [],
+        "confirmed": "",
+        "inspectorId": "WmUKcYL8yvB",
+        "inspectorName": "sk1 sk1"
+      },
+      {
+        "id": "assign-1756808271577-p73YMHqe5jk",
+        "role": null,
+        "sections": [],
+        "confirmed": "",
+        "inspectorId": "p73YMHqe5jk",
+        "inspectorName": "Inspector6 ocen",
+        "rejectionComment": ""
+      },
+      {
+        "id": "assign-1756808271577-qcU8LPJ72yP",
+        "role": null,
+        "sections": [],
+        "confirmed": "confirmed",
+        "updatedAt": "2025-09-02T10:27:12.080Z",
+        "confirmedAt": "2025-09-02T10:27:12.080Z",
+        "inspectorId": "qcU8LPJ72yP",
+        "inspectorName": "Inspector5 onapis",
+        "rejectionComment": ""
+      }
+    ],
+    "facilityName": "NOAH HEALTH",
+    "facilityType": "GROUP PRACTICE",
+    "inspectionID": "nohoiuhcann",
+    "leadInspector": {
+      "id": "WmUKcYL8yvB",
+      "name": "sk1 sk1"
+    },
+    "inspectionType": "Routine Inspection",
+    "directorApproval": "Pending Approval",
+    "directorComments": "",
+    "finalApproverApproved": false,
+    "inspectorAdminApproved": false,
+    "finalApproverApprovedAt": null,
+    "finalApproverApprovedBy": "",
+    "inspectorAdminApprovedAt": null,
+    "inspectorAdminApprovedBy": ""
+  },
+  {
+    "id": "C0WRWUZlm1A",
+    "status": "scheduled",
+    "endDate": "2025-09-06T22:00:00.000Z",
+    "createdAt": "2025-09-03T00:24:53.762Z",
+    "startDate": "2025-09-02T22:00:00.000Z",
+    "updatedAt": "2025-09-03T00:24:53.762Z",
+    "approvedAt": "2025-09-03T00:24:53.762Z",
+    "approvedBy": "director",
+    "facilityId": "LBTTAES7ZFM",
+    "assignments": [
+      {
+        "id": "assign-rQBxWwi3W7i-INSP_ROLE_LEAD_INSPECTOR",
+        "role": "INSP_ROLE_LEAD_INSPECTOR",
+        "sections": [
+          {
+            "id": "jTKnE6EXzPH",
+            "date": "2025-08-30",
+            "name": "Service Gynae Clinics",
+            "time": "22:00"
+          }
+        ],
+        "confirmed": "approved",
+        "updatedAt": "2025-09-03T00:24:53.762Z",
+        "approvedAt": "2025-09-03T00:24:53.762Z",
+        "inspectorId": "QbWrL3Il7gL",
+        "inspectorName": "inspector6"
+      },
+      {
+        "id": "assign-W4HEuxKTEZa-INSP_ROLE_STANDARD_INSPECTOR",
+        "role": "INSP_ROLE_STANDARD_INSPECTOR",
+        "sections": [
+          {
+            "id": "jTKnE6EXzPH",
+            "date": "2025-08-30",
+            "name": "Service Gynae Clinics",
+            "time": "22:00"
+          }
+        ],
+        "confirmed": "approved",
+        "updatedAt": "2025-09-03T00:24:53.762Z",
+        "approvedAt": "2025-09-03T00:24:53.762Z",
+        "inspectorId": "QbWrL3Il7gL",
+        "inspectorName": "Reviewer3"
+      }
+    ],
+    "facilityName": "Clear Vision Clinic",
+    "facilityType": "INDIVIDUAL PRIVATE PRACTICE",
+    "inspectionID": "y80rLJK9oE7",
+    "leadInspector": {
+      "id": "QbWrL3Il7gL",
+      "name": "Inspector 1 OP"
+    },
+    "inspectionType": "Routine Inspection",
+    "directorApproval": "Pending Approval",
+    "directorComments": "",
+    "finalApproverApproved": false,
+    "trackedEntityInstance": "pftZj4umuRl",
+    "inspectorAdminApproved": false,
+    "finalApproverApprovedAt": null,
+    "finalApproverApprovedBy": "",
+    "inspectorAdminApprovedAt": null,
+    "inspectorAdminApprovedBy": ""
+  },
+  {
+    "id": "1756886347146",
+    "status": "Pending Director Authorisation",
+    "endDate": "2025-09-26",
+    "createdAt": "2025-09-03T07:59:07.147Z",
+    "startDate": "2025-09-22",
+    "updatedAt": "2025-09-03T09:05:27.841Z",
+    "approvedAt": null,
+    "approvedBy": "",
+    "facilityId": "BRU8U2HS9H8",
+    "assignments": [
+      {
+        "id": "assign-1756886347146-lead",
+        "role": "lead",
+        "sections": [],
+        "confirmed": "confirmed",
+        "updatedAt": "2025-09-03T08:43:49.563Z",
+        "confirmedAt": "2025-09-03T08:43:49.563Z",
+        "inspectorId": "SkO45xh7bcB",
+        "inspectorName": "James Bond"
+      },
+      {
+        "id": "assign-1756886347146-n1a76FULTMN",
+        "role": null,
+        "sections": [],
+        "confirmed": "confirmed",
+        "updatedAt": "2025-09-03T08:09:21.454Z",
+        "confirmedAt": "2025-09-03T08:09:21.454Z",
+        "inspectorId": "n1a76FULTMN",
+        "inspectorName": "Inspector7 Inspector7",
+        "rejectionComment": ""
+      },
+      {
+        "id": "assign-1756886347146-QnCaw0RPhPS",
+        "role": null,
+        "sections": [],
+        "confirmed": "confirmed",
+        "updatedAt": "2025-09-03T08:10:46.128Z",
+        "confirmedAt": "2025-09-03T08:10:46.128Z",
+        "inspectorId": "QnCaw0RPhPS",
+        "inspectorName": "Inspector8 Inspector8",
+        "rejectionComment": ""
+      }
+    ],
+    "facilityName": "Robertson Detail Imaging",
+    "facilityType": "INDIVIDUAL PRIVATE PRACTICE",
+    "inspectionID": "noecrdsrrip",
+    "leadInspector": {
+      "id": "SkO45xh7bcB",
+      "name": "James Bond"
+    },
+    "inspectionType": "Routine Inspection",
+    "directorApproval": "Pending Approval",
+    "directorComments": "",
+    "finalApproverApproved": true,
+    "inspectorAdminApproved": false,
+    "finalApproverApprovedAt": "2025-09-03T09:05:27.841Z",
+    "finalApproverApprovedBy": "Deputy Director Deputy Director",
+    "inspectorAdminApprovedAt": null,
+    "inspectorAdminApprovedBy": ""
+  },
+  {
+    "id": "1756887098073",
+    "status": "Pending Admin Final Dates Confirmation",
+    "endDate": "2025-09-03",
+    "createdAt": "2025-09-03T08:18:25.114Z",
+    "startDate": "2025-09-03",
+    "updatedAt": "2025-09-03T09:38:18.548Z",
+    "approvedAt": null,
+    "approvedBy": "",
+    "facilityId": "HXF9L13Z866",
+    "assignments": [
+      {
+        "id": "assign-1756887505113-lead",
+        "role": "lead",
+        "sections": [],
+        "confirmed": "confirmed",
+        "updatedAt": "2025-09-03T08:19:59.636Z",
+        "confirmedAt": "2025-09-03T08:19:59.636Z",
+        "inspectorId": "ySwutYwz78r",
+        "inspectorName": "Inspector15 Inspector15"
+      },
+      {
+        "id": "assign-1756887505114-Xxw6yhBhlsG",
+        "role": null,
+        "sections": [],
+        "confirmed": "confirmed",
+        "updatedAt": "2025-09-03T09:35:12.393Z",
+        "confirmedAt": "2025-09-03T09:35:12.393Z",
+        "inspectorId": "Xxw6yhBhlsG",
+        "inspectorName": "Inspector16 Inspector16",
+        "rejectionComment": ""
+      },
+      {
+        "id": "assign-1756887505114-CnplcXIP2Rl",
+        "role": null,
+        "sections": [],
+        "confirmed": "confirmed",
+        "updatedAt": "2025-09-03T08:21:42.147Z",
+        "confirmedAt": "2025-09-03T08:21:42.147Z",
+        "inspectorId": "CnplcXIP2Rl",
+        "inspectorName": "Inspector14 Inspector14",
+        "rejectionComment": ""
+      },
+      {
+        "id": "assign-1756887505114-n1a76FULTMN",
+        "role": null,
+        "sections": [],
+        "confirmed": "confirmed",
+        "updatedAt": "2025-09-03T08:29:42.308Z",
+        "confirmedAt": "2025-09-03T08:29:42.308Z",
+        "inspectorId": "n1a76FULTMN",
+        "inspectorName": "Inspector7 Inspector7",
+        "rejectionComment": ""
+      },
+      {
+        "id": "assign-1756887505114-h75cIbDud9V",
+        "role": null,
+        "sections": [],
+        "confirmed": "confirmed",
+        "updatedAt": "2025-09-03T08:31:09.453Z",
+        "confirmedAt": "2025-09-03T08:31:09.453Z",
+        "inspectorId": "h75cIbDud9V",
+        "inspectorName": "Inspector12 Inspector12",
+        "rejectionComment": ""
+      }
+    ],
+    "facilityName": "Good Oracle Facility",
+    "facilityType": "NOT-FOR-PROFIT AND WORKPLACE",
+    "inspectionID": "tcelnlutgcn",
+    "leadInspector": {
+      "id": "ySwutYwz78r",
+      "name": "Inspector15 Inspector15"
+    },
+    "inspectionType": "Routine Inspection",
+    "directorApproval": "Pending Approval",
+    "directorComments": "",
+    "finalApproverApproved": false,
+    "inspectorAdminApproved": false,
+    "finalApproverApprovedAt": null,
+    "finalApproverApprovedBy": "",
+    "inspectorAdminApprovedAt": null,
+    "inspectorAdminApprovedBy": ""
+  },
+  {
+    "id": "z8YShW69zNH",
+    "status": "scheduled",
+    "endDate": "2025-09-06T21:00:00.000Z",
+    "createdAt": "2025-09-03T08:28:43.285Z",
+    "startDate": "2025-09-01T21:00:00.000Z",
+    "updatedAt": "2025-09-03T08:28:43.285Z",
+    "approvedAt": "2025-09-03T08:28:43.285Z",
+    "approvedBy": "director",
+    "facilityId": "D1MYAJF0FC0",
+    "assignments": [
+      {
+        "id": "assign-EnKfKwIVf43-INSP_ROLE_STANDARD_INSPECTOR",
+        "role": "INSP_ROLE_STANDARD_INSPECTOR",
+        "sections": [
+          {
+            "id": "jTKnE6EXzPH",
+            "date": "2025-08-30",
+            "name": "Service Gynae Clinics",
+            "time": "22:00"
+          }
+        ],
+        "confirmed": "approved",
+        "updatedAt": "2025-09-03T08:28:43.285Z",
+        "approvedAt": "2025-09-03T08:28:43.285Z",
+        "inspectorId": "ColHNY2hkwO",
+        "inspectorName": "inspector14"
+      },
+      {
+        "id": "assign-YywK7oI4Pz8-INSP_ROLE_LEAD_INSPECTOR",
+        "role": "INSP_ROLE_LEAD_INSPECTOR",
+        "sections": [
+          {
+            "id": "jTKnE6EXzPH",
+            "date": "2025-08-30",
+            "name": "Service Gynae Clinics",
+            "time": "22:00"
+          }
+        ],
+        "confirmed": "approved",
+        "updatedAt": "2025-09-03T08:28:43.285Z",
+        "approvedAt": "2025-09-03T08:28:43.285Z",
+        "inspectorId": "CnplcXIP2Rl",
+        "inspectorName": "inspector6"
+      }
+    ],
+    "facilityName": "Scarborough General Practice",
+    "facilityType": "INDIVIDUAL PRIVATE PRACTICE",
+    "inspectionID": "xb9skYuxQbI",
+    "leadInspector": {
+      "id": "QbWrL3Il7gL",
+      "name": "Inspector 1 OP"
+    },
+    "inspectionType": "Routine Inspection",
+    "directorApproval": "Pending Approval",
+    "directorComments": "",
+    "finalApproverApproved": false,
+    "trackedEntityInstance": "e9gjQeutuQY",
+    "inspectorAdminApproved": false,
+    "finalApproverApprovedAt": null,
+    "finalApproverApprovedBy": "",
+    "inspectorAdminApprovedAt": null,
+    "inspectorAdminApprovedBy": ""
+  },
+  {
+    "id": "1756891831738",
+    "status": "Pending Final Inspection Approval",
+    "endDate": "2025-09-06",
+    "createdAt": "2025-09-03T09:30:31.739Z",
+    "startDate": "2025-09-02",
+    "updatedAt": "2025-09-03T09:39:14.704Z",
+    "approvedAt": null,
+    "approvedBy": "",
+    "facilityId": "ZYRDADG7KPU",
+    "assignments": [
+      {
+        "id": "assign-1756891831738-lead",
+        "role": "lead",
+        "sections": [],
+        "confirmed": "confirmed",
+        "updatedAt": "2025-09-03T09:33:04.717Z",
+        "confirmedAt": "2025-09-03T09:33:04.717Z",
+        "inspectorId": "tf1PfTMVQ2t",
+        "inspectorName": "Inspector11 Inspector11"
+      },
+      {
+        "id": "assign-1756891831738-arGmZK7LSJA",
+        "role": null,
+        "sections": [],
+        "confirmed": "confirmed",
+        "updatedAt": "2025-09-03T09:34:00.443Z",
+        "confirmedAt": "2025-09-03T09:34:00.443Z",
+        "inspectorId": "arGmZK7LSJA",
+        "inspectorName": "Inspector13 Inspector13",
+        "rejectionComment": ""
+      }
+    ],
+    "facilityName": "Smile Time Clinic",
+    "facilityType": "INDIVIDUAL PRIVATE PRACTICE",
+    "inspectionID": "etcilioicel",
+    "leadInspector": {
+      "id": "tf1PfTMVQ2t",
+      "name": "Inspector11 Inspector11"
+    },
+    "inspectionType": "Routine Inspection",
+    "directorApproval": "Pending Approval",
+    "directorComments": "",
+    "finalApproverApproved": false,
+    "inspectorAdminApproved": false,
+    "finalApproverApprovedAt": null,
+    "finalApproverApprovedBy": "",
+    "inspectorAdminApprovedAt": null,
+    "inspectorAdminApprovedBy": ""
+  },
+  {
+    "id": "1756892247679",
+    "status": "Pending Confirmation from all Inspectors",
+    "endDate": "2025-09-22",
+    "createdAt": "2025-09-03T09:37:27.680Z",
+    "startDate": "2025-09-22",
+    "updatedAt": "2025-09-03T09:37:27.680Z",
+    "approvedAt": null,
+    "approvedBy": "",
+    "facilityId": "A4KBEEL1HJP",
+    "assignments": [
+      {
+        "id": "assign-1756892247679-lead",
+        "role": "lead",
+        "sections": [],
+        "confirmed": "",
+        "inspectorId": "WmUKcYL8yvB",
+        "inspectorName": "sk1 sk1"
+      },
+      {
+        "id": "assign-1756892247679-qcU8LPJ72yP",
+        "role": null,
+        "sections": [],
+        "confirmed": "",
+        "inspectorId": "qcU8LPJ72yP",
+        "inspectorName": "Inspector5 onapis",
+        "rejectionComment": ""
+      },
+      {
+        "id": "assign-1756892247679-T0zvY1pj6Ve",
+        "role": null,
+        "sections": [],
+        "confirmed": "",
+        "inspectorId": "T0zvY1pj6Ve",
+        "inspectorName": "Inspector4 jnet",
+        "rejectionComment": ""
+      }
+    ],
+    "facilityName": "Galilee General Practice",
+    "facilityType": "INDIVIDUAL PRIVATE PRACTICE",
+    "inspectionID": "rietapngctl",
+    "leadInspector": {
+      "id": "WmUKcYL8yvB",
+      "name": "sk1 sk1"
+    },
+    "inspectionType": "Re-Inspection",
+    "directorApproval": "Pending Approval",
+    "directorComments": "",
+    "finalApproverApproved": false,
+    "inspectorAdminApproved": false,
+    "finalApproverApprovedAt": null,
+    "finalApproverApprovedBy": "",
+    "inspectorAdminApprovedAt": null,
+    "inspectorAdminApprovedBy": ""
+  },
+  {
+    "id": "1756892448764",
+    "status": "Pending Confirmation from all Inspectors",
+    "endDate": "2025-09-03",
+    "createdAt": "2025-09-03T09:40:48.764Z",
+    "startDate": "2025-09-03",
+    "updatedAt": "2025-09-03T09:40:48.764Z",
+    "approvedAt": null,
+    "approvedBy": "",
+    "facilityId": "W56LKO9XB5P",
+    "assignments": [
+      {
+        "id": "assign-1756892448764-lead",
+        "role": "lead",
+        "sections": [],
+        "confirmed": "",
+        "inspectorId": "CIvoLVWxFcu",
+        "inspectorName": "SIMON SRK-8310-wed-8"
+      },
+      {
+        "id": "assign-1756892448764-W0C5LIuGX67",
+        "role": null,
+        "sections": [],
+        "confirmed": "",
+        "inspectorId": "W0C5LIuGX67",
+        "inspectorName": "Vladimir Putin",
+        "rejectionComment": ""
+      },
+      {
+        "id": "assign-1756892448764-RaVKLKpzNj4",
+        "role": null,
+        "sections": [],
+        "confirmed": "",
+        "inspectorId": "RaVKLKpzNj4",
+        "inspectorName": "Ontse Siinya",
+        "rejectionComment": ""
+      },
+      {
+        "id": "assign-1756892448764-JWXuZ03mBKc",
+        "role": null,
+        "sections": [],
+        "confirmed": "",
+        "inspectorId": "JWXuZ03mBKc",
+        "inspectorName": "Reviewer2 KUNUNKA",
+        "rejectionComment": ""
+      },
+      {
+        "id": "assign-1756892448764-SkO45xh7bcB",
+        "role": null,
+        "sections": [],
+        "confirmed": "",
+        "inspectorId": "SkO45xh7bcB",
+        "inspectorName": "James Bond",
+        "rejectionComment": ""
+      }
+    ],
+    "facilityName": "Happy Women Clinic",
+    "facilityType": "INDIVIDUAL PRIVATE PRACTICE",
+    "inspectionID": "mrynnhecinl",
+    "leadInspector": {
+      "id": "CIvoLVWxFcu",
+      "name": "SIMON SRK-8310-wed-8"
+    },
+    "inspectionType": "Routine Inspection",
+    "directorApproval": "Pending Approval",
+    "directorComments": "",
+    "finalApproverApproved": false,
+    "inspectorAdminApproved": false,
+    "finalApproverApprovedAt": null,
+    "finalApproverApprovedBy": "",
+    "inspectorAdminApprovedAt": null,
+    "inspectorAdminApprovedBy": ""
+  },
+  {
+    "id": "QuTaPb7cDz0",
+    "status": "scheduled",
+    "endDate": "2025-09-08T22:00:00.000Z",
+    "createdAt": "2025-09-04T08:00:48.849Z",
+    "startDate": "2025-09-03T22:00:00.000Z",
+    "updatedAt": "2025-09-04T08:00:48.849Z",
+    "approvedAt": "2025-09-04T08:00:48.849Z",
+    "approvedBy": "director",
+    "facilityId": "O0OR2EJ5YIR",
+    "assignments": [
+      {
+        "id": "assign-AEERxGo6M81-INSP_ROLE_LEAD_INSPECTOR",
+        "role": "INSP_ROLE_LEAD_INSPECTOR",
+        "sections": [
+          {
+            "id": "jTKnE6EXzPH",
+            "date": "2025-08-30",
+            "name": "Service Gynae Clinics",
+            "time": "22:00"
+          }
+        ],
+        "confirmed": "approved",
+        "updatedAt": "2025-09-04T08:00:48.849Z",
+        "approvedAt": "2025-09-04T08:00:48.849Z",
+        "inspectorId": "ColHNY2hkwO",
+        "inspectorName": "inspector6"
+      },
+      {
+        "id": "assign-HewjVRf1dCN-INSP_ROLE_STANDARD_INSPECTOR",
+        "role": "INSP_ROLE_STANDARD_INSPECTOR",
+        "sections": [
+          {
+            "id": "jTKnE6EXzPH",
+            "date": "2025-08-30",
+            "name": "Service Gynae Clinics",
+            "time": "22:00"
+          }
+        ],
+        "confirmed": "approved",
+        "updatedAt": "2025-09-04T08:00:48.849Z",
+        "approvedAt": "2025-09-04T08:00:48.849Z",
+        "inspectorId": "arGmZK7LSJA",
+        "inspectorName": "inspector13"
+      }
+    ],
+    "facilityName": "Nakaiyah clinic",
+    "facilityType": "INDIVIDUAL PRIVATE PRACTICE",
+    "inspectionID": "IwBwqjIBlLe",
+    "leadInspector": {
+      "name": "inspector6"
+    },
+    "inspectionType": "Routine Inspection",
+    "directorApproval": "Authorized",
+    "directorComments": "",
+    "finalApproverApproved": true,
+    "trackedEntityInstance": "vDezGBobDqr",
+    "inspectorAdminApproved": true,
+    "finalApproverApprovedAt": "2025-09-04T08:00:48.849Z",
+    "finalApproverApprovedBy": "",
+    "inspectorAdminApprovedAt": "2025-09-04T08:00:48.849Z",
+    "inspectorAdminApprovedBy": ""
+  },
+  {
+    "id": "ZrAYj4RNzGr",
+    "status": "scheduled",
+    "endDate": "2025-09-05T22:00:00.000Z",
+    "createdAt": "2025-09-04T13:30:52.005Z",
+    "startDate": "2025-09-03T22:00:00.000Z",
+    "updatedAt": "2025-09-04T13:30:52.005Z",
+    "approvedAt": "2025-09-04T13:30:52.005Z",
+    "approvedBy": "director",
+    "facilityId": "D2NRQ0HG771",
+    "assignments": [
+      {
+        "id": "assign-GTnszQIno2G-INSP_ROLE_STANDARD_INSPECTOR",
+        "role": "INSP_ROLE_STANDARD_INSPECTOR",
+        "sections": [
+          {
+            "id": "jTKnE6EXzPH",
+            "date": "2025-08-30",
+            "name": "Service Gynae Clinics",
+            "time": "22:00"
+          }
+        ],
+        "confirmed": "approved",
+        "updatedAt": "2025-09-04T13:30:52.005Z",
+        "approvedAt": "2025-09-04T13:30:52.005Z",
+        "inspectorId": "JWXuZ03mBKc",
+        "inspectorName": "Reviewer3"
+      },
+      {
+        "id": "assign-vZsKoCKHDEB-INSP_ROLE_LEAD_INSPECTOR",
+        "role": "INSP_ROLE_LEAD_INSPECTOR",
+        "sections": [
+          {
+            "id": "jTKnE6EXzPH",
+            "date": "2025-08-30",
+            "name": "Service Gynae Clinics",
+            "time": "22:00"
+          }
+        ],
+        "confirmed": "approved",
+        "updatedAt": "2025-09-04T13:30:52.005Z",
+        "approvedAt": "2025-09-04T13:30:52.005Z",
+        "inspectorId": "h75cIbDud9V",
+        "inspectorName": "inspector12"
+      }
+    ],
+    "facilityName": "Teylar Duhaime clinic",
+    "facilityType": "INDIVIDUAL PRIVATE PRACTICE",
+    "inspectionID": "IKikWR12hf7",
+    "leadInspector": {
+      "id": "h75cIbDud9V",
+      "name": "inspector12"
+    },
+    "inspectionType": "Routine Inspection",
+    "directorApproval": "Authorized",
+    "directorComments": "",
+    "finalApproverApproved": true,
+    "trackedEntityInstance": "bzay8dNus8A",
+    "inspectorAdminApproved": true,
+    "finalApproverApprovedAt": "2025-09-04T13:30:52.005Z",
+    "finalApproverApprovedBy": "",
+    "inspectorAdminApprovedAt": "2025-09-04T13:30:52.005Z",
+    "inspectorAdminApprovedBy": ""
+  },
+  {
+    "id": "1757069195253",
+    "status": "Pending Confirmation from all Inspectors",
+    "endDate": "2025-09-05",
+    "createdAt": "2025-09-05T10:46:35.254Z",
+    "startDate": "2025-09-05",
+    "updatedAt": "2025-09-05T10:46:35.254Z",
+    "approvedAt": null,
+    "approvedBy": "",
+    "facilityId": "KMRLQ6P2SSH",
+    "assignments": [
+      {
+        "id": "assign-1757069195253-lead",
+        "role": "lead",
+        "sections": [],
+        "confirmed": "",
+        "inspectorId": "T0zvY1pj6Ve",
+        "inspectorName": "Inspector4 jnet"
+      },
+      {
+        "id": "assign-1757069195253-qcU8LPJ72yP",
+        "role": null,
+        "sections": [],
+        "confirmed": "",
+        "inspectorId": "qcU8LPJ72yP",
+        "inspectorName": "Inspector5 onapis",
+        "rejectionComment": ""
+      },
+      {
+        "id": "assign-1757069195253-ySwutYwz78r",
+        "role": null,
+        "sections": [],
+        "confirmed": "",
+        "inspectorId": "ySwutYwz78r",
+        "inspectorName": "Inspector15 Inspector15",
+        "rejectionComment": ""
+      }
+    ],
+    "facilityName": "Jackson900",
+    "facilityType": "OUTREACH PRACTICE",
+    "inspectionID": "pnsrtk9ioiu",
+    "leadInspector": {
+      "id": "T0zvY1pj6Ve",
+      "name": "Inspector4 jnet"
+    },
+    "inspectionType": "Routine Inspection",
+    "directorApproval": "Pending Approval",
+    "directorComments": "",
+    "finalApproverApproved": false,
+    "inspectorAdminApproved": false,
+    "finalApproverApprovedAt": null,
+    "finalApproverApprovedBy": "",
+    "inspectorAdminApprovedAt": null,
+    "inspectorAdminApprovedBy": ""
+  },
+  {
+    "id": "EcNfkV0v61R",
+    "status": "scheduled",
+    "endDate": "2025-11-01T22:00:00.000Z",
+    "createdAt": "2025-09-05T18:31:58.238Z",
+    "startDate": "2025-09-04T22:00:00.000Z",
+    "updatedAt": "2025-09-05T18:31:58.238Z",
+    "approvedAt": "2025-09-05T18:31:58.238Z",
+    "approvedBy": "director",
+    "facilityId": "TJUYNGCJGNA",
+    "assignments": [
+      {
+        "id": "assign-paqY9sXmsPX-INSP_ROLE_STANDARD_INSPECTOR",
+        "role": "INSP_ROLE_STANDARD_INSPECTOR",
+        "sections": [
+          {
+            "id": "jTKnE6EXzPH",
+            "date": "2025-08-30",
+            "name": "Service Gynae Clinics",
+            "time": "22:00"
+          }
+        ],
+        "confirmed": "approved",
+        "updatedAt": "2025-09-05T18:31:58.238Z",
+        "approvedAt": "2025-09-05T18:31:58.238Z",
+        "inspectorId": "qcU8LPJ72yP",
+        "inspectorName": "inspector5"
+      },
+      {
+        "id": "assign-zy2un7PY5Yz-INSP_ROLE_STANDARD_INSPECTOR",
+        "role": "INSP_ROLE_STANDARD_INSPECTOR",
+        "sections": [
+          {
+            "id": "jTKnE6EXzPH",
+            "date": "2025-08-30",
+            "name": "Service Gynae Clinics",
+            "time": "22:00"
+          }
+        ],
+        "confirmed": "approved",
+        "updatedAt": "2025-09-05T18:31:58.238Z",
+        "approvedAt": "2025-09-05T18:31:58.238Z",
+        "inspectorId": "T0zvY1pj6Ve",
+        "inspectorName": "inspector4"
+      },
+      {
+        "id": "assign-dQ54XXSAAab-INSP_ROLE_LEAD_INSPECTOR",
+        "role": "INSP_ROLE_LEAD_INSPECTOR",
+        "sections": [
+          {
+            "id": "jTKnE6EXzPH",
+            "date": "2025-08-30",
+            "name": "Service Gynae Clinics",
+            "time": "22:00"
+          }
+        ],
+        "confirmed": "approved",
+        "updatedAt": "2025-09-05T18:31:58.238Z",
+        "approvedAt": "2025-09-05T18:31:58.238Z",
+        "inspectorId": "RtSQkJxTRww",
+        "inspectorName": "joesmith"
+      }
+    ],
+    "facilityName": "Mothusi Private Clinic",
+    "facilityType": "INDIVIDUAL PRIVATE PRACTICE",
+    "inspectionID": "yuEM1msnXem",
+    "leadInspector": {
+      "id": "RtSQkJxTRww",
+      "name": "joesmith"
+    },
+    "inspectionType": "Routine Inspection",
+    "directorApproval": "Authorized",
+    "directorComments": "",
+    "finalApproverApproved": true,
+    "trackedEntityInstance": "rJw3zRVhJRT",
+    "inspectorAdminApproved": true,
+    "finalApproverApprovedAt": "2025-09-05T18:31:58.238Z",
+    "finalApproverApprovedBy": "",
+    "inspectorAdminApprovedAt": "2025-09-05T18:31:58.238Z",
+    "inspectorAdminApprovedBy": ""
+  },
+  {
+    "id": "Xd1kCWkih3K",
+    "status": "scheduled",
+    "endDate": "2025-09-16T21:00:00.000Z",
+    "createdAt": "2025-09-06T05:04:41.566Z",
+    "startDate": "2025-09-05T21:00:00.000Z",
+    "updatedAt": "2025-09-06T05:04:41.566Z",
+    "approvedAt": "2025-09-06T05:04:41.566Z",
+    "approvedBy": "director",
+    "facilityId": "D0DB9KASQV0",
+    "assignments": [
+      {
+        "id": "assign-BN6vH7yliJF-INSP_ROLE_STANDARD_INSPECTOR",
+        "role": "INSP_ROLE_STANDARD_INSPECTOR",
+        "sections": [
+          {
+            "id": "jTKnE6EXzPH",
+            "date": "2025-08-30",
+            "name": "Service Gynae Clinics",
+            "time": "22:00"
+          }
+        ],
+        "confirmed": "approved",
+        "updatedAt": "2025-09-06T05:04:41.566Z",
+        "approvedAt": "2025-09-06T05:04:41.566Z",
+        "inspectorId": "ColHNY2hkwO",
+        "inspectorName": "inspector6"
+      },
+      {
+        "id": "assign-OE4YWk7rBUl-INSP_ROLE_STANDARD_INSPECTOR",
+        "role": "INSP_ROLE_STANDARD_INSPECTOR",
+        "sections": [
+          {
+            "id": "jTKnE6EXzPH",
+            "date": "2025-08-30",
+            "name": "Service Gynae Clinics",
+            "time": "22:00"
+          }
+        ],
+        "confirmed": "approved",
+        "updatedAt": "2025-09-06T05:04:41.566Z",
+        "approvedAt": "2025-09-06T05:04:41.566Z",
+        "inspectorId": "QnCaw0RPhPS",
+        "inspectorName": "inspector8"
+      },
+      {
+        "id": "assign-SNV81FRjm85-INSP_ROLE_LEAD_INSPECTOR",
+        "role": "INSP_ROLE_LEAD_INSPECTOR",
+        "sections": [
+          {
+            "id": "jTKnE6EXzPH",
+            "date": "2025-08-30",
+            "name": "Service Gynae Clinics",
+            "time": "22:00"
+          }
+        ],
+        "confirmed": "approved",
+        "updatedAt": "2025-09-06T05:04:41.566Z",
+        "approvedAt": "2025-09-06T05:04:41.566Z",
+        "inspectorId": "RtSQkJxTRww",
+        "inspectorName": "joesmith"
+      }
+    ],
+    "facilityName": "Halo Glory Facility",
+    "facilityType": "INDIVIDUAL PRIVATE PRACTICE",
+    "inspectionID": "k3obZrkrUAP",
+    "leadInspector": {
+      "id": "RtSQkJxTRww",
+      "name": "joesmith"
+    },
+    "inspectionType": "Routine Inspection",
+    "directorApproval": "Authorized",
+    "directorComments": "",
+    "finalApproverApproved": true,
+    "trackedEntityInstance": "TT7M5TtMa1R",
+    "inspectorAdminApproved": true,
+    "finalApproverApprovedAt": "2025-09-06T05:04:41.566Z",
+    "finalApproverApprovedBy": "",
+    "inspectorAdminApprovedAt": "2025-09-06T05:04:41.566Z",
+    "inspectorAdminApprovedBy": ""
+  },
+  {
+    "id": "jjvRUYj3MGS",
+    "status": "scheduled",
+    "endDate": "2025-09-12T22:00:00.000Z",
+    "createdAt": "2025-09-06T06:29:20.562Z",
+    "startDate": "2025-09-05T22:00:00.000Z",
+    "updatedAt": "2025-09-06T06:29:20.562Z",
+    "approvedAt": "2025-09-06T06:29:20.562Z",
+    "approvedBy": "director",
+    "facilityId": "E1OSERQOZFL",
+    "assignments": [
+      {
+        "id": "assign-WkdHZe1y9kJ-INSP_ROLE_STANDARD_INSPECTOR",
+        "role": "INSP_ROLE_STANDARD_INSPECTOR",
+        "sections": [
+          {
+            "id": "jTKnE6EXzPH",
+            "date": "2025-08-30",
+            "name": "Service Gynae Clinics",
+            "time": "22:00"
+          }
+        ],
+        "confirmed": "approved",
+        "updatedAt": "2025-09-06T06:29:20.562Z",
+        "approvedAt": "2025-09-06T06:29:20.562Z",
+        "inspectorId": "QbWrL3Il7gL",
+        "inspectorName": "inspector1"
+      },
+      {
+        "id": "assign-Up05Fg14Gm7-INSP_ROLE_LEAD_INSPECTOR",
+        "role": "INSP_ROLE_LEAD_INSPECTOR",
+        "sections": [
+          {
+            "id": "jTKnE6EXzPH",
+            "date": "2025-08-30",
+            "name": "Service Gynae Clinics",
+            "time": "22:00"
+          }
+        ],
+        "confirmed": "approved",
+        "updatedAt": "2025-09-06T06:29:20.562Z",
+        "approvedAt": "2025-09-06T06:29:20.562Z",
+        "inspectorId": "CnplcXIP2Rl",
+        "inspectorName": "inspector14"
+      }
+    ],
+    "facilityName": "Jackson600 clinic",
+    "facilityType": "INDIVIDUAL PRIVATE PRACTICE",
+    "inspectionID": "xJhveZKjrGh",
+    "leadInspector": {
+      "id": "CnplcXIP2Rl",
+      "name": "inspector14"
+    },
+    "inspectionType": "Routine Inspection",
+    "directorApproval": "Authorized",
+    "directorComments": "",
+    "finalApproverApproved": true,
+    "trackedEntityInstance": "ncVEqBbraRA",
+    "inspectorAdminApproved": true,
+    "finalApproverApprovedAt": "2025-09-06T06:29:20.562Z",
+    "finalApproverApprovedBy": "",
+    "inspectorAdminApprovedAt": "2025-09-06T06:29:20.562Z",
+    "inspectorAdminApprovedBy": ""
+  },
+  {
+    "id": "x92sEodHNP1",
+    "status": "scheduled",
+    "endDate": "2025-09-05T22:00:00.000Z",
+    "createdAt": "2025-09-06T08:20:43.463Z",
+    "startDate": "2025-09-05T22:00:00.000Z",
+    "updatedAt": "2025-09-06T08:20:43.463Z",
+    "approvedAt": "2025-09-06T08:20:43.463Z",
+    "approvedBy": "director",
+    "facilityId": "KMRLQ6P2SSH",
+    "assignments": [
+      {
+        "id": "assign-tQU8qnAqe60-INSP_ROLE_STANDARD_INSPECTOR",
+        "role": "INSP_ROLE_STANDARD_INSPECTOR",
+        "sections": [
+          {
+            "id": "jTKnE6EXzPH",
+            "date": "2025-08-30",
+            "name": "Service Gynae Clinics",
+            "time": "22:00"
+          }
+        ],
+        "confirmed": "approved",
+        "updatedAt": "2025-09-06T08:20:43.463Z",
+        "approvedAt": "2025-09-06T08:20:43.463Z",
+        "inspectorId": "ColHNY2hkwO",
+        "inspectorName": "inspector6"
+      },
+      {
+        "id": "assign-EtFb3ctbuSB-INSP_ROLE_LEAD_INSPECTOR",
+        "role": "INSP_ROLE_LEAD_INSPECTOR",
+        "sections": [
+          {
+            "id": "jTKnE6EXzPH",
+            "date": "2025-08-30",
+            "name": "Service Gynae Clinics",
+            "time": "22:00"
+          }
+        ],
+        "confirmed": "approved",
+        "updatedAt": "2025-09-06T08:20:43.463Z",
+        "approvedAt": "2025-09-06T08:20:43.463Z",
+        "inspectorId": "CnplcXIP2Rl",
+        "inspectorName": "inspector14"
+      },
+      {
+        "id": "assign-JocGW5zQkPp-INSP_ROLE_STANDARD_INSPECTOR",
+        "role": "INSP_ROLE_STANDARD_INSPECTOR",
+        "sections": [
+          {
+            "id": "jTKnE6EXzPH",
+            "date": "2025-08-30",
+            "name": "Service Gynae Clinics",
+            "time": "22:00"
+          }
+        ],
+        "confirmed": "approved",
+        "updatedAt": "2025-09-06T08:20:43.463Z",
+        "approvedAt": "2025-09-06T08:20:43.463Z",
+        "inspectorId": "arGmZK7LSJA",
+        "inspectorName": "inspector13"
+      }
+    ],
+    "facilityName": "Jackson900",
+    "facilityType": "INDIVIDUAL PRIVATE PRACTICE",
+    "inspectionID": "LJ68EHDwoZs",
+    "leadInspector": {
+      "id": "CnplcXIP2Rl",
+      "name": "inspector14"
+    },
+    "inspectionType": "Routine Inspection",
+    "directorApproval": "Authorized",
+    "directorComments": "",
+    "finalApproverApproved": true,
+    "trackedEntityInstance": "zIQzUzzEQSS",
+    "inspectorAdminApproved": true,
+    "finalApproverApprovedAt": "2025-09-06T08:20:43.463Z",
+    "finalApproverApprovedBy": "",
+    "inspectorAdminApprovedAt": "2025-09-06T08:20:43.463Z",
+    "inspectorAdminApprovedBy": ""
+  }
+]

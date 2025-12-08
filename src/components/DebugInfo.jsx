@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useApp } from '../contexts/AppContext';
 
 export function DebugInfo() {
+  // Temporarily disabled to prevent infinite loop from console interceptor
+  return null;
+  
   const { 
     isAuthenticated, 
     user, 

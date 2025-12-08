@@ -1,0 +1,205 @@
+/**
+ * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
+ * Generated from: checklist for facilities2.0.csv
+ * Generated on: 2025-09-13 02:01:37
+ * Facility Type: Laboratory
+ *
+ * To regenerate this file, run: python src/config/generateFilters.py
+ */
+
+const Laboratory = {
+    "SERVICE PROVIDED": {
+        "showOnly": [
+            "What is number of specimens tested per month?",
+            "Is there provision of emergency contact numbers?",
+            "Are the service to be provided displayed?",
+            "Are emergency contact numbers displayed?",
+        ]
+    },
+    "PERSONNEL": {
+        "showOnly": [
+            "What is the intended total number of staff?",
+            "What is the current total number of staff?",
+            "Are professionals registered with the relevant Councils?",
+        ]
+    },
+    "ENVIRONMENT": {
+        "showOnly": [
+            "Does the facility have wheelchair accessibility or elevators?",
+            "Where there are ramps, are there safety features?",
+            "Is there adequate space for parking?",
+            "Is facility area clean and neat?",
+            "Are surfaces free from dust?",
+            "Is there adequate lighting?",
+            "Is air conditioning available?",
+            "Is there enough ventilation?",
+            "Is flooring of cleanable, smooth impervious material?",
+            "Is there parking space designated for people living with disability?",
+            "Is there directional signage within and outside the facility?",
+            "Is there backup system for electricity and water?",
+            "Is there provision for water testing?",
+        ]
+    },
+    "RECEPTION AREA": {
+        "showOnly": [
+            "Does reception area have adequate space?",
+            "Is the telephone or cell phone available?",
+            "Is there a computer?",
+            "Is it manned at all times?",
+            "Are there adequate patient benches / chairs?",
+            "Is there a waste bin with a lid?",
+            "Is there a displayed Setswana and English patient charter?",
+            "Is there available drinking source?",
+            "Is there information available on the hazards of radiation in the reception?",
+            "Are educational materials available for clients?",
+        ]
+    },
+    "BLEEDING ROOM": {
+        "showOnly": [
+            "Does the bleeding room have adequate space?",
+            "Does the room have wheelchair accessibility?",
+            "Does the lab have procedures for patient preparation before blood collection?",
+            "· Hand basin with running water and suitable soap dispenser?",
+            "Is there air-conditioner with monitoring device and chart?",
+        ]
+    },
+    "TOILET FACILITITES": {
+        "showOnly": [
+            "Female patients)?",
+            "Are toilets fitted with hand wash facilities?",
+            "Is there suitable soap dispenser?",
+            "Is there an appropriate hand drying provision?",
+            "Is there a separate toilet for staff?",
+            "Is there a toilet that is designed for wheel chair users?",
+            "Are toilets wheel chair accessible?",
+            "Does the female toilet have sanitary pads disposal?",
+            "Are toilets aesthetically pleasing?",
+            "Is there provision for paediatric clients?",
+        ]
+    },
+    "SPECIMEN ROOM": {
+        "showOnly": [
+            "Is there an organised specimen registration system?",
+            "Is there provision for patient privacy?",
+            "Is there air-conditioner with monitoring device and chart?",
+        ]
+    },
+    "LAB SERVICES PROVIDED": {
+        "showOnly": [
+            "Does the testing area have adequate space?",
+            "Are there adequate lab stools and benches?",
+            "Is there hand washing provision?",
+            "Is there air-conditioner with monitoring device and chart?",
+            "Does the lab have Technical SOPs (test methods)?",
+            "How often are Quality controls run?",
+            "Are QC results monitored over a period of time?",
+            "Does the lab participate in External Quality Assessment Schemes?",
+            "Are EQA results reviewed and monitored?",
+            "Does the lab have Reference Ranges for the tests performed?",
+            "Are refrigerator and freezer temperatures monitored?",
+            "Is there an equipment preventative maintenance plan?",
+            "Is expiry of items monitored?",
+            "Does the testing area have adequate space?",
+            "Are there adequate lab stools and benches?",
+            "Is there hand washing provision?",
+            "Is there air-conditioner with monitoring device and chart?",
+            "Does the lab have Technical SOPs (test methods)?",
+            "Haematology analyser?",
+            "Microscope?",
+            "Staining Racks?",
+            "Water bath?",
+            "Coagulation machine?",
+            "ESR tubes and caps?",
+            "Sample Rocker?",
+            "Medical fridge?",
+            "Sample rotator?",
+            "Automated Pipettes?",
+            "Graduated Pipettes?",
+            "Pipette Fillers?",
+            "Are normal and abnormal Quality Control done and recorded?",
+            "How often are Quality controls run?",
+            "Are QC results monitored over a period of time?",
+            "Does the lab participate in External Quality Assessment Schemes?",
+            "Are EQA results reviewed and monitored?",
+            "Does the lab have Reference Ranges for the tests performed?",
+            "Are refrigerator and freezer temperatures monitored?",
+            "Is there an equipment preventative maintenance plan?",
+            "Is expiry of items monitored?",
+            "Does the testing area have adequate space?",
+            "Are there adequate lab stools and benches?",
+            "Is there air-conditioner with monitoring device and chart?",
+            "Is there hand washing provision?",
+            "Microscopes?",
+            "Autoclave?",
+            "Anaerobic Jars?",
+            "Disposable Inoculating loops and needles?",
+            "Centrifuge?",
+            "Staining racks?",
+            "Sample rocker?",
+            "Medical freezer?",
+            "Hot plate?",
+            "Weighing scale?",
+            "Bunsen burner?",
+            "Gas cylinders?",
+            "Autoclave?",
+            "Timers?",
+            "Reagent bottles(brown)?",
+            "Measuring Cylinders?",
+            "Conical flasks?",
+            "Reagent Preparation Bottles?",
+            "Universal Bottles?",
+            "Bijou bottles?",
+            "Graduated Pipettes?",
+            "Storage cabinet for flammables?",
+            "Urine centrifuge tubes?",
+            "Ready to use culture media?",
+            "Ready to use staining reagents?",
+            "Graduated Pipettes?",
+            "How often are QC run?",
+            "Does the lab have Quality Control Organisms?",
+            "How often are QC run?",
+            "Are QC results monitored over a period of time?",
+            "Does the lab participate in EQA Assessment Schemes?",
+            "Are EQA results reviewed and monitored?",
+            "Are refrigerator temperatures monitored?",
+        ]
+    },
+    "HIV SCREENING": {
+        "showOnly": [
+            "Does the lab do any HIV screening?",
+        ]
+    },
+    "SAFETY AND WASTE MANAGEMENT": {
+        "showOnly": [
+            "Does the Facility have a policy on waste management?",
+            "Does the clinic have SOPs on waste management?",
+            "Does the clinic have a policy and procedures on safety?",
+            "Is there a policy and procedure on accidental exposure to HIV?",
+            "Fire inspection report?",
+            "Does the clinic have adequate security?",
+            "Alarm system?",
+            "Burglar bars?",
+            "Lockable gates?",
+        ]
+    },
+    "SUPPLIES": {
+        "showOnly": [
+            "Does the clinic have adequate supplies for services provided?",
+        ]
+    },
+    "RECORDS/ INFORMATION MANAGEMENT": {
+        "showOnly": [
+            "Are patients records well maintained?",
+            "Is there a policy on patient confidentiality?",
+            "Are records controlled and safe from manipulation?",
+            "Are records kept electronically?",
+            "Is there a backup system for electronic data?",
+            "If hard copies are kept, is there a system for protection against damage?",
+            "Is there a policy on record retention times?",
+            "Are hard copies kept in a lockable cabinet for maximum security?",
+        ]
+    },
+
+};
+
+export default Laboratory;

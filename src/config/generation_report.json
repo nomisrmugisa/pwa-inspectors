@@ -1,6 +1,6 @@
 {
-  "generated_on": "2025-11-25T11:54:31.727119",
-  "source_file": "src/config/checklist for facilities2.0.csv",
+  "generated_on": "2025-12-04T19:52:28.710546",
+  "source_file": "checklist-final.csv",
   "facility_types": [
     "Obstetrics & Gynaecology",
     "laboratory",
@@ -20,67 +20,77 @@
     "ORGANISATION AND MANAGEMENT",
     "SERVICES PROVIDED",
     "PERSONNEL",
+    "FACILITY-ENVIONMENT",
+    "FACILITY-RECEPTION/WAITING AREA",
+    "FACILITY- SCREENING ROOM",
+    "FACILITY- CONSULTATION/TREATMENT ROOM",
+    "FACILITY-PROCEDURE ROOM",
+    "SLUICE ROOM",
+    "BLEEDING ROOM",
+    "TOILET FACILITIES",
+    "PHARMACY/DISPENSARY",
+    "SAFETY AND WASTE MANAGEMENT",
     "SUPPLIES",
     "TENS",
     "HIV SCREENING"
   ],
   "statistics": {
     "total_facility_types": 13,
-    "total_sections": 6,
-    "total_questions": 726
+    "total_sections": 16,
+    "total_questions": 702
   },
   "facility_statistics": {
     "Obstetrics & Gynaecology": {
-      "applicable_questions": 315,
-      "coverage_percentage": 43.4
+      "applicable_questions": 300,
+      "coverage_percentage": 42.7
     },
     "laboratory": {
-      "applicable_questions": 306,
-      "coverage_percentage": 42.1
+      "applicable_questions": 295,
+      "coverage_percentage": 42.0
     },
     "Psychology": {
-      "applicable_questions": 189,
-      "coverage_percentage": 26.0
+      "applicable_questions": 180,
+      "coverage_percentage": 25.6
     },
     "Eye (Opthalmology /Optometry)": {
-      "applicable_questions": 322,
-      "coverage_percentage": 44.4
+      "applicable_questions": 307,
+      "coverage_percentage": 43.7
     },
     "Physiotheraphy": {
-      "applicable_questions": 234,
-      "coverage_percentage": 32.2
+      "applicable_questions": 224,
+      "coverage_percentage": 31.9
     },
     "Dental": {
-      "applicable_questions": 292,
-      "coverage_percentage": 40.2
+      "applicable_questions": 280,
+      "coverage_percentage": 39.9
     },
     "Dental Laboratory": {
-      "applicable_questions": 171,
-      "coverage_percentage": 23.6
+      "applicable_questions": 163,
+      "coverage_percentage": 23.2
     },
     "Ear, Nose & Throat": {
-      "applicable_questions": 301,
-      "coverage_percentage": 41.5
+      "applicable_questions": 287,
+      "coverage_percentage": 40.9
     },
     "Rehabilitation Centre": {
-      "applicable_questions": 330,
-      "coverage_percentage": 45.5
+      "applicable_questions": 312,
+      "coverage_percentage": 44.4
     },
     "Radiology": {
-      "applicable_questions": 180,
-      "coverage_percentage": 24.8
+      "applicable_questions": 171,
+      "coverage_percentage": 24.4
     },
     "General Practice": {
-      "applicable_questions": 333,
-      "coverage_percentage": 45.9
+      "applicable_questions": 317,
+      "coverage_percentage": 45.2
     },
     "Paediatric": {
-      "applicable_questions": 296,
-      "coverage_percentage": 40.8
+      "applicable_questions": 281,
+      "coverage_percentage": 40.0
     },
     "Nursing Home": {
-      "applicable_questions": 328,
-      "coverage_percentage": 45.2
+      "applicable_questions": 310,
+      "coverage_percentage": 44.2
     }
   }
 }
