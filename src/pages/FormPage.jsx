@@ -6103,7 +6103,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
         <div className="form-header">
 
-          <h2>Facility Inspection Form</h2>
+          <h2>Facility Checklist</h2>
 
           {/* Facility Filtering Status Summary */}
 
