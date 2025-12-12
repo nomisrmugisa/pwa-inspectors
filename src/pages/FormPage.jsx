@@ -14,7 +14,7 @@ import {
   normalizeFacilityClassification,
 } from '../config/sectionVisibilityConfig';
 
-import { shouldShowDataElementForService } from '../config/facilityServiceFilters';
+import facilityServiceFilters, { shouldShowDataElementForService } from '../config/facilityServiceFilters';
 import { getDepartmentsForSpecialization, getDepartmentStats } from '../config/facilityServiceDepartments';
 
 import CustomSignatureCanvas from '../components/CustomSignatureCanvas';
@@ -826,15 +826,10 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
         );
 
       case 'INTEGER':
-        break;
       case 'INTEGER_POSITIVE':
-        break;
       case 'INTEGER_NEGATIVE':
-        break;
       case 'INTEGER_ZERO_OR_POSITIVE':
-        break;
       case 'NUMBER':
-        break;
       case 'PERCENTAGE':
 
         return (
@@ -1856,6 +1851,66 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
                 </div>
               </div>
             )}
+
+            {/* Expected Data Elements from Configuration */}
+            {showDebugPanel && !isInspectionTypeSection && !isDocumentReviewSection && (() => {
+              console.log('🔍 Debug Panel Render:', {
+                facilityType,
+                sectionName: section.displayName,
+                hasConfig: !!facilityServiceFilters[facilityType]
+              });
+
+              const config = facilityServiceFilters[facilityType];
+              if (!config) return <div style={{ color: 'red' }}>No config for {facilityType}</div>;
+
+              const sectionConfigEntry = Object.entries(config).find(([key]) => {
+                const keyNorm = key.toLowerCase().replace(/s\s/g, ' ').trim();
+                const sectionNorm = section.displayName.toLowerCase().replace(/s\s/g, ' ').trim();
+                const match = keyNorm.includes(sectionNorm) || sectionNorm.includes(keyNorm);
+                // console.log(`  Checking "${key}" vs "${section.displayName}" -> ${match}`);
+                return match;
+              });
+
+              const sectionConfig = sectionConfigEntry ? sectionConfigEntry[1] : null;
+              const expectedQuestions = sectionConfig ? sectionConfig.showOnly : [];
+
+              console.log('  Found Config:', {
+                matchedSection: sectionConfigEntry ? sectionConfigEntry[0] : 'NONE',
+                questionCount: expectedQuestions.length
+              });
+
+              return (
+                <div style={{
+                  marginTop: '6px',
+                  backgroundColor: '#e2e3e5',
+                  border: '1px solid #d6d8db',
+                  borderRadius: '4px',
+                  padding: '6px'
+                }}>
+                  <strong>Expected Configured Elements ({expectedQuestions.length}):</strong>
+                  <div style={{ maxHeight: '140px', overflow: 'auto', marginTop: '4px' }}>
+                    {expectedQuestions.length > 0 ? (
+                      expectedQuestions.map((q, idx) => (
+                        <div key={`${section.id}-expected-${idx}`} style={{
+                          fontSize: '10px',
+                          borderBottom: '1px solid #eee',
+                          padding: '2px 0',
+                          color: filteredDataElements.some(psde => psde.dataElement.displayName === q) ? '#28a745' : '#dc3545'
+                        }}>
+                          {filteredDataElements.some(psde => psde.dataElement.displayName === q) ? '✓ ' : '✗ '}
+                          {q}
+                        </div>
+                      ))
+                    ) : (
+                      <div style={{ color: '#dc3545' }}>
+                        No configuration found for section "{section.displayName}"
+                        (Facility: {facilityType})
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         </details>
       )}

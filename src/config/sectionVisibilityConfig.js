@@ -622,6 +622,7 @@ export const shouldShowSection = (sectionName, facilityClassification) => {
   // "HIV SCREENING SERVICES" or "TENS ROOM".
   const CSV_ALWAYS_VISIBLE_SECTION_TOKENS = [
     'SERVICES PROVIDED',
+    'PERSONNEL',
     'HIV SCREENING',
     'TENS'
   ];
