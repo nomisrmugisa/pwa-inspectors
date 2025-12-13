@@ -370,8 +370,8 @@ const GeneralPractice = {
         "showOnly": [
             "Does the Facility have the following policies",
             "supplies and purchasing",
-            "management of epired supplies",
-            "Does the Facility have adequate supplies for services provided/",
+            "management of expired supplies",
+            "Does the Facility have adequate supplies for services provided",
             "Is there a stock control system?",
         ]
     },

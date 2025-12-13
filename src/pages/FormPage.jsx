@@ -1327,7 +1327,8 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
         // Check if the main element passes the filter
         const mainElementPasses = shouldShowDataElementForService(
           mainElementName,
-          facilityType
+          facilityType,
+          section.displayName
         );
 
         if (!mainElementPasses) {
@@ -1338,7 +1339,8 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
         // For main elements, use the standard filter
         const shouldShow = shouldShowDataElementForService(
           displayName,
-          facilityType
+          facilityType,
+          section.displayName
         );
 
         if (!shouldShow) {
@@ -1376,65 +1378,7 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
         return;
       }
 
-      // DEBUG: Log all DHIS2 data element names for Ear, Nose & Throat sections
-      const isENT = facilityType === 'Ear, Nose & Throat';
-      const isRelevantSection = /service|personnel|supplies|organisation|management|tens|hiv/i.test(sectionName);
 
-      if (isENT && isRelevantSection && section.dataElements && section.dataElements.length > 0) {
-        console.group(`🔍 DEBUG: DHIS2 Data Elements for "${sectionName}" (ENT)`);
-        console.log('Total data elements in section:', section.dataElements.length);
-        console.log('\n📄 DHIS2 Data Element Names (using formName/displayFormName):');
-        section.dataElements.forEach((psde, idx) => {
-          if (psde && psde.dataElement) {
-            const de = psde.dataElement;
-            const usedName = de.displayName; // This is already formName || displayFormName || name
-            const deId = de.id;
-            const lastUpdated = de.lastUpdated || 'N/A';
-            const isHeader = isSectionHeaderName(usedName);
-            const endsWithDashes = usedName.endsWith('--');
-            console.log(`  [${idx}] ID: ${deId} | Name: "${usedName}" | Updated: ${lastUpdated} | IsHeader: ${isHeader} | EndsWith--: ${endsWithDashes}`);
-          }
-        });
-
-        // Also show what's in the CSV config for this section
-        console.log('\n📋 CSV Config (earnoseandthroat.js) - ALL SECTIONS:');
-        const { default: facilityServiceFilters } = await import('../config/facilityServiceFilters');
-        const entConfig = facilityServiceFilters['Ear, Nose & Throat'];
-        if (entConfig) {
-          // Show ALL CSV sections
-          const csvSectionKeys = Object.keys(entConfig);
-          console.log('All CSV sections:', csvSectionKeys);
-
-          // Try to find matching section in CSV config
-          const possibleMatches = csvSectionKeys.filter(key =>
-            key.toLowerCase().replace(/s\s/g, ' ').includes(sectionName.toLowerCase().replace(/s\s/g, ' ')) ||
-            sectionName.toLowerCase().replace(/s\s/g, ' ').includes(key.toLowerCase().replace(/s\s/g, ' '))
-          );
-
-          if (possibleMatches.length > 0) {
-            possibleMatches.forEach(match => {
-              console.log(`\n✅ Matched CSV Section: "${match}"`);
-              if (entConfig[match].showOnly) {
-                console.log(`Total questions in CSV: ${entConfig[match].showOnly.length}`);
-                console.log('First 5 CSV Question Names:');
-                entConfig[match].showOnly.slice(0, 5).forEach((q, idx) => {
-                  console.log(`  [${idx}] "${q}"`);
-                });
-                if (entConfig[match].showOnly.length > 5) {
-                  console.log(`  ... and ${entConfig[match].showOnly.length - 5} more`);
-                }
-              }
-            });
-          } else {
-            console.log('⚠️ No matching CSV section found for DHIS2 section:', sectionName);
-            console.log('This means the filter will search ALL CSV sections for matching questions.');
-          }
-        } else {
-          console.log('❌ No ENT config found in facilityServiceFilters!');
-        }
-
-        console.groupEnd();
-      }
 
       const results = await Promise.all(
 
@@ -1459,26 +1403,28 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
 
             const mainElementPasses = await shouldShowDataElementForService(
               mainElementName,
-              facilityType
+              facilityType,
+              sectionName
             );
 
             // DEBUG: Log comment field filtering for ENT
-            if (isENT && isRelevantSection) {
-              console.log(`  [${idx}] Comment field "${displayName}" → main: "${mainElementName}" → ${mainElementPasses ? '✅ PASS' : '❌ FAIL'}`);
-            }
+            // if (isENT && isRelevantSection) {
+            //   console.log(`  [${idx}] Comment field "${displayName}" → main: "${mainElementName}" → ${mainElementPasses ? '✅ PASS' : '❌ FAIL'}`);
+            // }
 
             return mainElementPasses;
           } else {
             // For main elements, use the standard filter
             const shouldShow = await shouldShowDataElementForService(
               displayName,
-              facilityType
+              facilityType,
+              sectionName
             );
 
             // DEBUG: Log main field filtering for ENT
-            if (isENT && isRelevantSection) {
-              console.log(`  [${idx}] Main field "${displayName}" → ${shouldShow ? '✅ PASS' : '❌ FAIL'}`);
-            }
+            // if (isENT && isRelevantSection) {
+            //   console.log(`  [${idx}] Main field "${displayName}" → ${shouldShow ? '✅ PASS' : '❌ FAIL'}`);
+            // }
 
             return shouldShow;
           }
@@ -1493,17 +1439,12 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
       // can still capture data while we align DHIS2 names with the CSV.
       let filtered = section.dataElements.filter((_, idx) => results[idx]);
 
-      if (isENT && isRelevantSection) {
-        console.log(`📊 Filter result for "${sectionName}": ${filtered.length} of ${section.dataElements.length} elements passed`);
-      }
+      // if (isENT && isRelevantSection) {
+      //   console.log(`📊 Filter result for "${sectionName}": ${filtered.length} of ${section.dataElements.length} elements passed`);
+      // }
 
-      if ((!filtered || filtered.length === 0) && section.dataElements.length > 0) {
-        console.warn('⚠️ Filter removed all data elements for section; falling back to showing all', {
-          section: section.displayName,
-          facilityType
-        });
-        filtered = section.dataElements;
-      }
+      // Removed fallback to showing all elements when filter returns zero
+      // If section is not properly configured, it should remain empty
 
       setFilteredDataElements(filtered);
 
@@ -6152,7 +6093,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     <div className="screen">
       {/* Floating Progress Component */}
-      <FloatingProgress />
+      {/* <FloatingProgress /> */}
 
       <div className="form-container">
 
@@ -6875,7 +6816,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                     getCurrentFacilityClassification={getCurrentFacilityClassification}
 
-                    facilityType={facilityType}
+                    facilityType={manualSpecialization || facilityType}
 
                     onCommentChange={handleCommentChange}
 
@@ -7000,7 +6941,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                         getCurrentFacilityClassification={getCurrentFacilityClassification}
 
-                        facilityType={facilityType}
+                        facilityType={manualSpecialization || facilityType}
 
                         onCommentChange={handleCommentChange}
 
@@ -7244,72 +7185,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                 </button>
               </div>
 
-              <div className="payload-content" style={{
-                marginBottom: '24px'
-              }}>
-                {/* Collapsible payload section */}
-                <details style={{ marginBottom: '16px' }}>
-                  <summary style={{
-                    cursor: 'pointer',
-                    padding: '12px',
-                    backgroundColor: '#f8f9fa',
-                    border: '1px solid #e9ecef',
-                    borderRadius: '4px',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    fontSize: '14px',
-                    color: '#495057',
-                    userSelect: 'none'
-                  }}>
-                    <span>📄 This is the data that will be submitted to DHIS2 (click to expand)</span>
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        navigator.clipboard.writeText(JSON.stringify(payloadData, null, 2));
-                        showToast('Payload copied to clipboard!', 'success');
-                      }}
-                      style={{
-                        padding: '4px 8px',
-                        border: '1px solid #007bff',
-                        backgroundColor: 'white',
-                        color: '#007bff',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                        fontSize: '12px',
-                        marginLeft: '12px'
-                      }}
-                      title="Copy payload to clipboard"
-                    >
-                      📋 Copy
-                    </button>
-                  </summary>
-                  <div style={{
-                    padding: '16px',
-                    backgroundColor: '#f8f9fa',
-                    border: '1px solid #e9ecef',
-                    borderTop: 'none',
-                    borderRadius: '0 0 4px 4px'
-                  }}>
-                    <pre style={{
-                      backgroundColor: 'white',
-                      padding: '16px',
-                      borderRadius: '4px',
-                      border: '1px solid #e9ecef',
-                      fontSize: '12px',
-                      fontFamily: 'Monaco, Consolas, "Courier New", monospace',
-                      overflow: 'auto',
-                      maxHeight: '400px',
-                      margin: 0,
-                      whiteSpace: 'pre-wrap',
-                      wordBreak: 'break-word'
-                    }}>
-                      {JSON.stringify(payloadData, null, 2)}
-                    </pre>
-                  </div>
-                </details>
-              </div>
+
 
               <div className="payload-dialog-actions" style={{
                 display: 'flex',

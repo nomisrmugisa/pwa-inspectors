@@ -30,7 +30,7 @@ from datetime import datetime
 from pathlib import Path
 
 class FacilityFilterGenerator:
-    def __init__(self, csv_path="checklist-final.csv"):
+    def __init__(self, csv_path="src/config/checklist for facilities2.0.csv"):
         self.csv_path = csv_path
         self.facility_types = []
         self.sections = []

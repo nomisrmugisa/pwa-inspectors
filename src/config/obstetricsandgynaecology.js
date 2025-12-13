@@ -13,7 +13,7 @@ const ObstetricsandGynaecology = {
             "Does the Facility have an organisational structure",
             "Is the director a medically trained person?",
             "Business registration",
-            "ta clearance certificate",
+            "Tax clearance certificate",
             "Valid private pactice license",
             "Work permits",
             "Residence permit",
@@ -152,6 +152,7 @@ const ObstetricsandGynaecology = {
         "showOnly": [
             "Does the consultation room have adequate space?",
             "Does the consultation room have wheelchair accessibility",
+            "Does the consultation room have the following--",
             "At least 3 Chairs",
             "Alcohol swabs",
             "Appropriate hand drying facilities",
@@ -347,10 +348,10 @@ const ObstetricsandGynaecology = {
     },
     "SUPPLIES": {
         "showOnly": [
-            "Does the Facility have the following policies",
+            "Does the Facility have the following policies ",
             "supplies and purchasing",
-            "management of epired supplies",
-            "Does the Facility have adequate supplies for services provided/",
+            "management of expired supplies",
+            "Does the Facility have adequate supplies for services provided",
             "Is there a stock control system?",
         ]
     },
