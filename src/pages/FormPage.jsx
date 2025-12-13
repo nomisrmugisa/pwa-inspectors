@@ -2532,6 +2532,7 @@ const DEPARTMENT_SECTION_MAPPING = {
   'FACILITY CONSULTATION/TREATMENT ROOM': ['FACILITY CONSULTATION/TREATMENT ROOM'],
   'FACILITY- CONSULTATION/TREATMENT ROOM': ['FACILITY- CONSULTATION/TREATMENT ROOM'],
   'FACILITY-CONSULTATION/TREATMENT ROOM': ['FACILITY-CONSULTATION/TREATMENT ROOM'],
+  'FACILITY-CONSULTATION/ TREATMENT ROOM': ['FACILITY-CONSULTATION/ TREATMENT ROOM'],
   'FACILITY - CONSULTATION/TREATMENT ROOM': ['FACILITY - CONSULTATION/TREATMENT ROOM'],
   'PROCEDURE ROOM': ['PROCEDURE ROOM'],
 
@@ -6445,7 +6446,25 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                     <div className="form-field">
                       <label className="form-label">Inspection Scheduled: Dates:</label>
                       <div>
-                        {inspectionPeriod.startDate} to {inspectionPeriod.endDate}
+                        {(() => {
+                          try {
+                            const startDate = new Date(inspectionPeriod.startDate);
+                            const endDate = new Date(inspectionPeriod.endDate);
+
+                            const formatDate = (date) => {
+                              if (isNaN(date.getTime())) return 'Invalid Date';
+                              return date.toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                              });
+                            };
+
+                            return `${formatDate(startDate)} to ${formatDate(endDate)}`;
+                          } catch (error) {
+                            return `${inspectionPeriod.startDate} to ${inspectionPeriod.endDate}`;
+                          }
+                        })()}
                       </div>
                     </div>
                   )}

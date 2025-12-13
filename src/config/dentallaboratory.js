@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist for facilities2.0.csv
- * Generated on: 2025-12-04 19:52:28
+ * Generated on: 2025-12-13 16:03:49
  * Facility Type: Dental Laboratory
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -12,15 +12,16 @@ const DentalLaboratory = {
         "showOnly": [
             "Does the Facility have an organisational structure",
             "Is the director a medically trained person?",
+            "Does the facility comply with regulatory requirements? --",
             "Business registration",
-            "ta clearance certificate",
+            "Tax clearance certificate",
             "Valid private pactice license",
             "Work permits",
             "Residence permit",
             "Lease agreement",
             "Occupancy certificate",
-            "Trading license",
             "Permission to operate/set up",
+            "Trading license",
             "Patient charter in English & Setswana",
             "Is there an indemnity insurance?",
             "contracts for staff",
@@ -32,19 +33,24 @@ const DentalLaboratory = {
             "Practitioners licence",
             "Fire clearance",
             "residence permit",
-            "The confidentiality of patient information",
-            "Incident reporting",
+            "Does the Facility have policies and procedures for the following?--",
+            "Patient referral",
+            "Assessment of patients",
             "Induction and orientation",
-            "Equipment maintenance plan/program",
-            "Testing and commissioning certificates",
+            "Patient consent",
+            "Linen management",
             "Infection prevention and control",
             "Management of patient records",
             "Record retention times",
             "Management of information",
             "Risk management",
             "Management of supplies",
-            "Complaints procedure",
+            "Patient observation",
+            "Management of medication",
             "Waste management",
+            "Does the Facility have the following reference materials?--",
+            "Testing and treatment techniques",
+            "Copies of relevant statutory instruments",
             "Treatment protocols/ guidelines",
             "Testing and treatment techniques",
             "Copies of relevant statutory instruments",
@@ -52,6 +58,7 @@ const DentalLaboratory = {
     },
     "SERVICES PROVIDED": {
         "showOnly": [
+            "What are the services provided at the Facility?--",
             "General services; Specify",
             "Specialist services; Specify",
             "Other services (Specify); .....",
@@ -60,6 +67,7 @@ const DentalLaboratory = {
             "State hours of operation",
             "Are emergency contact numbers displayed?",
             "What is number of patients seen/ Samples received per month",
+            "Any outreach services? If yes state them.",
         ]
     },
     "PERSONNEL": {
@@ -72,6 +80,7 @@ const DentalLaboratory = {
             "Administrative Staff (Specify)",
             "Support staff (Specify)",
             "Are professionals registered with the relevant Councils?",
+            "Did personnel files have the following?--",
             "Signed job effectiveness description",
             "Education credentials",
             "A signed confidentiality clause",
@@ -80,9 +89,10 @@ const DentalLaboratory = {
             "Signed contracts or offer letters",
             "Medical eamination certificates",
             "Evidence of continous Professional Development",
+            "Evidence of continous Professional Development",
         ]
     },
-    "FACILITY-ENVIONMENT": {
+    "FACILITY-ENVIRONMENT": {
         "showOnly": [
             "Does the facility have wheelchair accessibility?",
             "Is it fenced, secure and easily accessible",
@@ -117,8 +127,9 @@ const DentalLaboratory = {
             "Are educational materials available for clients",
         ]
     },
-    "TOILET FACILITIES": {
+    "FACILITY-PROCEDURE ROOM": {
         "showOnly": [
+            "Toilet facilities--",
             "Is there a minimum of two toilets available (for male and",
             "Female patients)?",
             "Are they labelled male and female?",
@@ -131,18 +142,15 @@ const DentalLaboratory = {
             "Does the female toilet have sanitary pads disposal?",
             "Are toilets aesthetically pleasing?",
             "Is there provision for paediatric clients?",
-        ]
-    },
-    "SAFETY AND WASTE MANAGEMENT": {
-        "showOnly": [
+            "Safety and waste management --",
             "Does the Facility have a policy on waste management?",
             "Does the Facility have SOPs on waste management?",
             "Does the Facility have a waste disposal system? Specify:",
-            "Domestic Waste",
-            "Clinical Waste",
-            "Does the Facility have a policy and procedures on safety?",
-            "Is there a policy and procedure on accidental eposure to HIV?",
-            "Does the Facility have fire protection equipment?",
+            ". Domestic Waste",
+            ". Clinical Waste",
+            ". Does the Facility have a policy and procedures on safety?",
+            ". Is there a policy and procedure on accidental eposure to HIV?",
+            ". Does the Facility have fire protection equipment?",
             ".Fire etinguishers",
             ".Emergency eits",
             "Additional:",
@@ -153,16 +161,16 @@ const DentalLaboratory = {
             "Does the Facility have a written program for maintaining fire protection equipment ?",
             "Does the Facility have adequate security?",
             ".A larm system?",
-            "Burglar bars?",
-            "Lockable gates?",
+            ". Burglar bars?",
+            ". Lockable gates?",
         ]
     },
     "SUPPLIES": {
         "showOnly": [
             "Does the Facility have the following policies",
             "supplies and purchasing",
-            "management of epired supplies",
-            "Does the Facility have adequate supplies for services provided/",
+            "management of expired supplies",
+            "Does the Facility have adequate supplies for services provided",
             "Is there a stock control system?",
             "Dust etractors",
             "Rotary hand piece",
@@ -204,6 +212,7 @@ const DentalLaboratory = {
             "Customer surveys",
             "Is there a patient charter in both English and Setswana",
             "Is there provision for consent before carrying out any procedures/assessment",
+            "Is there a complaints, procedure",
             "Is there a complaints, procedure",
         ]
     },

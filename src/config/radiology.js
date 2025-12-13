@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist for facilities2.0.csv
- * Generated on: 2025-12-04 19:52:28
+ * Generated on: 2025-12-13 16:03:49
  * Facility Type: Radiology
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -12,8 +12,9 @@ const Radiology = {
         "showOnly": [
             "Does the Facility have an organisational structure",
             "Is the director a medically trained person?",
+            "Does the facility comply with regulatory requirements? --",
             "Business registration",
-            "ta clearance certificate",
+            "Tax clearance certificate",
             "Valid private pactice license",
             "Work permits",
             "Residence permit",
@@ -31,6 +32,7 @@ const Radiology = {
             "Practitioners licence",
             "Fire clearance",
             "residence permit",
+            "Does the Facility have policies and procedures for the following?--",
             "Patient referral",
             "Assessment of patients",
             "Management of high risk patients",
@@ -53,6 +55,10 @@ const Radiology = {
             "Complaints procedure",
             "Outreach services",
             "Waste management",
+            "Does the Facility have the following reference materials?--",
+            "Treatment protocols/ guidelines",
+            "Testing and treatment techniques",
+            "Copies of relevant statutory instruments",
             "Treatment protocols/ guidelines",
             "Testing and treatment techniques",
             "Copies of relevant statutory instruments",
@@ -60,6 +66,7 @@ const Radiology = {
     },
     "SERVICES PROVIDED": {
         "showOnly": [
+            "What are the services provided at the Facility?--",
             "General services; Specify",
             "Specialist services; Specify",
             "Other services (Specify); .....",
@@ -71,6 +78,7 @@ const Radiology = {
             "Any outreach services? If yes state them.",
             "Is there permission to offer the outreach services",
             "Agreement letter with a doctor where outreach services will be offered from",
+            "Is there provision of emergency outreach services?",
             "Is there provision of emergency outreach services?",
         ]
     },
@@ -84,6 +92,7 @@ const Radiology = {
             "Administrative Staff (Specify)",
             "Support staff (Specify)",
             "Are professionals registered with the relevant Councils?",
+            "Did personnel files have the following?--",
             "Signed job effectiveness description",
             "Education credentials",
             "A signed confidentiality clause",
@@ -92,9 +101,10 @@ const Radiology = {
             "Signed contracts or offer letters",
             "Medical eamination certificates",
             "Evidence of continous Professional Development",
+            "Evidence of continous Professional Development",
         ]
     },
-    "FACILITY-ENVIONMENT": {
+    "FACILITY-ENVIRONMENT": {
         "showOnly": [
             "Does the facility have wheelchair accessibility?",
             "Is it fenced, secure and easily accessible",
@@ -129,14 +139,15 @@ const Radiology = {
             "Are educational materials available for clients",
         ]
     },
-    "FACILITY- CONSULTATION/TREATMENT ROOM": {
+    "FACILITY-CONSULTATION/ TREATMENT ROOM": {
         "showOnly": [
             "Hand washing soap",
             "hand drying facilities",
         ]
     },
-    "TOILET FACILITIES": {
+    "FACILITY-PROCEDURE ROOM": {
         "showOnly": [
+            "Toilet facilities--",
             "Is there a minimum of two toilets available (for male and",
             "Female patients)?",
             "Are they labelled male and female?",
@@ -149,18 +160,15 @@ const Radiology = {
             "Does the female toilet have sanitary pads disposal?",
             "Are toilets aesthetically pleasing?",
             "Is there provision for paediatric clients?",
-        ]
-    },
-    "SAFETY AND WASTE MANAGEMENT": {
-        "showOnly": [
+            "Safety and waste management --",
             "Does the Facility have a policy on waste management?",
             "Does the Facility have SOPs on waste management?",
             "Does the Facility have a waste disposal system? Specify:",
-            "Domestic Waste",
-            "Clinical Waste",
-            "Does the Facility have a policy and procedures on safety?",
-            "Is there a policy and procedure on accidental eposure to HIV?",
-            "Does the Facility have fire protection equipment?",
+            ". Domestic Waste",
+            ". Clinical Waste",
+            ". Does the Facility have a policy and procedures on safety?",
+            ". Is there a policy and procedure on accidental eposure to HIV?",
+            ". Does the Facility have fire protection equipment?",
             ".Fire etinguishers",
             ".Emergency eits",
             "Additional:",
@@ -171,16 +179,16 @@ const Radiology = {
             "Does the Facility have a written program for maintaining fire protection equipment ?",
             "Does the Facility have adequate security?",
             ".A larm system?",
-            "Burglar bars?",
-            "Lockable gates?",
+            ". Burglar bars?",
+            ". Lockable gates?",
         ]
     },
     "SUPPLIES": {
         "showOnly": [
             "Does the Facility have the following policies",
             "supplies and purchasing",
-            "management of epired supplies",
-            "Does the Facility have adequate supplies for services provided/",
+            "management of expired supplies",
+            "Does the Facility have adequate supplies for services provided",
             "Is there a stock control system?",
         ]
     },
@@ -192,35 +200,37 @@ const Radiology = {
             "Is there a patient charter in both English and Setswana",
             "Is there provision for consent before carrying out any procedures/assessment",
             "Is there a complaints, procedure",
+            "Is there a complaints, procedure",
         ]
     },
     "HIV SCREENING": {
         "showOnly": [
-            "Does the -ray room have adequate space?",
-            "Does the -ray room have wheelchair accessibility?",
-            "Are the following items available in the room?",
-            "Red warning light at the entrance, which automatically switches on whenever eposure is made.",
-            "Eamination/treatment couch with tiltable headrest.",
-            "Lead gowns of different lead equivalence for staff and relatives",
-            "Different sizes of gonad protection.",
-            "Thyroid shields.",
-            "Control panel shielded with lead window.",
-            "-Ray viewing bo?",
-            "Gloves  non-sterile",
-            "Waste bin with lid for clinical waste?",
-            "Waste bin with lid for non-clinical waste? Sharps disposal container.",
-            "Are the walls barium-plastered?",
-            "Are the walls built from concrete bricks 30cm wide or have an air gap?",
-            "Are the doors lined with lead?",
-            "Are the doors sliding type?",
-            "If doors are not sliding, do they have lead strips along the edges to prevent radiation leakages?",
-            "If windows eist, are they leaded",
-            "Is the ultrasound machine commissioned and records available?",
-            "Is there provision for a change room for patients?",
-            "Is the room accessible by the handicapped( wheel chairs users)etc.",
-            "Is the room equipped with clinical waste bin, domestic waste bin?",
-            "Is there adequate ventilation and lighting?",
-            "Is there provision for handwashing?",
+            "ray room --",
+            "· Does the -ray room have adequate space?",
+            "· Does the -ray room have wheelchair accessibility?",
+            "· Are the following items available in the room?",
+            "· Red warning light at the entrance, which automatically switches on whenever eposure is made.",
+            "· Eamination/treatment couch with tiltable headrest.",
+            "· Lead gowns of different lead equivalence for staff and relatives",
+            "· Different sizes of gonad protection.",
+            "· Thyroid shields.",
+            "· Control panel shielded with lead window.",
+            "· -Ray viewing bo?",
+            "· Gloves  non-sterile",
+            "· Waste bin with lid for clinical waste?",
+            "· Waste bin with lid for non-clinical waste? Sharps disposal container.",
+            "· Are the walls barium-plastered?",
+            "· Are the walls built from concrete bricks 30cm wide or have an air gap?",
+            "· Are the doors lined with lead?",
+            "· Are the doors sliding type?",
+            "· If doors are not sliding, do they have lead strips along the edges to prevent radiation leakages?",
+            "· If windows eist, are they leaded",
+            "· Is the ultrasound machine commissioned and records available?",
+            "· Is there provision for a change room for patients?",
+            "· Is the room accessible by the handicapped( wheel chairs users)etc.",
+            "· Is the room equipped with clinical waste bin, domestic waste bin?",
+            "· Is there adequate ventilation and lighting?",
+            "· Is there provision for handwashing?",
         ]
     },
 

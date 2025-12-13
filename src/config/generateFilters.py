@@ -26,6 +26,7 @@ Updated: 2025-09-21 (Added facilityServiceDepartments.js generation)
 
 import csv
 import json
+import re
 from datetime import datetime
 from pathlib import Path
 
@@ -78,11 +79,11 @@ class FacilityFilterGenerator:
 
             # Detect section headers - fully capitalized names (no lowercase letters)
             if (first_column and
-                first_column.isupper() and
-                len(first_column) > 3 and
+                ((first_column.isupper() and len(first_column) > 3) or first_column.upper().startswith('FACILITY-')) and
                 not first_column.endswith('?')):
 
-                current_section = first_column
+                # Normalize: Uppercase and remove spaces around hyphens
+                current_section = re.sub(r'\s*-\s*', '-', first_column.upper())
                 if current_section not in self.sections:
                     self.sections.append(current_section)
                     print(f"📋 Found section: {current_section}")
