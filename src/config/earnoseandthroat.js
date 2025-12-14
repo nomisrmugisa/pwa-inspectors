@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist for facilities2.0.csv
- * Generated on: 2025-12-14 17:54:36
+ * Generated on: 2025-12-14 20:45:42
  * Facility Type: Ear, Nose & Throat
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -28,7 +28,7 @@ const EarNoseandThroat = {
             "waste collection carrier licence",
             "confidentiality clause",
             "proof of change of land use",
-            "Practitioners licence",
+            "Practitioners licence",
             "Fire clearance",
             "residence permit",
             "Does the Facility have policies and procedures for the following?--",

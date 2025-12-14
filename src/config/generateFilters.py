@@ -232,17 +232,41 @@ const facilityServiceFilters = {{
 {chr(10).join(mappings)}
 }};
 
-export function shouldShowDataElementForService(dataElementName, selectedService) {{
+export function shouldShowDataElementForService(dataElementName, selectedService, sectionName = null) {{
     if (!selectedService || !facilityServiceFilters[selectedService]) {{
         return true; // Show all if no service selected or service not found
     }}
 
     const serviceFilters = facilityServiceFilters[selectedService];
 
-    // Check if the data element should be shown for this service
+    // Helper to normalize strings for comparison (handles apostrophes)
+    const normalize = (str) => {{
+        if (!str) return '';
+        return str.replace(/['‘’]/g, "").trim();
+    }};
+
+    const normalizedDataElementName = normalize(dataElementName);
+
+    // If a section name is provided, only check within that specific section
+    if (sectionName) {{
+        const section = serviceFilters[sectionName];
+        if (section && section.showOnly) {{
+            return section.showOnly.some(item => 
+                item === dataElementName || normalize(item) === normalizedDataElementName
+            );
+        }}
+        // If section doesn't exist in filters, don't show the element
+        return false;
+    }}
+
+    // If no section name provided, check across all sections (legacy behavior)
     for (const section in serviceFilters) {{
-        if (serviceFilters[section].showOnly && serviceFilters[section].showOnly.includes(dataElementName)) {{
-            return true;
+        if (serviceFilters[section].showOnly) {{
+            if (serviceFilters[section].showOnly.some(item => 
+                item === dataElementName || normalize(item) === normalizedDataElementName
+            )) {{
+                return true;
+            }}
         }}
     }}
 
