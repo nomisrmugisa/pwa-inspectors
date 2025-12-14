@@ -2517,10 +2517,15 @@ const DEPARTMENT_SECTION_MAPPING = {
   'RECEPTION AREA': ['RECEPTION AREA'],
   'PATIENT WAITING AREA': ['PATIENT WAITING AREA'],
   'FACILITY-RECEPTION/WAITING AREA': ['FACILITY-RECEPTION/WAITING AREA'],
+  'FACILITY - RECEPTION/WAITING AREA': ['FACILITY-RECEPTION/WAITING AREA'],
+  'FACILITY- RECEPTION/WAITING AREA': ['FACILITY-RECEPTION/WAITING AREA'],
+  'FACILITY-RECEPTION/ WAITING AREA': ['FACILITY-RECEPTION/WAITING AREA'],
   'FACILITY-ENVIRONMENT': ['FACILITY-ENVIRONMENT'],
   'FACILITY-ENVIONMENT': ['FACILITY-ENVIONMENT'],
   'FACILITY-EVIRONMENT': ['FACILITY-EVIRONMENT'],
   'FACILITY-PROCEDURE ROOM': ['FACILITY-PROCEDURE ROOM'],
+  'FACILITY - PROCEDURE ROOM': ['FACILITY-PROCEDURE ROOM'],
+  'FACILITY- PROCEDURE ROOM': ['FACILITY-PROCEDURE ROOM'],
 
   // Clinical Rooms - General
   'SCREENING ROOM': ['SCREENING ROOM'],
@@ -2555,6 +2560,7 @@ const DEPARTMENT_SECTION_MAPPING = {
 
   // Pharmacy and Supplies
   'PHARMACY/ DISPENSARY': ['PHARMACY/ DISPENSARY'],
+  'PHARMACY/DISPENSARY': ['PHARMACY/DISPENSARY'],
   'SUPPLIES': ['SUPPLIES'],
 
   // Information Management
@@ -2929,7 +2935,11 @@ function FormPage() {
         });
       }
 
-      if (keywords.some(k => sectionLower.includes(k.toLowerCase()))) {
+      if (keywords.some(k => {
+        const keywordLower = k.toLowerCase();
+        // Exact match: section name must equal the keyword
+        return sectionLower === keywordLower;
+      })) {
         return true;
       }
     }

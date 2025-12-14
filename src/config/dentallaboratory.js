@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist for facilities2.0.csv
- * Generated on: 2025-12-13 16:03:49
+ * Generated on: 2025-12-14 17:54:36
  * Facility Type: Dental Laboratory
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -127,9 +127,8 @@ const DentalLaboratory = {
             "Are educational materials available for clients",
         ]
     },
-    "FACILITY-PROCEDURE ROOM": {
+    "TOILET FACILITIES": {
         "showOnly": [
-            "Toilet facilities--",
             "Is there a minimum of two toilets available (for male and",
             "Female patients)?",
             "Are they labelled male and female?",
@@ -142,7 +141,10 @@ const DentalLaboratory = {
             "Does the female toilet have sanitary pads disposal?",
             "Are toilets aesthetically pleasing?",
             "Is there provision for paediatric clients?",
-            "Safety and waste management --",
+        ]
+    },
+    "SAFETY AND WASTE MANAGEMENT": {
+        "showOnly": [
             "Does the Facility have a policy on waste management?",
             "Does the Facility have SOPs on waste management?",
             "Does the Facility have a waste disposal system? Specify:",
@@ -160,14 +162,14 @@ const DentalLaboratory = {
             "Fire Hose reel",
             "Does the Facility have a written program for maintaining fire protection equipment ?",
             "Does the Facility have adequate security?",
-            ".A larm system?",
-            ". Burglar bars?",
-            ". Lockable gates?",
+            "A larm system?",
+            "Burglar bars?",
+            "Lockable gates?",
         ]
     },
     "SUPPLIES": {
         "showOnly": [
-            "Does the Facility have the following policies",
+            "Does the Facility have the following policies--",
             "supplies and purchasing",
             "management of expired supplies",
             "Does the Facility have adequate supplies for services provided",
@@ -207,6 +209,7 @@ const DentalLaboratory = {
     },
     "TENS": {
         "showOnly": [
+            "Customer satisfaction--",
             "Is there a customer feedback mechanism",
             "Suggestion bo",
             "Customer surveys",

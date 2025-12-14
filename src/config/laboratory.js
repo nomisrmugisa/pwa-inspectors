@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist for facilities2.0.csv
- * Generated on: 2025-12-13 16:03:49
+ * Generated on: 2025-12-14 17:54:36
  * Facility Type: laboratory
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -147,27 +147,34 @@ const laboratory = {
     "FACILITY-PROCEDURE ROOM": {
         "showOnly": [
             "Pregnancy test kit",
+        ]
+    },
+    "BLEEDING ROOM": {
+        "showOnly": [
             "Does the bleeding room have space? Elaborate.",
             "Does the room have wheelchair accessibility?",
             "Is the room equipped with the following --",
-            "· 2 chairs",
-            "· Needles and syringes (different sizes)",
-            "· Vacutainers of different colours",
-            "· Tourniquet",
-            "· Plaster",
-            "· Cotton swab",
-            "· Disinfectant",
-            "· Sharps container",
-            "· Clinical waste bin with lid",
-            "· Domestic waste bin with lid",
-            "· Hand wash basin with running hot and cold water",
-            ". Hand wash soap",
-            "· Appropriate hand drying facilities",
-            "· Disposable gloves",
-            "· Cooler bo",
-            "· Ice packs",
+            "2 chairs",
+            "Needles and syringes (different sizes)",
+            "Vacutainers of different colours",
+            "Tourniquet",
+            "Plaster",
+            "Cotton swab",
+            "Disinfectant",
+            "Sharps container",
+            "Clinical waste bin with lid",
+            "Domestic waste bin with lid",
+            "Hand wash basin with running hot and cold water",
+            "Hand wash soap",
+            "Appropriate hand drying facilities",
+            "Disposable gloves",
+            "Cooler bo",
+            "Ice packs",
             "Specimen racks",
-            "Toilet facilities--",
+        ]
+    },
+    "TOILET FACILITIES": {
+        "showOnly": [
             "Is there a minimum of two toilets available (for male and",
             "Female patients)?",
             "Are they labelled male and female?",
@@ -180,7 +187,10 @@ const laboratory = {
             "Does the female toilet have sanitary pads disposal?",
             "Are toilets aesthetically pleasing?",
             "Is there provision for paediatric clients?",
-            "Safety and waste management --",
+        ]
+    },
+    "SAFETY AND WASTE MANAGEMENT": {
+        "showOnly": [
             "Does the Facility have a policy on waste management?",
             "Does the Facility have SOPs on waste management?",
             "Does the Facility have a waste disposal system? Specify:",
@@ -198,14 +208,14 @@ const laboratory = {
             "Fire Hose reel",
             "Does the Facility have a written program for maintaining fire protection equipment ?",
             "Does the Facility have adequate security?",
-            ".A larm system?",
-            ". Burglar bars?",
-            ". Lockable gates?",
+            "A larm system?",
+            "Burglar bars?",
+            "Lockable gates?",
         ]
     },
     "SUPPLIES": {
         "showOnly": [
-            "Does the Facility have the following policies",
+            "Does the Facility have the following policies--",
             "supplies and purchasing",
             "management of expired supplies",
             "Does the Facility have adequate supplies for services provided",
@@ -214,6 +224,7 @@ const laboratory = {
     },
     "TENS": {
         "showOnly": [
+            "Customer satisfaction--",
             "Is there a customer feedback mechanism",
             "Suggestion bo",
             "Customer surveys",
@@ -246,7 +257,7 @@ const laboratory = {
             "Are there adequate lab stools and benches?",
             "Is there hand washing provision?",
             "Is there air-conditioner with monitoring device and chart?",
-            "List the clinical chemistry tests done by the lab:--",
+            "List the clinical chemistry tests done by the lab:",
             "Does the lab have Technical SOPs (test methods)",
             "Does the lab have the following equipment: --",
             "· Chemistry analyser",
@@ -269,6 +280,7 @@ const laboratory = {
             "· Are lab equipment calibrated",
             "· Is there an equipment preventative maintenance plan?",
             "· Is epiry of items monitored?",
+            "Laboratory testing areas Haematology:--",
             "Does the testing area have adequate space?",
             "Are there adequate lab stools and benches?",
             "Is there hand washing provision?",
@@ -281,7 +293,7 @@ const laboratory = {
             "Is there air-conditioner with monitoring device and chart?",
             "List clinical tests done at Haematology:",
             "Does the lab have Technical SOPs (test methods",
-            "Does the lab have the following-- equipment?",
+            "Does the lab have the following-- equipment? --",
             "· Haematology analyser?",
             "· Microscope?",
             "· Staining Racks?",
