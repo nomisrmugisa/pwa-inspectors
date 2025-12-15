@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 
 import { useApp } from '../contexts/AppContext';
 
@@ -2530,9 +2530,11 @@ const DEPARTMENT_SECTION_MAPPING = {
   // Clinical Rooms - General
   'SCREENING ROOM': ['SCREENING ROOM'],
   'FACILITY SCREENING ROOM': ['FACILITY SCREENING ROOM'],
-  'FACILITY- SCREENING ROOM': ['FACILITY- SCREENING ROOM'],
   'FACILITY-SCREENING ROOM': ['FACILITY-SCREENING ROOM'],
-  'FACILITY - SCREENING ROOM': ['FACILITY - SCREENING ROOM'],
+  'FACILITY - SCREENING ROOM': ['FACILITY-SCREENING ROOM'],
+  'FACILITY- Screening room': ['FACILITY-SCREENING ROOM'],
+  'FACILITY- SCREENING ROOM': ['FACILITY-SCREENING ROOM'],
+  'FACILITY -SCREENING ROOM': ['FACILITY-SCREENING ROOM'],
   'CONSULTATION ROOM': ['CONSULTATION ROOM'],
   'FACILITY CONSULTATION/TREATMENT ROOM': ['FACILITY CONSULTATION/TREATMENT ROOM'],
   'FACILITY- CONSULTATION/TREATMENT ROOM': ['FACILITY- CONSULTATION/TREATMENT ROOM'],
@@ -2672,11 +2674,24 @@ function FormPage() {
   const { eventId } = useParams();
 
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const isNewInspectionRequest = searchParams.get('new') === 'true';
+
   // Ensure we always have an eventId for incremental saving
   // If no eventId, check for most recent draft first before generating new one
   useEffect(() => {
     const initializeEventId = async () => {
       if (!eventId) {
+        // If explicitly requested new inspection, skip draft check
+        if (isNewInspectionRequest) {
+          const generatedId = generateDHIS2Id();
+          console.log('🆕 New inspection requested, generating new eventId:', generatedId);
+          // Pass state to indicate this is a fresh start
+          navigate(`/form/${generatedId}`, { replace: true, state: { isNew: true } });
+          return;
+        }
+
         try {
           // Check for most recent draft form data
           const mostRecent = await indexedDBService.getMostRecentFormData();
@@ -2701,7 +2716,7 @@ function FormPage() {
     };
 
     initializeEventId();
-  }, [eventId, navigate]);
+  }, [eventId, navigate, isNewInspectionRequest]);
 
   // const api = useAPI();
 
@@ -2937,8 +2952,16 @@ function FormPage() {
 
       if (keywords.some(k => {
         const keywordLower = k.toLowerCase();
-        // Exact match: section name must equal the keyword
-        return sectionLower === keywordLower;
+
+        // Normalize section name by removing "SECTION X-" prefix if present
+        const normalizedSectionLower = sectionLower.replace(/^section\s+[a-z]\s*-\s*/i, '');
+
+        // Check for exact match or if the section name contains the keyword
+        // We check both the full section name and the normalized one
+        return sectionLower === keywordLower ||
+          normalizedSectionLower === keywordLower ||
+          sectionLower.includes(keywordLower) ||
+          normalizedSectionLower.includes(keywordLower);
       })) {
         return true;
       }
@@ -4065,6 +4088,26 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
   const [facilityClassifications, setFacilityClassifications] = useState([]);
 
   const [loadingFacilityClassifications, setLoadingFacilityClassifications] = useState(false);
+
+  // Reset form data if this is a fresh start (indicated by location state)
+  useEffect(() => {
+    if (location.state?.isNew && eventId) {
+      console.log('🧹 Clearing form data for new inspection');
+      setFormData({
+        orgUnit: '',
+        eventDate: new Date().toISOString().split('T')[0],
+      });
+      // Reset other states
+      setFacilityType(null);
+      setFacilityInfo(null);
+      setSelectedServiceDepartments([]);
+      setManualSpecialization('');
+      setTrackedEntityInstance(null);
+      setGpsCoordinates(null);
+      setFormStats({ percentage: 0, filled: 0, total: 0 });
+      setSaveStatus({ isVisible: false, message: '', type: 'success' });
+    }
+  }, [location.state, eventId]);
 
   // State for inspection information confirmation (moved to top of FormPage function)
 

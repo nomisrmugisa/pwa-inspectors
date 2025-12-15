@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist for facilities2.0.csv
- * Generated on: 2025-12-15 11:55:24
+ * Generated on: 2025-12-15 14:34:54
  *
  * This file imports all individual clinic filter files and combines them
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -50,6 +50,7 @@ const facilityServiceFilters = {
     'Service Nursing Home': NursingHome,
 };
 
+
 export function shouldShowDataElementForService(dataElementName, selectedService, sectionName = null) {
     if (!selectedService || !facilityServiceFilters[selectedService]) {
         return true; // Show all if no service selected or service not found
@@ -57,22 +58,53 @@ export function shouldShowDataElementForService(dataElementName, selectedService
 
     const serviceFilters = facilityServiceFilters[selectedService];
 
-    // Helper to normalize strings for comparison (handles apostrophes)
+    // Helper to normalize strings for comparison (handles apostrophes, case, and whitespace)
     const normalize = (str) => {
         if (!str) return '';
-        return str.replace(/['‘’]/g, "").trim();
+        return str.replace(/['‘’]/g, "").toLowerCase().trim();
     };
 
     const normalizedDataElementName = normalize(dataElementName);
 
+    // Helper to find a section key case-insensitively
+    const findSectionKey = (filters, name) => {
+        if (!name) return null;
+        const normalizedName = normalize(name);
+        // First try exact match
+        if (filters[name]) return name;
+        // Then try case-insensitive match
+        return Object.keys(filters).find(key => normalize(key) === normalizedName);
+    };
+
     // If a section name is provided, only check within that specific section
     if (sectionName) {
-        const section = serviceFilters[sectionName];
-        if (section && section.showOnly) {
-            return section.showOnly.some(item => 
-                item === dataElementName || normalize(item) === normalizedDataElementName
-            );
+        // Try to find the section key (handling case mismatches)
+        const matchedSectionKey = findSectionKey(serviceFilters, sectionName);
+
+        if (matchedSectionKey) {
+            const section = serviceFilters[matchedSectionKey];
+            if (section && section.showOnly) {
+                return section.showOnly.some(item =>
+                    item === dataElementName || normalize(item) === normalizedDataElementName
+                );
+            }
         }
+
+        // Let's try one more fallback: check if the section name is a substring of a key or vice versa
+        const looseSectionKey = Object.keys(serviceFilters).find(key =>
+            key.toLowerCase().includes(sectionName.toLowerCase()) ||
+            sectionName.toLowerCase().includes(key.toLowerCase())
+        );
+
+        if (looseSectionKey) {
+            const section = serviceFilters[looseSectionKey];
+            if (section && section.showOnly) {
+                return section.showOnly.some(item =>
+                    item === dataElementName || normalize(item) === normalizedDataElementName
+                );
+            }
+        }
+
         // If section doesn't exist in filters, don't show the element
         return false;
     }
@@ -80,7 +112,7 @@ export function shouldShowDataElementForService(dataElementName, selectedService
     // If no section name provided, check across all sections (legacy behavior)
     for (const section in serviceFilters) {
         if (serviceFilters[section].showOnly) {
-            if (serviceFilters[section].showOnly.some(item => 
+            if (serviceFilters[section].showOnly.some(item =>
                 item === dataElementName || normalize(item) === normalizedDataElementName
             )) {
                 return true;

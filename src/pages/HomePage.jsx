@@ -123,8 +123,8 @@ export function HomePage() {
       return;
     }
 
-    // As requested, "New Inspection" should log the user out
-    await logout();
+    // Navigate to the new form page
+    navigate('/form?new=true');
   };
 
   const handleEditForm = (event) => {

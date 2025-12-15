@@ -1,24 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { CSVConfigParser, DHIS2DataElementMapper } from '../utils/csvConfigParser';
 import { Form, Button, Container, Row, Col, Spinner, Alert, Accordion, Nav, Badge, Card, Table } from 'react-bootstrap';
-import SearchIcon from '@mui/icons-material/Search';
-import AssignmentIcon from '@mui/icons-material/Assignment';
-import ViewListIcon from '@mui/icons-material/ViewList';
-import DescriptionIcon from '@mui/icons-material/Description';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import WarningIcon from '@mui/icons-material/Warning';
-import ErrorIcon from '@mui/icons-material/Error';
+import { FaSearch, FaClipboardList, FaList, FaFileAlt, FaCheckCircle, FaExclamationTriangle, FaTimesCircle } from 'react-icons/fa';
+
 
 /**
  * Dynamic Form Renderer Component
  * Renders forms based on CSV configuration with actual DHIS2 Data Elements
  * Automatically renders comment Data Elements that follow main Data Elements
  */
-export function DynamicFormRenderer({ 
-  csvContent, 
-  facilityType, 
+export function DynamicFormRenderer({
+  csvContent,
+  facilityType,
   dhis2DataElements = [], // Actual DHIS2 Data Elements
-  onFormSubmit, 
+  onFormSubmit,
   initialValues = {},
   readOnly = false,
   showDebugPanel = false // New prop for debug panel
@@ -39,18 +34,18 @@ export function DynamicFormRenderer({
         try {
           const parser = new CSVConfigParser(csvContent);
           const mapper = new DHIS2DataElementMapper(parser);
-          
+
           setCsvConfig(parser);
-          
+
           // Validate mapping between CSV and DHIS2 Data Elements
           const validation = mapper.validateMapping(dhis2DataElements);
           setMappingValidation(validation);
-          
+
           if (facilityType && validation.isValid) {
             const config = await mapper.getFormConfig(facilityType, dhis2DataElements); // Await the async call
             setFormConfig(config);
             console.log('🔗 [DynamicFormRenderer] Final Form Config:', config);
-            
+
             // Generate debug information
             if (showDebugPanel) {
               const debug = generateDebugInfo(parser, mapper, dhis2DataElements, config);
@@ -68,7 +63,7 @@ export function DynamicFormRenderer({
   // Generate comprehensive debug information
   const generateDebugInfo = (parser, mapper, dhis2Elements, formConfig) => {
     const rawMapping = mapper.mapDHIS2DataElements(dhis2Elements);
-    
+
     return {
       csvStructure: {
         facilityTypes: parser.getAvailableFacilityTypes(),
@@ -124,7 +119,7 @@ export function DynamicFormRenderer({
       ...prev,
       [fieldId]: value
     }));
-    
+
     // Clear error for this field
     if (errors[fieldId]) {
       setErrors(prev => ({
@@ -137,11 +132,11 @@ export function DynamicFormRenderer({
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     // All fields are optional - no validation required
     const newErrors = {};
     setErrors(newErrors);
-    
+
     // Submit form data
     if (onFormSubmit) {
       onFormSubmit(formData);
@@ -348,14 +343,14 @@ export function DynamicFormRenderer({
       <Accordion defaultActiveKey="0" className="mb-3">
         <Card>
           <Accordion.Header as="h3" className="debug-panel-header">
-            <SearchIcon style={{ marginRight: '8px', fontSize: '20px' }} />
+            <FaSearch style={{ marginRight: '8px', fontSize: '20px' }} />
             Debug Information
           </Accordion.Header>
           <Accordion.Body>
             <Accordion>
               <Card>
                 <Accordion.Header as="h4" eventKey="0">
-                  <AssignmentIcon style={{ marginRight: '8px', fontSize: '18px' }} />
+                  <FaClipboardList style={{ marginRight: '8px', fontSize: '18px' }} />
                   CSV Structure ({debugInfo.csvStructure.totalQuestions} questions)
                 </Accordion.Header>
                 <Accordion.Body>
@@ -445,17 +440,17 @@ export function DynamicFormRenderer({
                                     <td>
                                       {pair.mainDE === 'NOT FOUND' ? (
                                         <Badge bg="danger">
-                                          <ErrorIcon style={{ fontSize: '14px', marginRight: '4px' }} />
+                                          <FaTimesCircle style={{ fontSize: '14px', marginRight: '4px' }} />
                                           Unmapped
                                         </Badge>
                                       ) : pair.commentDE === 'NOT FOUND' ? (
                                         <Badge bg="warning">
-                                          <WarningIcon style={{ fontSize: '14px', marginRight: '4px' }} />
+                                          <FaExclamationTriangle style={{ fontSize: '14px', marginRight: '4px' }} />
                                           No Comment
                                         </Badge>
                                       ) : (
                                         <Badge bg="success">
-                                          <CheckCircleIcon style={{ fontSize: '14px', marginRight: '4px' }} />
+                                          <FaCheckCircle style={{ fontSize: '14px', marginRight: '4px' }} />
                                           Complete
                                         </Badge>
                                       )}
@@ -475,9 +470,9 @@ export function DynamicFormRenderer({
               {debugInfo.formConfig && (
                 <Card>
                   <Accordion.Header as="h4" eventKey="3">
-                  <DescriptionIcon style={{ marginRight: '8px', fontSize: '18px' }} />
-                  Form Configuration ({debugInfo.formConfig.facilityType})
-                </Accordion.Header>
+                    <FaFileAlt style={{ marginRight: '8px', fontSize: '18px' }} />
+                    Form Configuration ({debugInfo.formConfig.facilityType})
+                  </Accordion.Header>
                   <Accordion.Body>
                     {debugInfo.formConfig.sections.map(section => (
                       <div key={section.name} className="mb-2">
@@ -614,7 +609,7 @@ export function DynamicFormRenderer({
           <Row className="mb-3">
             <Col>
               <h3>
-                <SearchIcon style={{ marginRight: '8px', fontSize: '24px', verticalAlign: 'middle' }} />
+                <FaSearch style={{ marginRight: '8px', fontSize: '24px', verticalAlign: 'middle' }} />
                 Form Debug Information
               </h3>
               <Row className="g-2">
@@ -672,7 +667,7 @@ export function DynamicFormRenderer({
                 </Col>
               </Row>
               <h4 className="mt-3">
-                <AssignmentIcon style={{ marginRight: '8px', fontSize: '20px', verticalAlign: 'middle' }} />
+                <FaClipboardList style={{ marginRight: '8px', fontSize: '20px', verticalAlign: 'middle' }} />
                 Section Details
               </h4>
               <Row className="g-2">
@@ -686,8 +681,8 @@ export function DynamicFormRenderer({
                           <strong>Mapped:</strong> <Badge bg="success">{section.dataElements?.length || 0}</Badge><br />
                           <strong>Coverage:</strong> <Badge bg="info">
                             {csvConfig?.sections.find(s => s.name === section.name)?.questions?.length > 0 ?
-                            `${((section.dataElements?.length || 0) / csvConfig.sections.find(s => s.name === section.name)?.questions?.length * 100).toFixed(1)}%` :
-                            'N/A'
+                              `${((section.dataElements?.length || 0) / csvConfig.sections.find(s => s.name === section.name)?.questions?.length * 100).toFixed(1)}%` :
+                              'N/A'
                             }
                           </Badge>
                         </Card.Text>
@@ -714,12 +709,12 @@ export function DynamicFormRenderer({
               >
                 {viewAllSections ? (
                   <>
-                    <ViewListIcon style={{ marginRight: '8px', fontSize: '16px' }} />
+                    <FaList style={{ marginRight: '8px', fontSize: '16px' }} />
                     View Section by Section
                   </>
                 ) : (
                   <>
-                    <DescriptionIcon style={{ marginRight: '8px', fontSize: '16px' }} />
+                    <FaFileAlt style={{ marginRight: '8px', fontSize: '16px' }} />
                     View All Sections
                   </>
                 )}

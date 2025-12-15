@@ -176,8 +176,8 @@ const {sanitized_name} = {{
 
             for question in section_config["showOnly"]:
                 # Sanitize: collapse newlines, remove CRs, and escape backslashes/quotes
-                sanitized = question.replace('\r\n', ' ').replace('\n', ' ').replace('\r', ' ').strip()
-                sanitized = sanitized.replace('\\', '\\\\').replace('"', '\\"')
+                sanitized = question.replace('\\r\\n', ' ').replace('\\n', ' ').replace('\\r', ' ').strip()
+                sanitized = sanitized.replace('\\\\', '\\\\\\\\').replace('"', '\\\\"')
                 content += f'            "{sanitized}",\n'
 
             content += f'        ]\n'
@@ -217,7 +217,8 @@ export default {sanitized_name};
             mappings.append(f"    '{facility_type}': {sanitized_name},")
             mappings.append(f"    'Service {facility_type}': {sanitized_name},")
 
-        content = f'''/**
+        # Use standard string for the header and imports
+        header = f'''/**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist for facilities2.0.csv
  * Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
@@ -226,52 +227,88 @@ export default {sanitized_name};
  * To regenerate this file, run: python src/config/generateFilters.py
  */
 
-{chr(10).join(imports)}
-
-const facilityServiceFilters = {{
-{chr(10).join(mappings)}
-}};
-
-export function shouldShowDataElementForService(dataElementName, selectedService, sectionName = null) {{
-    if (!selectedService || !facilityServiceFilters[selectedService]) {{
+'''
+        
+        # Construct the content part by part to avoid f-string escaping issues
+        content = header
+        content += "\\n".join(imports) + "\\n\\n"
+        content += "const facilityServiceFilters = {\\n"
+        content += "\\n".join(mappings) + "\\n"
+        content += "};\\n\\n"
+        
+        # Append the JS function as a raw string
+        content += r'''
+export function shouldShowDataElementForService(dataElementName, selectedService, sectionName = null) {
+    if (!selectedService || !facilityServiceFilters[selectedService]) {
         return true; // Show all if no service selected or service not found
-    }}
+    }
 
     const serviceFilters = facilityServiceFilters[selectedService];
 
-    // Helper to normalize strings for comparison (handles apostrophes)
-    const normalize = (str) => {{
+    // Helper to normalize strings for comparison (handles apostrophes, case, and whitespace)
+    const normalize = (str) => {
         if (!str) return '';
-        return str.replace(/['‘’]/g, "").trim();
-    }};
+        return str.replace(/['‘’]/g, "").toLowerCase().trim();
+    };
 
     const normalizedDataElementName = normalize(dataElementName);
 
+    // Helper to find a section key case-insensitively
+    const findSectionKey = (filters, name) => {
+        if (!name) return null;
+        const normalizedName = normalize(name);
+        // First try exact match
+        if (filters[name]) return name;
+        // Then try case-insensitive match
+        return Object.keys(filters).find(key => normalize(key) === normalizedName);
+    };
+
     // If a section name is provided, only check within that specific section
-    if (sectionName) {{
-        const section = serviceFilters[sectionName];
-        if (section && section.showOnly) {{
-            return section.showOnly.some(item => 
-                item === dataElementName || normalize(item) === normalizedDataElementName
-            );
-        }}
+    if (sectionName) {
+        // Try to find the section key (handling case mismatches)
+        const matchedSectionKey = findSectionKey(serviceFilters, sectionName);
+        
+        if (matchedSectionKey) {
+            const section = serviceFilters[matchedSectionKey];
+            if (section && section.showOnly) {
+                return section.showOnly.some(item => 
+                    item === dataElementName || normalize(item) === normalizedDataElementName
+                );
+            }
+        }
+        
+        // Let's try one more fallback: check if the section name is a substring of a key or vice versa
+        const looseSectionKey = Object.keys(serviceFilters).find(key => 
+            key.toLowerCase().includes(sectionName.toLowerCase()) || 
+            sectionName.toLowerCase().includes(key.toLowerCase())
+        );
+        
+        if (looseSectionKey) {
+             const section = serviceFilters[looseSectionKey];
+             if (section && section.showOnly) {
+                return section.showOnly.some(item => 
+                    item === dataElementName || normalize(item) === normalizedDataElementName
+                );
+            }
+        }
+
         // If section doesn't exist in filters, don't show the element
         return false;
-    }}
+    }
 
     // If no section name provided, check across all sections (legacy behavior)
-    for (const section in serviceFilters) {{
-        if (serviceFilters[section].showOnly) {{
+    for (const section in serviceFilters) {
+        if (serviceFilters[section].showOnly) {
             if (serviceFilters[section].showOnly.some(item => 
                 item === dataElementName || normalize(item) === normalizedDataElementName
-            )) {{
+            )) {
                 return true;
-            }}
-        }}
-    }}
+            }
+        }
+    }
 
     return false; // Hide if not in showOnly lists
-}}
+}
 
 export default facilityServiceFilters;
 '''
@@ -341,7 +378,7 @@ export const ALL_FACILITY_DEPARTMENTS = [
 
         # Add all departments
         for dept in all_departments:
-            content += f"  '{dept}',\n"
+            content += f"  '{dept}',\\n"
 
         content += '''];
 
@@ -351,10 +388,10 @@ export const SPECIALIZATION_DEPARTMENT_MAPPING = {
 
         # Add specialization mappings
         for facility_type, departments in specialization_mapping.items():
-            content += f"  '{facility_type}': [\n"
+            content += f"  '{facility_type}': [\\n"
             for dept in departments:
-                content += f"    '{dept}',\n"
-            content += f"  ],\n\n"
+                content += f"    '{dept}',\\n"
+            content += f"  ],\\n\\n"
 
         content += '''};
 
@@ -443,7 +480,7 @@ export default {
             # Parse the CSV file
             self.parse_csv()
 
-            print("\n🔧 Generating individual filter files...")
+            print("\\n🔧 Generating individual filter files...")
             generated_files = []
 
             # Generate filter file for each facility type
@@ -456,18 +493,18 @@ export default {
                     print(f"⚠️  No applicable questions found for: {facility_type}")
 
             # Generate main filters file
-            print(f"\n🔧 Generating main facilityServiceFilters.js...")
+            print(f"\\n🔧 Generating main facilityServiceFilters.js...")
             self.generate_main_filters_file()
 
             # Generate facility service departments file
-            print(f"\n🏢 Generating facilityServiceDepartments.js...")
+            print(f"\\n🏢 Generating facilityServiceDepartments.js...")
             self.generate_facility_service_departments_file()
 
             # Generate summary report
-            print(f"\n📊 Generating summary report...")
+            print(f"\\n📊 Generating summary report...")
             self.generate_summary_report()
 
-            print("\n" + "=" * 60)
+            print("\\n" + "=" * 60)
             print("✅ Generation Complete!")
             print(f"📁 Generated {len(generated_files)} facility filter files")
             print(f"📁 Generated main filter file: facilityServiceFilters.js")
@@ -487,8 +524,8 @@ if __name__ == "__main__":
     success = generator.run()
 
     if success:
-        print("\n🎉 Filter generation completed successfully!")
+        print("\\n🎉 Filter generation completed successfully!")
         print("💡 You can now use the generated filter files in your application.")
     else:
-        print("\n💥 Filter generation failed. Please check the error messages above.")
+        print("\\n💥 Filter generation failed. Please check the error messages above.")
         exit(1)
