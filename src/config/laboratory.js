@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist for facilities2.0.csv
- * Generated on: 2025-12-14 20:45:42
+ * Generated on: 2025-12-15 11:55:24
  * Facility Type: laboratory
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -12,7 +12,6 @@ const laboratory = {
         "showOnly": [
             "Does the Facility have an organisational structure",
             "Is the director a medically trained person?",
-            "Does the facility comply with regulatory requirements? --",
             "Business registration",
             "Tax clearance certificate",
             "Valid private pactice license",
@@ -20,7 +19,7 @@ const laboratory = {
             "Residence permit",
             "Lease agreement",
             "Occupancy certificate",
-            "Permission to operate/set up",
+            "Trading license",
             "Patient charter in English & Setswana",
             "Is there an indemnity insurance?",
             "contracts for staff",
@@ -34,8 +33,8 @@ const laboratory = {
             "residence permit",
             "Does the Facility have policies and procedures for the following?--",
             "Patient referral",
-            "Assessment of patients",
             "Management of high risk patients",
+            "The confidentiality of patient information",
             "Incident reporting",
             "Induction and orientation",
             "Patient consent",
@@ -58,9 +57,6 @@ const laboratory = {
             "Treatment protocols/ guidelines",
             "Testing and treatment techniques",
             "Copies of relevant statutory instruments",
-            "Treatment protocols/ guidelines",
-            "Testing and treatment techniques",
-            "Copies of relevant statutory instruments",
         ]
     },
     "SERVICES PROVIDED": {
@@ -78,7 +74,6 @@ const laboratory = {
             "Is there permission to offer the outreach services",
             "Agreement letter with a doctor where outreach services will be offered from",
             "Is there provision of emergency outreach services?",
-            "Is there provision of emergency outreach services?",
         ]
     },
     "PERSONNEL": {
@@ -91,7 +86,6 @@ const laboratory = {
             "Administrative Staff (Specify)",
             "Support staff (Specify)",
             "Are professionals registered with the relevant Councils?",
-            "Did personnel files have the following?--",
             "Signed job effectiveness description",
             "Education credentials",
             "A signed confidentiality clause",
@@ -99,7 +93,6 @@ const laboratory = {
             "Evidence of continued education",
             "Signed contracts or offer letters",
             "Medical eamination certificates",
-            "Evidence of continous Professional Development",
             "Evidence of continous Professional Development",
         ]
     },
@@ -226,11 +219,10 @@ const laboratory = {
         "showOnly": [
             "Customer satisfaction--",
             "Is there a customer feedback mechanism",
-            "Suggestion bo",
+            "Suggestion box",
             "Customer surveys",
             "Is there a patient charter in both English and Setswana",
             "Is there provision for consent before carrying out any procedures/assessment",
-            "Is there a complaints, procedure",
             "Is there a complaints, procedure",
             "Specimen reception room--",
             "Does the room have the following:",
@@ -319,6 +311,7 @@ const laboratory = {
             "· Are lab equipment calibrated",
             "· Is there an equipment preventative maintenance plan?",
             "Is epiry of items monitored?",
+            "Microbiology:--",
             "Does the testing area have adequate space?",
             "Are there adequate lab stools and benches?",
             "Is there hand washing provision?",
