@@ -494,7 +494,7 @@ export function HomePage() {
 
                     <div className="form-details">
                       <p className="org-unit">
-                        Building: {getFacilityName(event.orgUnit)}
+                        Facility: {getFacilityName(event.orgUnit)}
                       </p>
                       <p className="timestamps">
                         Date: Created: {formatDateTime(event.createdAt)}

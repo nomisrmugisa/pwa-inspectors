@@ -7242,7 +7242,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                 borderBottom: '2px solid #e9ecef',
                 paddingBottom: '16px'
               }}>
-                <h3 style={{ margin: 0, color: '#2c3e50' }}>📋 Inspection Payload</h3>
+                <h3 style={{ margin: 0, color: '#2c3e50' }}>📋 Inspection</h3>
                 <button
                   onClick={() => setShowPayloadDialog(false)}
                   style={{
