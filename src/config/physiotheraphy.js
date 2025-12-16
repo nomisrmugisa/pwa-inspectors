@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist for facilities2.0.csv
- * Generated on: 2025-12-15 14:34:54
+ * Generated on: 2025-12-16 06:54:40
  * Facility Type: Physiotheraphy
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -12,6 +12,7 @@ const Physiotheraphy = {
         "showOnly": [
             "Does the Facility have an organisational structure",
             "Is the director a medically trained person?",
+            "Does the facility comply with regulatory requirements? --",
             "Business registration",
             "Tax clearance certificate",
             "Valid private pactice license",
@@ -19,7 +20,7 @@ const Physiotheraphy = {
             "Residence permit",
             "Lease agreement",
             "Occupancy certificate",
-            "Trading license",
+            "Permission to operate/set up",
             "Patient charter in English & Setswana",
             "Is there an indemnity insurance?",
             "contracts for staff",
@@ -50,7 +51,7 @@ const Physiotheraphy = {
             "Management of supplies",
             "Patient observation",
             "Management of medication",
-            "Post eposure prophylais",
+            "Post exposure prophylaxis",
             "Complaints procedure",
             "Outreach services",
             "Waste management",
@@ -87,6 +88,7 @@ const Physiotheraphy = {
             "Administrative Staff (Specify)",
             "Support staff (Specify)",
             "Are professionals registered with the relevant Councils?",
+            "Did personnel files have the following?--",
             "Signed job effectiveness description",
             "Education credentials",
             "A signed confidentiality clause",

@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist for facilities2.0.csv
- * Generated on: 2025-12-15 14:34:54
+ * Generated on: 2025-12-16 06:54:40
  *
  * This file imports all individual clinic filter files and combines them
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -80,26 +80,26 @@ export function shouldShowDataElementForService(dataElementName, selectedService
     if (sectionName) {
         // Try to find the section key (handling case mismatches)
         const matchedSectionKey = findSectionKey(serviceFilters, sectionName);
-
+        
         if (matchedSectionKey) {
             const section = serviceFilters[matchedSectionKey];
             if (section && section.showOnly) {
-                return section.showOnly.some(item =>
+                return section.showOnly.some(item => 
                     item === dataElementName || normalize(item) === normalizedDataElementName
                 );
             }
         }
-
+        
         // Let's try one more fallback: check if the section name is a substring of a key or vice versa
-        const looseSectionKey = Object.keys(serviceFilters).find(key =>
-            key.toLowerCase().includes(sectionName.toLowerCase()) ||
+        const looseSectionKey = Object.keys(serviceFilters).find(key => 
+            key.toLowerCase().includes(sectionName.toLowerCase()) || 
             sectionName.toLowerCase().includes(key.toLowerCase())
         );
-
+        
         if (looseSectionKey) {
-            const section = serviceFilters[looseSectionKey];
-            if (section && section.showOnly) {
-                return section.showOnly.some(item =>
+             const section = serviceFilters[looseSectionKey];
+             if (section && section.showOnly) {
+                return section.showOnly.some(item => 
                     item === dataElementName || normalize(item) === normalizedDataElementName
                 );
             }
@@ -112,7 +112,7 @@ export function shouldShowDataElementForService(dataElementName, selectedService
     // If no section name provided, check across all sections (legacy behavior)
     for (const section in serviceFilters) {
         if (serviceFilters[section].showOnly) {
-            if (serviceFilters[section].showOnly.some(item =>
+            if (serviceFilters[section].showOnly.some(item => 
                 item === dataElementName || normalize(item) === normalizedDataElementName
             )) {
                 return true;

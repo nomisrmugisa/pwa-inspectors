@@ -231,10 +231,10 @@ export default {sanitized_name};
         
         # Construct the content part by part to avoid f-string escaping issues
         content = header
-        content += "\\n".join(imports) + "\\n\\n"
-        content += "const facilityServiceFilters = {\\n"
-        content += "\\n".join(mappings) + "\\n"
-        content += "};\\n\\n"
+        content += "\n".join(imports) + "\n\n"
+        content += "const facilityServiceFilters = {\n"
+        content += "\n".join(mappings) + "\n"
+        content += "};\n\n"
         
         # Append the JS function as a raw string
         content += r'''
@@ -378,7 +378,7 @@ export const ALL_FACILITY_DEPARTMENTS = [
 
         # Add all departments
         for dept in all_departments:
-            content += f"  '{dept}',\\n"
+            content += f"  '{dept}',\n"
 
         content += '''];
 
@@ -388,10 +388,10 @@ export const SPECIALIZATION_DEPARTMENT_MAPPING = {
 
         # Add specialization mappings
         for facility_type, departments in specialization_mapping.items():
-            content += f"  '{facility_type}': [\\n"
+            content += f"  '{facility_type}': [\n"
             for dept in departments:
-                content += f"    '{dept}',\\n"
-            content += f"  ],\\n\\n"
+                content += f"    '{dept}',\n"
+            content += f"  ],\n\n"
 
         content += '''};
 
@@ -480,7 +480,7 @@ export default {
             # Parse the CSV file
             self.parse_csv()
 
-            print("\\n🔧 Generating individual filter files...")
+            print("\n🔧 Generating individual filter files...")
             generated_files = []
 
             # Generate filter file for each facility type
@@ -493,18 +493,18 @@ export default {
                     print(f"⚠️  No applicable questions found for: {facility_type}")
 
             # Generate main filters file
-            print(f"\\n🔧 Generating main facilityServiceFilters.js...")
+            print(f"\n🔧 Generating main facilityServiceFilters.js...")
             self.generate_main_filters_file()
 
             # Generate facility service departments file
-            print(f"\\n🏢 Generating facilityServiceDepartments.js...")
+            print(f"\n🏢 Generating facilityServiceDepartments.js...")
             self.generate_facility_service_departments_file()
 
             # Generate summary report
-            print(f"\\n📊 Generating summary report...")
+            print(f"\n📊 Generating summary report...")
             self.generate_summary_report()
 
-            print("\\n" + "=" * 60)
+            print("\n" + "=" * 60)
             print("✅ Generation Complete!")
             print(f"📁 Generated {len(generated_files)} facility filter files")
             print(f"📁 Generated main filter file: facilityServiceFilters.js")
@@ -524,8 +524,8 @@ if __name__ == "__main__":
     success = generator.run()
 
     if success:
-        print("\\n🎉 Filter generation completed successfully!")
+        print("\n🎉 Filter generation completed successfully!")
         print("💡 You can now use the generated filter files in your application.")
     else:
-        print("\\n💥 Filter generation failed. Please check the error messages above.")
+        print("\n💥 Filter generation failed. Please check the error messages above.")
         exit(1)

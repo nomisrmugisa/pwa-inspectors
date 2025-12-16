@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist for facilities2.0.csv
- * Generated on: 2025-12-15 14:34:54
+ * Generated on: 2025-12-16 06:54:40
  * Facility Type: Dental Laboratory
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -12,6 +12,7 @@ const DentalLaboratory = {
         "showOnly": [
             "Does the Facility have an organisational structure",
             "Is the director a medically trained person?",
+            "Does the facility comply with regulatory requirements? --",
             "Business registration",
             "Tax clearance certificate",
             "Valid private pactice license",
@@ -19,8 +20,8 @@ const DentalLaboratory = {
             "Residence permit",
             "Lease agreement",
             "Occupancy certificate",
-            "Permission to operate/set up",
             "Trading license",
+            "Permission to operate/set up",
             "Patient charter in English & Setswana",
             "Is there an indemnity insurance?",
             "contracts for staff",
@@ -75,6 +76,7 @@ const DentalLaboratory = {
             "Administrative Staff (Specify)",
             "Support staff (Specify)",
             "Are professionals registered with the relevant Councils?",
+            "Did personnel files have the following?--",
             "Signed job effectiveness description",
             "Education credentials",
             "A signed confidentiality clause",
