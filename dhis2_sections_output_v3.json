@@ -1,0 +1,164 @@
+﻿{
+    "programStageSections":  [
+                                 {
+                                     "sortOrder":  0,
+                                     "displayName":  "Organization Profile",
+                                     "id":  "u0PCMQsjZnU"
+                                 },
+                                 {
+                                     "sortOrder":  1,
+                                     "displayName":  "Inspection Type",
+                                     "id":  "GjvSxtEd4JA"
+                                 },
+                                 {
+                                     "sortOrder":  2,
+                                     "displayName":  "Pre-Inspection:-PART 1: GENERAL INFORMATION",
+                                     "id":  "HGLcAB3lX4R"
+                                 },
+                                 {
+                                     "sortOrder":  3,
+                                     "displayName":  "Pre-Inspection:-PART 2: STAFF INFORMATION",
+                                     "id":  "mRY5b1RmbHc"
+                                 },
+                                 {
+                                     "sortOrder":  4,
+                                     "displayName":  "Pre-Inspection:-PART 3: SERVICES OFFERED",
+                                     "id":  "YEcud3shpO8"
+                                 },
+                                 {
+                                     "sortOrder":  5,
+                                     "displayName":  "Pre-Inspection:- PART 5: CLINICAL INFORMATION",
+                                     "id":  "qCEoj588vmU"
+                                 },
+                                 {
+                                     "sortOrder":  6,
+                                     "displayName":  "Pre-Inspection:-PART 6: CLINICAL PROFILE",
+                                     "id":  "VtdLFdVWDPN"
+                                 },
+                                 {
+                                     "sortOrder":  7,
+                                     "displayName":  "Pre-Inspection:-PART 7: CLINICAL ACTIVITIES",
+                                     "id":  "AThKRhifwIG"
+                                 },
+                                 {
+                                     "sortOrder":  8,
+                                     "displayName":  "Pre-Inspection:-DECLARATION",
+                                     "id":  "gzZwqucnCwK"
+                                 },
+                                 {
+                                     "sortOrder":  9,
+                                     "displayName":  "Inspectors Details",
+                                     "id":  "s8TL3p1oxIb"
+                                 },
+                                 {
+                                     "sortOrder":  10,
+                                     "displayName":  "General Info",
+                                     "id":  "VZDVq0eMP68"
+                                 },
+                                 {
+                                     "sortOrder":  11,
+                                     "displayName":  "ORGANISATION AND MANAGEMENT",
+                                     "id":  "ye33CI1W8uZ"
+                                 },
+                                 {
+                                     "sortOrder":  12,
+                                     "displayName":  "SERVICES PROVIDED",
+                                     "id":  "ysppDGzvHJ8"
+                                 },
+                                 {
+                                     "sortOrder":  13,
+                                     "displayName":  "PERSONNEL",
+                                     "id":  "bZSnqFrzkOc"
+                                 },
+                                 {
+                                     "sortOrder":  14,
+                                     "displayName":  "FACILITY-ENVIRONMENT",
+                                     "id":  "Ky5idv6Pcst"
+                                 },
+                                 {
+                                     "sortOrder":  15,
+                                     "displayName":  "FACILITY-RECEPTION/WAITING AREA",
+                                     "id":  "uFcA2E0sxwD"
+                                 },
+                                 {
+                                     "sortOrder":  16,
+                                     "displayName":  "FACILITY-SCREENING ROOM",
+                                     "id":  "sGL56AI8kDG"
+                                 },
+                                 {
+                                     "sortOrder":  17,
+                                     "displayName":  "FACILITY-CONSULTATION/ TREATMENT ROOM",
+                                     "id":  "nSo0tnro1gU"
+                                 },
+                                 {
+                                     "sortOrder":  18,
+                                     "displayName":  "FACILITY-PROCEDURE ROOM",
+                                     "id":  "UtMyBWadbH6"
+                                 },
+                                 {
+                                     "sortOrder":  19,
+                                     "displayName":  "SLUICE ROOM",
+                                     "id":  "gzoxItM534d"
+                                 },
+                                 {
+                                     "sortOrder":  20,
+                                     "displayName":  "BLEEDING ROOM",
+                                     "id":  "WKZjlvrKUfk"
+                                 },
+                                 {
+                                     "sortOrder":  21,
+                                     "displayName":  "TOILET FACILITIES",
+                                     "id":  "mHiS3ht85Bx"
+                                 },
+                                 {
+                                     "sortOrder":  22,
+                                     "displayName":  "PHARMACY/DISPENSARY",
+                                     "id":  "RMx5u9KfwC5"
+                                 },
+                                 {
+                                     "sortOrder":  23,
+                                     "displayName":  "SPECIMEN RECEPTION ROOM",
+                                     "id":  "fuE0QvfKM8I"
+                                 },
+                                 {
+                                     "sortOrder":  24,
+                                     "displayName":  "LABORATORY TESTING AREAS CHEMISTRY",
+                                     "id":  "bTKs8JaSzAx"
+                                 },
+                                 {
+                                     "sortOrder":  25,
+                                     "displayName":  "LABORATORY TESTING AREAS HAEMATOLOGY",
+                                     "id":  "MjpHd6Sw6My"
+                                 },
+                                 {
+                                     "sortOrder":  26,
+                                     "displayName":  "MICROBIOLOGY",
+                                     "id":  "QDmMfM6eNNP"
+                                 },
+                                 {
+                                     "sortOrder":  27,
+                                     "displayName":  "SAFETY AND WASTE MANAGEMENT",
+                                     "id":  "UlwufP7RbxR"
+                                 },
+                                 {
+                                     "sortOrder":  28,
+                                     "displayName":  "SUPPLIES",
+                                     "id":  "LCANr1gBBmt"
+                                 },
+                                 {
+                                     "sortOrder":  29,
+                                     "displayName":  "HIV SCREENING",
+                                     "id":  "FCHgbrBDUlm"
+                                 },
+                                 {
+                                     "sortOrder":  30,
+                                     "displayName":  "CUSTOMER SATISFACTION",
+                                     "id":  "nOuYQc25rqk"
+                                 },
+                                 {
+                                     "sortOrder":  31,
+                                     "displayName":  "Inspectors Details",
+                                     "id":  "WySJxYW0ogy"
+                                 }
+                             ]
+}

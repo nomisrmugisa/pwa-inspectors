@@ -1,3 +1,5 @@
+import { ALL_FACILITY_DEPARTMENTS } from './facilityServiceDepartments';
+
 /**
  * Section Visibility Configuration
  *
@@ -66,6 +68,8 @@ const LEGACY_TO_CANONICAL = {
   'Nursing Home': 'Nursing Home',
   'Potrait clinic': 'General Practice'
 };
+
+
 
 export const normalizeFacilityClassification = (raw) => {
   if (!raw) return null;
@@ -615,16 +619,31 @@ export const shouldShowSection = (sectionName, facilityClassification) => {
   // First, try direct lookup
   let shouldShow = facilityConfig[rawSectionName];
 
-  // CSV-driven sections that should default to visible even if legacy config
-  // doesn't yet know about them (e.g. TENS, HIV SCREENING). We treat these as
-  // "exact" at the level of whole phrases (e.g. "HIV SCREENING"), but allow
-  // them to appear inside a slightly longer DHIS2 section name like
-  // "HIV SCREENING SERVICES" or "TENS ROOM".
+  // 1. Check if the section matches any of our dynamic CSV departments
+  // This ensures that any section added to the CSV is automatically visible
+  // without needing manual updates to this file or the whitelist.
+  const isDynamicCsvSection = ALL_FACILITY_DEPARTMENTS.some(dept =>
+    rawSectionName.toUpperCase().includes(dept.toUpperCase()) ||
+    dept.toUpperCase().includes(rawSectionName.toUpperCase())
+  );
+
+  if (isDynamicCsvSection) {
+    console.log(
+      `✅ Section "${sectionName}" matches a dynamic CSV department - defaulting to SHOW`
+    );
+    return true;
+  }
+
+  // 2. CSV-driven sections that should default to visible even if legacy config doesn't know them.
+  // We keep this as a backup manual whitelist.
   const CSV_ALWAYS_VISIBLE_SECTION_TOKENS = [
     'SERVICES PROVIDED',
     'PERSONNEL',
     'HIV SCREENING',
-    'TENS'
+    'TENS',
+    'SPECIMEN RECEPTION',
+    'LABORATORY TESTING',
+    'MICROBIOLOGY'
   ];
 
   if (shouldShow === undefined) {

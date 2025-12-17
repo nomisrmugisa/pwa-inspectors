@@ -6,9 +6,9 @@ function validateValue(value, valueType, compulsory = false) {
   if (!value || value.toString().trim() === '') {
     return { valid: true, message: '' };
   }
-  
+
   const stringValue = value.toString().trim();
-  
+
   switch (valueType) {
     case 'INTEGER':
     case 'INTEGER_POSITIVE':
@@ -29,7 +29,7 @@ function validateValue(value, valueType, compulsory = false) {
       }
       break;
     }
-      
+
     case 'NUMBER':
     case 'PERCENTAGE': {
       if (!/^-?\d*\.?\d+$/.test(stringValue)) {
@@ -43,7 +43,7 @@ function validateValue(value, valueType, compulsory = false) {
       }
       break;
     }
-      
+
     case 'DATE': {
       const dateValue = new Date(stringValue);
       if (isNaN(dateValue.getTime())) {
@@ -51,7 +51,7 @@ function validateValue(value, valueType, compulsory = false) {
       }
       break;
     }
-      
+
     case 'DATETIME': {
       const datetimeValue = new Date(stringValue);
       if (isNaN(datetimeValue.getTime())) {
@@ -59,7 +59,7 @@ function validateValue(value, valueType, compulsory = false) {
       }
       break;
     }
-      
+
     case 'EMAIL': {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(stringValue)) {
@@ -67,7 +67,7 @@ function validateValue(value, valueType, compulsory = false) {
       }
       break;
     }
-      
+
     case 'PHONE_NUMBER': {
       const phoneRegex = /^[+]?[1-9][\d]{0,15}$/;
       if (!phoneRegex.test(stringValue.replace(/\s/g, ''))) {
@@ -75,7 +75,7 @@ function validateValue(value, valueType, compulsory = false) {
       }
       break;
     }
-      
+
     case 'URL':
       try {
         new URL(stringValue);
@@ -83,11 +83,11 @@ function validateValue(value, valueType, compulsory = false) {
         return { valid: false, message: 'Must be a valid URL' };
       }
       break;
-      
+
     default:
       break;
   }
-  
+
   return { valid: true, message: '' };
 }
 
@@ -220,7 +220,7 @@ class DHIS2APIService {
       'withoutRegistration',
       'programStages[id,displayName,description,sortOrder,repeatable,generatedByEnrollmentDate,minDaysFromStart,programStageSections[id,displayName,sortOrder,programStageDataElements[id,displayName,sortOrder,compulsory,allowProvidedElsewhere,dataElement[id,displayName,shortName,code,description,valueType,aggregationType,optionSet[id,displayName,options[id,displayName,code,sortOrder]]]]],programStageDataElements[id,displayName,sortOrder,repeatable,generatedByEnrollmentDate,minDaysFromStart,programStageSections[id,displayName,sortOrder,programStageDataElements[id,displayName,sortOrder,compulsory,allowProvidedElsewhere,dataElement[id,displayName,shortName,code,description,valueType,aggregationType,optionSet[id,displayName,options[id,displayName,code,sortOrder]]]]]]'
     ].join(',');
-    
+
     return this.request(`/api/programs?fields=${fields}&filter=programType:eq:WITHOUT_REGISTRATION&paging=false`);
   }
 
@@ -259,7 +259,7 @@ class DHIS2APIService {
     console.log(' Fetching DHIS2 Data Elements for CSV filtering...');
     const response = await this.request(`/api/dataElements?${params}`);
     console.log(`✅ Fetched ${response.dataElements?.length || 0} Data Elements from DHIS2`);
-    
+
     return response.dataElements || [];
   }
 
@@ -285,18 +285,18 @@ class DHIS2APIService {
     console.log('🏥 Fetching user organization units...');
     const me = await this.getMe();
     console.log('👤 User data from /api/me:', me);
-    
+
     if (me.organisationUnits && me.organisationUnits.length > 0) {
       console.log('📍 Raw organization units from API:', me.organisationUnits);
-      
+
       // Transform 'name' field to 'displayName' for consistency with rest of the app
       const transformedOrgUnits = me.organisationUnits.map(ou => ({
         ...ou,
         displayName: ou.name || ou.displayName
       }));
-      
+
       console.log('✅ Transformed organization units:', transformedOrgUnits);
-      
+
       // IMMEDIATELY try to get service sections for this user (using username priority)
       console.log('🔍 TESTING: Attempting to get service sections for user:', me.username);
       if (transformedOrgUnits.length > 0) {
@@ -311,7 +311,7 @@ class DHIS2APIService {
       }
       return { organisationUnits: transformedOrgUnits };
     }
-    
+
     console.log('⚠️ No user-assigned org units found, returning empty array');
     return { organisationUnits: [] };
   }
@@ -328,32 +328,32 @@ class DHIS2APIService {
       console.log('👥 User accessible org units:', userOrgUnits);
       const userOrgUnitIds = userOrgUnits.organisationUnits?.map(ou => ou.id) || [];
       console.log('🆔 User org unit IDs:', userOrgUnitIds);
-      
+
       if (userOrgUnitIds.length === 0) {
         console.warn('⚠️ User has no accessible organization units');
         return { organisationUnits: [] };
       }
-      
+
       // Get org units that have the program assigned
       const fields = 'id,displayName,path,programs[id]';
       const programQuery = `/api/organisationUnits?filter=programs:in:[${programId}]&fields=${fields}&paging=false`;
       console.log('📡 Program assignment query:', programQuery);
-      
+
       const programAssignedOrgUnits = await this.request(programQuery);
       console.log('🏥 Program-assigned org units from API:', programAssignedOrgUnits);
-      
+
       // Filter to only include org units that the user has access to
-      const accessibleProgramOrgUnits = programAssignedOrgUnits.organisationUnits?.filter(ou => 
+      const accessibleProgramOrgUnits = programAssignedOrgUnits.organisationUnits?.filter(ou =>
         userOrgUnitIds.includes(ou.id)
       ) || [];
-      
+
       console.log('✅ Program-assigned facilities summary:', {
         totalProgramAssigned: programAssignedOrgUnits.organisationUnits?.length || 0,
         userAccessible: userOrgUnitIds.length,
         filtered: accessibleProgramOrgUnits.length,
         finalOrgUnits: accessibleProgramOrgUnits
       });
-      
+
       return { organisationUnits: accessibleProgramOrgUnits };
     } catch (error) {
       console.error('❌ Failed to fetch program-assigned org units:', error);
@@ -371,10 +371,10 @@ class DHIS2APIService {
       // Direct configuration IDs for Facility-Registry program
       const FACILITY_REGISTRY_PROGRAM_ID = 'EE8yeLVo6cN';
       const INSPECTIONS_STAGE_ID = 'Eupjm3J0dt2';
-      
+
       // Only fetch stage metadata - org units now come from DataStore assignments
       const stageMetadata = await this.getInspectionStageMetadata(INSPECTIONS_STAGE_ID);
-      
+
       console.log('🏗️ Raw stage metadata received:', {
         name: stageMetadata.name || stageMetadata.displayName,
         hasSections: !!stageMetadata.programStageSections?.length,
@@ -437,7 +437,7 @@ class DHIS2APIService {
    */
   async getInspectionStageMetadata(stageId) {
     console.log(`🔍 Fetching comprehensive metadata for program stage: ${stageId}`);
-    
+
     // Enhanced fields to get ALL possible Data Elements from the stage
     const fields = [
       'id',
@@ -451,9 +451,22 @@ class DHIS2APIService {
       // Get Data Elements directly from program stage
       'programStageDataElements[id,displayName,sortOrder,compulsory,allowProvidedElsewhere,dataElement[id,formName,displayFormName,name,displayName,shortName,code,description,valueType,aggregationType,lastUpdated,optionSet[id,displayName,options[id,displayName,code,sortOrder]]]]'
     ].join(',');
-    
+
     const metadata = await this.request(`/api/programStages/${stageId}?fields=${fields}`);
-    
+
+    // DEBUG: Double check sections with lightweight query
+    try {
+      console.log('🐞 Attempting lightweight section fetch...');
+      const debugData = await this.request(`/api/programStages/${stageId}?fields=programStageSections[id,name,displayName,sortOrder]`);
+      const debugNames = debugData.programStageSections?.map(s => s.displayName) || [];
+      console.log('🐞 LIGHTWEIGHT SECTIONS FOUND:', debugNames);
+
+      const hasSpecimen = debugNames.some(n => n.toUpperCase().includes('SPECIMEN'));
+      console.log(`🐞 Specimen Section Present in Light Query? ${hasSpecimen ? 'YES ✅' : 'NO ❌'}`);
+    } catch (err) {
+      console.error('🐞 Debug fetch failed:', err);
+    }
+
     console.log(`✅ Stage metadata fetched for ${stageId}:`, {
       name: metadata.name || metadata.displayName,
       hasSections: !!metadata.programStageSections?.length,
@@ -461,7 +474,7 @@ class DHIS2APIService {
       sectionsCount: metadata.programStageSections?.length || 0,
       stageDataElementsCount: metadata.programStageDataElements?.length || 0
     });
-    
+
     return metadata;
   }
 
@@ -477,8 +490,19 @@ class DHIS2APIService {
 
     if (stageMetadata.programStageSections && stageMetadata.programStageSections.length > 0) {
       console.log(`📋 Found ${stageMetadata.programStageSections.length} program stage sections`);
-      
+
       stageMetadata.programStageSections.forEach((section, index) => {
+        // DEBUG: Trace Specimen Reception Room processing
+        if ((section.name && section.name.toUpperCase().includes('SPECIMEN')) ||
+          (section.displayName && section.displayName.toUpperCase().includes('SPECIMEN'))) {
+          console.log('👀 PROCESSING SPECIMEN SECTION:', {
+            name: section.name,
+            displayName: section.displayName,
+            dataElementsCount: section.dataElements?.length || 0,
+            dataElementNames: section.dataElements?.map(de => de.formName || de.displayName || de.name)
+          });
+        }
+
         // First, collect all data elements with their metadata
         let dataElementsWithMetadata = section.dataElements?.map((de, deIndex) => ({
           id: `psde_${de.id}`,
@@ -533,9 +557,9 @@ class DHIS2APIService {
           sortOrder: section.sortOrder || index,
           dataElements: deduplicatedElements
         };
-        
+
         console.log(`  📂 Section ${index + 1}: "${processedSection.displayName}" with ${processedSection.dataElements.length} Data Elements`);
-        
+
         sections.push(processedSection);
       });
     } else {
@@ -559,13 +583,13 @@ class DHIS2APIService {
     // Extract Data Elements from program stage sections (if any)
     if (stageMetadata.programStageSections && stageMetadata.programStageSections.length > 0) {
       console.log(`📋 Processing ${stageMetadata.programStageSections.length} program stage sections...`);
-      
+
       stageMetadata.programStageSections.forEach((section, sectionIndex) => {
         console.log(`  📂 Section ${sectionIndex + 1}: "${section.name || section.displayName}"`);
-        
+
         if (section.dataElements && section.dataElements.length > 0) {
           console.log(`    📝 Found ${section.dataElements.length} Data Elements in section`);
-          
+
           section.dataElements.forEach((de, deIndex) => {
             const element = {
               id: `psde_${de.id}`,
@@ -604,7 +628,7 @@ class DHIS2APIService {
     // Extract Data Elements directly from program stage (if no sections or additional elements)
     if (stageMetadata.programStageDataElements && stageMetadata.programStageDataElements.length > 0) {
       console.log(`📝 Processing ${stageMetadata.programStageDataElements.length} direct program stage Data Elements...`);
-      
+
       stageMetadata.programStageDataElements.forEach((psde, index) => {
         // programStageDataElements wraps the actual dataElement
         const de = psde.dataElement || psde;
@@ -632,10 +656,10 @@ class DHIS2APIService {
               lastUpdated: de.lastUpdated
             }
           };
-          
+
           allDataElements.push(element);
           stageElementsCount++;
-          
+
           console.log(`  ✅ Added direct stage element: ${element.displayName} (${de.valueType || 'UNKNOWN'})`);
         } else {
           console.log(`  ⚠️ Skipped duplicate: ${de.displayName || de.name} (already in sections)`);
@@ -691,10 +715,10 @@ class DHIS2APIService {
 
   async getEvents(params = {}) {
     const queryParams = new URLSearchParams();
-    
+
     queryParams.append('fields', 'event,program,programStage,orgUnit,eventDate,dataValues,status');
     queryParams.append('totalPages', 'true');
-    
+
     Object.entries(params).forEach(([key, value]) => {
       if (value !== null && value !== undefined) {
         queryParams.append(key, value);
@@ -754,13 +778,13 @@ class DHIS2APIService {
    */
   async getServiceSectionsForInspector(facilityId, inspectorIdentifier) {
     console.log(`🔍 Getting service sections for facility: ${facilityId}, inspector: ${inspectorIdentifier} (username priority)`);
-    
+
     try {
       let assignmentsData = await this.getInspectionAssignments();
-      if (Array.isArray(assignmentsData)) 
+      if (Array.isArray(assignmentsData))
         assignmentsData = { inspections: assignmentsData }
       console.log('📊 Processing assignments data:', assignmentsData);
-      
+
       if (!assignmentsData.inspections || assignmentsData.inspections.length === 0) {
         console.warn('⚠️ No inspections found in assignments data');
         return [];
@@ -770,7 +794,7 @@ class DHIS2APIService {
       const facilityInspection = assignmentsData.inspections.find(
         inspection => inspection.facilityId === facilityId
       );
-      
+
       if (!facilityInspection) {
         console.warn(`⚠️ No inspection found for facility: ${facilityId}`);
         return [];
@@ -807,7 +831,7 @@ class DHIS2APIService {
 
       // Remove duplicates
       const uniqueSections = [...new Set(allSections)];
-      
+
       console.log('📋 Final service sections for dropdown:', uniqueSections);
       return uniqueSections;
 
@@ -817,12 +841,12 @@ class DHIS2APIService {
     }
   }
 
-    validateEventData(eventData, programStageConfiguration) {
+  validateEventData(eventData, programStageConfiguration) {
     const errors = [];
-    
+
     // All fields are now optional, so no validation is needed
     // You can add custom validation logic here if needed in the future
-    
+
     return {
       valid: true,
       errors: []

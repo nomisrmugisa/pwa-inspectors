@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
- * Generated from: checklist for facilities2.0.csv
- * Generated on: 2025-12-16 06:54:40
+ * Generated from: src/config/checklist for facilities2.0.csv
+ * Generated on: 2025-12-17 09:42:35
  * Facility Type: Radiology
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -161,13 +161,13 @@ const Radiology = {
             "Does the Facility have a policy on waste management?",
             "Does the Facility have SOPs on waste management?",
             "Does the Facility have a waste disposal system? Specify:",
-            ". Domestic Waste",
-            ". Clinical Waste",
-            ". Does the Facility have a policy and procedures on safety?",
-            ". Is there a policy and procedure on accidental eposure to HIV?",
-            ". Does the Facility have fire protection equipment?",
-            ".Fire etinguishers",
-            ".Emergency eits",
+            "Domestic Waste",
+            "Clinical Waste",
+            "Does the Facility have a policy and procedures on safety?",
+            "Is there a policy and procedure on accidental eposure to HIV?",
+            "Does the Facility have fire protection equipment?",
+            "Fire etinguishers",
+            "Emergency eits",
             "Additional:",
             "Fire alarms",
             "Smoke detectors",
@@ -189,9 +189,8 @@ const Radiology = {
             "Is there a stock control system?",
         ]
     },
-    "TENS": {
+    "CUSTOMER SATISFACTION": {
         "showOnly": [
-            "Customer satisfaction--",
             "Is there a customer feedback mechanism",
             "Suggestion box",
             "Customer surveys",
@@ -203,32 +202,32 @@ const Radiology = {
     "HIV SCREENING": {
         "showOnly": [
             "ray room --",
-            "· Does the -ray room have adequate space?",
-            "· Does the -ray room have wheelchair accessibility?",
-            "· Are the following items available in the room?",
-            "· Red warning light at the entrance, which automatically switches on whenever eposure is made.",
-            "· Eamination/treatment couch with tiltable headrest.",
-            "· Lead gowns of different lead equivalence for staff and relatives",
-            "· Different sizes of gonad protection.",
-            "· Thyroid shields.",
-            "· Control panel shielded with lead window.",
-            "· -Ray viewing bo?",
-            "· Gloves  non-sterile",
-            "· Waste bin with lid for clinical waste?",
-            "· Waste bin with lid for non-clinical waste? Sharps disposal container.",
-            "· Are the walls barium-plastered?",
-            "· Are the walls built from concrete bricks 30cm wide or have an air gap?",
-            "· Are the doors lined with lead?",
-            "· Are the doors sliding type?",
-            "· If doors are not sliding, do they have lead strips along the edges to prevent radiation leakages?",
-            "· If windows eist, are they leaded",
+            "Does the -ray room have adequate space?",
+            "Does the -ray room have wheelchair accessibility?",
+            "Are the following items available in the room?",
+            "Red warning light at the entrance, which automatically switches on whenever eposure is made.",
+            "Eamination/treatment couch with tiltable headrest.",
+            "Lead gowns of different lead equivalence for staff and relatives",
+            "Different sizes of gonad protection.",
+            "Thyroid shields.",
+            "Control panel shielded with lead window.",
+            "Ray viewing bo?",
+            "Gloves  non-sterile",
+            "Waste bin with lid for clinical waste?",
+            "Waste bin with lid for non-clinical waste? Sharps disposal container.",
+            "Are the walls barium-plastered?",
+            "Are the walls built from concrete bricks 30cm wide or have an air gap?",
+            "Are the doors lined with lead?",
+            "Are the doors sliding type?",
+            "If doors are not sliding, do they have lead strips along the edges to prevent radiation leakages?",
+            "If windows eist, are they leaded",
             "Ultrasound room",
-            "· Is the ultrasound machine commissioned and records available?",
-            "· Is there provision for a change room for patients?",
-            "· Is the room accessible by the handicapped( wheel chairs users)etc.",
-            "· Is the room equipped with clinical waste bin, domestic waste bin?",
-            "· Is there adequate ventilation and lighting?",
-            "· Is there provision for handwashing?",
+            "Is the ultrasound machine commissioned and records available?",
+            "Is there provision for a change room for patients?",
+            "Is the room accessible by the handicapped( wheel chairs users)etc.",
+            "Is the room equipped with clinical waste bin, domestic waste bin?",
+            "Is there adequate ventilation and lighting?",
+            "Is there provision for handwashing?",
         ]
     },
 

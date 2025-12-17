@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
- * Generated from: checklist for facilities2.0.csv
- * Generated on: 2025-12-16 06:54:40
+ * Generated from: src/config/checklist for facilities2.0.csv
+ * Generated on: 2025-12-17 09:42:35
  * Facility Type: Dental
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -229,13 +229,13 @@ const Dental = {
             "Does the Facility have a policy on waste management?",
             "Does the Facility have SOPs on waste management?",
             "Does the Facility have a waste disposal system? Specify:",
-            ". Domestic Waste",
-            ". Clinical Waste",
-            ". Does the Facility have a policy and procedures on safety?",
-            ". Is there a policy and procedure on accidental eposure to HIV?",
-            ". Does the Facility have fire protection equipment?",
-            ".Fire etinguishers",
-            ".Emergency eits",
+            "Domestic Waste",
+            "Clinical Waste",
+            "Does the Facility have a policy and procedures on safety?",
+            "Is there a policy and procedure on accidental eposure to HIV?",
+            "Does the Facility have fire protection equipment?",
+            "Fire etinguishers",
+            "Emergency eits",
             "Additional:",
             "Fire alarms",
             "Smoke detectors",
@@ -313,9 +313,8 @@ const Dental = {
             "An emergency kit ?",
         ]
     },
-    "TENS": {
+    "CUSTOMER SATISFACTION": {
         "showOnly": [
-            "Customer satisfaction--",
             "Is there a customer feedback mechanism",
             "Suggestion box",
             "Customer surveys",
@@ -333,19 +332,19 @@ const Dental = {
             "Stainless steel waste discarding sink supplied with hot and cold water",
             "Is the room ventilated? Elaborate",
             "Is the room equipped with the following--",
-            "· Chair",
-            "· Microwave",
-            "· Autoclave",
-            "· Sterilising containers",
-            "· Sterilising solutions",
-            "· Pack wrappers",
-            "· Disinfectant",
-            "· Sharps container",
-            "· Waste bin with lid for clinical waste",
-            "· Waste bin with lid for domestic waste",
-            "· Hand wash facilities",
-            "· Appropriate hand drying facilities",
-            "· Disposable gloves",
+            "Chair",
+            "Microwave",
+            "Autoclave",
+            "Sterilising containers",
+            "Sterilising solutions",
+            "Pack wrappers",
+            "Disinfectant",
+            "Sharps container",
+            "Waste bin with lid for clinical waste",
+            "Waste bin with lid for domestic waste",
+            "Hand wash facilities",
+            "Appropriate hand drying facilities",
+            "Disposable gloves",
         ]
     },
 

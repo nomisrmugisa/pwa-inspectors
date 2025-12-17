@@ -1,0 +1,347 @@
+# Facility Categories and Service Departments - Testing Reference
+
+> **Generated on:** 2025-12-17  
+> **Purpose:** Reference document for the app testing team  
+> **Source:** `src/config/facilityServiceDepartments.js`
+
+---
+
+## Summary
+
+| Facility Category | Number of Departments |
+|-------------------|:---------------------:|
+| Obstetrics & Gynaecology | 14 |
+| Laboratory | 17 |
+| Psychology | 10 |
+| Eye (Opthalmology /Optometry) | 14 |
+| Physiotheraphy | 11 |
+| Dental | 12 |
+| Dental Laboratory | 9 |
+| Ear, Nose & Throat | 14 |
+| Rehabilitation Centre | 14 |
+| Radiology | 11 |
+| General Practice | 15 |
+| Paediatric | 14 |
+| Nursing Home | 14 |
+
+---
+
+## Detailed Breakdown by Facility Category
+
+### 1. Obstetrics & Gynaecology (14 Departments)
+
+| # | Service Department |
+|:-:|:-------------------|
+| 1 | BLEEDING ROOM |
+| 2 | CUSTOMER SATISFACTION |
+| 3 | FACILITY-CONSULTATION/ TREATMENT ROOM |
+| 4 | FACILITY-ENVIRONMENT |
+| 5 | FACILITY-PROCEDURE ROOM |
+| 6 | FACILITY-RECEPTION/WAITING AREA |
+| 7 | FACILITY-SCREENING ROOM |
+| 8 | ORGANISATION AND MANAGEMENT |
+| 9 | PERSONNEL |
+| 10 | SAFETY AND WASTE MANAGEMENT |
+| 11 | SERVICES PROVIDED |
+| 12 | SLUICE ROOM |
+| 13 | SUPPLIES |
+| 14 | TOILET FACILITIES |
+
+---
+
+### 2. Laboratory (17 Departments)
+
+| # | Service Department |
+|:-:|:-------------------|
+| 1 | BLEEDING ROOM |
+| 2 | CUSTOMER SATISFACTION |
+| 3 | FACILITY-CONSULTATION/ TREATMENT ROOM |
+| 4 | FACILITY-ENVIRONMENT |
+| 5 | FACILITY-PROCEDURE ROOM |
+| 6 | FACILITY-RECEPTION/WAITING AREA |
+| 7 | HIV SCREENING |
+| 8 | LABORATORY TESTING AREAS CHEMISTRY |
+| 9 | LABORATORY TESTING AREAS HAEMATOLOGY |
+| 10 | MICROBIOLOGY |
+| 11 | ORGANISATION AND MANAGEMENT |
+| 12 | PERSONNEL |
+| 13 | SAFETY AND WASTE MANAGEMENT |
+| 14 | SERVICES PROVIDED |
+| 15 | SPECIMEN RECEPTION ROOM |
+| 16 | SUPPLIES |
+| 17 | TOILET FACILITIES |
+
+---
+
+### 3. Psychology (10 Departments)
+
+| # | Service Department |
+|:-:|:-------------------|
+| 1 | CUSTOMER SATISFACTION |
+| 2 | FACILITY-CONSULTATION/ TREATMENT ROOM |
+| 3 | FACILITY-ENVIRONMENT |
+| 4 | FACILITY-RECEPTION/WAITING AREA |
+| 5 | ORGANISATION AND MANAGEMENT |
+| 6 | PERSONNEL |
+| 7 | SAFETY AND WASTE MANAGEMENT |
+| 8 | SERVICES PROVIDED |
+| 9 | SUPPLIES |
+| 10 | TOILET FACILITIES |
+
+---
+
+### 4. Eye (Opthalmology /Optometry) (14 Departments)
+
+| # | Service Department |
+|:-:|:-------------------|
+| 1 | BLEEDING ROOM |
+| 2 | CUSTOMER SATISFACTION |
+| 3 | FACILITY-CONSULTATION/ TREATMENT ROOM |
+| 4 | FACILITY-ENVIRONMENT |
+| 5 | FACILITY-PROCEDURE ROOM |
+| 6 | FACILITY-RECEPTION/WAITING AREA |
+| 7 | FACILITY-SCREENING ROOM |
+| 8 | ORGANISATION AND MANAGEMENT |
+| 9 | PERSONNEL |
+| 10 | SAFETY AND WASTE MANAGEMENT |
+| 11 | SERVICES PROVIDED |
+| 12 | SLUICE ROOM |
+| 13 | SUPPLIES |
+| 14 | TOILET FACILITIES |
+
+---
+
+### 5. Physiotheraphy (11 Departments)
+
+| # | Service Department |
+|:-:|:-------------------|
+| 1 | CUSTOMER SATISFACTION |
+| 2 | FACILITY-CONSULTATION/ TREATMENT ROOM |
+| 3 | FACILITY-ENVIRONMENT |
+| 4 | FACILITY-RECEPTION/WAITING AREA |
+| 5 | FACILITY-SCREENING ROOM |
+| 6 | ORGANISATION AND MANAGEMENT |
+| 7 | PERSONNEL |
+| 8 | SAFETY AND WASTE MANAGEMENT |
+| 9 | SERVICES PROVIDED |
+| 10 | SUPPLIES |
+| 11 | TOILET FACILITIES |
+
+---
+
+### 6. Dental (12 Departments)
+
+| # | Service Department |
+|:-:|:-------------------|
+| 1 | CUSTOMER SATISFACTION |
+| 2 | FACILITY-CONSULTATION/ TREATMENT ROOM |
+| 3 | FACILITY-ENVIRONMENT |
+| 4 | FACILITY-RECEPTION/WAITING AREA |
+| 5 | FACILITY-SCREENING ROOM |
+| 6 | HIV SCREENING |
+| 7 | ORGANISATION AND MANAGEMENT |
+| 8 | PERSONNEL |
+| 9 | SAFETY AND WASTE MANAGEMENT |
+| 10 | SERVICES PROVIDED |
+| 11 | SUPPLIES |
+| 12 | TOILET FACILITIES |
+
+---
+
+### 7. Dental Laboratory (9 Departments)
+
+| # | Service Department |
+|:-:|:-------------------|
+| 1 | CUSTOMER SATISFACTION |
+| 2 | FACILITY-ENVIRONMENT |
+| 3 | FACILITY-RECEPTION/WAITING AREA |
+| 4 | ORGANISATION AND MANAGEMENT |
+| 5 | PERSONNEL |
+| 6 | SAFETY AND WASTE MANAGEMENT |
+| 7 | SERVICES PROVIDED |
+| 8 | SUPPLIES |
+| 9 | TOILET FACILITIES |
+
+---
+
+### 8. Ear, Nose & Throat (14 Departments)
+
+| # | Service Department |
+|:-:|:-------------------|
+| 1 | BLEEDING ROOM |
+| 2 | CUSTOMER SATISFACTION |
+| 3 | FACILITY-CONSULTATION/ TREATMENT ROOM |
+| 4 | FACILITY-ENVIRONMENT |
+| 5 | FACILITY-PROCEDURE ROOM |
+| 6 | FACILITY-RECEPTION/WAITING AREA |
+| 7 | FACILITY-SCREENING ROOM |
+| 8 | ORGANISATION AND MANAGEMENT |
+| 9 | PERSONNEL |
+| 10 | SAFETY AND WASTE MANAGEMENT |
+| 11 | SERVICES PROVIDED |
+| 12 | SLUICE ROOM |
+| 13 | SUPPLIES |
+| 14 | TOILET FACILITIES |
+
+---
+
+### 9. Rehabilitation Centre (14 Departments)
+
+| # | Service Department |
+|:-:|:-------------------|
+| 1 | BLEEDING ROOM |
+| 2 | CUSTOMER SATISFACTION |
+| 3 | FACILITY-CONSULTATION/ TREATMENT ROOM |
+| 4 | FACILITY-ENVIRONMENT |
+| 5 | FACILITY-PROCEDURE ROOM |
+| 6 | FACILITY-RECEPTION/WAITING AREA |
+| 7 | FACILITY-SCREENING ROOM |
+| 8 | ORGANISATION AND MANAGEMENT |
+| 9 | PERSONNEL |
+| 10 | SAFETY AND WASTE MANAGEMENT |
+| 11 | SERVICES PROVIDED |
+| 12 | SLUICE ROOM |
+| 13 | SUPPLIES |
+| 14 | TOILET FACILITIES |
+
+---
+
+### 10. Radiology (11 Departments)
+
+| # | Service Department |
+|:-:|:-------------------|
+| 1 | CUSTOMER SATISFACTION |
+| 2 | FACILITY-CONSULTATION/ TREATMENT ROOM |
+| 3 | FACILITY-ENVIRONMENT |
+| 4 | FACILITY-RECEPTION/WAITING AREA |
+| 5 | HIV SCREENING |
+| 6 | ORGANISATION AND MANAGEMENT |
+| 7 | PERSONNEL |
+| 8 | SAFETY AND WASTE MANAGEMENT |
+| 9 | SERVICES PROVIDED |
+| 10 | SUPPLIES |
+| 11 | TOILET FACILITIES |
+
+---
+
+### 11. General Practice (15 Departments)
+
+| # | Service Department |
+|:-:|:-------------------|
+| 1 | BLEEDING ROOM |
+| 2 | CUSTOMER SATISFACTION |
+| 3 | FACILITY-CONSULTATION/ TREATMENT ROOM |
+| 4 | FACILITY-ENVIRONMENT |
+| 5 | FACILITY-PROCEDURE ROOM |
+| 6 | FACILITY-RECEPTION/WAITING AREA |
+| 7 | FACILITY-SCREENING ROOM |
+| 8 | ORGANISATION AND MANAGEMENT |
+| 9 | PERSONNEL |
+| 10 | PHARMACY/DISPENSARY |
+| 11 | SAFETY AND WASTE MANAGEMENT |
+| 12 | SERVICES PROVIDED |
+| 13 | SLUICE ROOM |
+| 14 | SUPPLIES |
+| 15 | TOILET FACILITIES |
+
+---
+
+### 12. Paediatric (14 Departments)
+
+| # | Service Department |
+|:-:|:-------------------|
+| 1 | BLEEDING ROOM |
+| 2 | CUSTOMER SATISFACTION |
+| 3 | FACILITY-CONSULTATION/ TREATMENT ROOM |
+| 4 | FACILITY-ENVIRONMENT |
+| 5 | FACILITY-PROCEDURE ROOM |
+| 6 | FACILITY-RECEPTION/WAITING AREA |
+| 7 | FACILITY-SCREENING ROOM |
+| 8 | ORGANISATION AND MANAGEMENT |
+| 9 | PERSONNEL |
+| 10 | SAFETY AND WASTE MANAGEMENT |
+| 11 | SERVICES PROVIDED |
+| 12 | SLUICE ROOM |
+| 13 | SUPPLIES |
+| 14 | TOILET FACILITIES |
+
+---
+
+### 13. Nursing Home (14 Departments)
+
+| # | Service Department |
+|:-:|:-------------------|
+| 1 | BLEEDING ROOM |
+| 2 | CUSTOMER SATISFACTION |
+| 3 | FACILITY-CONSULTATION/ TREATMENT ROOM |
+| 4 | FACILITY-ENVIRONMENT |
+| 5 | FACILITY-PROCEDURE ROOM |
+| 6 | FACILITY-RECEPTION/WAITING AREA |
+| 7 | FACILITY-SCREENING ROOM |
+| 8 | ORGANISATION AND MANAGEMENT |
+| 9 | PERSONNEL |
+| 10 | SAFETY AND WASTE MANAGEMENT |
+| 11 | SERVICES PROVIDED |
+| 12 | SLUICE ROOM |
+| 13 | SUPPLIES |
+| 14 | TOILET FACILITIES |
+
+---
+
+## All Available Departments (20 Total)
+
+| # | Department Name | Available In (Categories) |
+|:-:|:----------------|:-------------------------:|
+| 1 | BLEEDING ROOM | 10 |
+| 2 | CUSTOMER SATISFACTION | 13 |
+| 3 | FACILITY-CONSULTATION/ TREATMENT ROOM | 12 |
+| 4 | FACILITY-ENVIRONMENT | 13 |
+| 5 | FACILITY-PROCEDURE ROOM | 10 |
+| 6 | FACILITY-RECEPTION/WAITING AREA | 13 |
+| 7 | FACILITY-SCREENING ROOM | 10 |
+| 8 | HIV SCREENING | 3 |
+| 9 | LABORATORY TESTING AREAS CHEMISTRY | 1 |
+| 10 | LABORATORY TESTING AREAS HAEMATOLOGY | 1 |
+| 11 | MICROBIOLOGY | 1 |
+| 12 | ORGANISATION AND MANAGEMENT | 13 |
+| 13 | PERSONNEL | 13 |
+| 14 | PHARMACY/DISPENSARY | 1 |
+| 15 | SAFETY AND WASTE MANAGEMENT | 13 |
+| 16 | SERVICES PROVIDED | 13 |
+| 17 | SLUICE ROOM | 8 |
+| 18 | SPECIMEN RECEPTION ROOM | 1 |
+| 19 | SUPPLIES | 13 |
+| 20 | TOILET FACILITIES | 13 |
+
+---
+
+## Testing Notes
+
+### Common Departments (Present in ALL 13 Categories)
+- CUSTOMER SATISFACTION
+- FACILITY-ENVIRONMENT
+- FACILITY-RECEPTION/WAITING AREA
+- ORGANISATION AND MANAGEMENT
+- PERSONNEL
+- SAFETY AND WASTE MANAGEMENT
+- SERVICES PROVIDED
+- SUPPLIES
+- TOILET FACILITIES
+
+### Unique Departments (Only in Specific Categories)
+| Department | Exclusive To |
+|------------|-------------|
+| LABORATORY TESTING AREAS CHEMISTRY | Laboratory |
+| LABORATORY TESTING AREAS HAEMATOLOGY | Laboratory |
+| MICROBIOLOGY | Laboratory |
+| SPECIMEN RECEPTION ROOM | Laboratory |
+| PHARMACY/DISPENSARY | General Practice |
+
+### HIV SCREENING Available In
+- Laboratory
+- Dental
+- Radiology
+
+---
+
+*Document generated for testing purposes. Please report any discrepancies.*

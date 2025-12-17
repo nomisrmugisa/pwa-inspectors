@@ -76,6 +76,8 @@ class FacilityFilterGenerator:
                 continue
 
             first_column = row[0].strip()
+            # Clean bullet points, dots, dashes and other prefixes
+            first_column = re.sub(r'^[·\.\-\s]+', '', first_column)
 
             # Detect section headers - fully capitalized names (no lowercase letters)
             if (first_column and
@@ -160,7 +162,7 @@ class FacilityFilterGenerator:
 
         content = f'''/**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
- * Generated from: checklist for facilities2.0.csv
+ * Generated from: {self.csv_path}
  * Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
  * Facility Type: {facility_type}
  *
@@ -220,7 +222,7 @@ export default {sanitized_name};
         # Use standard string for the header and imports
         header = f'''/**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
- * Generated from: checklist for facilities2.0.csv
+ * Generated from: {self.csv_path}
  * Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
  *
  * This file imports all individual clinic filter files and combines them
@@ -364,7 +366,7 @@ export default facilityServiceFilters;
         # Generate the JavaScript content
         content = f'''/**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
- * Generated from: checklist for facilities2.0.csv
+ * Generated from: {self.csv_path}
  * Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
  *
  * This file defines facility service departments based on actual sections

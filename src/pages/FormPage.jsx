@@ -125,6 +125,18 @@ const normalizeSectionHeaderName = (name) => {
   return name.replace(/\s*--\s*$/, '').trim();
 };
 
+const cleanDHIS2Name = (name) => {
+  if (!name) return '';
+  // Remove common prefixes like "Inspection:", "FACILITY:", "SO,22", "569-Inspection:"
+  // Updated to handle both colons and dashes as separators
+  return name
+    .replace(/^[\d-]*\s*Inspection\s*[:-]\s*/i, '')
+    .replace(/^FACILITY\s*[:-]\s*/i, '')
+    .replace(/^SO,\d+\s+SERVICES OFFERED\s*[:-]\s*/i, '')
+    .replace(/^SO,\d+\s*/i, '')
+    .trim();
+};
+
 /**
  * Detect data elements that should be treated as "bold" and start on a new page
  *
@@ -1362,6 +1374,14 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
   useEffect(() => {
 
     const filterAsync = async () => {
+      // DEBUG: Trace filtering for this section
+      if (section.displayName && (section.displayName.includes('SPECIMEN') || section.displayName.includes('Specimen'))) {
+        console.log(`💥 FormSection Filtering "${section.displayName}":`, {
+          facilityTypeProp: facilityType,
+          elementCount: section.dataElements?.length || 0,
+          dataElements: section.dataElements?.map(de => de.dataElement.displayName)
+        });
+      }
 
       if (!facilityType || !section.dataElements) {
         setFilteredDataElements(section.dataElements || []);
@@ -1371,7 +1391,7 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
       }
 
       // Exclude certain sections from filtering: show all their fields
-      const sectionName = (section.displayName || '');
+      const sectionName = cleanDHIS2Name(section.displayName || '');
       const lowerName = sectionName.toLowerCase();
       if (sectionName === 'Inspection Type' || lowerName.includes('document review')) {
         setFilteredDataElements(section.dataElements || []);
@@ -1386,9 +1406,20 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
 
           if (!psde || !psde.dataElement) return false;
 
-          const displayName = psde.dataElement.displayName;
+          // Use formName, or clean the displayName (remove prefixes)
+          const displayName = psde.dataElement.formName || psde.dataElement.displayFormName || cleanDHIS2Name(psde.dataElement.displayName);
 
           // Hide specialisation/facility classification fields from users (they're handled by manual selector)
+          if ((sectionName || '').toUpperCase().includes('SPECIMEN')) {
+            const debugRes = await shouldShowDataElementForService(displayName, facilityType, sectionName);
+            console.log(`DEBUG_SPECIMEN:`, {
+              name: displayName,
+              orig: psde.dataElement.displayName,
+              sec: sectionName,
+              fac: facilityType,
+              show: debugRes
+            });
+          }
           const isSpecialisationField = /specialisation|facility classification|facility type/i.test(displayName);
           if (isSpecialisationField) {
             return false; // Hide these fields from users
@@ -2559,6 +2590,11 @@ const DEPARTMENT_SECTION_MAPPING = {
 
   // Laboratory Areas
   'LABORATORY WORK AREA': ['LABORATORY WORK AREA'],
+  'SPECIMEN RECEPTION ROOM': ['SPECIMEN RECEPTION ROOM'],
+  'LABORATORY TESTING AREAS CHEMISTRY': ['LABORATORY TESTING AREAS CHEMISTRY'],
+  'LABORATORY TESTING AREAS HAEMATOLOGY': ['LABORATORY TESTING AREAS HAEMATOLOGY'],
+  'MICROBIOLOGY': ['MICROBIOLOGY'],
+  'HIV SCREENING': ['HIV SCREENING'],
 
   // Pharmacy and Supplies
   'PHARMACY/ DISPENSARY': ['PHARMACY/ DISPENSARY'],
@@ -2568,6 +2604,7 @@ const DEPARTMENT_SECTION_MAPPING = {
   // Information Management
   'RECORDS/ INFORMATION MANAGEMENT': ['RECORDS/ INFORMATION MANAGEMENT'],
   'MEDICAL RECORDS ROOM': ['MEDICAL RECORDS ROOM'],
+  'CUSTOMER SATISFACTION': ['CUSTOMER SATISFACTION'],
 
   // Therapy Areas
   'PHYSIOTHERAPY TREATMENT AREA': ['PHYSIOTHERAPY TREATMENT AREA'],
@@ -4010,12 +4047,24 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
         }
 
         // Fallback to dynamic calculation only if no hardcoded departments are available
-        if (serviceSections && Array.isArray(serviceSections)) {
+        // CRITICAL FIX: Use configuration sections instead of serviceSections to ensure ALL potential sections are available
+        const sourceSections = configuration?.programStage?.sections || serviceSections;
+        if (sourceSections && Array.isArray(sourceSections)) {
 
           const names = [];
           const seenNames = new Set(); // Track seen names to prevent duplicates
 
-          for (const s of serviceSections) {
+          for (const s of sourceSections) {
+
+            // DEBUG: Trace Specimen in Dept Options
+            if (s.displayName && (s.displayName.includes('SPECIMEN') || s.displayName.includes('Specimen'))) {
+              console.log('🚧 DEP OPTIONS CHECK:', {
+                name: s.displayName,
+                elements: s.dataElements?.length,
+                shouldShowSection: shouldShowSection(s.displayName.replace(/^SECTION\s+[A-Z]\s*-\s*/i, ''), currentSpecialization)
+              });
+            }
+
             const total = s?.dataElements?.length || 0;
             if (total === 0) continue;
 
@@ -4037,7 +4086,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
             const shown = (s.dataElements || []).filter((psde2) => {
               if (!psde2?.dataElement) return false;
-              const displayName2 = psde2.dataElement.displayName;
+              const displayName2 = psde2.dataElement.formName || psde2.dataElement.displayFormName || cleanDHIS2Name(psde2.dataElement.displayName);
               const isComment2 = /\s(Comments?|Remarks?)$/i.test(displayName2);
               if (isComment2) {
                 const main2 = displayName2
@@ -4068,6 +4117,22 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
       window.__departmentOptionsForSection = [];
     }
   }, [facilityType, serviceSections, manualSpecialization]);
+
+  // AUTO-SELECT DEPARTMENTS when specialization changes
+  useEffect(() => {
+    if (manualSpecialization) {
+      const normalizedSpec = normalizeFacilityClassification(manualSpecialization);
+      const defaults = getDepartmentsForSpecialization(normalizedSpec);
+
+      if (defaults && defaults.length > 0) {
+        console.log("🤖 AUTO-SELECTING DEPARTMENTS for " + normalizedSpec, defaults);
+        setSelectedServiceDepartments(defaults);
+
+        // Allow time for state to update then force re-check of sections
+        // (The rendering loop uses selectedServiceDepartments directly so it should be immediate)
+      }
+    }
+  }, [manualSpecialization]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -4813,6 +4878,24 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
           const isAssigned = assignedSectionNames.includes(section.displayName);
 
+          // Allow sections that match the manually selected specialization
+          // This ensures newly added sections appear when the user selects the corresponding facility type
+          const currentSpec = manualSpecialization || facilityType;
+
+          if (section.displayName && section.displayName.toLowerCase().includes('specimen')) {
+            console.log("🕵️ TRACING SPECIMEN FILTER:", {
+              section: section.displayName,
+              currentSpec,
+              shouldShow: currentSpec ? shouldShowSection(section.displayName, currentSpec) : 'no-spec',
+              isAssigned
+            });
+          }
+
+          if (currentSpec && shouldShowSection(section.displayName, currentSpec)) {
+            if (showDebugPanel) console.log(`🔓 Section "${section.displayName}" allowed by specialization "${currentSpec}"`);
+            return true;
+          }
+
           if (showDebugPanel) {
 
           }
@@ -4886,7 +4969,9 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
     fetchServiceSections();
 
-  }, [formData.orgUnit, user?.username, configuration?.program?.id]);
+    console.log("🔥 SERVICE SECTIONS EFFECT RUNNING", { manualSpecialization, facilityType });
+
+  }, [formData.orgUnit, user?.username, configuration?.program?.id, manualSpecialization, facilityType]);
 
   // Move this block after all hooks to avoid conditional hook call error
 
@@ -5907,7 +5992,8 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
       // Only count data elements that should be visible for this facility type
       if (currentFacilityType) {
         // Check if this data element should be shown for the current facility type
-        if (!shouldShowDataElementForService(psde.dataElement.displayName, currentFacilityType)) {
+        const elementName = psde.dataElement.formName || psde.dataElement.displayFormName || cleanDHIS2Name(psde.dataElement.displayName);
+        if (!shouldShowDataElementForService(elementName, currentFacilityType)) {
           return; // Skip this data element - it shouldn't be counted
         }
       }
@@ -6940,7 +7026,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
                   {/* Show all other sections */}
 
-                  {serviceSections && serviceSections.length > 0 && serviceSections
+                  {(configuration?.programStage?.sections || serviceSections) && (configuration?.programStage?.sections || serviceSections).length > 0 && (configuration?.programStage?.sections || serviceSections)
 
                     .filter(section => {
 
@@ -6975,55 +7061,57 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                       return shouldShowForDepartments;
                     })
 
-                    .map((section, index) => (
+                    .map((section, index) => {
+                      console.log(`RENDER_SECTION_LOOP: "${section.displayName}"`);
+                      return (
 
-                      <FormSection
+                        <FormSection
 
-                        key={`${section.id}-${index}-${section.displayName}`}
+                          key={`${section.id}-${index}-${section.displayName}`}
 
-                        section={section}
+                          section={section}
 
-                        formData={formData}
+                          formData={formData}
 
-                        onChange={handleFieldChange}
+                          onChange={handleFieldChange}
 
-                        errors={errors}
+                          errors={errors}
 
-                        serviceSections={serviceOptions}
+                          serviceSections={serviceOptions}
 
-                        loadingServiceSections={loadingServiceSections}
+                          loadingServiceSections={loadingServiceSections}
 
-                        readOnlyFields={readOnlyFields}
+                          readOnlyFields={readOnlyFields}
 
-                        getCurrentPosition={getCurrentPosition}
+                          getCurrentPosition={getCurrentPosition}
 
-                        formatCoordinatesForDHIS2={formatCoordinatesForDHIS2}
+                          formatCoordinatesForDHIS2={formatCoordinatesForDHIS2}
 
-                        showDebugPanel={showDebugPanel}
+                          showDebugPanel={showDebugPanel}
 
-                        facilityClassifications={facilityClassifications}
+                          facilityClassifications={facilityClassifications}
 
-                        loadingFacilityClassifications={loadingFacilityClassifications}
+                          loadingFacilityClassifications={loadingFacilityClassifications}
 
-                        inspectionInfoConfirmed={inspectionInfoConfirmed}
+                          inspectionInfoConfirmed={inspectionInfoConfirmed}
 
-                        setInspectionInfoConfirmed={setInspectionInfoConfirmed}
+                          setInspectionInfoConfirmed={setInspectionInfoConfirmed}
 
-                        areAllInspectionFieldsComplete={areAllInspectionFieldsComplete}
+                          areAllInspectionFieldsComplete={areAllInspectionFieldsComplete}
 
-                        getCurrentFacilityClassification={getCurrentFacilityClassification}
+                          getCurrentFacilityClassification={getCurrentFacilityClassification}
 
-                        facilityType={manualSpecialization || facilityType}
+                          facilityType={manualSpecialization || facilityType}
 
-                        onCommentChange={handleCommentChange}
+                          onCommentChange={handleCommentChange}
 
-                        comments={fieldComments}
+                          comments={fieldComments}
 
-                        selectedServiceDepartments={selectedServiceDepartments}
+                          selectedServiceDepartments={selectedServiceDepartments}
 
-                      />
-
-                    ))}
+                        />
+                      );
+                    })}
 
                 </>
 
