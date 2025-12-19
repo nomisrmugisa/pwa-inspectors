@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: src/config/checklist for facilities2.0.csv
- * Generated on: 2025-12-17 09:42:35
+ * Generated on: 2025-12-19 15:23:17
  * Facility Type: Physiotheraphy
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -281,6 +281,12 @@ const Physiotheraphy = {
             "Is there a patient charter in both English and Setswana",
             "Is there provision for consent before carrying out any procedures/assessment",
             "Is there a complaints, procedure",
+        ]
+    },
+    "LIASON WITH PRIMARY HEALTH CARE DEPARTMENTS": {
+        "showOnly": [
+            "Is there evidence of facility liason with the Primary Health Care Department? (A guide the reports to be submitted available)",
+            "Is there evidence of statistical reporting to the Primary Health Care Departments as per available guideline?",
         ]
     },
 

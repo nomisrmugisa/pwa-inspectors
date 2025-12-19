@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: src/config/checklist for facilities2.0.csv
- * Generated on: 2025-12-17 09:42:35
+ * Generated on: 2025-12-19 15:23:18
  *
  * This file imports all individual clinic filter files and combines them
  * To regenerate this file, run: python src/config/generateFilters.py
