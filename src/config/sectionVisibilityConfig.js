@@ -356,6 +356,24 @@ const legacySectionVisibilityConfig = {
     'SUPPLIES': true,
     'RECORDS/ INFORMATION MANAGEMENT': true,
     'CUSTOMER SATISFACTION': false
+  },
+
+  // Emergency Medical Services - includes call centre operations
+  'EMS': {
+    'Inspection Type': true,
+    'Inspectors Details': true,
+    'SECTION A-ORGANISATION AND MANAGEMENT': true,
+    'SERVICES PROVIDED': true,
+    'PERSONNEL': true,
+    'FACILITY-ENVIRONMENT': true,
+    'FACILITY-CONSULTATION/ TREATMENT ROOM': true,
+    'FACILITY-CALL CENTRE': true,
+    'SLUICE ROOM': true,
+    'TOILET FACILITIES': true,
+    'SAFETY AND WASTE MANAGEMENT': true,
+    'SUPPLIES': true,
+    'CUSTOMER SATISFACTION': true,
+    'INSTRUMENT WASHING/STERILISING ROOM': true
   }
 };
 
@@ -376,7 +394,7 @@ export const sectionVisibilityConfig = {
   'General Practice': legacySectionVisibilityConfig['Clinic'],
   'Paediatric': legacySectionVisibilityConfig['Clinic'],
   'Nursing  Home': legacySectionVisibilityConfig['Clinic'],
-  'Emergency Medical Services': legacySectionVisibilityConfig['Clinic']
+  'Emergency Medical Services': legacySectionVisibilityConfig['EMS']
 };
 
 
