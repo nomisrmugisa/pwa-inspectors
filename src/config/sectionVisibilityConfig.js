@@ -20,10 +20,10 @@ import { ALL_FACILITY_DEPARTMENTS } from './facilityServiceDepartments';
 
 export const CANONICAL_FACILITY_TYPES = [
   'Obstetrics & Gynaecology',
-  'laboratory',
+  'Laboratory',
   'Psychology',
   'Eye (Opthalmology /Optometry)',
-  'Physiotheraphy',
+  'Physiotherapy',
   'Dental',
   'Dental Laboratory',
   'Ear, Nose & Throat',
@@ -31,7 +31,8 @@ export const CANONICAL_FACILITY_TYPES = [
   'Radiology',
   'General Practice',
   'Paediatric',
-  'Nursing Home'
+  'Nursing  Home',
+  'Emergency Medical Services'
 ];
 
 // Map a variety of legacy / DHIS2 / CSV labels to canonical facility types
@@ -43,18 +44,23 @@ const LEGACY_TO_CANONICAL = {
   'Gynae Clinics': 'Obstetrics & Gynaecology',
   'Gynae': 'Obstetrics & Gynaecology',
   'Obstetrics & Gynaecology': 'Obstetrics & Gynaecology',
-  'Laboratory': 'laboratory',
-  'laboratory': 'laboratory',
+  'Obstetrics & Gynaecology ': 'Obstetrics & Gynaecology',
+  'Laboratory': 'Laboratory',
+  'laboratory': 'Laboratory',
   'Psychology': 'Psychology',
+  'Psychology ': 'Psychology',
   'Psycology': 'Psychology',
   'Psychology clinic': 'Psychology',
   'Eye': 'Eye (Opthalmology /Optometry)',
   'Eye (Opthalmology /Optometry)': 'Eye (Opthalmology /Optometry)',
+  'Eye (Opthalmology /Optometry) ': 'Eye (Opthalmology /Optometry)',
   'Eye (opthalmologyoptometry  optician) Clinics': 'Eye (Opthalmology /Optometry)',
-  'Physiotheraphy': 'Physiotheraphy',
-  'Physio': 'Physiotheraphy',
-  'physiotheraphy': 'Physiotheraphy',
+  'Physiotherapy': 'Physiotherapy',
+  'Physiotheraphy': 'Physiotherapy',
+  'Physio': 'Physiotherapy',
+  'physiotheraphy': 'Physiotherapy',
   'Dental': 'Dental',
+  'Dental ': 'Dental',
   'Dental clinic': 'Dental',
   'dental clinic': 'Dental',
   'Dental Laboratory': 'Dental Laboratory',
@@ -65,7 +71,9 @@ const LEGACY_TO_CANONICAL = {
   'Rehabilitation Centre': 'Rehabilitation Centre',
   'Radiology': 'Radiology',
   'Paediatric': 'Paediatric',
-  'Nursing Home': 'Nursing Home',
+  'Nursing Home': 'Nursing  Home',
+  'Nursing  Home': 'Nursing  Home',
+  'Emergency Medical Services': 'Emergency Medical Services',
   'Potrait clinic': 'General Practice'
 };
 
@@ -356,7 +364,7 @@ export const sectionVisibilityConfig = {
 
   // Canonical CSV facility types mapped to legacy configs
   'Obstetrics & Gynaecology': legacySectionVisibilityConfig['Gynae'],
-  'laboratory': legacySectionVisibilityConfig['Laboratory'],
+  'Laboratory': legacySectionVisibilityConfig['Laboratory'],
   'Psychology': legacySectionVisibilityConfig['Psycology'],
   'Eye (Opthalmology /Optometry)': legacySectionVisibilityConfig['Eye'],
   'Physiotheraphy': legacySectionVisibilityConfig['Physio'],
@@ -367,7 +375,8 @@ export const sectionVisibilityConfig = {
   'Radiology': legacySectionVisibilityConfig['Radiology'],
   'General Practice': legacySectionVisibilityConfig['Clinic'],
   'Paediatric': legacySectionVisibilityConfig['Clinic'],
-  'Nursing Home': legacySectionVisibilityConfig['Clinic']
+  'Nursing  Home': legacySectionVisibilityConfig['Clinic'],
+  'Emergency Medical Services': legacySectionVisibilityConfig['Clinic']
 };
 
 
@@ -557,7 +566,7 @@ export const dataElementFilterConfig = {
 
   // Canonical CSV facility types mapped to legacy DE filter configs
   'Obstetrics & Gynaecology': legacyDataElementFilterConfig['Gynae'],
-  'laboratory': legacyDataElementFilterConfig['Laboratory'],
+  'Laboratory': legacyDataElementFilterConfig['Laboratory'],
   'Psychology': legacyDataElementFilterConfig['Psycology'],
   'Eye (Opthalmology /Optometry)': legacyDataElementFilterConfig['Eye'],
   'Physiotheraphy': legacyDataElementFilterConfig['Physio'],
@@ -568,7 +577,8 @@ export const dataElementFilterConfig = {
   'Radiology': legacyDataElementFilterConfig['Radiology'],
   'General Practice': legacyDataElementFilterConfig['Clinic'],
   'Paediatric': legacyDataElementFilterConfig['Clinic'],
-  'Nursing Home': legacyDataElementFilterConfig['Clinic']
+  'Nursing  Home': legacyDataElementFilterConfig['Clinic'],
+  'Emergency Medical Services': legacyDataElementFilterConfig['Clinic']
 };
 
 

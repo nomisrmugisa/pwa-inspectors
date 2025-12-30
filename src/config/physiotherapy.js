@@ -1,13 +1,13 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: src/config/checklist for facilities2.0.csv
- * Generated on: 2025-12-30 18:45:24
- * Facility Type: Physiotheraphy
+ * Generated on: 2025-12-30 18:53:14
+ * Facility Type: Physiotherapy
  *
  * To regenerate this file, run: python src/config/generateFilters.py
  */
 
-const Physiotheraphy = {
+const Physiotherapy = {
     "SECTION A-ORGANISATION AND MANAGEMENT": {
         "showOnly": [
             "Does the Facility have an organisational structure",
@@ -279,4 +279,4 @@ const Physiotheraphy = {
 
 };
 
-export default Physiotheraphy;
+export default Physiotherapy;

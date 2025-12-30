@@ -1,13 +1,13 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: src/config/checklist for facilities2.0.csv
- * Generated on: 2025-12-30 18:45:24
- * Facility Type: Physiotheraphy
+ * Generated on: 2025-12-30 18:53:14
+ * Facility Type: Emergency Medical Services
  *
  * To regenerate this file, run: python src/config/generateFilters.py
  */
 
-const Physiotheraphy = {
+const EmergencyMedicalServices = {
     "SECTION A-ORGANISATION AND MANAGEMENT": {
         "showOnly": [
             "Does the Facility have an organisational structure",
@@ -29,6 +29,7 @@ const Physiotheraphy = {
             "Proof of change of land use",
             "Practitioners licence",
             "Fire clearance",
+            "Contracts for outsourced services",
             "Patient referral",
             "Assessment of patients",
             "Management of high risk patients",
@@ -113,61 +114,33 @@ const Physiotheraphy = {
             "Where there are ramps, are there safety features?",
         ]
     },
-    "FACILITY-RECEPTION/WAITING AREA": {
-        "showOnly": [
-            "Does reception area have adequate space? Elaborate.",
-            "Is the telephone/ cell phone available?",
-            "Is a reception desk and chair available",
-            "Is it manned at all times?",
-            "Is there an organized patient registration, screening and booking system",
-            "Are there adequate patient benches / chairs in the waiting area? Elaborate.",
-            "Is there a waste bin?",
-            "Is there a computer/ desktop?",
-            "Is there patient charter available in Setswana and English?",
-            "Is there available drinking water source?",
-            "Are educational materials available for clients",
-        ]
-    },
-    "FACILITY-SCREENING ROOM": {
-        "showOnly": [
-            "Appropriate hand wash soap",
-        ]
-    },
     "FACILITY-CONSULTATION/ TREATMENT ROOM": {
         "showOnly": [
-            "Does the consultation room have adequate space?",
-            "Does the consultation room have wheelchair accessibility",
-            "At least 3 Chairs and a table",
-            "Alcohol swabs",
-            "Appropriate hand drying facilities",
-            "Appropriate soap dispenser",
-            "Cabinet/Storage space",
-            "clinical waste bin with lid",
-            "Cotton wool/ wipes",
-            "Disposable cups",
-            "Disposable gloves",
-            "Domestic waste bin with lid",
-            "Eamination/ treatment couch with tiltable headrest behind a curtain / screen",
-            "Is the eamination/ treatment couch covered with linen?",
-            "Glucometer* and strips",
-            "Hand washing basin with running hot and cold water",
-            "Hand washing soap",
-            "hand drying facilities",
-            "Height measuring device",
-            "HIV testing kit",
-            "Lubricating jell or solution",
+            "Is there an office for the In- Charge officer?",
+            "Does the oofice have the followig;",
+            "Chairs?",
+            "Table?",
+            "Desktop/ computer connected to printer?",
+            "Telephone?",
+            "Habit Forming cabinet/ cupboard?",
+        ]
+    },
+    "SLUICE ROOM": {
+        "showOnly": [
+            "Does the room have adequate space? Elaborate.",
+            "Does the room have ventilation? Elaborate",
+            "Does the room have wheelchair accessibility?",
+            "Is the room equipped with the following--",
+            "Canvas bag trolley with cover",
+            "Canvas bag trolley with cover for non soiled linen",
+            "Canvas bag trolley with cover for soiled linen",
+            "Clinical waste bins with lid",
+            "Disinfectants",
+            "Domestic waste bins with lid",
+            "Heavy duty gloves",
             "Non sterile gloves",
-            "Reference material",
-            "Sharps container",
-            "Sphygmomanometer*",
-            "Step to ease access to couch",
-            "Sterile gloves",
-            "Storage space for consumables",
-            "Tape measure",
-            "Thermometer*",
-            "Ultra sound jelly",
-            "Weighing scale (both adult and paediatric)*",
-            "ray viewing bo",
+            "Stainless steel sink with running water",
+            "Stainless steel waste discarding sink or sluice machine",
         ]
     },
     "TOILET FACILITIES": {
@@ -216,48 +189,6 @@ const Physiotheraphy = {
             "Management of epired supplies",
             "Does the Facility have adequate supplies for services provided/",
             "Is there a stock control system?",
-            "Tapping materials",
-            "Strapping materials",
-            "Crepe bandage",
-            "Compression stocking",
-            "Tubigrip",
-            "Braces",
-            "Supports",
-            "Ambulatory frames, pick-up for adults",
-            "Ambulatory frames, rollator for adults",
-            "Ambulatory frames,rollator for paediatric",
-            "Crutches, aillary",
-            "Crutches, elbow",
-            "Tripod",
-            "Ultrasound gel",
-            "Electric pads(disposable or non-disposable)",
-            "Disinfectant",
-            "Antiseptic",
-            "Massage oil/cream",
-            "Sheets",
-            "Towels",
-            "Are supplies stored according to manufacturers recommendations?",
-            "Is the epiry of these items closely monitored?",
-            "Does the facility have appropriate equipment and instruments for the services provided?",
-            "Does the facility have the following equipment?--",
-            "Wheelchair",
-            "Ultrasound machine",
-            "Electrotherapy machine with provision for selection of different current wave forms",
-            "Short wave diathermy machine",
-            "Wooden couch for the short wave diathermy machine",
-            "Infra-red lamp",
-            "Laser therapy machine",
-            "Ultra-violet lamp",
-            "Hydro-collator/moist heat machine",
-            "Eercise weights",
-            "Eercise cycle ergo meter",
-            "Parallel bars",
-            "Sphygmomanometer",
-            "Stethoscope",
-            "Hot pack",
-            "Measuring tape",
-            "Set of goniometers",
-            "Pair of scissors",
         ]
     },
     "CUSTOMER SATISFACTION": {
@@ -276,7 +207,52 @@ const Physiotheraphy = {
             "Is there evidence of statistical reporting to the Primary Health Care Departments as per available guideline?",
         ]
     },
+    "FACILITY-CALL CENTRE": {
+        "showOnly": [
+            "Does reception area have adequate space? Elaborate.",
+            "Is the telephone/ cell phone available?",
+            "Is the telephone able to record calls",
+            "Is a reception desk and chair available",
+            "Is it manned at all times?",
+            "Is there an organized patient registration, screening and booking system",
+            "Are there adequate patient benches / chairs in the waiting area? Elaborate.",
+            "Is there a waste bin?",
+            "Is there a computer/ desktop?",
+            "Is there patient charter available in Setswana and English?",
+            "Is there available drinking water source?",
+            "Are educational materials available for clients",
+            "Does the EMS have the following?--",
+            "Patient acceptance criteria",
+            "Patient privacy policy",
+            "Male and female changing rooms",
+            "Staff room",
+            "Ambulances (Road/air/boat)",
+            "Heli pad where necessary",
+            "Ambulance wash bays",
+            "Ambulance service record",
+            "Spine immobilization equipment",
+            "Patient monitors",
+            "Glucometer",
+            "Urine dip sticks",
+            "Oygen with flow meters",
+            "cricothyroctomy tubes and adapters",
+            "Laryngoscopes (varying sizes and shapes)",
+            "Ventilation devices (Bag valve mask, oygen maks)",
+            "Endotracheal tubes",
+            "Suction tubes",
+            "Syringes",
+            "Needles",
+            "Emergency medications",
+            "Complete intraveneous infusion sets",
+            "Cannulation equipment",
+            "Intra oseous canulation equipment",
+            "Suture pack",
+            "Foley cathethers",
+            "Naso gastric tubes",
+            "Oropharyngeal airway",
+        ]
+    },
 
 };
 
-export default Physiotheraphy;
+export default EmergencyMedicalServices;

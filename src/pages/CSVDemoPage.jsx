@@ -31,7 +31,7 @@ export function CSVDemoPage() {
   useEffect(() => {
     console.log('🔄 CSVDemoPage: Loading DHIS2 data...');
     loadDHIS2Data();
-    
+
     // Load CSV content
     fetch('/checklist for facilities.csv')
       .then(response => response.text())
@@ -42,62 +42,19 @@ export function CSVDemoPage() {
       .catch(error => {
         console.error('❌ Failed to load CSV:', error);
         // Fallback to hardcoded CSV content
-        setCsvContent(`,1,2,3,4,5,6,7,8,9,10,11
-,Gynae Clinics,laboratory,Psychology clinic,Eye (opthalmologyoptometry  optician) Clinics,physiotheraphy,dental clinic,ENT clinic,Rehabilitation Centre,Potrait clinic,Radiology,clinic
-SECTION A-ORGANISATION AND MANAGEMENT,,,,,,,,,,,
-Does the clinic have an organisational structure,?,?,?,?,?,?,?,?,?,?,?
-Is the director a medically trained person?,?,?,?,?,?,?,?,?,?,?,?
-SECTION B-STATUTORY REQUIREMENTS,,,,,,,,,,,
-Does the facility have statutory requirements?,,,,,,,,,,,
-Business registration,?,?,?,?,?,?,?,?,?,?,?
-Work permits,?,?,?,?,?,?,?,?,?,?,?
-Lease agreement,?,?,?,?,?,?,,?,?,?,?
-Trading license,?,?,?,?,?,?,?,?,?,?,?
-Permission to operate/set up,?,?,?,,,,,,,,
-Occupancy certificate,?,?,?,?,?,?,?,?,?,?,?
-Patient charter in English & Setswana,?,?,?,?,?,?,?,?,?,?,?
-"Copies of relevant statutory instruments e.g. Public Health Act 2013, Botswana Health Professions Act,2001",?,?,?,?,?,?,?,?,?,?,?
-Is there an indemnity insurance?,?,?,?,?,?,?,?,?,?,?
-Have personnel been cleared by police?,?,?,?,?,?,?,?,?,?,?,?
-contracts for staff,?,?,?,?,?,?,?,?,?,?,?
-letter of permission to set up/operate,?,?,?,?,?,?,?,?,?,?,?
-waste collection carrier licence,?,?,?,?,?,?,?,?,?,?,?
-police clearance for employees,?,?,?,?,?,?,?,?,?,?,?
-confidentiality clause,?,?,?,?,?,?,?,?,?,?,?
-proof of change of land use,?,?,?,?,?,?,?,,,,
-tax clearance certificate,?,?,?,?,?,,?,?,?,?,?
-Practitioners licence,?,?,?,?,?,?,?,?,?,?,?
-Fire clearance,?,?,?,?,?,?,?,?,?,?,?
-work permits,?,?,?,?,?,?,?,?,?,?,?
-residence permit,?,?,?,?,?,,?,?,?,?,?
-contracts for staff,?,?,?,?,?,?,?,?,?,?,?
-,,,,,,,,,,,
-,,,,,,,,,,,
-SECTION C-POLICIES AND PROCEDURES,,,,,,,,,,,
-Does the clinic have policies and procedures for the following?,,,,,,,,,,,
-referral systems,?,?,?,?,?,?,?,?,?,?,?
-assessment of patients,?,?,?,?,?,?,?,?,?,?,?
-treatment protocols,?,?,?,?,?,?,?,?,?,?,?
-testing and treatment techniques,?,?,?,?,?,?,?,?,?,?,?
-"high risk patients and procedures, and",?,?,?,?,?,?,?,?,?,?,?
-the confidentiality of patient information,?,?,?,?,?,?,?,?,?,?,?
-incident reporting,?,?,?,?,?,?,?,?,?,?,?
-Induction and orientation,?,?,?,?,?,?,?,?,?,?,?
-patient consent,?,?,?,?,?,?,?,?,?,?,?
-Linen management,?,?,?,?,?,?,?,?,?,?,?
-Equipment maintenance plan/program,?,?,?,?,?,?,?,?,?,?,?
-Testing and commissioning certificates,?,?,?,?,?,?,?,?,?,?,?
-Infection prevention and control,?,?,?,?,?,?,?,?,?,?,?
-Management of patient records and retention times,?,?,?,?,?,?,?,?,?,?,?
-Management of information ,?,?,?,?,?,?,?,?,?,?,?
-Risk management ,?,?,?,?,?,?,?,?,?,?,?
-Management of supplies,?,?,?,?,?,?,?,?,?,?,?
-Patient observation,?,?,?,?,?,?,?,?,?,?,?
-Management of medication,?,?,?,?,?,?,?,?,?,?,?
-Post exposure prophylaxis,?,?,?,?,?,?,?,?,?,?,?
-Complaints procedure,?,?,?,?,?,?,?,?,?,?,?
-Outreach services,?,?,?,?,?,?,?,?,?,?,?
-Waste management,?,?,?,?,?,?,?,?,?,?,?`);
+        const FALLBACK_CSV = `Section,Obstetrics & Gynaecology,Laboratory,Psychology,Eye (Opthalmology /Optometry),Physiotherapy,Dental,Dental Laboratory,Ear Nose & Throat,Rehabilitation Centre,Radiology,General Practice,Paediatric,Nursing  Home,Emergency Medical Services
+SECTION A-ORGANISATION AND MANAGEMENT,?,?,?,?,?,?,?,?,?,?,?,?,?,?
+Does the clinic have an organisational structure,?,?,?,?,?,?,?,?,?,?,?,?,?,?
+Is the director a medically trained person,?,?,?,?,?,?,?,?,?,?,?,?,?,?
+SECTION B-STATUTORY REQUIREMENTS,?,?,?,?,?,?,?,?,?,?,?,?,?,?
+Does the facility have statutory requirements,?,?,?,?,?,?,?,?,?,?,?,?,?,?
+Business registration,?,?,?,?,?,?,?,?,?,?,?,?,?,?
+Work permits,?,?,?,?,?,?,?,?,?,?,?,?,?,?
+Lease agreement,?,?,?,?,?,?,?,?,?,?,?,?,?,?
+Fire clearance,?,?,?,?,?,?,?,?,?,?,?,?,?,?
+work permits,?,?,?,?,?,?,?,?,?,?,?,?,?,?
+contracts for staff,?,?,?,?,?,?,?,?,?,?,?,?,?,?`;
+        setCsvContent(FALLBACK_CSV);
       });
   }, [loadDHIS2Data]);
 
@@ -108,7 +65,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`);
         <p>
           <strong>DISABLED CSV FILTERING</strong> - Showing ALL sections and Data Elements directly from DHIS2 API
         </p>
-        
+
         {/* Quick Status Summary */}
         <div className="status-summary">
           <div className="status-badge dhis2-status-badge">
@@ -217,7 +174,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`);
             </span>
           </div>
         </div>
-        
+
         {dhis2Error && (
           <div className="dhis2-error">
             <p>
@@ -230,7 +187,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`);
             </button>
           </div>
         )}
-        
+
         {dhis2Loading && (
           <div className="dhis2-loading">
             <div className="spinner"></div>
@@ -240,7 +197,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`);
             </p>
           </div>
         )}
-        
+
         {dhis2DataElements.length === 0 && !dhis2Loading && !dhis2Error && (
           <div className="dhis2-info">
             <p>
@@ -254,7 +211,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`);
             </button>
           </div>
         )}
-        
+
         {/* Always show refresh button when connected */}
         {dhis2DataElements.length > 0 && (
           <div className="dhis2-actions">
@@ -279,7 +236,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`);
           <p className="raw-data-description">
             Showing ALL Data Elements returned directly from DHIS2 API endpoint: <code>/api/programStages/Eupjm3J0dt2</code>
           </p>
-          
+
           <div className="data-elements-grid">
             {dhis2DataElements.map((element, index) => (
               <div key={element.id || index} className="data-element-card">
@@ -322,7 +279,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`);
             This section demonstrates the DynamicFormRenderer with a CSV configuration.
             It will render a form based on the structure of the CSV file.
           </p>
-          
+
           {/* Facility Type Selector */}
           <div className="facility-type-selector">
             <label htmlFor="facilityType">Select Facility Type:</label>
@@ -332,20 +289,23 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`);
               onChange={(e) => setSelectedFacilityType(e.target.value)}
             >
               <option value="">Choose a facility type...</option>
-              <option value="Gynae Clinics">Gynae Clinics</option>
-              <option value="laboratory">Laboratory</option>
-              <option value="Psychology clinic">Psychology Clinic</option>
-              <option value="Eye (opthalmologyoptometry  optician) Clinics">Eye Clinics</option>
-              <option value="physiotheraphy">Physiotherapy</option>
-              <option value="dental clinic">Dental Clinic</option>
-              <option value="ENT clinic">ENT Clinic</option>
+              <option value="Obstetrics & Gynaecology">Obstetrics & Gynaecology</option>
+              <option value="Laboratory">Laboratory</option>
+              <option value="Psychology">Psychology</option>
+              <option value="Eye (Opthalmology /Optometry)">Eye Clinics</option>
+              <option value="Physiotherapy">Physiotherapy</option>
+              <option value="Dental">Dental Clinic</option>
+              <option value="Dental Laboratory">Dental Laboratory</option>
+              <option value="Ear, Nose & Throat">Ear, Nose & Throat</option>
               <option value="Rehabilitation Centre">Rehabilitation Centre</option>
-              <option value="Potrait clinic">Potrait Clinic</option>
               <option value="Radiology">Radiology</option>
-              <option value="clinic">General Clinic</option>
+              <option value="General Practice">General Practice</option>
+              <option value="Paediatric">Paediatric</option>
+              <option value="Nursing  Home">Nursing Home</option>
+              <option value="Emergency Medical Services">Emergency Medical Services</option>
             </select>
           </div>
-          
+
           {selectedFacilityType && (
             <DynamicFormRenderer
               csvContent={csvContent}

@@ -1,17 +1,17 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: src/config/checklist for facilities2.0.csv
- * Generated on: 2025-12-19 15:23:18
+ * Generated on: 2025-12-30 18:53:14
  *
  * This file imports all individual clinic filter files and combines them
  * To regenerate this file, run: python src/config/generateFilters.py
  */
 
 import ObstetricsandGynaecology from './obstetricsandgynaecology.js';
-import laboratory from './laboratory.js';
+import Laboratory from './laboratory.js';
 import Psychology from './psychology.js';
 import EyeOpthalmologyOptometry from './eyeopthalmologyoptometry.js';
-import Physiotheraphy from './physiotheraphy.js';
+import Physiotherapy from './physiotherapy.js';
 import Dental from './dental.js';
 import DentalLaboratory from './dentallaboratory.js';
 import EarNoseandThroat from './earnoseandthroat.js';
@@ -20,18 +20,19 @@ import Radiology from './radiology.js';
 import GeneralPractice from './generalpractice.js';
 import Paediatric from './paediatric.js';
 import NursingHome from './nursinghome.js';
+import EmergencyMedicalServices from './emergencymedicalservices.js';
 
 const facilityServiceFilters = {
     'Obstetrics & Gynaecology': ObstetricsandGynaecology,
     'Service Obstetrics & Gynaecology': ObstetricsandGynaecology,
-    'laboratory': laboratory,
-    'Service laboratory': laboratory,
+    'Laboratory': Laboratory,
+    'Service Laboratory': Laboratory,
     'Psychology': Psychology,
     'Service Psychology': Psychology,
     'Eye (Opthalmology /Optometry)': EyeOpthalmologyOptometry,
     'Service Eye (Opthalmology /Optometry)': EyeOpthalmologyOptometry,
-    'Physiotheraphy': Physiotheraphy,
-    'Service Physiotheraphy': Physiotheraphy,
+    'Physiotherapy': Physiotherapy,
+    'Service Physiotherapy': Physiotherapy,
     'Dental': Dental,
     'Service Dental': Dental,
     'Dental Laboratory': DentalLaboratory,
@@ -46,8 +47,10 @@ const facilityServiceFilters = {
     'Service General Practice': GeneralPractice,
     'Paediatric': Paediatric,
     'Service Paediatric': Paediatric,
-    'Nursing Home': NursingHome,
-    'Service Nursing Home': NursingHome,
+    'Nursing  Home': NursingHome,
+    'Service Nursing  Home': NursingHome,
+    'Emergency Medical Services': EmergencyMedicalServices,
+    'Service Emergency Medical Services': EmergencyMedicalServices,
 };
 
 

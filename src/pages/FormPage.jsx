@@ -2557,6 +2557,8 @@ const DEPARTMENT_SECTION_MAPPING = {
   'FACILITY-PROCEDURE ROOM': ['FACILITY-PROCEDURE ROOM'],
   'FACILITY - PROCEDURE ROOM': ['FACILITY-PROCEDURE ROOM'],
   'FACILITY- PROCEDURE ROOM': ['FACILITY-PROCEDURE ROOM'],
+  'FACILITY-CALL CENTRE': ['CALL CENTRE'],
+  'INSTRUMENT WASHING/STERILISING ROOM': ['STERILISING', 'WASHING'],
 
   // Clinical Rooms - General
   'SCREENING ROOM': ['SCREENING ROOM'],
@@ -3067,189 +3069,18 @@ function FormPage() {
     return filtered;
   };
 
-  // Function to parse CSV and extract facility classifications
-
-  const parseCSVClassifications = (csvContent) => {
-
-    try {
-
-      // Split CSV content into lines
-
-      const lines = csvContent.split('\n');
-
-      if (lines.length < 2) return [];
-
-      // Get the second line (index 1) which contains the actual facility classification names
-
-      // Skip the first line which just has numbers
-
-      const classificationRow = lines[1].split(',');
-
-      // Extract facility classifications (skip the first empty column)
-
-      const classifications = classificationRow.slice(1).map(col => col.trim()).filter(col => col.length > 0);
-
-      return classifications;
-
-    } catch (error) {
-
-      console.error('Error parsing CSV:', error);
-
-      return [];
-
-    }
-
-  };
-
-  // Function to load facility classifications from CSV
-
+  // Function to load facility classifications - now uses canonical types directly
   const loadFacilityClassifications = async () => {
-
     setLoadingFacilityClassifications(true);
-
     try {
-
-      // For now, we'll use the hardcoded CSV content
-
-      // In a real implementation, you might fetch this from an API or file
-
-      const csvContent = `,1,2,3,4,5,6,7,8,9,10,11
-
-,Gynae Clinics,laboratory,Psychology clinic,Eye (opthalmologyoptometry  optician) Clinics,physiotheraphy,dental clinic,ENT clinic,Rehabilitation Centre,Potrait clinic,Radiology,clinic
-
-SECTION A-ORGANISATION AND MANAGEMENT,,,,,,,,,,,
-
-Does the clinic have an organisational structure,?,?,?,?,?,?,?,?,?,?,?
-
-Is the director a medically trained person?,?,?,?,?,?,?,?,?,?,?,?
-
-SECTION B-STATUTORY REQUIREMENTS,,,,,,,,,,,
-
-Does the facility have statutory requirements?,,,,,,,,,,,
-
-Business registration,?,?,?,?,?,?,?,?,?,?,?
-
-Work permits,?,?,?,?,?,?,?,?,?,?,?
-
-Lease agreement,?,?,?,?,?,?,,?,?,?,?
-
-Trading license,?,?,?,?,?,?,?,?,?,?,?
-
-Permission to operate/set up,?,?,?,,,,,,,,
-
-Occupancy certificate,?,?,?,?,?,?,?,?,?,?,?
-
-Patient charter in English & Setswana,?,?,?,?,?,?,?,?,?,?,?
-
-"Copies of relevant statutory instruments e.g. Public Health Act 2013, Botswana Health Professions Act,2001",?,?,?,?,?,?,?,?,?,?,?
-
-Is there an indemnity insurance?,?,?,?,?,?,?,?,?,?,?
-
-Have personnel been cleared by police?,?,?,?,?,?,?,?,?,?,?,?
-
-contracts for staff,?,?,?,?,?,?,?,?,?,?,?
-
-letter of permission to set up/operate,?,?,?,?,?,?,?,?,?,?,?
-
-waste collection carrier licence,?,?,?,?,?,?,?,?,?,?,?
-
-police clearance for employees,?,?,?,?,?,?,?,?,?,?,?
-
-confidentiality clause,?,?,?,?,?,?,?,?,?,?,?
-
-proof of change of land use,?,?,?,?,?,?,?,,,,
-
-tax clearance certificate,?,?,?,?,,?,?,?,?,?
-
-Practitioners licence,?,?,?,?,?,?,?,?,?,?,?
-
-Fire clearance,?,?,?,?,?,?,?,?,?,?,?
-
-work permits,?,?,?,?,?,?,?,?,?,?,?
-
-residence permit,?,?,?,,?,?,?,?,?,?
-
-contracts for staff,?,?,?,?,?,?,?,?,?,?,?
-
-,,,,,,,,,,,
-
-,,,,,,,,,,,
-
-SECTION C-POLICIES AND PROCEDURES,,,,,,,,,,,
-
-Does the clinic have policies and procedures for the following?,,,,,,,,,,,
-
-referral systems,?,?,?,?,?,?,?,?,?,?,?
-
-assessment of patients,?,?,?,?,?,?,?,?,?,?,?
-
-treatment protocols,?,?,?,?,?,?,?,?,?,?,?
-
-testing and treatment techniques,?,?,?,?,?,?,?,?,?,?,?
-
-"high risk patients and procedures, and",?,?,?,?,?,?,?,?,?,?,?
-
-the confidentiality of patient information,?,?,?,?,?,?,?,?,?,?,?
-
-incident reporting,?,?,?,?,?,?,?,?,?,?,?
-
-Induction and orientation,?,?,?,?,?,?,?,?,?,?,?
-
-patient consent,?,?,?,?,?,?,?,?,?,?,?
-
-Linen management,?,?,?,?,?,?,?,?,?,?,?
-
-Equipment maintenance plan/program,?,?,?,?,?,?,?,?,?,?,?
-
-Testing and commissioning certificates,?,?,?,?,?,?,?,?,?,?,?
-
-Infection prevention and control,?,?,?,?,?,?,?,?,?,?,?
-
-Management of patient records and retention times,?,?,?,?,?,?,?,?,?,?,?
-
-Management of information ,?,?,?,?,?,?,?,?,?,?,?
-
-Risk management ,?,?,?,?,?,?,?,?,?,?,?
-
-Management of supplies,?,?,?,?,?,?,?,?,?,?,?
-
-Patient observation,?,?,?,?,?,?,?,?,?,?,?
-
-Management of medication,?,?,?,?,?,?,?,?,?,?,?
-
-Post exposure prophylaxis,?,?,?,?,?,?,?,?,?,?,?
-
-Complaints procedure,?,?,?,?,?,?,?,?,?,?,?
-
-Outreach services,?,?,?,?,?,?,?,?,?,?,?
-
-Waste management,?,?,?,?,?,?,?,?,?,?,?`;
-
-      const rawClassifications = parseCSVClassifications(csvContent);
-
-      // Normalize and de-duplicate against canonical facility types from CSV
-      const normalizedClassifications = Array.from(
-        new Set(
-          rawClassifications
-            .map((name) => normalizeFacilityClassification(name))
-            .filter(Boolean)
-        )
-      );
-
-      setFacilityClassifications(normalizedClassifications);
-
+      // Use the canonical types from config instead of hardcoded CSV
+      setFacilityClassifications(CANONICAL_FACILITY_TYPES);
     } catch (error) {
-
       console.error('Error loading facility classifications:', error);
-
       showToast('Failed to load facility classifications', 'error');
-
     } finally {
-
       setLoadingFacilityClassifications(false);
-
     }
-
   };
 
   // Helper function to format coordinates in DHIS2 compliant format
@@ -3832,8 +3663,26 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
             const savedSpecialization = existingData.formData[specializationFieldName] ||
               existingData.formData.facilityClassification;
 
-            const serviceDepartmentsFieldName = 'dataElement_facility_service_departments';
-            const savedServiceDepartments = existingData.formData[serviceDepartmentsFieldName];
+            // Try to find the service departments field ID dynamically or use the known static ID
+            let serviceDepartmentsFieldName = 'dataElement_jpcDY2i8ZDE'; // Default known ID
+
+            // If configuration is available, try to find it dynamically for more robustness
+            if (configuration?.programStage?.sections) {
+              for (const section of configuration.programStage.sections) {
+                if (section.dataElements) {
+                  const found = section.dataElements.find(psde =>
+                    enhancedServiceFieldDetection(psde.dataElement) === 'facility_service_departments'
+                  );
+                  if (found) {
+                    serviceDepartmentsFieldName = `dataElement_${found.dataElement.id}`;
+                    break;
+                  }
+                }
+              }
+            }
+
+            const savedServiceDepartments = existingData.formData[serviceDepartmentsFieldName] ||
+              existingData.formData['dataElement_facility_service_departments']; // Fallback to legacy key
 
             let parsedDepartments = [];
             if (savedServiceDepartments) {
@@ -3863,6 +3712,29 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                 // Update global state for consistency
                 window.__currentSpecialization = normalizedSaved;
                 window.__manualSpecialization = normalizedSaved;
+
+                // CRITICAL FIX: Restore hardcoded department options logic on reload
+                const hardcodedDepartments = getDepartmentsForSpecialization(normalizedSaved);
+                window.__departmentOptionsForSection = hardcodedDepartments;
+                window.__hardcodedDepartments = hardcodedDepartments;
+
+                // Re-establish the interceptor
+                const interceptor = () => {
+                  if (window.__hardcodedDepartments && window.__hardcodedDepartments.length > 0) {
+                    window.__departmentOptionsForSection = window.__hardcodedDepartments;
+                    return window.__hardcodedDepartments;
+                  }
+                  return window.__departmentOptionsForSection;
+                };
+                window.getDepartmentOptions = interceptor;
+
+                console.log(`🔄 Restored specialization state for: ${normalizedSaved}`, {
+                  departments: hardcodedDepartments.length
+                });
+
+                // Auto-confirm inspection info if specialization is restored
+                // This ensures the rest of the form is visible on reload
+                setInspectionInfoConfirmed(true);
               }
 
               // Update service departments if available
@@ -4121,7 +3993,11 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
 
   // AUTO-SELECT DEPARTMENTS when specialization changes
   useEffect(() => {
-    if (manualSpecialization) {
+    // Only auto-select if:
+    // 1. We are NOT currently loading from IndexedDB
+    // 2. We have a specialization selected
+    // 3. We DON'T already have departments selected (prevents overwriting saved/custom selections)
+    if (!isLoadingFromIndexedDB && manualSpecialization && selectedServiceDepartments.length === 0) {
       const normalizedSpec = normalizeFacilityClassification(manualSpecialization);
       const defaults = getDepartmentsForSpecialization(normalizedSpec);
 
@@ -4133,7 +4009,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
         // (The rendering loop uses selectedServiceDepartments directly so it should be immediate)
       }
     }
-  }, [manualSpecialization]);
+  }, [manualSpecialization, isLoadingFromIndexedDB, selectedServiceDepartments.length]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -6518,7 +6394,7 @@ Waste management,?,?,?,?,?,?,?,?,?,?,?`;
                   disabled={inspectionInfoConfirmed}
                 >
                   <option value="">Select a specialization...</option>
-                  {specializationOptions.map((option, index) => (
+                  {CANONICAL_FACILITY_TYPES.map((option, index) => (
                     <option key={index} value={option}>
                       {option}
                     </option>

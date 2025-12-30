@@ -64,7 +64,16 @@ class FacilityFilterGenerator:
             raise ValueError("CSV file must have at least 2 rows (headers and facility types)")
 
         # Extract facility types from row 1 (skip first empty column)
-        self.facility_types = [ft.strip() for ft in lines[0][1:] if ft.strip()]
+        # Keep exact spacing (e.g., "Nursing  Home") to match CSV master exactly
+        # Apply name standardization (e.g., Physiotheraphy -> Physiotherapy)
+        raw_types = [ft.strip() for ft in lines[0][1:] if ft.strip()]
+        
+        name_standardization = {
+            'Physiotheraphy': 'Physiotherapy',
+            'Nursing Home': 'Nursing  Home', # Ensure double space internally if single space in CSV
+        }
+        
+        self.facility_types = [name_standardization.get(ft, ft) for ft in raw_types]
         print(f"🏥 Found {len(self.facility_types)} facility types: {self.facility_types}")
 
         # Parse sections and questions
