@@ -1,4 +1,4 @@
-import { ALL_FACILITY_DEPARTMENTS } from './facilityServiceDepartments';
+import { ALL_FACILITY_DEPARTMENTS } from './facilityServiceDepartments.js';
 
 /**
  * Section Visibility Configuration

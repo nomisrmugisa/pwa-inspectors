@@ -2954,6 +2954,7 @@ function FormPage() {
     const sectionLower = safeName.toLowerCase();
 
     // Always show core inspection sections regardless of department selection
+    // Always show core inspection sections regardless of department selection
     if (sectionLower.includes('inspection information') || sectionLower.includes('inspection type')) {
       return true;
     }

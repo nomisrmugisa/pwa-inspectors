@@ -757,7 +757,7 @@ class DHIS2APIService {
    * Get inspection assignments from dataStore
    * Used to create dynamic service dropdown based on facility and inspector
    */
-  async getInspectionAssignments(year = new Date().getFullYear()) {
+  async getInspectionAssignments(year = 2025) { // TEMP: Hardcoded to 2025 for testing
     const endpoint = `/api/dataStore/inspection/${year}`;
     try {
       const data = await this.request(endpoint);
