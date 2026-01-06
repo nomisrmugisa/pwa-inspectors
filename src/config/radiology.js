@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
- * Generated from: src/config/checklist for facilities2.0.csv
- * Generated on: 2025-12-30 18:53:14
+ * Generated from: checklist-final.csv
+ * Generated on: 2026-01-06 10:29:04
  * Facility Type: Radiology
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -13,7 +13,7 @@ const Radiology = {
             "Does the Facility have an organisational structure",
             "Is the director a medically trained person?",
             "Business registration",
-            "ta clearance certificate",
+            "tax clearance certificate",
             "Valid private pactice license",
             "Work permits",
             "Residence permit",
@@ -193,7 +193,7 @@ const Radiology = {
             "Is there a complaints, procedure",
         ]
     },
-    "INSTRUMENT WASHING/STERILISING ROOM": {
+    "X-RAY ROOM": {
         "showOnly": [
             "Does the -ray room have adequate space?",
             "Does the -ray room have wheelchair accessibility?",
@@ -204,7 +204,7 @@ const Radiology = {
             "Different sizes of gonad protection.",
             "Thyroid shields.",
             "Control panel shielded with lead window.",
-            "Ray viewing bo?",
+            "X-Ray viewing box?",
             "Gloves  non-sterile",
             "Waste bin with lid for clinical waste?",
             "Waste bin with lid for non-clinical waste? Sharps disposal container.",
@@ -214,12 +214,20 @@ const Radiology = {
             "Are the doors sliding type?",
             "If doors are not sliding, do they have lead strips along the edges to prevent radiation leakages?",
             "If windows eist, are they leaded",
+        ]
+    },
+    "ULTRASOUND ROOM": {
+        "showOnly": [
             "Is the ultrasound machine commissioned and records available?",
             "Is there provision for a change room for patients?",
             "Is the room accessible by the handicapped( wheel chairs users)etc.",
             "Is the room equipped with clinical waste bin, domestic waste bin?",
             "Is there adequate ventilation and lighting?",
             "Is there provision for handwashing?",
+        ]
+    },
+    "LIASON WITH PRIMARY HEALTH CARE DEPARTMENTS": {
+        "showOnly": [
             "Is there evidence of facility liason with the Primary Health Care Department? (A guide the reports to be submitted available)",
             "Is there evidence of statistical reporting to the Primary Health Care Departments as per available guideline?",
         ]

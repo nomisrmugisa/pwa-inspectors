@@ -31,7 +31,7 @@ from datetime import datetime
 from pathlib import Path
 
 class FacilityFilterGenerator:
-    def __init__(self, csv_path="src/config/checklist for facilities2.0.csv"):
+    def __init__(self, csv_path="checklist-final.csv"):
         self.csv_path = csv_path
         self.facility_types = []
         self.sections = []
@@ -90,8 +90,7 @@ class FacilityFilterGenerator:
 
             # Detect section headers - fully capitalized names (no lowercase letters)
             if (first_column and
-                ((first_column.isupper() and len(first_column) > 3) or first_column.upper().startswith('FACILITY-')) and
-                not first_column.endswith('?')):
+                ((first_column.isupper() and len(first_column) > 3) or first_column.upper().startswith('FACILITY-'))):
 
                 # Normalize: Uppercase and remove spaces around hyphens
                 current_section = re.sub(r'\s*-\s*', '-', first_column.upper())
@@ -259,7 +258,8 @@ export function shouldShowDataElementForService(dataElementName, selectedService
     // Helper to normalize strings for comparison (handles apostrophes, case, and whitespace)
     const normalize = (str) => {
         if (!str) return '';
-        return str.replace(/['‘’]/g, "").toLowerCase().trim();
+        // Strip leading non-alphanumeric symbols like bullets
+        return str.replace(/^[^a-zA-Z0-9(]+/, "").replace(/['‘’]/g, "").toLowerCase().trim();
     };
 
     const normalizedDataElementName = normalize(dataElementName);
@@ -297,13 +297,27 @@ export function shouldShowDataElementForService(dataElementName, selectedService
         if (looseSectionKey) {
              const section = serviceFilters[looseSectionKey];
              if (section && section.showOnly) {
-                return section.showOnly.some(item => 
+                const foundInSection = section.showOnly.some(item => 
                     item === dataElementName || normalize(item) === normalizedDataElementName
                 );
+                if (foundInSection) return true;
             }
         }
 
-        // If section doesn't exist in filters, don't show the element
+        // FALLBACK: If not found in the specific section provided by DHIS2, 
+        // check if it's allowed ANYWHERE for this service.
+        // This handles cases where DHIS2 and CSV have different section mappings.
+        for (const sectionKey in serviceFilters) {
+            const section = serviceFilters[sectionKey];
+            if (section && section.showOnly) {
+                const foundAnywhere = section.showOnly.some(item => 
+                    item === dataElementName || normalize(item) === normalizedDataElementName
+                );
+                if (foundAnywhere) return true;
+            }
+        }
+
+        // If not found anywhere in filters, don't show the element
         return false;
     }
 

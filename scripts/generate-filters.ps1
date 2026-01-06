@@ -11,9 +11,10 @@ Write-Host ("Backup created at " + $backup)
 # Ensure UTF-8 output for Python on Windows
 try {
   chcp 65001 | Out-Null
-} catch {}
+}
+catch {}
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
 $env:PYTHONUTF8 = '1'
 
 # Run the Python generator
-python .\src\config\genreateFilters.py
+python .\src\config\generateFilters.py

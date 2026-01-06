@@ -1,0 +1,115 @@
+CSV ELEMENTS:
+- Is the ultrasound machine commissioned and records available?
+- Is there provision for a change room for patients?
+- Is the room accessible by the handicapped( wheel chairs users)etc.
+- Is the room equipped with clinical waste bin, domestic waste bin?
+- Is there adequate ventilation and lighting?
+- Is there provision for handwashing?
+- Liason with Primary Health Care Departments--
+- Is there evidence of facility liason with the Primary Health Care Department? (A guide the reports to be submitted available)
+- Is there evidence of statistical reporting to the Primary Health Care Departments as per available guideline?
+- FACILITY- Call Centre
+- Does reception area have adequate space? Elaborate.
+- Is the telephone/ cell phone available?
+- Is the telephone able to record calls
+- Is a reception desk and chair available
+- Is it manned at all times?
+- Is there an organized patient registration, screening and booking system
+- Are there adequate patient benches / chairs in the waiting area? Elaborate.
+- Is there a waste bin?
+- Is there a computer/ desktop?
+- Is there patient charter available in Setswana and English?
+- Is there available drinking water source?
+- Are educational materials available for clients
+- Does the EMS have the following?--
+- Patient acceptance criteria
+- Patient privacy policy
+- Male and female changing rooms
+- Staff room
+- Ambulances (Road/air/boat)
+- Heli pad where necessary
+- Ambulance wash bays
+- Ambulance service record
+- Spine immobilization equipment
+- Vital signs monitoring equipment including but not limited to;--
+- Patient monitors
+- Glucometer
+- Urine dip sticks
+- Oygen with flow meters
+- Resuscitation bags with but not limited to;--
+- cricothyroctomy tubes and adapters
+- Laryngoscopes (varying sizes and shapes)
+- Ventilation devices (Bag valve mask, oygen maks)
+- Endotracheal tubes
+- Suction tubes
+- Syringes
+- Needles
+- Emergency medications
+- Complete intraveneous infusion sets
+- Cannulation equipment
+- Intra oseous canulation equipment
+- Suture pack
+- Foley cathethers
+- Naso gastric tubes
+- Oropharyngeal airway
+
+DHIS2 ELEMENTS:
+- Comments (ID: GUHm0ghp9Tc)
+-  Is there enough ventilation? (ID: UVjFGL8YxgN)
+- Is there a waste bin? (ID: LW0mXum82Yv)
+- Clinical waste bin with lid (ID: SqvocOKv8lc)
+- Domestic waste bin with lid (ID: JrdEIc4IC8o)
+- clinical waste bin with lid (ID: DNsiEk90vkk)
+- domestic waste bin with lid (ID: Ya1aGEJdbnV)
+- Is there domestic waste bins with lid? (ID: A1pCbvIi5eV)
+- clinical waste bins with lid (ID: Z8cLw3TiyEA)
+- domestic waste bin with lid (ID: TLkxzzCAG0y)
+- Does the room have ventilation? Elaborate (ID: PgfUn9ZsLQo)
+- Clinical waste bins with lid (ID: ewGZ6YjDP9D)
+- Domestic waste bins with lid (ID: cm8e7Rgz0Zn)
+- Clinical waste bin with lid (ID: MN8T6IrtFQw)
+- Domestic waste bin with lid (ID: qwKdj2M7Qfd)
+- Ultrasound gel (ID: FbZ9xLGjW4B)
+- Ultrasound machine (ID: Z2xmmQyp6gs)
+- Ultrasound room (ID: LARBGmKvyFq)
+- � Is the ultrasound machine commissioned and records available? (ID: hUes6rnPV8h)
+- � Is there provision for a change room for patients? (ID: XrmP58Iihpp)
+- � Is the room accessible by the handicapped( wheel chairs users)etc. (ID: gt9sYOdv837)
+- � Is the room equipped with clinical waste bin, domestic waste bin? (ID: IbfQ0Hh9lq8)
+- � Is there adequate ventilation and lighting? (ID: jPaVk36lbpo)
+- Is there ventilation in all service area? (ID: RYv8EKQmB3c)
+- Is there a waste bin? (ID: njVbMxxuvg4)
+- Comments for Is there enough ventilation? (ID: fzh0jqLsAYY)
+- Is the room equipped with waste bin with lid for clinical waste? (ID: uJ243pr9mO7)
+- Comments (ID: l67IsGE5wWx)
+- Is the room equipped with waste bin with lid for domestic waste? (ID: a3svKHUhCMh)
+- Comments (ID: P92mYnnx4VY)
+- Does the consultation room have waste bin with lids for domestic waste? (ID: P8La3kQQ1rP)
+- Comments (ID: N3NsT5w6Hed)
+- Does the consultation room have waste bins with lids for clinical waste? (ID: MyjDDGswRIN)
+- Comments (ID: IpuKKtcO6je)
+- Is there evidence of statistical reporting to the Primary Health Care Departments as per available guideline? (ID: uWsWbNcbroM)
+- Is there evidence of facility liason with the Primary Health Care Department? (A guide the reports to be submitted available) (ID: RdpfdNxdpDc)
+- Is there a waste bin? (ID: Hi0wDWGFlJ2)
+- Ultrasound Room (ID: Aghx9c6oLTb)
+- Is the ultrasound machine commissioned and records available? (ID: iRxythnxLKB)
+- Is there provision for a change room for patients? (ID: a71kvgxbpGn)
+- Is the room accessible by the handicapped( wheel chairs users)etc. (ID: SozLHYVuvqo)
+- Is the room equipped with clinical waste bin, domestic waste bin? (ID: qGQnZnfb2bb)
+- Is there adequate ventilation and lighting? (ID: X7piERxopZP)
+- Is screening room equipped with waste bin with lids for domestic waste? (ID: ChQHZFANfPd)
+- Comments (ID: JXjBeHLw0hu)
+- Is screening room equipped with waste bins with lids for clinical waste? (ID: UOqlntDQAsg)
+- Comments (ID: nN5FpGzEihb)
+- Does the room have adequate ventilation? (ID: O0WkkFFTIP9)
+- Comments (ID: Fgx3zHCwJfO)
+- Is the sluice room equipped with clinical waste bin with lid? (ID: k2Kqq07XteH)
+- Comments (ID: HuT26KVJWCY)
+- Is the sluice room equipped with domestic waste bin with lid? (ID: cqZvniNOp5s)
+- Comments (ID: ZKO03p5kz3b)
+- Does the procedure room have clinical waste bins with lid ? (ID: UZfV5AENy4S)
+- Comments (ID: ts9I75VkrOQ)
+- Does the procedure room have domestic waste bin with lid ? (ID: MqxA8ZvHOD0)
+- Comments (ID: v0GzJqXRInF)
+- Does the room have adequate ventilation? (ID: zNAdST4Nxjc)
+- Comments (ID: QbF9Vg0EgBz)

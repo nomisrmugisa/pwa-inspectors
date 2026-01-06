@@ -11,6 +11,7 @@ import { FormPage } from './pages/FormPage';
 import { CSVDemoPage } from './pages/CSVDemoPage';
 import { AltFormPage } from './pages/AltFormPage';
 import { IncSaveTest } from './pages/IncSaveTest';
+import ActiveInspectionsDebug from './components/ActiveInspectionsDebug';
 
 // Main App Router
 function AppRouter() {
@@ -32,16 +33,17 @@ function AppRouter() {
     <div className="app">
       {toast && <Toast {...toast} />}
       <DebugInfo />
-      
+
       <Router>
         {isAuthenticated && <Header />}
-        
+
         <main className="main-content">
           <Routes>
             {!isAuthenticated ? (
               // Not authenticated - show login (allow test route without auth)
               <>
                 <Route path="/inc-save-test" element={<IncSaveTest />} />
+                <Route path="/debug-inspections" element={<ActiveInspectionsDebug />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="*" element={<Navigate to="/login" replace />} />
               </>
@@ -64,6 +66,7 @@ function AppRouter() {
                 <Route path="/form/:eventId" element={<FormPage />} />
                 <Route path="/csv-demo" element={<CSVDemoPage />} />
                 <Route path="/inc-save-test" element={<IncSaveTest />} />
+                <Route path="/debug-inspections" element={<ActiveInspectionsDebug />} />
                 {/* Default route - go directly to form like Android app */}
                 <Route path="/" element={<Navigate to="/form" replace />} />
                 <Route path="*" element={<Navigate to="/form" replace />} />

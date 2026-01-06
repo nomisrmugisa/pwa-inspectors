@@ -127,14 +127,23 @@ const normalizeSectionHeaderName = (name) => {
 
 const cleanDHIS2Name = (name) => {
   if (!name) return '';
-  // Remove common prefixes like "Inspection:", "FACILITY:", "SO,22", "569-Inspection:"
-  // Updated to handle both colons and dashes as separators
-  return name
-    .replace(/^[\d-]*\s*Inspection\s*[:-]\s*/i, '')
+
+  // 1. Remove common prefixes that include "Inspection" (e.g., "QIMS-Inspection", "569-Inspection")
+  let cleaned = name.replace(/^(.*?)\s*Inspection\s*[:-]\s*/i, '');
+
+  // 2. Remove other common prefixes
+  cleaned = cleaned
     .replace(/^FACILITY\s*[:-]\s*/i, '')
     .replace(/^SO,\d+\s+SERVICES OFFERED\s*[:-]\s*/i, '')
-    .replace(/^SO,\d+\s*/i, '')
-    .trim();
+    .replace(/^SO,\d+\s*/i, '');
+
+  // 3. Remove section-based prefixes like "ULTRASOUND ROOM-602-"
+  cleaned = cleaned.replace(/^[A-Z\s]+-[\d-]+-?/i, '');
+
+  // 4. Strip leading non-alphanumeric symbols (bullets, dots, spaces, etc)
+  cleaned = cleaned.replace(/^[^a-zA-Z0-9(]+/g, '');
+
+  return cleaned.trim();
 };
 
 /**
@@ -1320,7 +1329,7 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
 
       if (!psde || !psde.dataElement) return false;
 
-      const displayName = psde.dataElement.displayName;
+      const displayName = cleanDHIS2Name(psde.dataElement.formName || psde.dataElement.displayFormName || psde.dataElement.displayName);
 
       // Hide specialisation/facility classification fields from users (they're handled by manual selector)
       const isSpecialisationField = /specialisation|facility classification|facility type/i.test(displayName);
@@ -1371,6 +1380,7 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
 
   const [filteredDataElements, setFilteredDataElements] = useState([]);
 
+
   useEffect(() => {
 
     const filterAsync = async () => {
@@ -1407,9 +1417,23 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
           if (!psde || !psde.dataElement) return false;
 
           // Use formName, or clean the displayName (remove prefixes)
-          const displayName = psde.dataElement.formName || psde.dataElement.displayFormName || cleanDHIS2Name(psde.dataElement.displayName);
+          const displayName = cleanDHIS2Name(psde.dataElement.formName || psde.dataElement.displayFormName || psde.dataElement.displayName);
 
           // Hide specialisation/facility classification fields from users (they're handled by manual selector)
+
+          // DEBUG: Log ULTRASOUND ROOM filtering
+          if ((sectionName || '').toUpperCase().includes('ULTRASOUND')) {
+            const debugRes = await shouldShowDataElementForService(displayName, facilityType, sectionName);
+            console.log(`🔍 ULTRASOUND_DEBUG [${idx}]:`, {
+              originalName: psde.dataElement.displayName,
+              formName: psde.dataElement.formName,
+              cleanedName: displayName,
+              section: sectionName,
+              facilityType: facilityType,
+              shouldShow: debugRes
+            });
+          }
+
           if ((sectionName || '').toUpperCase().includes('SPECIMEN')) {
             const debugRes = await shouldShowDataElementForService(displayName, facilityType, sectionName);
             console.log(`DEBUG_SPECIMEN:`, {
@@ -1470,12 +1494,11 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
       // can still capture data while we align DHIS2 names with the CSV.
       let filtered = section.dataElements.filter((_, idx) => results[idx]);
 
-      // if (isENT && isRelevantSection) {
-      //   console.log(`📊 Filter result for "${sectionName}": ${filtered.length} of ${section.dataElements.length} elements passed`);
-      // }
+      // Also show debug info for other sections if debug panel is open
+      if (showDebugPanel && !sectionName.toLowerCase().includes('ultrasound')) {
+        // Optional: set unified debug state for other sections
+      }
 
-      // Removed fallback to showing all elements when filter returns zero
-      // If section is not properly configured, it should remain empty
 
       setFilteredDataElements(filtered);
 
@@ -1886,6 +1909,8 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
           </div>
         </details>
       )}
+
+
 
       <div className={`section-header ${isInspectionInfoSection || isInspectionTypeSection ? 'always-expanded-section' : 'collapsible-section'}`}>
 
@@ -2583,6 +2608,7 @@ const DEPARTMENT_SECTION_MAPPING = {
   'DENTAL CHAIR AREA': ['DENTAL CHAIR AREA'],
   'X-RAY ROOM': ['X-RAY ROOM'],
   'RADIOLOGY READING ROOM': ['RADIOLOGY READING ROOM'],
+  'ULTRASOUND ROOM': ['ULTRASOUND ROOM'],
 
   // Support Rooms
   'BLEEDING ROOM': ['BLEEDING ROOM'],
@@ -3390,11 +3416,27 @@ function FormPage() {
 
   };
 
-  // Add debug effect
-
+  // Auto-capture GPS when form loads and configuration is available
   useEffect(() => {
+    if (configuration?.programStage?.allDataElements) {
+      // Check if we already have coordinates to avoid overwriting manually entered ones?
+      // User request "supposed to load from the position where the app loads from" implies auto-fill on start.
+      // We'll run this once when config matches.
 
-  }, [userAssignments]);
+      const hasCoordinates = Object.keys(formData).some(key => {
+        const isCoordField = configuration.programStage.allDataElements.find(
+          psde => `dataElement_${psde.dataElement.id}` === key &&
+            (psde.dataElement.valueType === 'COORDINATE' || psde.dataElement.displayName.toLowerCase().includes('coordinate'))
+        );
+        return isCoordField && formData[key];
+      });
+
+      if (!hasCoordinates) {
+        console.log('📍 No coordinates found, attempting auto-capture...');
+        autoAssignGPSCoordinates();
+      }
+    }
+  }, [configuration?.programStage?.allDataElements]);
 
   const [formData, setFormData] = useState({
 
@@ -3960,16 +4002,16 @@ function FormPage() {
 
             const shown = (s.dataElements || []).filter((psde2) => {
               if (!psde2?.dataElement) return false;
-              const displayName2 = psde2.dataElement.formName || psde2.dataElement.displayFormName || cleanDHIS2Name(psde2.dataElement.displayName);
+              const displayName2 = cleanDHIS2Name(psde2.dataElement.formName || psde2.dataElement.displayFormName || psde2.dataElement.displayName);
               const isComment2 = /\s(Comments?|Remarks?)$/i.test(displayName2);
               if (isComment2) {
                 const main2 = displayName2
                   .replace(/\sComments?\s*$/i, '')
                   .replace(/\sRemarks?\s*$/i, '')
                   .trim();
-                return shouldShowDataElementForService(main2, currentSpecialization);
+                return shouldShowDataElementForService(main2, currentSpecialization, normalizedSectionName);
               }
-              return shouldShowDataElementForService(displayName2, currentSpecialization);
+              return shouldShowDataElementForService(displayName2, currentSpecialization, normalizedSectionName);
             }).length;
 
             if (shown > 0) {
@@ -5868,12 +5910,10 @@ function FormPage() {
 
       // Apply the same filtering logic used in FormSection rendering
       // Only count data elements that should be visible for this facility type
-      if (currentFacilityType) {
-        // Check if this data element should be shown for the current facility type
-        const elementName = psde.dataElement.formName || psde.dataElement.displayFormName || cleanDHIS2Name(psde.dataElement.displayName);
-        if (!shouldShowDataElementForService(elementName, currentFacilityType)) {
-          return; // Skip this data element - it shouldn't be counted
-        }
+      const cleanedSectionName = section.displayName.replace(/^SECTION\s+[A-Z]\s*-\s*/i, '');
+      const elementName = cleanDHIS2Name(psde.dataElement.formName || psde.dataElement.displayFormName || psde.dataElement.displayName);
+      if (!shouldShowDataElementForService(elementName, currentFacilityType, cleanedSectionName)) {
+        return; // Skip this data element - it shouldn't be counted
       }
 
       total++;

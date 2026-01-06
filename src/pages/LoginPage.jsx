@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useApp } from '../contexts/AppContext';
 import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -6,6 +7,7 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import SignalCellularConnectedNoInternet0BarIcon from '@mui/icons-material/SignalCellularConnectedNoInternet0Bar';
 
 export function LoginPage() {
+  const navigate = useNavigate();
   const { login, loading, error } = useApp();
   const [formData, setFormData] = useState({
     serverUrl: 'https://qimsdev.5am.co.bw/qims', // QIMS development server
@@ -77,7 +79,7 @@ export function LoginPage() {
 
       // After successful login, navigate to a new form with a fresh ID
       const newId = generateDHIS2Id();
-      window.location.href = `/form/${newId}`;
+      navigate(`/form/${newId}`);
     } catch (error) {
       // Error is handled by the context and displayed via toast
       console.error('Login failed:', error);

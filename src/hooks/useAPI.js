@@ -754,22 +754,171 @@ class DHIS2APIService {
   }
 
   /**
-   * Get inspection assignments from dataStore
-   * Used to create dynamic service dropdown based on facility and inspector
+   * Get active inspections from Tracker program (replacing DataStore)
+   * Filters by Status=INSP_SCHEDULE_AUTHORIZED, Date, and Inspector
    */
-  async getInspectionAssignments(year = 2025) { // TEMP: Hardcoded to 2025 for testing
-    const endpoint = `/api/dataStore/inspection/${year}`;
+  async getTrackerActiveInspections(user) {
+    if (!user) return [];
+
+    console.log(`🔍 Fetching Tracker active inspections for user: ${user.username}`);
+    const PROGRAM_UID = 'wyQbzZAaJJa';
+    const today = new Date().toISOString().split('T')[0];
+
     try {
-      const data = await this.request(endpoint);
-      return data || [];
-    } catch (error) {
-      if (error.message.includes('404')) {
-        console.log(`No inspection assignments found for year ${year}`);
+      // 1. Fetch Program Metadata to discover attribute UIDs
+      const programMeta = await this.request(
+        `/api/programs/${PROGRAM_UID}?fields=id,displayName,programTrackedEntityAttributes[id,trackedEntityAttribute[id,displayName,code]]`
+      );
+
+      const findAttrId = (name) => {
+        const attr = programMeta.programTrackedEntityAttributes?.find(pta =>
+          pta.trackedEntityAttribute.displayName === name ||
+          pta.trackedEntityAttribute.displayName?.toLowerCase().includes(name.toLowerCase())
+        );
+        return attr?.trackedEntityAttribute.id;
+      };
+
+      // Map common names to UIDs
+      const attrIds = {
+        status: findAttrId('Inspection Schedule Status'),
+        startDate: findAttrId('Inspection Start Date'), // or 'Inspection Proposed Start Date'
+        endDate: findAttrId('Inspection End Date'),     // or 'Inspection Proposed End Date'
+        inspectors: findAttrId('Inspectors Final List'),
+        type: findAttrId('Inspection Type'),
+        facilityId: findAttrId('Inspection Facility ID') // If we want to use the attribute for ID
+      };
+
+      console.log('📋 Discovered Attribute UIDs:', attrIds);
+
+      // 2. Fetch Enrollments (ActiveInspectionsDebug logic)
+      const enrollmentParams = new URLSearchParams({
+        paging: 'false',
+        ouMode: 'ALL',
+        program: PROGRAM_UID,
+        fields: 'enrollment,trackedEntityInstance,orgUnit,orgUnitName,attributes[attribute,displayName,value]'
+      });
+
+      const enrollmentResponse = await this.request(`/api/enrollments?${enrollmentParams}`);
+      const enrollments = enrollmentResponse?.enrollments || [];
+
+      if (enrollments.length === 0) {
+        console.log('No enrollments found');
         return [];
       }
-      throw error;
+
+      // 3. Fetch Full TEIs (Batched to be safe)
+      const teiIds = enrollments.map(e => e.trackedEntityInstance);
+      const uniqueTeiIds = [...new Set(teiIds)];
+
+      console.log(`📦 Fetching ${uniqueTeiIds.length} TEIs...`);
+
+      const BATCH_SIZE = 50;
+      let allTeis = [];
+
+      for (let i = 0; i < uniqueTeiIds.length; i += BATCH_SIZE) {
+        const batch = uniqueTeiIds.slice(i, i + BATCH_SIZE);
+        const teiParams = new URLSearchParams({
+          paging: 'false',
+          trackedEntityInstance: batch.join(';'),
+          fields: 'trackedEntityInstance,orgUnit,attributes[attribute,displayName,value],enrollments[enrollment,orgUnit,orgUnitName]'
+        });
+
+        const teiResponse = await this.request(`/api/trackedEntityInstances?${teiParams}`);
+        if (teiResponse?.trackedEntityInstances) {
+          allTeis = allTeis.concat(teiResponse.trackedEntityInstances);
+        }
+      }
+
+      // 4. Client-side Filtering
+      const authorizedTeis = allTeis.filter(tei => {
+        // Helper to get value
+        const getVal = (nameOrId) => {
+          const attr = tei.attributes?.find(a =>
+            a.attribute === nameOrId ||
+            a.displayName === nameOrId ||
+            (attrIds.status && a.attribute === attrIds.status && nameOrId === 'status') // lookup by key
+          );
+          return attr?.value;
+        };
+
+        // A. Status
+        // Try exact UID match first, then name fallback
+        const statusVal = tei.attributes?.find(a => a.attribute === attrIds.status)?.value ||
+          tei.attributes?.find(a => a.displayName?.toLowerCase().includes('schedule status'))?.value;
+
+        const isAuthorized = statusVal === 'INSP_SCHEDULE_AUTHORIZED';
+        if (!isAuthorized) return false;
+
+        // B. Date
+        const startVal = tei.attributes?.find(a => a.attribute === attrIds.startDate)?.value ||
+          tei.attributes?.find(a => a.displayName?.includes('Start Date'))?.value;
+        const endVal = tei.attributes?.find(a => a.attribute === attrIds.endDate)?.value ||
+          tei.attributes?.find(a => a.displayName?.includes('End Date'))?.value;
+
+        let isDateActive = false;
+        if (startVal && endVal) {
+          const start = new Date(startVal);
+          const end = new Date(endVal);
+          const current = new Date(today);
+          start.setHours(0, 0, 0, 0);
+          end.setHours(23, 59, 59, 999);
+          current.setHours(12, 0, 0, 0);
+          isDateActive = current >= start && current <= end;
+        }
+        if (!isDateActive) return false;
+
+        // C. Inspector
+        const inspectorVal = tei.attributes?.find(a => a.attribute === attrIds.inspectors)?.value ||
+          tei.attributes?.find(a => a.displayName === 'Inspectors Final List')?.value || '';
+
+        const isAssigned = user.username && inspectorVal.includes(user.username);
+        return isAssigned;
+      });
+
+      console.log(`✅ Found ${authorizedTeis.length} authorized inspections for user`);
+
+      // 5. Map to UserAssignments format
+      return authorizedTeis.map(tei => {
+        // Resolve Facility Name (from enrollment or TEI orgUnit)
+        // Since we fetched enrollments[orgUnitName] in TEI, let's use that
+        // or fallback to original enrollments list
+        const enrollment = tei.enrollments?.find(e => e.orgUnit === tei.orgUnit) ||
+          enrollments.find(e => e.trackedEntityInstance === tei.trackedEntityInstance);
+
+        const facilityName = enrollment?.orgUnitName || 'Unknown Facility';
+
+        // Get Type
+        const typeVal = tei.attributes?.find(a => a.attribute === attrIds.type)?.value ||
+          tei.attributes?.find(a => a.displayName === 'Inspection Type')?.value;
+
+        return {
+          facility: {
+            id: tei.orgUnit, // Use DHIS2 OrgUnit ID
+            name: facilityName,
+            trackedEntityInstance: tei.trackedEntityInstance // Store TEI ID on facility for linking
+          },
+          assignment: {
+            sections: [], // Default to all sections
+            type: typeVal,
+            inspectionPeriod: {
+              startDate: tei.attributes?.find(a => a.attribute === attrIds.startDate)?.value,
+              endDate: tei.attributes?.find(a => a.attribute === attrIds.endDate)?.value
+            },
+            // Use TEI ID as inspection ID or attribute?
+            // App often expects an ID. Let's use TEI ID for now or find "Schedule Inspection ID"
+            inspectionId: tei.trackedEntityInstance // or specific attribute if needed
+          }
+        };
+      });
+
+    } catch (error) {
+      console.error('❌ Failed to get Tracker active inspections:', error);
+      return [];
     }
   }
+
+  /**
+   * Get inspection assignments from dataStore
 
   /**
    * Get service sections for a specific facility and inspector

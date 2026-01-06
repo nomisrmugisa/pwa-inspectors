@@ -556,157 +556,42 @@ export function AppProvider({ children }) {
 
     try {
       isFetchingAssignments = true;
-      console.log('************ Final user assignments:**************');
+      console.log('************ Final user assignments (Tracker Integration):**************');
       // Step 1: Start Fetching Assignments
-      console.log('Step 1: 🔄 Fetching assignments from DataStore...');
+      console.log('Step 1: 🔄 Fetching active inspections from Tracker...');
       // Step 2: Get Current User
       const userResult = await api.getMe();
       console.log('Step 2: 👤 Current user:', {
         id: userResult.id,
         username: userResult.username,
-        displayName: userResult.displayName,
-        lookupPriority: 'username (prioritized for inspector matching)'
+        displayName: userResult.displayName
       });
-      // Step 3: Fetch Assignments Data
-      const datastoreResponse = await api.getInspectionAssignments();
-      console.log('Step 3: 📊 Raw DataStore response:', datastoreResponse);
-      const assignmentsData = datastoreResponse;
-      console.log('Step 3: 📋 Processing assignments data:', assignmentsData);
 
+      // Step 3: Fetch Active Inspections via Tracker
+      // The API now handles all filtering (Status, Date, Inspector) and formatting
+      const trackerAssignments = await api.getTrackerActiveInspections(userResult);
+      console.log('Step 3: 📊 Tracker response:', trackerAssignments);
 
-
-      // Debug: Log each facility's trackedEntityInstance availability
-
-      if (Array.isArray(datastoreResponse)) {
-
-        console.log('🔍 ===== DATASTORE FACILITIES DEBUG =====');
-
-        datastoreResponse.forEach((inspection, index) => {
-
-          console.log(`🔍 Facility ${index + 1}:`, {
-
-            facilityId: inspection.facilityId,
-
-            facilityName: inspection.facilityName,
-
-            hasTrackedEntityInstance: !!inspection.trackedEntityInstance,
-
-            trackedEntityInstance: inspection.trackedEntityInstance,
-
-            trackedEntityInstanceType: typeof inspection.trackedEntityInstance,
-
-            allKeys: Object.keys(inspection)
-
-          });
-
-        });
-
-        console.log('🔍 ===== DATASTORE FACILITIES DEBUG END =====');
-
-      }
-
-      // Step 4: Log Facilities
-      if (datastoreResponse && Array.isArray(datastoreResponse)) {
-        const facilities = datastoreResponse
-          .map(inspection => {
-            // Prefer the assignment entry for the current user when present
-            const norm = (v) => (v ?? '').toString().trim().toLowerCase();
-            const inspectorAssignment = (inspection.assignments || []).find(a => {
-              const aName = norm(a.inspectorName);
-              // Prioritize username for lookup, fallback to displayName
-              const iName = norm(userResult.username || userResult.displayName);
-              return aName === iName || aName.includes(iName) || iName.includes(aName);
-            });
-
-            return {
-              inspection,
-              inspectorAssignment,
-              hasUserAssignment: !!inspectorAssignment
-            };
-          })
-          // Only include facilities where the current user has assignments
-          .filter(item => item.hasUserAssignment)
-          .map(item => {
-            const { inspection, inspectorAssignment } = item;
-
-            return {
-              facility: {
-                id: inspection.facilityId,
-                name: inspection.facilityName,
-                facilityType: inspection.facilityType,
-                trackedEntityInstance: inspection.trackedEntityInstance || null
-              },
-              assignment: {
-                // Sections from the inspector-specific assignment if available; fall back to all
-                sections: inspectorAssignment?.sections || (inspection.assignments || []).flatMap(a => Array.isArray(a.sections) ? a.sections : []),
-                inspectionPeriod: {
-                  startDate: inspection.startDate,
-                  endDate: inspection.endDate
-                },
-                // Prefer per-assignment values, then facility-level fallbacks
-                type: inspectorAssignment?.type || inspection.type || inspection.Type || inspection.inspectionType || null,
-                inspectionId: inspectorAssignment?.inspectionId || inspectorAssignment?.inspectionID || inspection.inspectionId || inspection.inspectionID || inspection.id || inspection.Id || null
-              }
-            };
-          });
-
-        console.log('Processing facilities:', facilities);
-
-        // Log trackedEntityInstance availability for debugging
-        const facilitiesWithTEI = facilities.filter(f => f.facility.trackedEntityInstance);
-        console.log(`📊 Facilities with trackedEntityInstance: ${facilitiesWithTEI.length}/${facilities.length}`);
-        if (facilitiesWithTEI.length > 0) {
-          console.log('🔗 Facilities with TEI:', facilitiesWithTEI.map(f => ({
-            name: f.facility.name,
-            id: f.facility.id,
-            tei: f.facility.trackedEntityInstance
-          })));
-        }
-
-        // Update the state with facilities
-        dispatch({ type: ActionTypes.UPDATE_USER_ASSIGNMENTS, payload: facilities });
-
-        if (facilities.length > 0) {
-          showToast(`Found ${facilities.length} facility assignments`, 'success');
-        } else {
-          showToast('No facility assignments found', 'warning');
-        }
-
-        // Debug: Log filtering details
-        console.log('🔍 User assignment filtering details:', {
-          currentUser: userResult.displayName || userResult.username,
-          totalInspections: datastoreResponse.length,
-          userAssignedFacilities: facilities.length,
-          filteredOutFacilities: datastoreResponse.length - facilities.length
-        });
-
-        // Log which facilities were filtered out
-        if (datastoreResponse.length > facilities.length) {
-          const filteredOut = datastoreResponse.filter(inspection => {
-            const norm = (v) => (v ?? '').toString().trim().toLowerCase();
-            const hasAssignment = (inspection.assignments || []).some(a => {
-              const aName = norm(a.inspectorName);
-              // Prioritize username for lookup, fallback to displayName
-              const iName = norm(userResult.username || userResult.displayName);
-              return aName === iName || aName.includes(iName) || iName.includes(aName);
-            });
-            return !hasAssignment;
-          });
-
-          console.log('❌ Facilities filtered out (user not assigned):',
-            filteredOut.map(f => ({
-              name: f.facilityName,
-              id: f.facilityId,
-              assignedInspectors: f.assignments?.map(a => a.inspectorName) || []
-            }))
-          );
-        }
-      } else {
-        console.warn('Invalid or empty response from DataStore');
+      // Validate Data Structure
+      if (!Array.isArray(trackerAssignments)) {
+        console.warn('Step 4: ⚠️ Invalid response from Tracker fetch');
         dispatch({ type: ActionTypes.UPDATE_USER_ASSIGNMENTS, payload: [] });
+        return;
       }
+
+      console.log('Step 5: 🎯 Final user assignments:', trackerAssignments);
+
+      // Update state
+      dispatch({ type: ActionTypes.UPDATE_USER_ASSIGNMENTS, payload: trackerAssignments });
+
+      if (trackerAssignments.length > 0) {
+        showToast(`Found ${trackerAssignments.length} active inspection(s)`, 'success');
+      } else {
+        showToast('No active inspections found for your account', 'warning');
+      }
+
     } catch (error) {
-      console.error('Failed to fetch user assignments:', error);
+      console.error('❌ Failed to fetch user assignments:', error);
       dispatch({ type: ActionTypes.UPDATE_USER_ASSIGNMENTS, payload: [] });
       showToast(`Failed to load assignments: ${error.message}`, 'error');
     } finally {

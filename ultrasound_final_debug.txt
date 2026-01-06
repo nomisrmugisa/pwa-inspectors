@@ -1,0 +1,43 @@
+Section: ULTRASOUND ROOM (ID: GuyxR4gRq8A)
+  - ID: iRxythnxLKB
+    Form Name: 'Is the ultrasound machine commissioned and records available?'
+    Display Form Name: 'Is the ultrasound machine commissioned and records available?'
+    Name/DisplayName: 'QIMS-Inspection-ULTRASOUND ROOM-602-Is the ultrasound machine commissioned and records available?'
+  - ID: a71kvgxbpGn
+    Form Name: 'Is there provision for a change room for patients?'
+    Display Form Name: 'Is there provision for a change room for patients?'
+    Name/DisplayName: 'QIMS-Inspection-ULTRASOUND ROOM-603-Is there provision for a change room for patients?'
+  - ID: SozLHYVuvqo
+    Form Name: 'Is the room accessible by the handicapped( wheel chairs users)etc.'
+    Display Form Name: 'Is the room accessible by the handicapped( wheel chairs users)etc.'
+    Name/DisplayName: 'QIMS-Inspection-ULTRASOUND ROOM-604-Is the room accessible by the handicapped( wheel chairs users)etc.'
+  - ID: qGQnZnfb2bb
+    Form Name: 'Is the room equipped with clinical waste bin, domestic waste bin?'
+    Display Form Name: 'Is the room equipped with clinical waste bin, domestic waste bin?'
+    Name/DisplayName: 'QIMS-Inspection-ULTRASOUND ROOM-605-Is the room equipped with clinical waste bin, domestic waste bin?'
+  - ID: MJCVqXDzBRK
+    Form Name: 'Liason with Primary Health Care Departments--'
+    Display Form Name: 'Liason with Primary Health Care Departments--'
+    Name/DisplayName: 'QIMS-Inspection-ULTRASOUND ROOM-XXXX-Liason with Primary Health Care Departments--'
+  - ID: X7piERxopZP
+    Form Name: 'Is there adequate ventilation and lighting?'
+    Display Form Name: 'Is there adequate ventilation and lighting?'
+    Name/DisplayName: 'QIMS-Inspection-ULTRASOUND ROOM-606-Is there adequate ventilation and lighting?'
+  - ID: tdivMNK5A9W
+    Form Name: 'Is there provision for handwashing?'
+    Display Form Name: 'Is there provision for handwashing?'
+    Name/DisplayName: 'QIMS-Inspection-ULTRASOUND ROOM-607-Is there provision for handwashing?'
+
+Checking for other potential matches outside this section:
+  - ID: FbZ9xLGjW4B | FormName: 'Ultrasound gel' | Name: '531-Inspection: 24112025-SUPPLIES-Ultrasound gel'
+  - ID: Z2xmmQyp6gs | FormName: 'Ultrasound machine' | Name: '543-Inspection: 24112025-SUPPLIES-Ultrasound machine'
+  - ID: LARBGmKvyFq | FormName: 'Ultrasound room' | Name: '743-Inspection: 24112025-HIV SCREENING-Ultrasound room'
+  - ID: hUes6rnPV8h | FormName: '� Is the ultrasound machine commissioned and records available?' | Name: '744-Inspection: 24112025-HIV SCREENING-� Is the ultrasound machine commissioned and records available?'
+  - ID: Aghx9c6oLTb | FormName: 'Ultrasound Room' | Name: 'QIMS-Inspection-ULTRASOUND ROOM-601-ULTRASOUND ROOM'
+  - ID: iRxythnxLKB | FormName: 'Is the ultrasound machine commissioned and records available?' | Name: 'QIMS-Inspection-ULTRASOUND ROOM-602-Is the ultrasound machine commissioned and records available?'
+  - ID: a71kvgxbpGn | FormName: 'Is there provision for a change room for patients?' | Name: 'QIMS-Inspection-ULTRASOUND ROOM-603-Is there provision for a change room for patients?'
+  - ID: SozLHYVuvqo | FormName: 'Is the room accessible by the handicapped( wheel chairs users)etc.' | Name: 'QIMS-Inspection-ULTRASOUND ROOM-604-Is the room accessible by the handicapped( wheel chairs users)etc.'
+  - ID: qGQnZnfb2bb | FormName: 'Is the room equipped with clinical waste bin, domestic waste bin?' | Name: 'QIMS-Inspection-ULTRASOUND ROOM-605-Is the room equipped with clinical waste bin, domestic waste bin?'
+  - ID: X7piERxopZP | FormName: 'Is there adequate ventilation and lighting?' | Name: 'QIMS-Inspection-ULTRASOUND ROOM-606-Is there adequate ventilation and lighting?'
+  - ID: tdivMNK5A9W | FormName: 'Is there provision for handwashing?' | Name: 'QIMS-Inspection-ULTRASOUND ROOM-607-Is there provision for handwashing?'
+  - ID: MJCVqXDzBRK | FormName: 'Liason with Primary Health Care Departments--' | Name: 'QIMS-Inspection-ULTRASOUND ROOM-XXXX-Liason with Primary Health Care Departments--'

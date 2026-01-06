@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
- * Generated from: src/config/checklist for facilities2.0.csv
- * Generated on: 2025-12-30 18:53:14
+ * Generated from: checklist-final.csv
+ * Generated on: 2026-01-06 10:29:04
  *
  * This file imports all individual clinic filter files and combines them
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -64,7 +64,8 @@ export function shouldShowDataElementForService(dataElementName, selectedService
     // Helper to normalize strings for comparison (handles apostrophes, case, and whitespace)
     const normalize = (str) => {
         if (!str) return '';
-        return str.replace(/['‘’]/g, "").toLowerCase().trim();
+        // Strip leading non-alphanumeric symbols like bullets
+        return str.replace(/^[^a-zA-Z0-9(]+/, "").replace(/['‘’]/g, "").toLowerCase().trim();
     };
 
     const normalizedDataElementName = normalize(dataElementName);
@@ -102,13 +103,27 @@ export function shouldShowDataElementForService(dataElementName, selectedService
         if (looseSectionKey) {
              const section = serviceFilters[looseSectionKey];
              if (section && section.showOnly) {
-                return section.showOnly.some(item => 
+                const foundInSection = section.showOnly.some(item => 
                     item === dataElementName || normalize(item) === normalizedDataElementName
                 );
+                if (foundInSection) return true;
             }
         }
 
-        // If section doesn't exist in filters, don't show the element
+        // FALLBACK: If not found in the specific section provided by DHIS2, 
+        // check if it's allowed ANYWHERE for this service.
+        // This handles cases where DHIS2 and CSV have different section mappings.
+        for (const sectionKey in serviceFilters) {
+            const section = serviceFilters[sectionKey];
+            if (section && section.showOnly) {
+                const foundAnywhere = section.showOnly.some(item => 
+                    item === dataElementName || normalize(item) === normalizedDataElementName
+                );
+                if (foundAnywhere) return true;
+            }
+        }
+
+        // If not found anywhere in filters, don't show the element
         return false;
     }
 

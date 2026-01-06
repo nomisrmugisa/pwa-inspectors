@@ -1,34 +1,34 @@
-import csv
+import json
 
-encodings = ['utf-8', 'utf-8-sig', 'latin-1', 'cp1252']
-lines = None
-
-for encoding in encodings:
-    try:
-        with open('checklist-final.csv', 'r', encoding=encoding) as file:
-            reader = csv.reader(file)
-            lines = list(reader)
-        break
-    except UnicodeDecodeError:
-        continue
-
-if lines:
-    sections = []
-    for i, row in enumerate(lines[1:], start=2):
-        if not row or not row[0].strip():
-            continue
-        
-        first_column = row[0].strip()
-        
-        # Detect section headers - fully capitalized names
-        if (first_column and 
-            first_column.isupper() and 
-            len(first_column) > 3 and 
-            not first_column.endswith('?')):
-            sections.append(first_column)
+def extract_sections(metadata_path):
+    with open(metadata_path, 'r', encoding='utf-8-sig') as f:
+        data = json.load(f)
     
-    print(f"Found {len(sections)} sections:\n")
-    for i, section in enumerate(sections, 1):
-        print(f"{i}. {section}")
-else:
-    print("Failed to read CSV file")
+    sections = []
+    # Check programStages
+    if 'programStages' in data:
+        for stage in data['programStages']:
+            if 'programStageSections' in stage:
+                for section in stage['programStageSections']:
+                    sections.append({
+                        'id': section.get('id'),
+                        'name': section.get('name'),
+                        'displayName': section.get('displayName')
+                    })
+    
+    # Also check top-level programStageSections if any
+    if 'programStageSections' in data:
+        for section in data['programStageSections']:
+            sections.append({
+                'id': section.get('id'),
+                'name': section.get('name'),
+                'displayName': section.get('displayName')
+            })
+            
+    return sections
+
+if __name__ == "__main__":
+    sections = extract_sections('dhis2_full_metadata_v2.json')
+    unique_sections = {s['name']: s for s in sections}.values()
+    for s in sorted(unique_sections, key=lambda x: x['name']):
+        print(f"{s['name']}")

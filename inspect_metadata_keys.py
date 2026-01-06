@@ -1,21 +1,10 @@
-
 import json
-
-try:
-    print("Reading dhis2_full_metadata_v2.json...")
-    with open('dhis2_full_metadata_v2.json', 'r', encoding='utf-8-sig') as f:
-        data = json.load(f)
-        
-    print(f"Data type: {type(data)}")
-    if isinstance(data, dict):
-        print("Root keys:", list(data.keys()))
-        for key in data.keys():
-            if isinstance(data[key], list):
-                print(f"Key '{key}' has {len(data[key])} items")
-            else:
-                 print(f"Key '{key}' is type {type(data[key])}")
-    else:
-        print("Root is not a dict")
-
-except Exception as e:
-    print(f"Error: {e}")
+with open('dhis2_full_metadata_v2.json', 'r', encoding='utf-8-sig') as f:
+    data = json.load(f)
+print(data.keys())
+if 'programStages' in data:
+    print(f"Number of programStages: {len(data['programStages'])}")
+    if len(data['programStages']) > 0:
+        print(f"Keys in first programStage: {data['programStages'][0].keys()}")
+        if 'programStageSections' in data['programStages'][0]:
+             print(f"Number of sections in first stage: {len(data['programStages'][0]['programStageSections'])}")
