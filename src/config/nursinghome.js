@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist-final.csv
- * Generated on: 2026-01-07 13:43:32
+ * Generated on: 2026-01-07 23:06:35
  * Facility Type: Nursing  Home
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -99,7 +99,7 @@ const NursingHome = {
             "Is there space for parking? Specify",
             "Is there parking space designated for people living with disability? Specify",
             "Do the facility have space for services provided? Specify",
-            "� Is there provision for handwashing?",
+            "Is there provision for handwashing?",
             "Is facility area clean and neat?",
             "Are surfaces free from dust?",
             "Is there lighting in all service areas?",
@@ -112,7 +112,7 @@ const NursingHome = {
             "Where there are ramps, are there safety features?",
         ]
     },
-    "FACILITY-RECEPTION/WAITING AREA--": {
+    "FACILITY-RECEPTION/WAITING AREA": {
         "showOnly": [
             "Does reception area have adequate space? Elaborate.",
             "Is the telephone/ cell phone available?",
@@ -127,7 +127,7 @@ const NursingHome = {
             "Are educational materials available for clients",
         ]
     },
-    "FACILITY-SCREENING ROOM--": {
+    "FACILITY-SCREENING ROOM": {
         "showOnly": [
             "Does the screening room have space? Elaborate.",
             "Does the screening room have wheelchair accessibility?",
@@ -147,7 +147,7 @@ const NursingHome = {
             "Appropriate hand wash soap",
         ]
     },
-    "FACILITY-CONSULTATION/ TREATMENT ROOM--": {
+    "FACILITY-CONSULTATION/ TREATMENT ROOM": {
         "showOnly": [
             "Does the consultation room have adequate space?",
             "Does the consultation room have wheelchair accessibility",
@@ -190,11 +190,19 @@ const NursingHome = {
             "Tongue depressors",
             "Ultra sound jelly",
             "Weighing scale (both adult and paediatric)",
+        ]
+    },
+    "NURSES' STATION": {
+        "showOnly": [
             "Desk or counter",
             "Chairs",
             "Computer with printer",
             "Nurse call system panel",
             "Telephone",
+        ]
+    },
+    "IN PATIENT ADMISSION ROOMS": {
+        "showOnly": [
             "is the room wheelcahir accessible?",
             "are there separate male and female admission rooms?",
             "is there patient nurse call system in patient rooms and bathrooms?",
@@ -211,6 +219,10 @@ const NursingHome = {
             "are there storage cabinets/ closets/ cupboards",
             "are there visitors/ pateints' chairs?",
             "Is there domestic waste bins with lid?",
+        ]
+    },
+    "OFFICE FOR THE MANAGER": {
+        "showOnly": [
             "Is there an office for the In- Charge officer?",
             "Does the oofice have the followig;",
             "Chairs",
@@ -218,11 +230,15 @@ const NursingHome = {
             "Desktop/ computer connected to printer?",
             "Telephone",
             "Habit Forming cabinet/ cupboard?",
+        ]
+    },
+    "EMERGENCY EQUIPMENT": {
+        "showOnly": [
             "emergency trolley with chelist with atleast",
             "Does the Emergency trolloey have atleast the following; Defibrilator/ Automated Eternal Difibrilator (AED), laryngoscope set, endotracheal tubes, ambu bags, syringes, needles, cannulas, alcohol swab, drugs, IV fluids, oygen cylind",
         ]
     },
-    "FACILITY-PROCEDURE ROOM-": {
+    "FACILITY-PROCEDURE ROOM": {
         "showOnly": [
             "Does the procedure room have adequate space?",
             "Is the room wheelchair accessible",
@@ -261,6 +277,10 @@ const NursingHome = {
             "Tracheostomy set",
             "Urinary catheters (different sizes)",
             "Vaginal speculae (different sizes)",
+        ]
+    },
+    "SLUICE ROOM": {
+        "showOnly": [
             "Does the room have space? Elaborate.",
             "Does the room have ventilation? Elaborate",
             "Does the room have wheelchair accessibility?",
@@ -274,6 +294,10 @@ const NursingHome = {
             "Non sterile gloves",
             "Stainless steel sink with running water",
             "stainless steel waste discarding sink or sluice machine",
+        ]
+    },
+    "BLEEDING ROOM": {
+        "showOnly": [
             "Does the bleeding room have space? Elaborate.",
             "Does the room have wheelchair accessibility?",
             "At least 3 Chairs",
@@ -293,9 +317,13 @@ const NursingHome = {
             "Cooler bo",
             "Ice packs",
             "Specimen racks",
+        ]
+    },
+    "TOILET FACILITIES": {
+        "showOnly": [
             "Is there a minimum of two toilets available (for male and",
             "Female patients)?",
-            "Are they labelled �male� and �female?�",
+            "Are they labelled male and female?",
             "Are toilets fitted with hand wash facilities?",
             "Is there suitable soap dispenser?",
             "Is there an appropriate hand drying provision?",
@@ -304,6 +332,10 @@ const NursingHome = {
             "Does the female toilet have sanitary pads disposal?",
             "Are toilets aesthetically pleasing?",
             "Is there provision for paediatric clients?",
+        ]
+    },
+    "PHARMACY/DISPENSARY": {
+        "showOnly": [
             "is there a lockable refrigerator for the storage of thermos-labile drugs",
             "Are there mechanisms in place for monitoring and controlling room temperatures (storage and dispensary)",
             "Are there mechanisms in place for monitoring and controlling refrigerator temperatures",
@@ -323,6 +355,10 @@ const NursingHome = {
             "Is there a policy for the management of epired drugs?",
             "Is there adequate security in the dispensary?",
             "Is there a stock management system?",
+        ]
+    },
+    "SAFETY AND WASTE MANAGEMENT": {
+        "showOnly": [
             "Does the Facility have a policy on waste management?",
             "Does the Facility have SOPs on waste management?",
             "Does the Facility have a waste disposal system? Specify:",
@@ -354,7 +390,7 @@ const NursingHome = {
             "Is there a stock control system?",
         ]
     },
-    "TENS": {
+    "CUSTOMER SATISFACTION": {
         "showOnly": [
             "Is there a customer feedback mechanism",
             "Suggestion bo",
@@ -364,7 +400,7 @@ const NursingHome = {
             "Is there a complaints, procedure",
         ]
     },
-    "X-RAY ROOM": {
+    "LIASON WITH PRIMARY HEALTH CARE DEPARTMENTS": {
         "showOnly": [
             "Is there evidence of facility liason with the Primary Health Care Department? (A guide the reports to be submitted available)",
             "Is there evidence of statistical reporting to the Primary Health Care Departments as per available guideline?",

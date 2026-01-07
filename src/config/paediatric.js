@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist-final.csv
- * Generated on: 2026-01-07 13:43:32
+ * Generated on: 2026-01-07 23:06:35
  * Facility Type: Paediatric
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -99,7 +99,7 @@ const Paediatric = {
             "Is there space for parking? Specify",
             "Is there parking space designated for people living with disability? Specify",
             "Do the facility have space for services provided? Specify",
-            "� Is there provision for handwashing?",
+            "Is there provision for handwashing?",
             "Is facility area clean and neat?",
             "Are surfaces free from dust?",
             "Is there lighting in all service areas?",
@@ -112,7 +112,7 @@ const Paediatric = {
             "Where there are ramps, are there safety features?",
         ]
     },
-    "FACILITY-RECEPTION/WAITING AREA--": {
+    "FACILITY-RECEPTION/WAITING AREA": {
         "showOnly": [
             "Does reception area have adequate space? Elaborate.",
             "Is the telephone/ cell phone available?",
@@ -127,7 +127,7 @@ const Paediatric = {
             "Are educational materials available for clients",
         ]
     },
-    "FACILITY-SCREENING ROOM--": {
+    "FACILITY-SCREENING ROOM": {
         "showOnly": [
             "Does the screening room have space? Elaborate.",
             "Does the screening room have wheelchair accessibility?",
@@ -147,7 +147,7 @@ const Paediatric = {
             "Appropriate hand wash soap",
         ]
     },
-    "FACILITY-CONSULTATION/ TREATMENT ROOM--": {
+    "FACILITY-CONSULTATION/ TREATMENT ROOM": {
         "showOnly": [
             "Does the consultation room have adequate space?",
             "Does the consultation room have wheelchair accessibility",
@@ -191,11 +191,15 @@ const Paediatric = {
             "Tongue depressors",
             "Ultra sound jelly",
             "Weighing scale (both adult and paediatric)",
+        ]
+    },
+    "EMERGENCY EQUIPMENT": {
+        "showOnly": [
             "emergency trolley with chelist with atleast",
             "Does the Emergency trolloey have atleast the following; Defibrilator/ Automated Eternal Difibrilator (AED), laryngoscope set, endotracheal tubes, ambu bags, syringes, needles, cannulas, alcohol swab, drugs, IV fluids, oygen cylind",
         ]
     },
-    "FACILITY-PROCEDURE ROOM-": {
+    "FACILITY-PROCEDURE ROOM": {
         "showOnly": [
             "Does the procedure room have adequate space?",
             "Is the room wheelchair accessible",
@@ -233,6 +237,10 @@ const Paediatric = {
             "Sutures",
             "Tongue depressors",
             "Urinary catheters (different sizes)",
+        ]
+    },
+    "SLUICE ROOM": {
+        "showOnly": [
             "Does the room have space? Elaborate.",
             "Does the room have ventilation? Elaborate",
             "Does the room have wheelchair accessibility?",
@@ -246,6 +254,10 @@ const Paediatric = {
             "Non sterile gloves",
             "Stainless steel sink with running water",
             "stainless steel waste discarding sink or sluice machine",
+        ]
+    },
+    "BLEEDING ROOM": {
+        "showOnly": [
             "Does the bleeding room have space? Elaborate.",
             "Does the room have wheelchair accessibility?",
             "At least 3 Chairs",
@@ -265,9 +277,13 @@ const Paediatric = {
             "Cooler bo",
             "Ice packs",
             "Specimen racks",
+        ]
+    },
+    "TOILET FACILITIES": {
+        "showOnly": [
             "Is there a minimum of two toilets available (for male and",
             "Female patients)?",
-            "Are they labelled �male� and �female?�",
+            "Are they labelled male and female?",
             "Are toilets fitted with hand wash facilities?",
             "Is there suitable soap dispenser?",
             "Is there an appropriate hand drying provision?",
@@ -276,6 +292,10 @@ const Paediatric = {
             "Does the female toilet have sanitary pads disposal?",
             "Are toilets aesthetically pleasing?",
             "Is there provision for paediatric clients?",
+        ]
+    },
+    "SAFETY AND WASTE MANAGEMENT": {
+        "showOnly": [
             "Does the Facility have a policy on waste management?",
             "Does the Facility have SOPs on waste management?",
             "Does the Facility have a waste disposal system? Specify:",
@@ -307,7 +327,7 @@ const Paediatric = {
             "Is there a stock control system?",
         ]
     },
-    "TENS": {
+    "CUSTOMER SATISFACTION": {
         "showOnly": [
             "Is there a customer feedback mechanism",
             "Suggestion bo",
@@ -317,7 +337,7 @@ const Paediatric = {
             "Is there a complaints, procedure",
         ]
     },
-    "X-RAY ROOM": {
+    "LIASON WITH PRIMARY HEALTH CARE DEPARTMENTS": {
         "showOnly": [
             "Is there evidence of facility liason with the Primary Health Care Department? (A guide the reports to be submitted available)",
             "Is there evidence of statistical reporting to the Primary Health Care Departments as per available guideline?",

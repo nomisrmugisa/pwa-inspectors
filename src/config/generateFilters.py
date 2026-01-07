@@ -77,7 +77,7 @@ class FacilityFilterGenerator:
         print(f"🏥 Found {len(self.facility_types)} facility types: {self.facility_types}")
 
         # Parse sections and questions
-        current_section = None
+        current_section = "GENERAL"  # Default section if none found yet
 
         # Start from row 2 (index 1): row0 = headers of facility types, row1+ = sections/questions
         for i, row in enumerate(lines[1:], start=2):
@@ -86,34 +86,45 @@ class FacilityFilterGenerator:
 
             first_column = row[0].strip()
             # Clean bullet points, dots, dashes and other prefixes
-            first_column = re.sub(r'^[·\.\-\s]+', '', first_column)
+            # BUT keep trailing -- for detection
+            clean_text = re.sub(r'^[·\.\-\s]+', '', first_column)
+            
+            # Determine applicability per facility type on this row
+            applicability = []
+            for j, _ in enumerate(self.facility_types):
+                cell_value = row[j + 1].strip() if j + 1 < len(row) else ''
+                applicability.append(cell_value == '?')
+            has_any_applicability = any(applicability)
 
-            # Detect section headers - fully capitalized names (no lowercase letters)
-            if (first_column and
-                ((first_column.isupper() and len(first_column) > 3) or first_column.upper().startswith('FACILITY-'))):
+            # Detect section headers
+            # A row is a section header IF:
+            # 1. It has NO '?' marked for any facility type
+            # 2. AND (It's fully uppercase OR starts with 'FACILITY-' OR is a known major divider)
+            is_section_header = (not has_any_applicability) and (
+                (clean_text.isupper() and len(clean_text) > 3) or
+                clean_text.upper().startswith('FACILITY-') or
+                clean_text.upper().startswith('CUSTOMER SATISFACTION') or
+                clean_text.upper().startswith('LIASON WITH PRIMARY HEALTH CARE')
+            )
 
-                # Normalize: Uppercase and remove spaces around hyphens
-                current_section = re.sub(r'\s*-\s*', '-', first_column.upper())
+            if is_section_header:
+                # Normalize: Uppercase, remove spaces around hyphens, and strip trailing --/symbols
+                current_section = re.sub(r'\s*-\s*', '-', clean_text.upper())
+                current_section = re.sub(r'--\s*$', '', current_section).strip()
+                # Remove common ending punctuation if it was used as a marker
+                current_section = re.sub(r'[?:\.;]+$', '', current_section).strip()
+                
                 if current_section not in self.sections:
                     self.sections.append(current_section)
                     print(f"📋 Found section: {current_section}")
-
-            # Detect questions (lines with ? that are not section headers)
             elif current_section:
-                # Determine applicability per facility type on this row
-                applicability = []
-                for j, _ in enumerate(self.facility_types):
-                    cell_value = row[j + 1].strip() if j + 1 < len(row) else ''
-                    applicability.append(cell_value == '?')
-
                 # Treat as a question if either:
                 # - The text ends with '?', or
                 # - At least one facility column marks applicability with '?'
-                has_any_applicability = any(applicability)
-                if first_column.endswith('?') or has_any_applicability:
+                if clean_text.endswith('?') or has_any_applicability:
                     self.questions_data.append({
                         'section': current_section,
-                        'question': first_column,
+                        'question': clean_text,
                         'applicability': applicability,
                         'row_number': i
                     })
@@ -125,9 +136,9 @@ class FacilityFilterGenerator:
 
     def normalize_section_name(self, section_name):
         """Normalize section names for consistency"""
-        # Section names are already properly formatted in the CSV (fully capitalized)
-        # Just return as-is since they're already normalized
-        return section_name.strip()
+        # Section names are already partially normalized in parse_csv
+        # Strip trailing dashes and whitespace just in case
+        return re.sub(r'--\s*$', '', section_name).strip()
 
     def generate_facility_filter(self, facility_index, facility_type):
         """Generate filter configuration for a specific facility type"""
@@ -223,9 +234,12 @@ export default {sanitized_name};
             sanitized_name = facility_type.replace(' ', '').replace('(', '').replace(')', '').replace('-', '').replace('/', '').replace(',', '').replace(':', '').replace(';', '').replace('&', 'and')
             filename = self.sanitize_filename(facility_type).replace('.js', '')
 
+            # Escape quotes for JS strings - use double quotes as they are safer for these strings
+            escaped_type = facility_type.replace('"', '\\"')
+
             imports.append(f"import {sanitized_name} from './{filename}.js';")
-            mappings.append(f"    '{facility_type}': {sanitized_name},")
-            mappings.append(f"    'Service {facility_type}': {sanitized_name},")
+            mappings.append(f'    "{escaped_type}": {sanitized_name},')
+            mappings.append(f'    "Service {escaped_type}": {sanitized_name},')
 
         # Use standard string for the header and imports
         header = f'''/**
@@ -403,7 +417,8 @@ export const ALL_FACILITY_DEPARTMENTS = [
 
         # Add all departments
         for dept in all_departments:
-            content += f"  '{dept}',\n"
+            escaped_dept = dept.replace('"', '\\"')
+            content += f'  "{escaped_dept}",\n'
 
         content += '''];
 
@@ -413,9 +428,11 @@ export const SPECIALIZATION_DEPARTMENT_MAPPING = {
 
         # Add specialization mappings
         for facility_type, departments in specialization_mapping.items():
-            content += f"  '{facility_type}': [\n"
+            escaped_type = facility_type.replace('"', '\\"')
+            content += f'  "{escaped_type}": [\n'
             for dept in departments:
-                content += f"    '{dept}',\n"
+                escaped_dept = dept.replace('"', '\\"')
+                content += f'    "{escaped_dept}",\n'
             content += f"  ],\n\n"
 
         content += '''};

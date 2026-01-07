@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist-final.csv
- * Generated on: 2026-01-07 13:43:32
+ * Generated on: 2026-01-07 23:06:35
  * Facility Type: Emergency Medical Services
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -100,7 +100,7 @@ const EmergencyMedicalServices = {
             "Is there space for parking? Specify",
             "Is there parking space designated for people living with disability? Specify",
             "Do the facility have space for services provided? Specify",
-            "� Is there provision for handwashing?",
+            "Is there provision for handwashing?",
             "Is facility area clean and neat?",
             "Are surfaces free from dust?",
             "Is there lighting in all service areas?",
@@ -114,7 +114,7 @@ const EmergencyMedicalServices = {
             "Where there are ramps, are there safety features?",
         ]
     },
-    "FACILITY-CONSULTATION/ TREATMENT ROOM--": {
+    "OFFICE FOR THE MANAGER": {
         "showOnly": [
             "Is there an office for the In- Charge officer?",
             "Does the oofice have the followig;",
@@ -125,7 +125,7 @@ const EmergencyMedicalServices = {
             "Habit Forming cabinet/ cupboard?",
         ]
     },
-    "FACILITY-PROCEDURE ROOM-": {
+    "SLUICE ROOM": {
         "showOnly": [
             "Does the room have space? Elaborate.",
             "Does the room have ventilation? Elaborate",
@@ -141,9 +141,13 @@ const EmergencyMedicalServices = {
             "Non sterile gloves",
             "Stainless steel sink with running water",
             "stainless steel waste discarding sink or sluice machine",
+        ]
+    },
+    "TOILET FACILITIES": {
+        "showOnly": [
             "Is there a minimum of two toilets available (for male and",
             "Female patients)?",
-            "Are they labelled �male� and �female?�",
+            "Are they labelled male and female?",
             "Are toilets fitted with hand wash facilities?",
             "Is there suitable soap dispenser?",
             "Is there an appropriate hand drying provision?",
@@ -152,6 +156,10 @@ const EmergencyMedicalServices = {
             "Does the female toilet have sanitary pads disposal?",
             "Are toilets aesthetically pleasing?",
             "Is there provision for paediatric clients?",
+        ]
+    },
+    "SAFETY AND WASTE MANAGEMENT": {
+        "showOnly": [
             "Does the Facility have a policy on waste management?",
             "Does the Facility have SOPs on waste management?",
             "Does the Facility have a waste disposal system? Specify:",
@@ -183,7 +191,7 @@ const EmergencyMedicalServices = {
             "Is there a stock control system?",
         ]
     },
-    "TENS": {
+    "CUSTOMER SATISFACTION": {
         "showOnly": [
             "Is there a customer feedback mechanism",
             "Suggestion bo",
@@ -193,7 +201,7 @@ const EmergencyMedicalServices = {
             "Is there a complaints, procedure",
         ]
     },
-    "X-RAY ROOM": {
+    "LIASON WITH PRIMARY HEALTH CARE DEPARTMENTS": {
         "showOnly": [
             "Is there evidence of facility liason with the Primary Health Care Department? (A guide the reports to be submitted available)",
             "Is there evidence of statistical reporting to the Primary Health Care Departments as per available guideline?",
@@ -223,10 +231,12 @@ const EmergencyMedicalServices = {
             "Ambulance wash bays",
             "Ambulance service record",
             "Spine immobilization equipment",
+            "Vital signs monitoring equipment including but not limited to;--",
             "Patient monitors",
             "Glucometer",
             "Urine dip sticks",
             "Oxygen with flow meters",
+            "Resuscitation bags with but not limited to;--",
             "cricothyroctomy tubes and adapters",
             "Laryngoscopes (varying sizes and shapes)",
             "Ventilation devices (Bag valve mask, oxygen maks)",

@@ -28,7 +28,14 @@ export function ChecklistDebugTable({
                 serviceDepartment: facilityType,
                 section: 'N/A',
                 status: 'error',
-                message: `No filter configuration found for facility type: ${facilityType}`
+                message: `No filter configuration found for facility type: ${facilityType}`,
+                expectedCount: 0,
+                actualCount: 0,
+                expected: [],
+                actual: [],
+                missing: [],
+                extra: [],
+                mergedRows: []
             }];
         }
 
@@ -57,7 +64,8 @@ export function ChecklistDebugTable({
                     expected: [],
                     actual: [],
                     missing: [],
-                    extra: []
+                    extra: [],
+                    mergedRows: []
                 });
                 return;
             }
@@ -308,7 +316,7 @@ export function ChecklistDebugTable({
                             <div className="stat">
                                 <span className="stat-label">Issues:</span>
                                 <span className="stat-value error">
-                                    {item.mergedRows.filter(r => r.type !== 'match').length}
+                                    {(item.mergedRows || []).filter(r => r.type !== 'match').length}
                                 </span>
                             </div>
                         </div>
@@ -342,7 +350,7 @@ export function ChecklistDebugTable({
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {item.mergedRows.map((row, rIndex) => (
+                                        {(item.mergedRows || []).map((row, rIndex) => (
                                             <tr key={rIndex} className={`row-${row.type}`} style={{
                                                 backgroundColor:
                                                     row.type === 'match' ? '#d4edda' :
@@ -355,7 +363,9 @@ export function ChecklistDebugTable({
                                                 <td>{rIndex + 1}</td>
                                                 <td>
                                                     {row.expected ? (
-                                                        <div>
+                                                        <div style={{
+                                                            fontWeight: row.expected.trim().endsWith('--') ? 'bold' : 'normal'
+                                                        }}>
                                                             {row.expected}
                                                             <span className={`index-badge expected`}>#{row.expectedIndex + 1}</span>
                                                         </div>
@@ -363,7 +373,9 @@ export function ChecklistDebugTable({
                                                 </td>
                                                 <td>
                                                     {row.actual ? (
-                                                        <div>
+                                                        <div style={{
+                                                            fontWeight: row.actual.trim().endsWith('--') ? 'bold' : 'normal'
+                                                        }}>
                                                             {row.actual}
                                                             <span className={`index-badge actual`}>#{row.actualIndex + 1}</span>
                                                         </div>
