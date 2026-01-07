@@ -90,6 +90,50 @@ export function ChecklistDebugTable({
                 return !expectedDEs.some(expected => normalize(expected) === normalizedActual);
             });
 
+            // Create merged rows for aligned display
+            const mergedRows = [];
+            const usedActualIndices = new Set();
+
+            // First pass: Process all expected items
+            expectedDEs.forEach((expected, i) => {
+                const normalizedExpected = normalize(expected);
+                const actualIndex = actualDEs.findIndex(actual =>
+                    normalize(actual) === normalizedExpected && !usedActualIndices.has(actualDEs.indexOf(actual))
+                );
+
+                if (actualIndex !== -1) {
+                    usedActualIndices.add(actualIndex);
+                    mergedRows.push({
+                        type: 'match',
+                        expectedIndex: i,
+                        actualIndex: actualIndex,
+                        expected: expected,
+                        actual: actualDEs[actualIndex]
+                    });
+                } else {
+                    mergedRows.push({
+                        type: 'missing',
+                        expectedIndex: i,
+                        actualIndex: -1,
+                        expected: expected,
+                        actual: null
+                    });
+                }
+            });
+
+            // Second pass: Find any remaining actual items (extras)
+            actualDEs.forEach((actual, i) => {
+                if (!usedActualIndices.has(i)) {
+                    mergedRows.push({
+                        type: 'extra',
+                        expectedIndex: -1,
+                        actualIndex: i,
+                        expected: null,
+                        actual: actual
+                    });
+                }
+            });
+
             // Determine status
             let status = 'success';
             let message = 'All expected data elements are loaded correctly';
@@ -116,8 +160,9 @@ export function ChecklistDebugTable({
                 actual: actualDEs,
                 missing,
                 extra,
+                mergedRows, // Added mergedRows for display
                 dhis2SectionId: dhis2Section?.id,
-                normalize // Pass normalize function for use in rendering
+                normalize
             });
         });
 
@@ -224,25 +269,7 @@ export function ChecklistDebugTable({
                             {item.missing && item.missing.length > 0 && (
                                 <div className="de-list missing-list">
                                     <h5>❌ Missing Data Elements ({item.missing.length})</h5>
-                                    <p className="list-description">
-                                        These data elements are expected from the CSV but not found in DHIS2:
-                                    </p>
-                                    <table className="de-table">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Expected Data Element Name</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {item.missing.map((de, i) => (
-                                                <tr key={i}>
-                                                    <td>{i + 1}</td>
-                                                    <td>{de}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                                    <p className="list-description">CSV items not found in DHIS2:</p>
                                 </div>
                             )}
 
@@ -250,130 +277,47 @@ export function ChecklistDebugTable({
                             {item.extra && item.extra.length > 0 && (
                                 <div className="de-list extra-list">
                                     <h5>➕ Unexpected Data Elements ({item.extra.length})</h5>
-                                    <p className="list-description">
-                                        These data elements are in DHIS2 but not in the CSV config:
-                                    </p>
-                                    <table className="de-table">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Actual Data Element Name</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {item.extra.map((de, i) => (
-                                                <tr key={i}>
-                                                    <td>{i + 1}</td>
-                                                    <td>{de}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            )}
-
-                            {/* Matched Data Elements */}
-                            {item.status === 'success' && (
-                                <div className="de-list matched-list">
-                                    <h5>✓ All Data Elements Matched ({item.expectedCount})</h5>
-                                    <p className="list-description">
-                                        All expected data elements are correctly loaded from DHIS2.
-                                    </p>
+                                    <p className="list-description">DHIS2 items not in CSV:</p>
                                 </div>
                             )}
 
                             {/* Full Comparison Table */}
-                            <details className="full-comparison">
-                                <summary>View Full Comparison</summary>
-                                <div className="comparison-tables">
-                                    <div className="comparison-column">
-                                        <h6>Expected (CSV Config)</h6>
-                                        <table className="de-table">
-                                            <thead>
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>Match</th>
-                                                    <th>Status</th>
-                                                    <th>Data Element</th>
+                            <details className="full-comparison" open={true}>
+                                <summary>View Comparison Table</summary>
+                                <div className="comparison-container">
+                                    <table className="de-table aligned-table">
+                                        <thead>
+                                            <tr>
+                                                <th style={{ width: '5%' }}>#</th>
+                                                <th style={{ width: '45%' }}>Expected (CSV)</th>
+                                                <th style={{ width: '5%', textAlign: 'center' }}>Status</th>
+                                                <th style={{ width: '45%' }}>Actual (DHIS2)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {item.mergedRows.map((row, i) => (
+                                                <tr key={i} className={`row-${row.type}`} style={{
+                                                    backgroundColor: row.type === 'match' ? '#d4edda' :
+                                                        row.type === 'missing' ? '#f8d7da' : '#fff3cd'
+                                                }}>
+                                                    <td>{i + 1}</td>
+                                                    <td className={row.type === 'missing' ? 'text-missing' : ''}>
+                                                        {row.expected || <span className="empty-cell">-</span>}
+                                                        {row.expected && <div className="index-badge expected">{row.expectedIndex + 1}</div>}
+                                                    </td>
+                                                    <td style={{ textAlign: 'center', fontWeight: 'bold' }}>
+                                                        {row.type === 'match' ? <span style={{ color: '#28a745' }}>✓</span> :
+                                                            row.type === 'missing' ? <span style={{ color: '#dc3545' }}>✗</span> :
+                                                                <span style={{ color: '#ffc107' }}>?</span>}
+                                                    </td>
+                                                    <td className={row.type === 'extra' ? 'text-extra' : ''}>
+                                                        {row.actual || <span className="empty-cell">-</span>}
+                                                        {row.actual && <div className="index-badge actual">{row.actualIndex + 1}</div>}
+                                                    </td>
                                                 </tr>
-                                            </thead>
-                                            <tbody>
-                                                {item.expected.map((de, i) => {
-                                                    const normalizedExpected = item.normalize(de);
-                                                    const matchedActualIndex = item.actual.findIndex(actual =>
-                                                        item.normalize(actual) === normalizedExpected
-                                                    );
-                                                    const isMatched = matchedActualIndex !== -1;
-                                                    return (
-                                                        <tr key={i} style={{ backgroundColor: isMatched ? '#d4edda' : '#f8d7da' }}>
-                                                            <td>{i + 1}</td>
-                                                            <td style={{
-                                                                textAlign: 'center',
-                                                                fontWeight: 'bold',
-                                                                color: isMatched ? '#28a745' : '#999',
-                                                                fontFamily: 'monospace'
-                                                            }}>
-                                                                {isMatched ? `→ ${matchedActualIndex + 1}` : '-'}
-                                                            </td>
-                                                            <td style={{
-                                                                textAlign: 'center',
-                                                                fontSize: '16px',
-                                                                fontWeight: 'bold',
-                                                                color: isMatched ? '#28a745' : '#dc3545'
-                                                            }}>
-                                                                {isMatched ? '✓' : '✗'}
-                                                            </td>
-                                                            <td>{de}</td>
-                                                        </tr>
-                                                    );
-                                                })}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div className="comparison-column">
-                                        <h6>Actual (DHIS2)</h6>
-                                        <table className="de-table">
-                                            <thead>
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>Match</th>
-                                                    <th>Status</th>
-                                                    <th>Data Element</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {item.actual.map((de, i) => {
-                                                    const normalizedActual = item.normalize(de);
-                                                    const matchedExpectedIndex = item.expected.findIndex(expected =>
-                                                        item.normalize(expected) === normalizedActual
-                                                    );
-                                                    const isMatched = matchedExpectedIndex !== -1;
-                                                    return (
-                                                        <tr key={i} style={{ backgroundColor: isMatched ? '#d4edda' : '#fff3cd' }}>
-                                                            <td>{i + 1}</td>
-                                                            <td style={{
-                                                                textAlign: 'center',
-                                                                fontWeight: 'bold',
-                                                                color: isMatched ? '#28a745' : '#999',
-                                                                fontFamily: 'monospace'
-                                                            }}>
-                                                                {isMatched ? `← ${matchedExpectedIndex + 1}` : '-'}
-                                                            </td>
-                                                            <td style={{
-                                                                textAlign: 'center',
-                                                                fontSize: '16px',
-                                                                fontWeight: 'bold',
-                                                                color: isMatched ? '#28a745' : '#ffc107'
-                                                            }}>
-                                                                {isMatched ? '✓' : '⚠'}
-                                                            </td>
-                                                            <td>{de}</td>
-                                                        </tr>
-                                                    );
-                                                })}
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                            ))}
+                                        </tbody>
+                                    </table>
                                 </div>
                             </details>
                         </div>
