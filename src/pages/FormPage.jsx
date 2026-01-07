@@ -5392,6 +5392,51 @@ function FormPage() {
       });
     }
 
+    // Add Inspection ID to payload if available
+    if (formData.orgUnit && isOnline) {
+      try {
+        console.log('🔍 Fetching Inspection ID for payload...');
+        const inspectionId = await api.getInspectionIdForFacility(formData.orgUnit);
+        console.log(`📋 Received Inspection ID from API: ${inspectionId}`);
+
+        if (inspectionId) {
+          const INSPECTION_ID_DATA_ELEMENT = 'vKVNyvDA2AT';
+
+          // CRITICAL: Update formData so it persists when handleSave rebuilds the payload
+          setFormData(prev => ({
+            ...prev,
+            [`dataElement_${INSPECTION_ID_DATA_ELEMENT}`]: inspectionId
+          }));
+          console.log(`💾 Updated formData.dataElement_vKVNyvDA2AT to: ${inspectionId}`);
+
+          // Check if already exists in dataValues and update, or add new
+          const existingIndex = eventData.dataValues.findIndex(dv => dv.dataElement === INSPECTION_ID_DATA_ELEMENT);
+
+          if (existingIndex !== -1) {
+            console.log(`🔄 Found existing value for vKVNyvDA2AT: ${eventData.dataValues[existingIndex].value}`);
+            eventData.dataValues[existingIndex].value = inspectionId;
+            console.log(`✅ Updated Inspection ID in payload to: ${inspectionId}`);
+          } else {
+            eventData.dataValues.push({
+              dataElement: INSPECTION_ID_DATA_ELEMENT,
+              value: inspectionId
+            });
+            console.log(`✅ Added Inspection ID to payload: ${inspectionId}`);
+          }
+
+          // Verify the value was set correctly
+          const verifyIndex = eventData.dataValues.findIndex(dv => dv.dataElement === INSPECTION_ID_DATA_ELEMENT);
+          if (verifyIndex !== -1) {
+            console.log(`✔️ VERIFICATION: vKVNyvDA2AT value is now: ${eventData.dataValues[verifyIndex].value}`);
+          }
+        } else {
+          console.warn('⚠️ Could not fetch Inspection ID for this facility');
+        }
+      } catch (error) {
+        console.error('❌ Failed to fetch Inspection ID:', error);
+      }
+    }
+
     // Clean up event data - remove any undefined or null values
     Object.keys(eventData).forEach(key => {
       if (eventData[key] === undefined || eventData[key] === null) {
