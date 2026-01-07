@@ -17,6 +17,9 @@ const initialState = {
   // User assignments from DataStore
   userAssignments: [],
 
+  // Global cache for trackedEntityInstance IDs (orgUnitId -> teiId)
+  trackedEntityInstances: {},
+
   // UI State
   loading: false,
   error: null,
@@ -73,6 +76,8 @@ const ActionTypes = {
 
   // Stats actions
   UPDATE_STATS: 'UPDATE_STATS',
+
+  SET_TEI_CACHE: 'SET_TEI_CACHE',
 
   SET_INSPECTION_DATE: 'SET_INSPECTION_DATE'
 };
@@ -214,6 +219,15 @@ function appReducer(state, action) {
       return {
         ...state,
         stats: { ...state.stats, ...action.payload }
+      };
+
+    case ActionTypes.SET_TEI_CACHE:
+      return {
+        ...state,
+        trackedEntityInstances: {
+          ...state.trackedEntityInstances,
+          ...action.payload
+        }
       };
 
     default:
@@ -586,6 +600,37 @@ export function AppProvider({ children }) {
 
       if (trackerAssignments.length > 0) {
         showToast(`Found ${trackerAssignments.length} active inspection(s)`, 'success');
+
+        // --- START: Authoritative Global TEI Pre-fetching ---
+        console.log('🚀 Starting authoritative global TEI pre-fetching for assigned facilities...');
+        const FACILITY_REGISTRY_PROGRAM_ID = 'EE8yeLVo6cN';
+
+        // Fetch TEIs for all facilities in the background
+        trackerAssignments.forEach(async (assignment) => {
+          const facilityId = assignment.facility?.id;
+          if (facilityId) {
+            // If the assignment already has a TEI, use it, otherwise fetch it
+            let tei = null; // Always fetch authoritative TEI for facility from Registry program
+
+            if (!tei && state.isOnline) {
+              try {
+                // Background fetch to ensure we have the most authoritative ID
+                tei = await api.getTrackedEntityInstanceForFacility(facilityId, FACILITY_REGISTRY_PROGRAM_ID);
+              } catch (e) {
+                console.warn(`Failed to pre-fetch TEI for facility ${facilityId}:`, e);
+              }
+            }
+
+            if (tei) {
+              dispatch({
+                type: ActionTypes.SET_TEI_CACHE,
+                payload: { [facilityId]: tei }
+              });
+            }
+          }
+        });
+        // --- END: Authoritative Global TEI Pre-fetching ---
+
       } else {
         showToast('No active inspections found for your account', 'warning');
       }

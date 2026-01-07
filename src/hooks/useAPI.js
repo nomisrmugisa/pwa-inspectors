@@ -691,6 +691,29 @@ class DHIS2APIService {
 
 
 
+  /**
+   * Get TrackedEntityInstance ID for a specific org unit and program
+   */
+  async getTrackedEntityInstanceForFacility(orgUnitId, programId) {
+    console.log(`🔍 Fetching TrackedEntityInstance for Facility: ${orgUnitId}, Program: ${programId}`);
+    try {
+      const response = await this.request(
+        `/api/trackedEntityInstances?ou=${orgUnitId}&program=${programId}`
+      );
+
+      const teis = response?.trackedEntityInstances || [];
+      if (teis.length > 0) {
+        console.log(`✅ Found TrackedEntityInstance: ${teis[0].trackedEntityInstance}`);
+        return teis[0].trackedEntityInstance;
+      }
+      console.warn('⚠️ No TrackedEntityInstance found for this facility and program');
+      return null;
+    } catch (error) {
+      console.error('❌ Failed to fetch TrackedEntityInstance:', error);
+      return null;
+    }
+  }
+
   async submitEvent(eventData) {
     const payload = {
       events: [eventData]
@@ -895,7 +918,7 @@ class DHIS2APIService {
           facility: {
             id: tei.orgUnit, // Use DHIS2 OrgUnit ID
             name: facilityName,
-            trackedEntityInstance: tei.trackedEntityInstance // Store TEI ID on facility for linking
+            scheduleTeiId: tei.trackedEntityInstance // Store TEI ID on facility for linking
           },
           assignment: {
             sections: [], // Default to all sections

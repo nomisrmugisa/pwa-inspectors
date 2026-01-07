@@ -2804,7 +2804,9 @@ function FormPage() {
 
     api,
 
-    setEventDate
+    setEventDate,
+
+    trackedEntityInstances
 
   } = useApp();
 
@@ -3528,7 +3530,7 @@ function FormPage() {
               facilityId: userAssignment.facility.id,
               facilityName: userAssignment.facility.displayName || userAssignment.facility.name,
               type: extractedType,
-              trackedEntityInstance: userAssignment.facility.trackedEntityInstance
+              scheduleTeiId: userAssignment.facility.scheduleTeiId
             };
           }
         }
@@ -3550,7 +3552,7 @@ function FormPage() {
                 facilityId: facilityInspection.facilityId,
                 facilityName: facilityInspection.facilityName,
                 type: extractedType,
-                trackedEntityInstance: facilityInspection.trackedEntityInstance
+                scheduleTeiId: facilityInspection.scheduleTeiId
               };
             } else {
               console.log('🔍 Available facilities in dataStore:', inspectionData.inspections?.map(i => ({
@@ -4183,72 +4185,39 @@ function FormPage() {
   };
 
   const fetchTrackedEntityInstance = async (facilityId) => {
-
     try {
-
-      // Use the same program ID as defined in the API service
-
-      const FACILITY_REGISTRY_PROGRAM_ID = 'EE8yeLVo6cN';
-
-      const apiEndpoint = `/api/trackedEntityInstances?ou=${facilityId}&program=${FACILITY_REGISTRY_PROGRAM_ID}&fields=trackedEntityInstance&ouMode=DESCENDANTS`;
-
-      // Enhanced debugging for API call
-
-      // Use the API service instead of direct fetch
-
-      const response = await api.request(apiEndpoint);
-
-      if (response.trackedEntityInstances && response.trackedEntityInstances.length > 0) {
-
-        const tei = response.trackedEntityInstances[0].trackedEntityInstance;
-
-        if (tei && tei.trim() !== '') {
-
-          setTrackedEntityInstance(tei);
-
-        } else {
-
-          setTrackedEntityInstance(null);
-
-        }
-
-      } else {
-
-        console.log('⚠️ Response structure:', {
-
-          hasTrackedEntityInstances: !!response?.trackedEntityInstances,
-
-          trackedEntityInstancesType: typeof response?.trackedEntityInstances,
-
-          trackedEntityInstancesLength: response?.trackedEntityInstances?.length || 0,
-
-          responseKeys: Object.keys(response || {})
-
-        });
-
-        setTrackedEntityInstance(null);
-
+      // Check global cache first (authoritative)
+      if (trackedEntityInstances && trackedEntityInstances[facilityId]) {
+        console.log('✅ Using pre-fetched TEI from global cache:', trackedEntityInstances[facilityId]);
+        setTrackedEntityInstance(trackedEntityInstances[facilityId]);
+        return;
       }
 
+      if (!isOnline) {
+        console.warn('⚠️ Offline: Skipping authoritative TEI lookup');
+        return;
+      }
+
+      const FACILITY_REGISTRY_PROGRAM_ID = 'EE8yeLVo6cN';
+      const tei = await api.getTrackedEntityInstanceForFacility(facilityId, FACILITY_REGISTRY_PROGRAM_ID);
+      if (tei) {
+        setTrackedEntityInstance(tei);
+      } else {
+        setTrackedEntityInstance(null);
+      }
     } catch (error) {
-
-      console.error('❌ ===== TEI RETRIEVAL ERROR DEBUG =====');
-
-      console.error('❌ Error Type:', error.constructor.name);
-
-      console.error('❌ Error Message:', error.message);
-
-      console.error('❌ Error Stack:', error.stack);
-
-      console.error('❌ Full Error Object:', error);
-
-      console.error('❌ ===== TEI RETRIEVAL ERROR DEBUG END =====');
-
+      console.error('❌ Failed to fetch TrackedEntityInstance:', error);
       setTrackedEntityInstance(null);
-
     }
-
   };
+
+  // Proactively fetch authoritative TEI ID whenever facility is selected or loaded from draft
+  useEffect(() => {
+    if (formData.orgUnit && isOnline) {
+      console.log('🔄 Authoritative TEI lookup for facility:', formData.orgUnit);
+      fetchTrackedEntityInstance(formData.orgUnit);
+    }
+  }, [formData.orgUnit, isOnline]);
 
   useEffect(() => {
 
@@ -5026,38 +4995,11 @@ function FormPage() {
 
     }
 
-    // Set tracked entity instance from dataStore when facility is selected
-
+    // Set tracked entity instance from authoritative endpoint when facility is selected
     if (fieldName === 'orgUnit' && value) {
-
-      // Find the selected facility in userAssignments to get its trackedEntityInstance
-
-      const selectedFacility = userAssignments.find(assignment =>
-
-        assignment.facility.id === value
-
-      );
-
-      if (selectedFacility) {
-
-        if (selectedFacility.facility.trackedEntityInstance) {
-
-          setTrackedEntityInstance(selectedFacility.facility.trackedEntityInstance);
-
-        } else {
-
-          fetchTrackedEntityInstance(value);
-
-        }
-
-      } else {
-
-        fetchTrackedEntityInstance(value);
-
-      }
+      fetchTrackedEntityInstance(value);
 
       // Also fetch and set the facility classification
-
       fetchFacilityClassification(value);
 
       // Auto-populate inspection date when facility is selected
@@ -5075,9 +5017,7 @@ function FormPage() {
           saveField('eventDate', todayString);
         }
       }
-
     }
-
   };
 
   // Set Type from assignment and lock field when facility/orgUnit changes
@@ -5266,23 +5206,16 @@ function FormPage() {
 
       };
 
-      // Always ensure trackedEntityInstance is included
+      // Use trackedEntityInstance state or global cache as primary source
+      let teiToUse = trackedEntityInstance || (formData.orgUnit ? trackedEntityInstances[formData.orgUnit] : null);
 
-      // Try to get trackedEntityInstance from multiple sources
-      let teiToUse = trackedEntityInstance;
-
-      // If trackedEntityInstance is not set, try to get it from facilityInfo
-      if (!teiToUse && facilityInfo && facilityInfo.trackedEntityInstance) {
-        teiToUse = facilityInfo.trackedEntityInstance;
-      }
-
-      // If still no TEI, try to get it from userAssignments
-      if (!teiToUse && formData.orgUnit) {
-        const userAssignment = userAssignments?.find(assignment =>
-          assignment.facility && assignment.facility.id === formData.orgUnit
-        );
-        if (userAssignment && userAssignment.facility.trackedEntityInstance) {
-          teiToUse = userAssignment.facility.trackedEntityInstance;
+      // Final authoritative attempt: Fetch from API if still missing (e.g. if previous fetch failed or just arrived)
+      if (!teiToUse && formData.orgUnit && isOnline) {
+        console.log('🔍 TEI missing at save time, performing authoritative fetch...');
+        const FACILITY_REGISTRY_PROGRAM_ID = 'EE8yeLVo6cN';
+        teiToUse = await api.getTrackedEntityInstanceForFacility(formData.orgUnit, FACILITY_REGISTRY_PROGRAM_ID);
+        if (teiToUse) {
+          setTrackedEntityInstance(teiToUse); // Update state
         }
       }
 
@@ -5391,21 +5324,16 @@ function FormPage() {
       dataValues: []
     };
 
-    // Always ensure trackedEntityInstance is included
-    let teiToUse = trackedEntityInstance;
+    // Use trackedEntityInstance state or global cache as primary source
+    let teiToUse = trackedEntityInstance || (formData.orgUnit ? trackedEntityInstances[formData.orgUnit] : null);
 
-    // If trackedEntityInstance is not set, try to get it from facilityInfo
-    if (!teiToUse && facilityInfo && facilityInfo.trackedEntityInstance) {
-      teiToUse = facilityInfo.trackedEntityInstance;
-    }
-
-    // If still no TEI, try to get it from userAssignments
-    if (!teiToUse && formData.orgUnit) {
-      const userAssignment = userAssignments?.find(assignment =>
-        assignment.facility && assignment.facility.id === formData.orgUnit
-      );
-      if (userAssignment && userAssignment.facility.trackedEntityInstance) {
-        teiToUse = userAssignment.facility.trackedEntityInstance;
+    // Authoritative attempt: Fetch from API if missing for final submission
+    if (!teiToUse && formData.orgUnit && isOnline) {
+      console.log('🔍 TEI missing at submission, performing authoritative fetch...');
+      const FACILITY_REGISTRY_PROGRAM_ID = 'EE8yeLVo6cN';
+      teiToUse = await api.getTrackedEntityInstanceForFacility(formData.orgUnit, FACILITY_REGISTRY_PROGRAM_ID);
+      if (teiToUse) {
+        setTrackedEntityInstance(teiToUse); // Update state
       }
     }
 
@@ -6157,7 +6085,7 @@ function FormPage() {
 
         <div className="form-header">
 
-          <h2>Facility Checklist</h2>
+          <h2>Facility Checklist {facilityInfo?.facilityName ? `- ${facilityInfo.facilityName}` : ''}</h2>
 
           {/* Facility Filtering Status Summary */}
 
@@ -6282,9 +6210,16 @@ function FormPage() {
                   </div>
 
                   <div className="facility-info-row">
-                    <span className="facility-info-label">Tracked Entity Instance:</span>
-                    <span className="facility-info-value">{trackedEntityInstance || facilityInfo?.trackedEntityInstance || 'None'}</span>
+                    <span className="facility-info-label">Facility Registry ID:</span>
+                    <span className="facility-info-value">{trackedEntityInstance || (isOnline ? 'Authoritative lookup...' : 'None')}</span>
                   </div>
+
+                  {facilityInfo?.scheduleTeiId && (
+                    <div className="facility-info-row">
+                      <span className="facility-info-label">Schedule Ref:</span>
+                      <span className="facility-info-value" style={{ fontSize: '0.85em', color: '#666' }}>{facilityInfo.scheduleTeiId}</span>
+                    </div>
+                  )}
 
                   {/* Specialisation row is now hidden - users use manual selector instead */}
                 </div>
@@ -6300,9 +6235,16 @@ function FormPage() {
                   </div>
 
                   <div className="facility-info-row">
-                    <span className="facility-info-label">Tracked Entity Instance:</span>
-                    <span className="facility-info-value">{trackedEntityInstance || facilityInfo?.trackedEntityInstance || 'None'}</span>
+                    <span className="facility-info-label">Facility Registry ID:</span>
+                    <span className="facility-info-value">{trackedEntityInstance || (isOnline ? 'Authoritative lookup...' : 'None')}</span>
                   </div>
+
+                  {facilityInfo?.scheduleTeiId && (
+                    <div className="facility-info-row">
+                      <span className="facility-info-label">Schedule Ref:</span>
+                      <span className="facility-info-value" style={{ fontSize: '0.85em', color: '#666' }}>{facilityInfo.scheduleTeiId}</span>
+                    </div>
+                  )}
 
                   {/* Specialisation row is now hidden - users use manual selector instead */}
                 </div>
@@ -7317,7 +7259,6 @@ function FormPage() {
     </div>
 
   );
-
 }
 
 export { FormPage };
