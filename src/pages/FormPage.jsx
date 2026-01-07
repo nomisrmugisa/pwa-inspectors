@@ -18,6 +18,7 @@ import facilityServiceFilters, { shouldShowDataElementForService } from '../conf
 import { getDepartmentsForSpecialization, getDepartmentStats } from '../config/facilityServiceDepartments';
 
 import CustomSignatureCanvas from '../components/CustomSignatureCanvas';
+import { ChecklistDebugTable } from '../components/ChecklistDebugTable';
 import { useIncrementalSave } from '../hooks/useIncrementalSave';
 import indexedDBService from '../services/indexedDBService';
 
@@ -2810,6 +2811,9 @@ function FormPage() {
 
   } = useApp();
 
+  // Define visibleSections to avoid ReferenceError
+  const visibleSections = configuration?.programStage?.sections || [];
+
   // State to track the facility type for filtering (from dataStore)
 
   const [facilityType, setFacilityType] = useState(null);
@@ -2845,6 +2849,9 @@ function FormPage() {
   // Debug panel state
   const [showDebugPanel, setShowDebugPanel] = useState(false);
   const [indexedDBData, setIndexedDBData] = useState(null);
+
+  // Checklist debug table state
+  const [showChecklistDebug, setShowChecklistDebug] = useState(false);
 
   // Function to refresh IndexedDB data for debug panel
   const refreshIndexedDBData = async () => {
@@ -6297,6 +6304,27 @@ function FormPage() {
             {showDebugPanel ? 'Hide' : 'Show'} Saved Data
           </button>
 
+          {/* Checklist Debug Toggle Button */}
+          <button
+            type="button"
+            onClick={() => setShowChecklistDebug(!showChecklistDebug)}
+            style={{
+              position: 'fixed',
+              bottom: '20px',
+              left: '160px',
+              zIndex: 1000,
+              padding: '8px 12px',
+              backgroundColor: '#28a745',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              fontSize: '12px',
+              cursor: 'pointer'
+            }}
+          >
+            {showChecklistDebug ? 'Hide' : 'Show'} Checklist Validation
+          </button>
+
           {/* IndexedDB Debug Panel */}
           {showDebugPanel && (
             <div style={{
@@ -6358,6 +6386,61 @@ function FormPage() {
                   No data loaded. Click Refresh to load current data.
                 </div>
               )}
+            </div>
+          )}
+
+          {/* Checklist Debug Table */}
+          {showChecklistDebug && (
+            <div style={{
+              position: 'fixed',
+              top: '80px',
+              right: '20px',
+              width: '800px',
+              maxHeight: 'calc(100vh - 100px)',
+              backgroundColor: 'white',
+              border: '2px solid #28a745',
+              borderRadius: '8px',
+              zIndex: 1000,
+              overflow: 'auto',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
+            }}>
+              <div style={{
+                position: 'sticky',
+                top: 0,
+                background: 'white',
+                padding: '12px 16px',
+                borderBottom: '2px solid #e9ecef',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                zIndex: 1
+              }}>
+                <h3 style={{ margin: 0, fontSize: '16px', color: '#28a745' }}>
+                  📊 Checklist Validation Tool
+                </h3>
+                <button
+                  onClick={() => setShowChecklistDebug(false)}
+                  style={{
+                    background: '#dc3545',
+                    color: 'white',
+                    border: 'none',
+                    padding: '4px 8px',
+                    borderRadius: '3px',
+                    cursor: 'pointer',
+                    fontSize: '12px'
+                  }}
+                >
+                  ✕ Close
+                </button>
+              </div>
+              <div style={{ padding: '0' }}>
+                <ChecklistDebugTable
+                  facilityType={facilityType}
+                  selectedServiceDepartments={selectedServiceDepartments}
+                  visibleSections={configuration?.programStage?.sections || []}
+                  configuration={configuration}
+                />
+              </div>
             </div>
           )}
 

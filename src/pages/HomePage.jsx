@@ -16,6 +16,7 @@ export function HomePage() {
     deleteEvent,
     showToast,
     userAssignments,
+    user,
     logout
   } = useApp();
 
@@ -275,6 +276,79 @@ export function HomePage() {
           </button>
         </div>
       </div>
+
+      {/* Inspector Details Section */}
+      {user && (
+        <div className="inspector-details-section" style={{
+          backgroundColor: '#f8f9fa',
+          border: '1px solid #dee2e6',
+          borderRadius: '8px',
+          padding: '16px',
+          marginBottom: '24px'
+        }}>
+          <h3 style={{
+            fontSize: '16px',
+            fontWeight: '600',
+            marginBottom: '12px',
+            color: '#495057',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}>
+            👤 Inspector Details
+          </h3>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: '12px'
+          }}>
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '4px'
+            }}>
+              <span style={{ fontSize: '12px', color: '#6c757d', fontWeight: '500' }}>Name</span>
+              <span style={{ fontSize: '14px', color: '#212529', fontWeight: '600' }}>
+                {user.displayName || user.username || 'N/A'}
+              </span>
+            </div>
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '4px'
+            }}>
+              <span style={{ fontSize: '12px', color: '#6c757d', fontWeight: '500' }}>Username</span>
+              <span style={{ fontSize: '14px', color: '#212529' }}>
+                {user.username || 'N/A'}
+              </span>
+            </div>
+            {user.id && (
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '4px'
+              }}>
+                <span style={{ fontSize: '12px', color: '#6c757d', fontWeight: '500' }}>User ID</span>
+                <span style={{ fontSize: '14px', color: '#212529', fontFamily: 'monospace' }}>
+                  {user.id}
+                </span>
+              </div>
+            )}
+            {userAssignments && userAssignments.length > 0 && (
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '4px'
+              }}>
+                <span style={{ fontSize: '12px', color: '#6c757d', fontWeight: '500' }}>Assigned Facilities</span>
+                <span style={{ fontSize: '14px', color: '#212529', fontWeight: '600' }}>
+                  {userAssignments.length}
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Stats Dashboard */}
       <div className="stats-dashboard">

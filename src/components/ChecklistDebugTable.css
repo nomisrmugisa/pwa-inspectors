@@ -1,0 +1,316 @@
+/* Checklist Debug Table Styles */
+
+.checklist-debug-table {
+    background: #ffffff;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.debug-header {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.debug-header h3 {
+    margin: 0 0 10px 0;
+    color: #495057;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.debug-meta {
+    display: flex;
+    gap: 20px;
+    font-size: 14px;
+    color: #6c757d;
+}
+
+.debug-meta span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.debug-empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* Summary Cards */
+.debug-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.debug-summary-card {
+    border: 2px solid;
+    border-radius: 6px;
+    padding: 15px;
+    background: #f8f9fa;
+}
+
+.debug-summary-card.status-success {
+    border-color: #28a745;
+    background: #d4edda;
+}
+
+.debug-summary-card.status-warning {
+    border-color: #ffc107;
+    background: #fff3cd;
+}
+
+.debug-summary-card.status-error {
+    border-color: #dc3545;
+    background: #f8d7da;
+}
+
+.debug-summary-card.status-info {
+    border-color: #17a2b8;
+    background: #d1ecf1;
+}
+
+.summary-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.summary-header h4 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #212529;
+}
+
+.status-icon {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.summary-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.stat-label {
+    font-size: 11px;
+    color: #6c757d;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.stat-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #212529;
+}
+
+.stat-value.error {
+    color: #dc3545;
+}
+
+.stat-value.info {
+    color: #17a2b8;
+}
+
+.summary-message {
+    margin: 0;
+    font-size: 13px;
+    color: #495057;
+    font-style: italic;
+}
+
+/* Debug Details */
+.debug-details {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.debug-section {
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.debug-section-header {
+    background: #f8f9fa;
+    padding: 12px 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    user-select: none;
+    transition: background-color 0.2s;
+}
+
+.debug-section-header:hover {
+    background: #e9ecef;
+}
+
+.section-title {
+    flex: 1;
+    font-size: 15px;
+    color: #212529;
+}
+
+.section-counts {
+    font-size: 13px;
+    color: #6c757d;
+    font-weight: normal;
+}
+
+.debug-section-content {
+    padding: 20px;
+    background: #ffffff;
+}
+
+/* Data Element Lists */
+.de-list {
+    margin-bottom: 25px;
+}
+
+.de-list h5 {
+    margin: 0 0 8px 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #212529;
+}
+
+.list-description {
+    margin: 0 0 12px 0;
+    font-size: 13px;
+    color: #6c757d;
+    font-style: italic;
+}
+
+.missing-list h5 {
+    color: #dc3545;
+}
+
+.extra-list h5 {
+    color: #17a2b8;
+}
+
+.matched-list h5 {
+    color: #28a745;
+}
+
+/* Tables */
+.de-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    background: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.de-table thead {
+    background: #f8f9fa;
+}
+
+.de-table th {
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 600;
+    color: #495057;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.de-table th:first-child {
+    width: 50px;
+    text-align: center;
+}
+
+.de-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #e9ecef;
+    color: #212529;
+}
+
+.de-table td:first-child {
+    text-align: center;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.de-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.de-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+/* Full Comparison */
+.full-comparison {
+    margin-top: 20px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.full-comparison summary {
+    background: #f8f9fa;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    color: #495057;
+    user-select: none;
+}
+
+.full-comparison summary:hover {
+    background: #e9ecef;
+}
+
+.comparison-tables {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    padding: 20px;
+    background: #ffffff;
+}
+
+.comparison-column h6 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #495057;
+    text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .debug-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .comparison-tables {
+        grid-template-columns: 1fr;
+    }
+
+    .summary-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

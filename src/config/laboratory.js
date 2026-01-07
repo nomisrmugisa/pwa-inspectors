@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist-final.csv
- * Generated on: 2026-01-06 10:29:03
+ * Generated on: 2026-01-07 11:30:03
  * Facility Type: Laboratory
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -11,23 +11,23 @@ const Laboratory = {
     "SECTION A-ORGANISATION AND MANAGEMENT": {
         "showOnly": [
             "Does the Facility have an organisational structure",
-            "Is the director a medically trained person?",
+            "Is the director a medically trained person?--",
             "Business registration",
-            "tax clearance certificate",
+            "Tax clearance certificate",
             "Valid private pactice license",
             "Work permits",
-            "Residence permit",
+            "residence permit",
             "Lease agreement",
             "Occupancy certificate",
-            "Permission to establish/set up",
+            "Permission to operate/set up",
             "Patient charter in English & Setswana",
             "Is there an indemnity insurance?",
-            "Contracts for staff",
+            "contracts for staff",
             "Police Clearance",
-            "Waste collection carrier licence",
-            "Confidentiality clause",
-            "Proof of change of land use",
-            "Practitioners licence",
+            "waste collection carrier licence",
+            "confidentiality clause",
+            "proof of change of land use",
+            "Practitioners licence",
             "Fire clearance",
             "Patient referral",
             "Management of high risk patients",
@@ -46,7 +46,7 @@ const Laboratory = {
             "Management of supplies",
             "Patient observation",
             "Management of medication",
-            "Post eposure prophylais",
+            "Post exposure prophylaxis",
             "Complaints procedure",
             "Disaster preparedness",
             "Waste management",
@@ -60,25 +60,24 @@ const Laboratory = {
         "showOnly": [
             "General services; Specify",
             "Specialist services; Specify",
-            "Other services (Specify); .....",
-            "Are services provided displayed?",
+            "Other services (Specify); �.....",
             "Are hours of operation displayed?",
             "State hours of operation",
             "Are emergency contact numbers displayed?",
             "What is number of patients seen/ Samples received per month",
             "Any outreach services? If yes state them.",
             "Is there permission to offer the outreach services",
-            "Agreement letter with a practitioner where outreach services will be offered from",
+            "Agreement letter with a doctor where outreach services will be offered from",
             "Is there provision of emergency outreach services?",
         ]
     },
     "PERSONNEL": {
         "showOnly": [
             "What is the intended total number of staff",
-            "What is the current number of staff; --",
+            "What is the current number of staff--",
             "General Health Professionals (Specify)",
             "Specialists (Specify)",
-            "Other (Specify)",
+            "Other (specify)",
             "Administrative Staff (Specify)",
             "Support staff (Specify)",
             "Are professionals registered with the relevant Councils?",
@@ -88,7 +87,7 @@ const Laboratory = {
             "Evidence of orientation and induction",
             "Signed contracts or offer letters",
             "Medical eamination certificates",
-            "Evidence of Continous Professional Development",
+            "Evidence of continous Professional Development",
         ]
     },
     "FACILITY-ENVIRONMENT": {
@@ -97,28 +96,28 @@ const Laboratory = {
             "Is it fenced, secure and easily accessible",
             "Is there space for parking? Specify",
             "Is there parking space designated for people living with disability? Specify",
-            "Does the facility have space for services provided? Specify",
-            "Is there provision for ambulance parking",
+            "Do the facility have space for services provided? Specify",
+            "� Is there provision for handwashing?",
             "Is facility area clean and neat?",
             "Are surfaces free from dust?",
             "Is there lighting in all service areas?",
             "Is air conditioning available?",
             "Is there ventilation in all service area?",
             "Is flooring of cleanable, smooth impervious material?",
-            "Are there relevant restriction signs",
+            "Are there relevant restriction signs?",
             "Is there directional signage within and outside the facility?",
             "Is there backup system for electricity?",
             "Is there backup system for water?",
             "Where there are ramps, are there safety features?",
         ]
     },
-    "FACILITY-RECEPTION/WAITING AREA": {
+    "FACILITY-RECEPTION/WAITING AREA--": {
         "showOnly": [
             "Does reception area have adequate space? Elaborate.",
             "Is the telephone/ cell phone available?",
             "Is a reception desk and chair available",
             "Is it manned at all times?",
-            "Is there an organized patient registration, screening and booking system",
+            "Is there an organized patient registration, screening and booking system?",
             "Are there adequate patient benches / chairs in the waiting area? Elaborate.",
             "Is there a waste bin?",
             "Is there a computer/ desktop?",
@@ -127,22 +126,18 @@ const Laboratory = {
             "Are educational materials available for clients",
         ]
     },
-    "FACILITY-CONSULTATION/ TREATMENT ROOM": {
+    "FACILITY-CONSULTATION/ TREATMENT ROOM--": {
         "showOnly": [
             "Hand washing soap",
             "hand drying facilities",
         ]
     },
-    "FACILITY-PROCEDURE ROOM": {
+    "FACILITY-PROCEDURE ROOM-": {
         "showOnly": [
             "Pregnancy test kit",
-        ]
-    },
-    "BLEEDING ROOM": {
-        "showOnly": [
-            "Does the bleeding room have adequate space? Elaborate.",
+            "Does the bleeding room have space? Elaborate.",
             "Does the room have wheelchair accessibility?",
-            "At least      2 chairs",
+            "At least 3 Chairs",
             "Needles and syringes (different sizes)",
             "Vacutainers of different colours",
             "Tourniquet",
@@ -150,7 +145,7 @@ const Laboratory = {
             "Cotton swab",
             "Disinfectant",
             "Sharps container",
-            "Clinical waste  bin with lid",
+            "Clinical waste bin with lid",
             "Domestic waste bin with lid",
             "Hand wash basin with running hot and cold water",
             "Hand wash soap",
@@ -159,13 +154,9 @@ const Laboratory = {
             "Cooler bo",
             "Ice packs",
             "Specimen racks",
-        ]
-    },
-    "TOILET FACILITIES": {
-        "showOnly": [
             "Is there a minimum of two toilets available (for male and",
             "Female patients)?",
-            "Are they labelled male and female?",
+            "Are they labelled �male� and �female?�",
             "Are toilets fitted with hand wash facilities?",
             "Is there suitable soap dispenser?",
             "Is there an appropriate hand drying provision?",
@@ -174,21 +165,17 @@ const Laboratory = {
             "Does the female toilet have sanitary pads disposal?",
             "Are toilets aesthetically pleasing?",
             "Is there provision for paediatric clients?",
-        ]
-    },
-    "SAFETY AND WASTE MANAGEMENT": {
-        "showOnly": [
             "Does the Facility have a policy on waste management?",
             "Does the Facility have SOPs on waste management?",
-            "Does the Facility have a waste disposal system? Specify:--",
+            "Does the Facility have a waste disposal system? Specify:",
             "Domestic Waste",
             "Clinical Waste",
             "Does the Facility have a policy and procedures on safety?",
             "Is there a policy and procedure on accidental eposure to HIV?",
-            "Does the Facility have fire protection equipment?--",
+            "Does the Facility have fire protection equipment?",
             "Fire etinguishers",
             "Emergency eits",
-            "Additional:--",
+            "Additional:",
             "Fire alarms",
             "Smoke detectors",
             "Fire blankets",
@@ -202,14 +189,14 @@ const Laboratory = {
     },
     "SUPPLIES": {
         "showOnly": [
-            "Does the Facility have the following policies",
-            "Supplies and purchasing",
-            "Management of epired supplies",
-            "Does the Facility have adequate supplies for services provided/",
+            "Does the Facility have the following policies--",
+            "supplies and purchasing",
+            "management of expired supplies",
+            "Does the Facility have adequate supplies for services provided",
             "Is there a stock control system?",
         ]
     },
-    "CUSTOMER SATISFACTION": {
+    "TENS": {
         "showOnly": [
             "Is there a customer feedback mechanism",
             "Suggestion bo",
@@ -217,11 +204,7 @@ const Laboratory = {
             "Is there a patient charter in both English and Setswana",
             "Is there provision for consent before carrying out any procedures/assessment",
             "Is there a complaints, procedure",
-        ]
-    },
-    "SPECIMEN RECEPTION ROOM": {
-        "showOnly": [
-            "Does the room have the following:--",
+            "Does the room have the following:",
             "Chairs and a table",
             "Disposable gloves",
             "Specimen racks and trays",
@@ -239,18 +222,14 @@ const Laboratory = {
             "Does the lab have a documented specimen system( collection, handling, storage and transportation",
             "Is there specimen fridge with temperature monitoring device and chart",
             "Is there air-conditioner with monitoring device and chart?",
-        ]
-    },
-    "LABORATORY TESTING AREAS CHEMISTRY": {
-        "showOnly": [
             "Chemistry",
             "Does the testing area have adequate space?",
             "Are there adequate lab stools and benches?",
             "Is there hand washing provision?",
             "Is there air-conditioner with monitoring device and chart?",
-            "List the clinical chemistry tests done by the lab:",
+            "List the clinical chemistry tests done by the lab:--",
             "Does the lab have Technical SOPs (test methods)",
-            "Does the lab have the following equipment:--",
+            "Does the lab have the following equipment: --",
             "Chemistry analyser",
             "Centrifuge",
             "Medical fridge",
@@ -271,10 +250,6 @@ const Laboratory = {
             "Are lab equipment calibrated",
             "Is there an equipment preventative maintenance plan?",
             "Is epiry of items monitored?",
-        ]
-    },
-    "LABORATORY TESTING AREAS HAEMATOLOGY": {
-        "showOnly": [
             "Does the testing area have adequate space?",
             "Are there adequate lab stools and benches?",
             "Is there hand washing provision?",
@@ -286,8 +261,8 @@ const Laboratory = {
             "Is there hand washing provision?",
             "Is there air-conditioner with monitoring device and chart?",
             "List clinical tests done at Haematology:",
-            "Does the lab have Technical SOPs (test methods",
-            "Does the lab have the following equipment?--",
+            "Does the lab have Technical SOPs (test methods)",
+            "Does the lab have the following equipment: --",
             "Haematology analyser?",
             "Microscope?",
             "Staining Racks?",
@@ -295,12 +270,12 @@ const Laboratory = {
             "Coagulation machine?",
             "ESR tubes and caps?",
             "Sample Rocker?",
-            "Medical fridge?",
+            "Medical fridge",
             "Sample rotator?",
-            "Automated Pipettes?",
-            "Graduated Pipettes?",
+            "Automated Pipettes",
+            "Graduated Pipettes",
             "Pipette Fillers?",
-            "Are normal and abnormal Quality Control done and recorded?",
+            "Are normal and abnormal Quality Control done and recorded",
             "How often are Quality controls run?",
             "Are QC results monitored over a period of time?",
             "Does the lab participate in Eternal Quality Assessment Schemes?",
@@ -313,31 +288,27 @@ const Laboratory = {
             "Are lab equipment calibrated",
             "Is there an equipment preventative maintenance plan?",
             "Is epiry of items monitored?",
-        ]
-    },
-    "MICROBIOLOGY": {
-        "showOnly": [
             "Does the testing area have adequate space?",
             "Are there adequate lab stools and benches?",
             "Is there hand washing provision?",
             "Is there air-conditioner with monitoring device and chart?",
             "List clinical tests done at microbiology:",
-            "Does the lab have Technical SOPs (test methods",
-            "Does the lab have the following equipment:",
+            "Does the lab have Technical SOPs (test methods)",
+            "Does the lab have the following equipment: --",
             "Incubators(CO2,O2,42OC)",
             "Microscopes?",
-            "Autoclave?",
+            "Autoclave",
             "Anaerobic Jars?",
             "Wire loops",
             "Disposable Inoculating loops and needles?",
             "Urine wire loop",
             "Reading lamp",
-            "Centrifuge?",
+            "Centrifuge",
             "Vorte",
-            "Staining racks?",
-            "Sample rocker?",
+            "Staining Racks?",
+            "Sample Rocker?",
             "Medical fridge",
-            "Medical freezer?",
+            "Medical freezer",
             "Hot plate?",
             "Weighing scale?",
             "Bunsen burner?",
@@ -358,9 +329,9 @@ const Laboratory = {
             "Graduated Pipettes",
             "Does the lab have Quality Control Organisms?",
             "How often are QC run?",
-            "Are QC results monitored over a period of time",
+            "Are QC results monitored over a period of time?",
             "Does the lab participate in EQA Assessment Schemes?",
-            "Are EQA results reviewed and  monitored",
+            "Are EQA results reviewed and monitored?",
             "Are refrigerator temperatures monitored",
         ]
     },
@@ -369,7 +340,7 @@ const Laboratory = {
             "Does the lab do any HIV screening",
         ]
     },
-    "LIASON WITH PRIMARY HEALTH CARE DEPARTMENTS": {
+    "X-RAY ROOM": {
         "showOnly": [
             "Is there evidence of facility liason with the Primary Health Care Department? (A guide the reports to be submitted available)",
             "Is there evidence of statistical reporting to the Primary Health Care Departments as per available guideline?",
