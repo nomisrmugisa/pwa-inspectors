@@ -6408,7 +6408,10 @@ function FormPage() {
               borderRadius: '8px',
               zIndex: 1000,
               overflow: 'auto',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+              resize: 'both',
+              minWidth: '400px',
+              minHeight: '300px'
             }}>
               <div style={{
                 position: 'sticky',

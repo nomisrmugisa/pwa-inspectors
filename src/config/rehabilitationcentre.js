@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist-final.csv
- * Generated on: 2026-01-07 11:30:03
+ * Generated on: 2026-01-07 13:43:32
  * Facility Type: Rehabilitation Centre
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -59,9 +59,10 @@ const RehabilitationCentre = {
     },
     "SERVICES PROVIDED": {
         "showOnly": [
+            "What are the services provided at the Facility?--",
             "General services; Specify",
             "Specialist services; Specify",
-            "Other services (Specify); �.....",
+            "Other services (Specify);",
             "Are hours of operation displayed?",
             "State hours of operation",
             "Are emergency contact numbers displayed?",

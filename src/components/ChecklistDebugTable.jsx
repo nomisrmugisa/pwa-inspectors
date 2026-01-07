@@ -90,6 +90,40 @@ export function ChecklistDebugTable({
                 return !expectedDEs.some(expected => normalize(expected) === normalizedActual);
             });
 
+            // Levenshtein distance for typo detection
+            const getLevenshteinDistance = (a, b) => {
+                const matrix = [];
+                for (let i = 0; i <= b.length; i++) {
+                    matrix[i] = [i];
+                }
+                for (let j = 0; j <= a.length; j++) {
+                    matrix[0][j] = j;
+                }
+                for (let i = 1; i <= b.length; i++) {
+                    for (let j = 1; j <= a.length; j++) {
+                        if (b.charAt(i - 1) === a.charAt(j - 1)) {
+                            matrix[i][j] = matrix[i - 1][j - 1];
+                        } else {
+                            matrix[i][j] = Math.min(
+                                matrix[i - 1][j - 1] + 1,
+                                matrix[i][j - 1] + 1,
+                                matrix[i - 1][j] + 1
+                            );
+                        }
+                    }
+                }
+                return matrix[b.length][a.length];
+            };
+
+            const isTypo = (str1, str2) => {
+                const s1 = normalize(str1);
+                const s2 = normalize(str2);
+                if (Math.abs(s1.length - s2.length) > 5) return false;
+                const distance = getLevenshteinDistance(s1, s2);
+                const maxLength = Math.max(s1.length, s2.length);
+                return (1 - distance / maxLength) > 0.7; // 70% similarity
+            };
+
             // Create merged rows for aligned display
             const mergedRows = [];
             const usedActualIndices = new Set();
@@ -97,31 +131,65 @@ export function ChecklistDebugTable({
             // First pass: Process all expected items
             expectedDEs.forEach((expected, i) => {
                 const normalizedExpected = normalize(expected);
-                const actualIndex = actualDEs.findIndex(actual =>
-                    normalize(actual) === normalizedExpected && !usedActualIndices.has(actualDEs.indexOf(actual))
+
+                // 1. Try Exact Match
+                let actualIndex = actualDEs.findIndex((actual, idx) =>
+                    !usedActualIndices.has(idx) && normalize(actual) === normalizedExpected
+                );
+
+                if (actualIndex !== -1) {
+                    usedActualIndices.add(actualIndex);
+                    // Check for Position Error (Blue)
+                    if (actualIndex !== i) {
+                        mergedRows.push({
+                            type: 'position',
+                            expectedIndex: i,
+                            actualIndex: actualIndex,
+                            expected: expected,
+                            actual: actualDEs[actualIndex],
+                            message: `Found at position ${actualIndex + 1} instead of ${i + 1}`
+                        });
+                    } else {
+                        mergedRows.push({
+                            type: 'match',
+                            expectedIndex: i,
+                            actualIndex: actualIndex,
+                            expected: expected,
+                            actual: actualDEs[actualIndex]
+                        });
+                    }
+                    return;
+                }
+
+                // 2. Try Fuzzy Match (Typo) - Yellow
+                actualIndex = actualDEs.findIndex((actual, idx) =>
+                    !usedActualIndices.has(idx) && isTypo(expected, actual)
                 );
 
                 if (actualIndex !== -1) {
                     usedActualIndices.add(actualIndex);
                     mergedRows.push({
-                        type: 'match',
+                        type: 'typo',
                         expectedIndex: i,
                         actualIndex: actualIndex,
                         expected: expected,
-                        actual: actualDEs[actualIndex]
+                        actual: actualDEs[actualIndex],
+                        message: 'Potential typo detected'
                     });
-                } else {
-                    mergedRows.push({
-                        type: 'missing',
-                        expectedIndex: i,
-                        actualIndex: -1,
-                        expected: expected,
-                        actual: null
-                    });
+                    return;
                 }
+
+                // 3. No match found -> Missing (Red)
+                mergedRows.push({
+                    type: 'missing',
+                    expectedIndex: i,
+                    actualIndex: -1,
+                    expected: expected,
+                    actual: null
+                });
             });
 
-            // Second pass: Find any remaining actual items (extras)
+            // Second pass: Find any remaining actual items (Extras) - Purple
             actualDEs.forEach((actual, i) => {
                 if (!usedActualIndices.has(i)) {
                     mergedRows.push({
@@ -181,10 +249,10 @@ export function ChecklistDebugTable({
 
     const getStatusColor = (status) => {
         switch (status) {
-            case 'success': return '#28a745';
-            case 'warning': return '#ffc107';
-            case 'error': return '#dc3545';
-            case 'info': return '#17a2b8';
+            case 'success': return '#28a745'; // Green
+            case 'warning': return '#ffc107'; // Yellow
+            case 'error': return '#dc3545';   // Red
+            case 'info': return '#17a2b8';    // Info Blue
             default: return '#6c757d';
         }
     };
@@ -238,12 +306,10 @@ export function ChecklistDebugTable({
                                 <span className="stat-value">{item.actualCount}</span>
                             </div>
                             <div className="stat">
-                                <span className="stat-label">Missing:</span>
-                                <span className="stat-value error">{item.missing?.length || 0}</span>
-                            </div>
-                            <div className="stat">
-                                <span className="stat-label">Extra:</span>
-                                <span className="stat-value info">{item.extra?.length || 0}</span>
+                                <span className="stat-label">Issues:</span>
+                                <span className="stat-value error">
+                                    {item.mergedRows.filter(r => r.type !== 'match').length}
+                                </span>
                             </div>
                         </div>
                         <p className="summary-message">{item.message}</p>
@@ -265,61 +331,56 @@ export function ChecklistDebugTable({
                         </summary>
 
                         <div className="debug-section-content">
-                            {/* Missing Data Elements */}
-                            {item.missing && item.missing.length > 0 && (
-                                <div className="de-list missing-list">
-                                    <h5>❌ Missing Data Elements ({item.missing.length})</h5>
-                                    <p className="list-description">CSV items not found in DHIS2:</p>
-                                </div>
-                            )}
-
-                            {/* Extra Data Elements */}
-                            {item.extra && item.extra.length > 0 && (
-                                <div className="de-list extra-list">
-                                    <h5>➕ Unexpected Data Elements ({item.extra.length})</h5>
-                                    <p className="list-description">DHIS2 items not in CSV:</p>
-                                </div>
-                            )}
-
-                            {/* Full Comparison Table */}
-                            <details className="full-comparison" open={true}>
-                                <summary>View Comparison Table</summary>
-                                <div className="comparison-container">
-                                    <table className="de-table aligned-table">
-                                        <thead>
-                                            <tr>
-                                                <th style={{ width: '5%' }}>#</th>
-                                                <th style={{ width: '45%' }}>Expected (CSV)</th>
-                                                <th style={{ width: '5%', textAlign: 'center' }}>Status</th>
-                                                <th style={{ width: '45%' }}>Actual (DHIS2)</th>
+                            <div className="comparison-container">
+                                <table className="de-table aligned-table">
+                                    <thead>
+                                        <tr>
+                                            <th style={{ width: '50px' }}>#</th>
+                                            <th>Expected (CSV)</th>
+                                            <th>Actual (DHIS2)</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {item.mergedRows.map((row, rIndex) => (
+                                            <tr key={rIndex} className={`row-${row.type}`} style={{
+                                                backgroundColor:
+                                                    row.type === 'match' ? '#d4edda' :
+                                                        row.type === 'typo' ? '#fff3cd' :
+                                                            row.type === 'missing' ? '#f8d7da' :
+                                                                row.type === 'extra' ? '#e2d9f3' : // Purple-ish
+                                                                    row.type === 'position' ? '#cce5ff' : // Blue-ish
+                                                                        'transparent'
+                                            }}>
+                                                <td>{rIndex + 1}</td>
+                                                <td>
+                                                    {row.expected ? (
+                                                        <div>
+                                                            {row.expected}
+                                                            <span className={`index-badge expected`}>#{row.expectedIndex + 1}</span>
+                                                        </div>
+                                                    ) : <span className="empty-cell">-</span>}
+                                                </td>
+                                                <td>
+                                                    {row.actual ? (
+                                                        <div>
+                                                            {row.actual}
+                                                            <span className={`index-badge actual`}>#{row.actualIndex + 1}</span>
+                                                        </div>
+                                                    ) : <span className="empty-cell">-</span>}
+                                                </td>
+                                                <td style={{ textAlign: 'center', fontWeight: 'bold' }}>
+                                                    {row.type === 'match' && <span style={{ color: '#28a745' }}>✓ OK</span>}
+                                                    {row.type === 'typo' && <span style={{ color: '#856404' }}>✎ TYPO</span>}
+                                                    {row.type === 'missing' && <span style={{ color: '#dc3545' }}>✗ MISSING</span>}
+                                                    {row.type === 'extra' && <span style={{ color: '#6f42c1' }}>+ EXTRA</span>}
+                                                    {row.type === 'position' && <span style={{ color: '#004085' }}>⇅ MOVED</span>}
+                                                </td>
                                             </tr>
-                                        </thead>
-                                        <tbody>
-                                            {item.mergedRows.map((row, i) => (
-                                                <tr key={i} className={`row-${row.type}`} style={{
-                                                    backgroundColor: row.type === 'match' ? '#d4edda' :
-                                                        row.type === 'missing' ? '#f8d7da' : '#fff3cd'
-                                                }}>
-                                                    <td>{i + 1}</td>
-                                                    <td className={row.type === 'missing' ? 'text-missing' : ''}>
-                                                        {row.expected || <span className="empty-cell">-</span>}
-                                                        {row.expected && <div className="index-badge expected">{row.expectedIndex + 1}</div>}
-                                                    </td>
-                                                    <td style={{ textAlign: 'center', fontWeight: 'bold' }}>
-                                                        {row.type === 'match' ? <span style={{ color: '#28a745' }}>✓</span> :
-                                                            row.type === 'missing' ? <span style={{ color: '#dc3545' }}>✗</span> :
-                                                                <span style={{ color: '#ffc107' }}>?</span>}
-                                                    </td>
-                                                    <td className={row.type === 'extra' ? 'text-extra' : ''}>
-                                                        {row.actual || <span className="empty-cell">-</span>}
-                                                        {row.actual && <div className="index-badge actual">{row.actualIndex + 1}</div>}
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </details>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </details>
                 ))}
