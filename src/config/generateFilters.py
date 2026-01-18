@@ -36,6 +36,7 @@ class FacilityFilterGenerator:
         self.facility_types = []
         self.sections = []
         self.questions_data = []
+        self.section_applicability = {}  # Tracks which facilities marked a section header
         self.config_dir = Path("src/config")
 
     def parse_csv(self):
@@ -71,6 +72,7 @@ class FacilityFilterGenerator:
         name_standardization = {
             'Physiotheraphy': 'Physiotherapy',
             'Nursing Home': 'Nursing  Home', # Ensure double space internally if single space in CSV
+            'Hospita': 'Hospital',
         }
         
         self.facility_types = [name_standardization.get(ft, ft) for ft in raw_types]
@@ -98,14 +100,19 @@ class FacilityFilterGenerator:
 
             # Detect section headers
             # A row is a section header IF:
-            # 1. It has NO '?' marked for any facility type
-            # 2. AND (It's fully uppercase OR starts with 'FACILITY-' OR is a known major divider)
-            is_section_header = (not has_any_applicability) and (
+            # (It's fully uppercase OR starts with 'FACILITY-' OR is a known major divider)
+            # AND (It has NO '?' marks OR it clearly looks like a header)
+            is_header_pattern = (
                 (clean_text.isupper() and len(clean_text) > 3) or
                 clean_text.upper().startswith('FACILITY-') or
+                clean_text.upper().startswith('SECTION ') or
                 clean_text.upper().startswith('CUSTOMER SATISFACTION') or
                 clean_text.upper().startswith('LIASON WITH PRIMARY HEALTH CARE')
-            )
+            ) and not clean_text.endswith('--')
+            
+            # If it's a header pattern, we treat it as a section EVEN IF it has '?'
+            # (Users sometimes mark the section row itself for coverage)
+            is_section_header = is_header_pattern
 
             if is_section_header:
                 # Normalize: Uppercase, remove spaces around hyphens, and strip trailing --/symbols
@@ -116,7 +123,9 @@ class FacilityFilterGenerator:
                 
                 if current_section not in self.sections:
                     self.sections.append(current_section)
-                    print(f"📋 Found section: {current_section}")
+                    # Store applicability of the header row itself
+                    self.section_applicability[current_section] = applicability
+                    print(f"📋 Found section: {current_section} (Marked for {sum(applicability)} types)")
             elif current_section:
                 # Treat as a question if either:
                 # - The text ends with '?', or
@@ -146,8 +155,44 @@ class FacilityFilterGenerator:
 
         facility_config = {}
 
+        # Determine if this facility is "Modern" (explicitly marks its headers)
+        # or "Legacy" (relies on global/unmarked headers).
+        # We use a threshold of 5 marked sections to decide.
+        marked_sections_count = sum(
+            1 for marks in self.section_applicability.values()
+            if facility_index < len(marks) and marks[facility_index]
+        )
+        
+        # Hospital has ~60, others have 0 or 1. threshold=5 is safe.
+        is_modern_facility = marked_sections_count >= 5
+        
+        if is_modern_facility:
+            print(f"  📌 Using STRICT section marking for {facility_type} ({marked_sections_count} marks)")
+        else:
+            print(f"  📜 Using LEGACY section fallback for {facility_type}")
+
         for section in self.sections:
             normalized_section = self.normalize_section_name(section)
+
+            # Logic for section inclusion:
+            # 1. If it's a Modern facility (like Hospital), the section MUST be marked for it.
+            # 2. If it's a Legacy facility, we include it if:
+            #    a) It's marked for this facility.
+            #    b) OR It's marked for NO ONE (Global header) AND has questions.
+            
+            section_marks = self.section_applicability.get(section, [])
+            is_marked_for_me = facility_index < len(section_marks) and section_marks[facility_index]
+            is_marked_for_no_one = not any(section_marks)
+            
+            should_check_questions = False
+            if is_modern_facility:
+                should_check_questions = is_marked_for_me
+            else:
+                # Legacy: Include if marked for me OR if it's a global header
+                should_check_questions = is_marked_for_me or is_marked_for_no_one
+
+            if not should_check_questions:
+                continue
 
             # Get all questions that apply to this facility in this section
             applicable_questions = []
@@ -370,8 +415,8 @@ export default facilityServiceFilters;
             if normalized_section not in all_departments:
                 all_departments.append(normalized_section)
 
-        # Sort departments alphabetically for consistency
-        all_departments.sort()
+        # Preserve CSV order for consistency
+        # all_departments.sort()
 
         # Build specialization to department mapping
         specialization_mapping = {}
@@ -394,8 +439,8 @@ export default facilityServiceFilters;
                 if has_questions:
                     facility_departments.append(normalized_section)
 
-            # Sort departments for this facility
-            facility_departments.sort()
+            # Preserve CSV order
+            # facility_departments.sort()
             specialization_mapping[facility_type] = facility_departments
 
             print(f"  🏥 {facility_type}: {len(facility_departments)} departments")

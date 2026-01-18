@@ -17,7 +17,7 @@
 
 .debug-header h3 {
     margin: 0 0 10px 0;
-    color: #1976d2;
+    color: #0d47a1;
     font-size: 20px;
     font-weight: 600;
 }
@@ -88,7 +88,7 @@
     margin: 0;
     font-size: 16px;
     font-weight: 600;
-    color: #1976d2;
+    color: #0d47a1;
 }
 
 .status-icon {
@@ -169,8 +169,8 @@
 .section-title {
     flex: 1;
     font-size: 15px;
-    color: #1976d2 !important;
-    /* Force blue color and override conflicting styles */
+    color: #0d47a1 !important;
+    /* Force dark blue color and override conflicting styles */
 }
 
 .section-counts {
@@ -234,7 +234,7 @@
     padding: 10px 12px;
     text-align: left;
     font-weight: 600;
-    color: #495057;
+    color: #0d47a1;
     border-bottom: 2px solid #dee2e6;
 }
 

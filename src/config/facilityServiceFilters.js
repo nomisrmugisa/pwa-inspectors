@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist-final.csv
- * Generated on: 2026-01-07 23:06:35
+ * Generated on: 2026-01-18 15:31:00
  *
  * This file imports all individual clinic filter files and combines them
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -21,6 +21,7 @@ import GeneralPractice from './generalpractice.js';
 import Paediatric from './paediatric.js';
 import NursingHome from './nursinghome.js';
 import EmergencyMedicalServices from './emergencymedicalservices.js';
+import Hospital from './hospital.js';
 
 const facilityServiceFilters = {
     "Obstetrics & Gynaecology": ObstetricsandGynaecology,
@@ -51,6 +52,8 @@ const facilityServiceFilters = {
     "Service Nursing  Home": NursingHome,
     "Emergency Medical Services": EmergencyMedicalServices,
     "Service Emergency Medical Services": EmergencyMedicalServices,
+    "Hospital": Hospital,
+    "Service Hospital": Hospital,
 };
 
 
@@ -64,11 +67,21 @@ export function shouldShowDataElementForService(dataElementName, selectedService
     // Helper to normalize strings for comparison (handles apostrophes, case, and whitespace)
     const normalize = (str) => {
         if (!str) return '';
-        // Strip leading non-alphanumeric symbols like bullets
-        return str.replace(/^[^a-zA-Z0-9(]+/, "").replace(/['‘’]/g, "").toLowerCase().trim();
+        // 1. Strip leading non-alphanumeric symbols like bullets
+        let cleaned = str.replace(/^[^a-zA-Z0-9(]+/, "");
+        // 2. Strip leading numeric prefixes like "1.1.1 " or "1.2 " 
+        // These are common in the new Hospital checklist but not in DHIS2
+        cleaned = cleaned.replace(/^(\d+(\.\d+)*)\s+/, "");
+        // 3. Remove punctuation and lowercase
+        return cleaned.replace(/['‘’?]/g, "").toLowerCase().trim();
     };
 
     const normalizedDataElementName = normalize(dataElementName);
+
+    // Always show the Facility Service Departments field so users can pick their sections
+    if (normalizedDataElementName.includes('facility service department')) {
+        return true;
+    }
 
     // Helper to find a section key case-insensitively
     const findSectionKey = (filters, name) => {
@@ -84,26 +97,26 @@ export function shouldShowDataElementForService(dataElementName, selectedService
     if (sectionName) {
         // Try to find the section key (handling case mismatches)
         const matchedSectionKey = findSectionKey(serviceFilters, sectionName);
-        
+
         if (matchedSectionKey) {
             const section = serviceFilters[matchedSectionKey];
             if (section && section.showOnly) {
-                return section.showOnly.some(item => 
+                return section.showOnly.some(item =>
                     item === dataElementName || normalize(item) === normalizedDataElementName
                 );
             }
         }
-        
+
         // Let's try one more fallback: check if the section name is a substring of a key or vice versa
-        const looseSectionKey = Object.keys(serviceFilters).find(key => 
-            key.toLowerCase().includes(sectionName.toLowerCase()) || 
+        const looseSectionKey = Object.keys(serviceFilters).find(key =>
+            key.toLowerCase().includes(sectionName.toLowerCase()) ||
             sectionName.toLowerCase().includes(key.toLowerCase())
         );
-        
+
         if (looseSectionKey) {
-             const section = serviceFilters[looseSectionKey];
-             if (section && section.showOnly) {
-                const foundInSection = section.showOnly.some(item => 
+            const section = serviceFilters[looseSectionKey];
+            if (section && section.showOnly) {
+                const foundInSection = section.showOnly.some(item =>
                     item === dataElementName || normalize(item) === normalizedDataElementName
                 );
                 if (foundInSection) return true;
@@ -116,7 +129,7 @@ export function shouldShowDataElementForService(dataElementName, selectedService
         for (const sectionKey in serviceFilters) {
             const section = serviceFilters[sectionKey];
             if (section && section.showOnly) {
-                const foundAnywhere = section.showOnly.some(item => 
+                const foundAnywhere = section.showOnly.some(item =>
                     item === dataElementName || normalize(item) === normalizedDataElementName
                 );
                 if (foundAnywhere) return true;
@@ -130,7 +143,7 @@ export function shouldShowDataElementForService(dataElementName, selectedService
     // If no section name provided, check across all sections (legacy behavior)
     for (const section in serviceFilters) {
         if (serviceFilters[section].showOnly) {
-            if (serviceFilters[section].showOnly.some(item => 
+            if (serviceFilters[section].showOnly.some(item =>
                 item === dataElementName || normalize(item) === normalizedDataElementName
             )) {
                 return true;

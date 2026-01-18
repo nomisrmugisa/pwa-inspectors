@@ -6,12 +6,12 @@
  */
 
 // Import the configuration (you'll need to run this in the project directory)
-const { shouldShowSection, getAvailableFacilityTypes, getVisibleSectionsForFacility } = require('./src/config/sectionVisibilityConfig.js');
+import { shouldShowSection, getAvailableFacilityTypes, getVisibleSectionsForFacility } from './src/config/sectionVisibilityConfig.js';
 
 // Test data - different facility types
 const testFacilities = [
   'Gynae Clinics',
-  'laboratory', 
+  'laboratory',
   'Psychology clinic',
   'Eye (opthalmologyoptometry  optician) Clinics',
   'physiotheraphy',
@@ -46,23 +46,23 @@ console.log('🔍 Section Visibility Test Results:\n');
 testFacilities.forEach(facilityType => {
   console.log(`🏥 Facility Type: ${facilityType}`);
   console.log('─'.repeat(50));
-  
+
   testSections.forEach(sectionName => {
     const isVisible = shouldShowSection(sectionName, facilityType);
     const status = isVisible ? '✅ SHOW' : '🚫 HIDE';
     console.log(`  ${sectionName}: ${status}`);
   });
-  
+
   // Show summary
   const visibleSections = getVisibleSectionsForFacility(facilityType);
   const totalSections = testSections.length;
   const hiddenSections = totalSections - visibleSections.length;
-  
+
   console.log(`\n  📊 Summary: ${visibleSections.length}/${totalSections} sections visible`);
   if (hiddenSections > 0) {
     console.log(`  🚫 ${hiddenSections} section(s) hidden for this facility type`);
   }
-  
+
   console.log('\n');
 });
 

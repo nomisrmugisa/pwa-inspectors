@@ -1,4 +1,4 @@
-import { ALL_FACILITY_DEPARTMENTS } from './facilityServiceDepartments.js';
+import { ALL_FACILITY_DEPARTMENTS, SPECIALIZATION_DEPARTMENT_MAPPING } from './facilityServiceDepartments.js';
 
 /**
  * Section Visibility Configuration
@@ -32,13 +32,14 @@ export const CANONICAL_FACILITY_TYPES = [
   'General Practice',
   'Paediatric',
   'Nursing  Home',
-  'Emergency Medical Services'
+  'Emergency Medical Services',
+  'Hospital'
 ];
 
 // Map a variety of legacy / DHIS2 / CSV labels to canonical facility types
 const LEGACY_TO_CANONICAL = {
-  'Hospital': 'General Practice',
-  'hospital': 'General Practice',
+  'Hospital': 'Hospital',
+  'hospital': 'Hospital',
   'Clinic': 'General Practice',
   'clinic': 'General Practice',
   'Gynae Clinics': 'Obstetrics & Gynaecology',
@@ -107,25 +108,29 @@ const legacySectionVisibilityConfig = {
   // Hospital - show all sections
   'Hospital': {
     'Document Review': true,
+    'INSPECTION INFORMATION': true,
+    'FACILITY GOVERNANCE AND MANAGEMENT': true,
+    'RESUSCITATION SERVICES': true,
+    'OUT PATIENT SERVICE': true,
+    'OBSTETRICS AND GYNAECOLOGY': true,
+    'CENTRAL SUPPLY / STERILIZATION': true,
+    'PHARMACY': true,
+    'RADIOLOGY (MEDICAL IMAGING; X?RAY DEPARTMENT)': true,
+    'PHYSIOTHERAPY CARE': true,
+    'ENGINEERING / MAINTENANCE SERVICES': true,
+    'TOILET FACILITIES': true,
+    'SERVICES PROVIDED': true,
+    'PERSONNEL': true,
+    'FACILITY-ENVIRONMENT': true,
     'ORGANISATION AND MANAGEMENT': true,
     'STATUTORY REQUIREMENTS': true,
     'POLICIES AND PROCEDURES': true,
-    'Inspection Type': true,
-    'Inspectors Details': true,
-    'SERVICES PROVIDED': true,
-    'FACILITY-ENVIRONMENT': true,
+    'SAFETY AND WASTE MANAGEMENT': true,
+    'SUPPLIES': true,
     'FACILITY-RECEPTION/WAITING AREA': true,
     'FACILITY-SCREENING ROOM': true,
     'FACILITY-CONSULTATION/ TREATMENT ROOM': true,
     'FACILITY-PROCEDURE ROOM': true,
-    'BLEEDING ROOM': true,
-    'SLUICE ROOM': true,
-    'TOILET FACILITIES': true,
-    'PHARMACY/DISPENSARY': true,
-    'SAFETY AND WASTE MANAGEMENT': true,
-    'SUPPLIES': true,
-    'RECORDS/ INFORMATION MANAGEMENT': true,
-    'CUSTOMER SATISFACTION': false
   },
 
   // Clinic - show all sections
@@ -397,7 +402,8 @@ export const sectionVisibilityConfig = {
   'General Practice': legacySectionVisibilityConfig['Clinic'],
   'Paediatric': legacySectionVisibilityConfig['Clinic'],
   'Nursing  Home': legacySectionVisibilityConfig['Clinic'],
-  'Emergency Medical Services': legacySectionVisibilityConfig['EMS']
+  'Emergency Medical Services': legacySectionVisibilityConfig['EMS'],
+  'Hospital': legacySectionVisibilityConfig['Hospital']
 };
 
 
@@ -599,7 +605,8 @@ export const dataElementFilterConfig = {
   'General Practice': legacyDataElementFilterConfig['Clinic'],
   'Paediatric': legacyDataElementFilterConfig['Clinic'],
   'Nursing  Home': legacyDataElementFilterConfig['Clinic'],
-  'Emergency Medical Services': legacyDataElementFilterConfig['Clinic']
+  'Emergency Medical Services': legacyDataElementFilterConfig['Clinic'],
+  'Hospital': legacyDataElementFilterConfig['Hospital']
 };
 
 
@@ -652,11 +659,13 @@ export const shouldShowSection = (sectionName, facilityClassification) => {
 
   // 1. Check if the section matches any of our dynamic CSV departments
   // This ensures that any section added to the CSV is automatically visible
-  // without needing manual updates to this file or the whitelist.
-  const isDynamicCsvSection = ALL_FACILITY_DEPARTMENTS.some(dept =>
-    rawSectionName.toUpperCase().includes(dept.toUpperCase()) ||
-    dept.toUpperCase().includes(rawSectionName.toUpperCase())
-  );
+  const availableDepts = SPECIALIZATION_DEPARTMENT_MAPPING[normalizedClassification] || [];
+  const isDynamicCsvSection = availableDepts.some(dept => {
+    const deptUpper = dept.toUpperCase();
+    // Use exact match or check if it's a major part of the name to avoid overly broad matching
+    return sectionNameUpper === deptUpper ||
+      sectionNameUpper.replace(/^SECTION\s+[A-Z]\s*-\s*/i, '') === deptUpper;
+  });
 
   if (isDynamicCsvSection) {
     console.log(

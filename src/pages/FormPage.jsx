@@ -15,7 +15,7 @@ import {
 } from '../config/sectionVisibilityConfig';
 
 import facilityServiceFilters, { shouldShowDataElementForService } from '../config/facilityServiceFilters';
-import { getDepartmentsForSpecialization, getDepartmentStats } from '../config/facilityServiceDepartments';
+import { getDepartmentsForSpecialization, getDepartmentStats, ALL_FACILITY_DEPARTMENTS } from '../config/facilityServiceDepartments';
 
 import CustomSignatureCanvas from '../components/CustomSignatureCanvas';
 import { ChecklistDebugTable } from '../components/ChecklistDebugTable';
@@ -2665,9 +2665,19 @@ const DEPARTMENT_SECTION_MAPPING = {
   // Quality and Satisfaction
   'CUSTOMER SATISFACTION': ['CUSTOMER SATISFACTION'],
 
-  // Special
   'HIV SCREENING': ['HIV SCREENING'],
   'TENS': ['TENS'],
+
+  // Hospital Specific Departments
+  'FACILITY GOVERNANCE AND MANAGEMENT': ['GOVERNANCE', 'MANAGEMENT', 'ORGANISATION', 'ADMINISTRATION'],
+  'RESUSCITATION SERVICES': ['RESUSCITATION', 'EMERGENCY'],
+  'OUT PATIENT SERVICE': ['OUT PATIENT', 'OUTPATIENT', 'CONSULTATION'],
+  'OBSTETRICS AND GYNAECOLOGY': ['OBSTETRICS', 'GYNAECOLOGY', 'MATERNITY', 'DELIVERY'],
+  'CENTRAL SUPPLY / STERILIZATION': ['STERILIZATION', 'STERILISATION', 'CSSD', 'SUPPLY'],
+  'PHARMACY': ['PHARMACY', 'DISPENSARY'],
+  'RADIOLOGY (MEDICAL IMAGING; X?RAY DEPARTMENT)': ['RADIOLOGY', 'X-RAY', 'X RAY', 'IMAGING', 'ULTRASOUND'],
+  'PHYSIOTHERAPY CARE': ['PHYSIOTHERAPY', 'REHABILITATION'],
+  'ENGINEERING / MAINTENANCE SERVICES': ['ENGINEERING', 'MAINTENANCE', 'PLANT'],
   'LIASON WITH PRIMARY HEALTH CARE DEPARTMENTS': ['LIASON WITH PRIMARY HEALTH CARE DEPARTMENTS'],
 
   // Catch-all
@@ -2817,8 +2827,38 @@ function FormPage() {
 
   } = useApp();
 
-  // Define visibleSections to avoid ReferenceError
-  const visibleSections = configuration?.programStage?.sections || [];
+  // Define visibleSections with CSV-based sorting
+  const visibleSections = useMemo(() => {
+    const sections = configuration?.programStage?.sections || [];
+    if (sections.length === 0) return [];
+
+    // Order sections based on ALL_FACILITY_DEPARTMENTS (the CSV order)
+    return [...sections].sort((a, b) => {
+      // Helper to find index in the ordered list
+      const getIndex = (section) => {
+        const name = section.displayName;
+        if (!name) return 999;
+
+        // Find exact match or a match where the CSV entry is a substring (or vice versa)
+        const index = ALL_FACILITY_DEPARTMENTS.indexOf(name);
+        if (index !== -1) return index;
+
+        // Looser match for robustness
+        const looseIndex = ALL_FACILITY_DEPARTMENTS.findIndex(dept =>
+          dept.toLowerCase() === name.toLowerCase() ||
+          dept.toLowerCase().includes(name.toLowerCase()) ||
+          name.toLowerCase().includes(dept.toLowerCase())
+        );
+
+        return looseIndex !== -1 ? looseIndex : 999;
+      };
+
+      const indexA = getIndex(a);
+      const indexB = getIndex(b);
+
+      return indexA - indexB;
+    });
+  }, [configuration]);
 
   // State to track the facility type for filtering (from dataStore)
 
@@ -2995,8 +3035,8 @@ function FormPage() {
     const sectionLower = safeName.toLowerCase();
 
     // Always show core inspection sections regardless of department selection
-    // Always show core inspection sections regardless of department selection
-    if (sectionLower.includes('inspection information') || sectionLower.includes('inspection type')) {
+    if (sectionLower.includes('inspection information') ||
+      sectionLower.includes('inspection type')) {
       return true;
     }
 
@@ -6143,7 +6183,7 @@ function FormPage() {
 
         <div className="form-header">
 
-          <h2>Facility Checklist {facilityInfo?.facilityName ? `- ${facilityInfo.facilityName}` : ''}</h2>
+          <h2>Facility Checklist {manualSpecialization && facilityInfo?.facilityName ? `- ${facilityInfo.facilityName}` : ''}</h2>
 
           {/* Facility Filtering Status Summary */}
 

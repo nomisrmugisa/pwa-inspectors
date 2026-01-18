@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist-final.csv
- * Generated on: 2026-01-07 23:06:35
+ * Generated on: 2026-01-18 15:31:00
  * Facility Type: Radiology
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -11,7 +11,8 @@ const Radiology = {
     "SECTION A-ORGANISATION AND MANAGEMENT": {
         "showOnly": [
             "Does the Facility have an organisational structure",
-            "Is the director a medically trained person?--",
+            "Is the director a medically trained person?",
+            "Does the facility have the following  requirements? --",
             "Business registration",
             "Tax clearance certificate",
             "Valid private pactice license",
@@ -29,6 +30,7 @@ const Radiology = {
             "proof of change of land use",
             "Practitioners licence",
             "Fire clearance",
+            "Does the Facility have policies and procedures for the following?--",
             "Patient referral",
             "Assessment of patients",
             "Management of high risk patients",
@@ -52,6 +54,7 @@ const Radiology = {
             "Disaster preparedness",
             "Waste management",
             "Others",
+            "Does the Facility have the following reference materials?--",
             "Treatment protocols/ guidelines",
             "Testing and treatment techniques",
             "Copies of relevant statutory instruments",
@@ -137,9 +140,7 @@ const Radiology = {
     },
     "TOILET FACILITIES": {
         "showOnly": [
-            "Is there a minimum of two toilets available (for male and",
-            "Female patients)?",
-            "Are they labelled male and female?",
+            "Is there a minimum of two toilets available (for Male and   Female patients)?",
             "Are toilets fitted with hand wash facilities?",
             "Is there suitable soap dispenser?",
             "Is there an appropriate hand drying provision?",
@@ -224,10 +225,6 @@ const Radiology = {
             "Is the room equipped with clinical waste bin, domestic waste bin?",
             "Is there adequate ventilation and lighting?",
             "Is there provision for handwashing?",
-        ]
-    },
-    "LIASON WITH PRIMARY HEALTH CARE DEPARTMENTS": {
-        "showOnly": [
             "Is there evidence of facility liason with the Primary Health Care Department? (A guide the reports to be submitted available)",
             "Is there evidence of statistical reporting to the Primary Health Care Departments as per available guideline?",
         ]

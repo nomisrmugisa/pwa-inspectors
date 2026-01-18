@@ -328,12 +328,12 @@ export function ChecklistDebugTable({
             <div className="debug-details">
                 {debugData.map((item, index) => (
                     <details key={index} className="debug-section" open={item.status !== 'success'}>
-                        <summary className="debug-section-header">
+                        <summary className="debug-section-header" style={{ color: '#0d47a1' }}>
                             <span className="status-icon" style={{ color: getStatusColor(item.status) }}>
                                 {getStatusIcon(item.status)}
                             </span>
-                            <span className="section-title">{item.serviceDepartment}</span>
-                            <span className="section-counts">
+                            <span className="section-title" style={{ color: '#0d47a1' }}>{item.serviceDepartment}</span>
+                            <span className="section-counts" style={{ color: '#666' }}>
                                 ({item.expectedCount} expected / {item.actualCount} actual)
                             </span>
                         </summary>
@@ -364,7 +364,8 @@ export function ChecklistDebugTable({
                                                 <td>
                                                     {row.expected ? (
                                                         <div style={{
-                                                            fontWeight: row.expected.trim().endsWith('--') ? 'bold' : 'normal'
+                                                            fontWeight: row.expected.trim().endsWith('--') ? 'bold' : 'normal',
+                                                            color: row.expected.trim().endsWith('--') ? '#0d47a1' : 'inherit'
                                                         }}>
                                                             {row.expected}
                                                             <span className={`index-badge expected`}>#{row.expectedIndex + 1}</span>
@@ -374,7 +375,8 @@ export function ChecklistDebugTable({
                                                 <td>
                                                     {row.actual ? (
                                                         <div style={{
-                                                            fontWeight: row.actual.trim().endsWith('--') ? 'bold' : 'normal'
+                                                            fontWeight: row.actual.trim().endsWith('--') ? 'bold' : 'normal',
+                                                            color: row.actual.trim().endsWith('--') ? '#0d47a1' : 'inherit'
                                                         }}>
                                                             {row.actual}
                                                             <span className={`index-badge actual`}>#{row.actualIndex + 1}</span>
