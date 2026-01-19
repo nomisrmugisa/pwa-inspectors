@@ -338,7 +338,7 @@ const Hospital = {
             "Batch 5",
         ]
     },
-    "RADIOLOGY (MEDICAL IMAGING; X?RAY DEPARTMENT)": {
+    "RADIOLOGY (MEDICAL IMAGING; X-RAY DEPARTMENT)": {
         "showOnly": [
             "ORGANIZATION AND MANAGEMENT--",
             "22.1.1 Documented organizational structure?",
@@ -373,7 +373,7 @@ const Hospital = {
             "22.5.7 Waste bin available?",
             "22.5.8 Education materials available?",
             "22.5.9 Water fountain available?",
-            "X?RAY ROOM--",
+            "X-RAY ROOM--",
             "22.6.1 Adequate space?",
             "22.6.2 Wheelchair accessible?",
             "22.6.4 Red warning light at entrance?",
