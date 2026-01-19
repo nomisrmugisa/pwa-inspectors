@@ -2400,6 +2400,22 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
 
               </div>
 
+              {/* Warning when facility is not selected */}
+              {!formData.orgUnit && (
+                <div style={{
+                  backgroundColor: '#ffe5e5',
+                  border: '1px solid #ff9999',
+                  borderRadius: '4px',
+                  padding: '8px 12px',
+                  marginBottom: '12px',
+                  fontSize: '14px',
+                  color: '#cc0000',
+                  textAlign: 'center'
+                }}>
+                  ⚠️ <strong>Please select a Facility/Organisation Unit above to enable confirmation</strong>
+                </div>
+              )}
+
               <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', alignItems: 'center' }}>
 
                 <label style={{
@@ -2410,11 +2426,13 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
 
                   gap: '8px',
 
-                  cursor: 'pointer',
+                  cursor: formData.orgUnit ? 'pointer' : 'not-allowed',
 
                   fontSize: '16px',
 
-                  color: '#333'
+                  color: formData.orgUnit ? '#333' : '#999',
+
+                  opacity: formData.orgUnit ? 1 : 0.6
 
                 }}>
 
@@ -2426,13 +2444,15 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
 
                     onChange={(e) => setInspectionInfoConfirmed && setInspectionInfoConfirmed(e.target.checked)}
 
+                    disabled={!formData.orgUnit}
+
                     style={{
 
                       width: '20px',
 
                       height: '20px',
 
-                      cursor: 'pointer'
+                      cursor: formData.orgUnit ? 'pointer' : 'not-allowed'
 
                     }}
 
@@ -6721,7 +6741,37 @@ function FormPage() {
 
                   {/* Help message for facility selection */}
 
-                  {!formData.orgUnit && (
+                  {!manualSpecialization && (
+
+                    <div style={{
+
+                      backgroundColor: '#ffe5e5',
+
+                      border: '1px solid #ff9999',
+
+                      borderRadius: '4px',
+
+                      padding: '8px 12px',
+
+                      marginBottom: '8px',
+
+                      fontSize: '14px',
+
+                      color: '#cc0000'
+
+                    }}>
+
+                      ⚠️ <strong>Please select a Category first</strong>
+
+                      <br />
+
+                      You must choose a category above before selecting a facility
+
+                    </div>
+
+                  )}
+
+                  {manualSpecialization && !formData.orgUnit && (
 
                     <div style={{
 
@@ -6760,6 +6810,8 @@ function FormPage() {
                     onChange={e => handleFieldChange('orgUnit', e.target.value)}
 
                     className={`form-select ${errors.orgUnit ? 'error' : ''}`}
+
+                    disabled={!manualSpecialization || inspectionInfoConfirmed}
 
                   >
 
