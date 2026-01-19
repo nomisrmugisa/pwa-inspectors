@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist-final.csv
- * Generated on: 2026-01-18 15:31:00
+ * Generated on: 2026-01-19 03:32:42
  *
  * This file imports all individual clinic filter files and combines them
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -67,21 +67,11 @@ export function shouldShowDataElementForService(dataElementName, selectedService
     // Helper to normalize strings for comparison (handles apostrophes, case, and whitespace)
     const normalize = (str) => {
         if (!str) return '';
-        // 1. Strip leading non-alphanumeric symbols like bullets
-        let cleaned = str.replace(/^[^a-zA-Z0-9(]+/, "");
-        // 2. Strip leading numeric prefixes like "1.1.1 " or "1.2 " 
-        // These are common in the new Hospital checklist but not in DHIS2
-        cleaned = cleaned.replace(/^(\d+(\.\d+)*)\s+/, "");
-        // 3. Remove punctuation and lowercase
-        return cleaned.replace(/['‘’?]/g, "").toLowerCase().trim();
+        // Strip leading non-alphanumeric symbols like bullets
+        return str.replace(/^[^a-zA-Z0-9(]+/, "").replace(/['‘’]/g, "").toLowerCase().trim();
     };
 
     const normalizedDataElementName = normalize(dataElementName);
-
-    // Always show the Facility Service Departments field so users can pick their sections
-    if (normalizedDataElementName.includes('facility service department')) {
-        return true;
-    }
 
     // Helper to find a section key case-insensitively
     const findSectionKey = (filters, name) => {
@@ -93,7 +83,7 @@ export function shouldShowDataElementForService(dataElementName, selectedService
         return Object.keys(filters).find(key => normalize(key) === normalizedName);
     };
 
-    // If a section name is provided, only check within that specific section
+    // If a section name is provided, STRICTLY check within that specific section
     if (sectionName) {
         // Try to find the section key (handling case mismatches)
         const matchedSectionKey = findSectionKey(serviceFilters, sectionName);
@@ -107,40 +97,13 @@ export function shouldShowDataElementForService(dataElementName, selectedService
             }
         }
 
-        // Let's try one more fallback: check if the section name is a substring of a key or vice versa
-        const looseSectionKey = Object.keys(serviceFilters).find(key =>
-            key.toLowerCase().includes(sectionName.toLowerCase()) ||
-            sectionName.toLowerCase().includes(key.toLowerCase())
-        );
-
-        if (looseSectionKey) {
-            const section = serviceFilters[looseSectionKey];
-            if (section && section.showOnly) {
-                const foundInSection = section.showOnly.some(item =>
-                    item === dataElementName || normalize(item) === normalizedDataElementName
-                );
-                if (foundInSection) return true;
-            }
-        }
-
-        // FALLBACK: If not found in the specific section provided by DHIS2, 
-        // check if it's allowed ANYWHERE for this service.
-        // This handles cases where DHIS2 and CSV have different section mappings.
-        for (const sectionKey in serviceFilters) {
-            const section = serviceFilters[sectionKey];
-            if (section && section.showOnly) {
-                const foundAnywhere = section.showOnly.some(item =>
-                    item === dataElementName || normalize(item) === normalizedDataElementName
-                );
-                if (foundAnywhere) return true;
-            }
-        }
-
-        // If not found anywhere in filters, don't show the element
+        // STRICT MODE: If not found in the specific section, DO NOT search elsewhere.
+        // DO NOT perform substring checks ("loose matching").
         return false;
     }
 
-    // If no section name provided, check across all sections (legacy behavior)
+    // If no section name provided, check across all sections (legacy/fallback behavior)
+    // This is only used if the caller doesn't know the section context.
     for (const section in serviceFilters) {
         if (serviceFilters[section].showOnly) {
             if (serviceFilters[section].showOnly.some(item =>

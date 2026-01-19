@@ -6,19 +6,19 @@
  */
 
 // Import the configuration (you'll need to run this in the project directory)
-import {
-  shouldShowSection,
-  shouldShowDataElement,
-  getFilteredDataElementCount,
-  getSectionDetailsForFacility,
+const { 
+  shouldShowSection, 
+  shouldShowDataElement, 
+  getFilteredDataElementCount, 
+  getSectionDetailsForFacility, 
   getFacilitySummary,
-  getAvailableFacilityTypes
-} from './src/config/sectionVisibilityConfig.js';
+  getAvailableFacilityTypes 
+} = require('./src/config/sectionVisibilityConfig.js');
 
 // Test data - different facility types
 const testFacilities = [
   'Gynae Clinics',
-  'laboratory',
+  'laboratory', 
   'Psychology clinic',
   'Potrait clinic' // This one has SECTION C hidden + filtered DEs
 ];
@@ -46,19 +46,19 @@ console.log('🔍 Data Element Filtering Analysis:\n');
 testFacilities.forEach(facilityType => {
   console.log(`🏥 Facility Type: ${facilityType}`);
   console.log('─'.repeat(80));
-
+  
   // Get detailed section information
   const sectionDetails = getSectionDetailsForFacility(facilityType);
   const facilitySummary = getFacilitySummary(facilityType);
-
+  
   // Test each section
   testSections.forEach(sectionName => {
     const isVisible = shouldShowSection(sectionName, facilityType);
     const filteredDECount = getFilteredDataElementCount(sectionName, facilityType);
     const status = isVisible ? '✅ SHOW' : '🚫 HIDE';
-
+    
     console.log(`  ${sectionName}: ${status}`);
-
+    
     if (isVisible && filteredDECount > 0) {
       console.log(`    🚫 ${filteredDECount} Data Elements filtered out`);
     } else if (!isVisible) {
@@ -67,7 +67,7 @@ testFacilities.forEach(facilityType => {
       console.log(`    ✅ All Data Elements visible`);
     }
   });
-
+  
   // Show summary statistics
   console.log(`\n  📊 Summary:`);
   console.log(`    • Total Sections: ${facilitySummary.totalSections}`);
@@ -75,7 +75,7 @@ testFacilities.forEach(facilityType => {
   console.log(`    • Hidden Sections: ${facilitySummary.hiddenSections}`);
   console.log(`    • Total Filtered DEs: ${facilitySummary.totalFilteredDEs}`);
   console.log(`    • Sections with Filtered DEs: ${facilitySummary.sectionsWithFilteredDEs}`);
-
+  
   console.log('\n');
 });
 

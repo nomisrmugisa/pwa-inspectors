@@ -1,10 +1,10 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import facilityServiceFilters from '../config/facilityServiceFilters';
 import './ChecklistDebugTable.css';
 
 /**
  * ChecklistDebugTable - Validation tool for checklist implementation
- * 
+ *
  * Compares expected data elements from CSV config against actual DHIS2 data elements
  * being loaded for a given facility type and service departments.
  */
@@ -14,6 +14,8 @@ export function ChecklistDebugTable({
     visibleSections = [],
     configuration
 }) {
+    // State to preserve expanded/collapsed state of details elements
+    const [expandedSections, setExpandedSections] = useState({});
 
     const debugData = useMemo(() => {
         if (!facilityType || !configuration) return [];
@@ -54,11 +56,23 @@ export function ChecklistDebugTable({
             const sectionConfig = filterConfig[serviceDept];
 
             if (!sectionConfig || !sectionConfig.showOnly) {
+                // Diagnostic check: Does a loose match exist?
+                const normalizeLower = (str) => str.toLowerCase().replace(/[^a-z0-9]/g, '');
+                const looseMatchKey = Object.keys(filterConfig).find(key =>
+                    normalizeLower(key).includes(normalizeLower(serviceDept)) ||
+                    normalizeLower(serviceDept).includes(normalizeLower(key))
+                );
+
+                let msg = `No configuration found for this service department: ${serviceDept}`;
+                if (looseMatchKey) {
+                    msg = `Strict Mismatch: Selected "${serviceDept}" but config has "${looseMatchKey}". Validation skipped.`;
+                }
+
                 results.push({
                     serviceDepartment: serviceDept,
                     section: serviceDept,
-                    status: 'warning',
-                    message: 'No configuration found for this service department',
+                    status: 'error',
+                    message: msg,
                     expectedCount: 0,
                     actualCount: 0,
                     expected: [],
@@ -74,11 +88,23 @@ export function ChecklistDebugTable({
             const expectedDEs = sectionConfig.showOnly || [];
 
             // Find the corresponding DHIS2 section
+            // Find the corresponding DHIS2 section
             const dhis2Section = visibleSections.find(section => {
                 const sectionName = section.displayName || '';
-                const normalizeName = (str) => str.toLowerCase().trim().replace(/[^a-z0-9]/g, '');
-                return normalizeName(sectionName).includes(normalizeName(serviceDept)) ||
-                    normalizeName(serviceDept).includes(normalizeName(sectionName));
+                const normalizeComp = (str) => str.toLowerCase().trim();
+
+                const sName = normalizeComp(sectionName);
+                const deptName = normalizeComp(serviceDept);
+
+                // 1. Exact match (case-insensitive)
+                if (sName === deptName) return true;
+
+                // 2. Handle "SECTION X-" prefix stripping
+                // Only strip if it matches the standard pattern
+                const cleanSectionName = sName.replace(/^section\s+[a-z0-9]+\s*-\s*/, '');
+                if (cleanSectionName === deptName) return true;
+
+                return false;
             });
 
             // Get actual DEs from DHIS2
@@ -326,14 +352,30 @@ export function ChecklistDebugTable({
             </div>
 
             <div className="debug-details">
-                {debugData.map((item, index) => (
-                    <details key={index} className="debug-section" open={item.status !== 'success'}>
-                        <summary className="debug-section-header" style={{ color: '#0d47a1' }}>
+                {debugData.map((item, index) => {
+                    const sectionKey = `${facilityType}-${item.serviceDepartment}`;
+                    const isExpanded = expandedSections[sectionKey] !== undefined
+                        ? expandedSections[sectionKey]
+                        : item.status !== 'success';
+
+                    return (
+                    <details
+                        key={index}
+                        className="debug-section"
+                        open={isExpanded}
+                        onToggle={(e) => {
+                            setExpandedSections(prev => ({
+                                ...prev,
+                                [sectionKey]: e.target.open
+                            }));
+                        }}
+                    >
+                        <summary className="debug-section-header">
                             <span className="status-icon" style={{ color: getStatusColor(item.status) }}>
                                 {getStatusIcon(item.status)}
                             </span>
-                            <span className="section-title" style={{ color: '#0d47a1' }}>{item.serviceDepartment}</span>
-                            <span className="section-counts" style={{ color: '#666' }}>
+                            <span className="section-title">{item.serviceDepartment}</span>
+                            <span className="section-counts">
                                 ({item.expectedCount} expected / {item.actualCount} actual)
                             </span>
                         </summary>
@@ -364,8 +406,7 @@ export function ChecklistDebugTable({
                                                 <td>
                                                     {row.expected ? (
                                                         <div style={{
-                                                            fontWeight: row.expected.trim().endsWith('--') ? 'bold' : 'normal',
-                                                            color: row.expected.trim().endsWith('--') ? '#0d47a1' : 'inherit'
+                                                            fontWeight: row.expected.trim().endsWith('--') ? 'bold' : 'normal'
                                                         }}>
                                                             {row.expected}
                                                             <span className={`index-badge expected`}>#{row.expectedIndex + 1}</span>
@@ -375,8 +416,7 @@ export function ChecklistDebugTable({
                                                 <td>
                                                     {row.actual ? (
                                                         <div style={{
-                                                            fontWeight: row.actual.trim().endsWith('--') ? 'bold' : 'normal',
-                                                            color: row.actual.trim().endsWith('--') ? '#0d47a1' : 'inherit'
+                                                            fontWeight: row.actual.trim().endsWith('--') ? 'bold' : 'normal'
                                                         }}>
                                                             {row.actual}
                                                             <span className={`index-badge actual`}>#{row.actualIndex + 1}</span>
@@ -397,7 +437,8 @@ export function ChecklistDebugTable({
                             </div>
                         </div>
                     </details>
-                ))}
+                    );
+                })}
             </div>
         </div>
     );

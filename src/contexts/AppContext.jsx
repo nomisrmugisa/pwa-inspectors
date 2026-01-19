@@ -256,11 +256,15 @@ export function AppProvider({ children }) {
       dispatch({ type: ActionTypes.SET_LOADING, payload: true });
 
       try {
-        // If storage is not ready, don't proceed with initialization.
-        // The effect will re-run when storage.isReady becomes true.
+        // Wait for storage to be ready (it should be ready, but wait just in case)
+        let waitCount = 0;
+        while (!storage.isReady && waitCount < 50) {
+          await new Promise(resolve => setTimeout(resolve, 100));
+          waitCount++;
+        }
+
         if (!storage.isReady) {
-          console.log('Waiting for storage to be ready...');
-          return;
+          console.warn('Storage not ready after waiting, continuing anyway...');
         }
 
         // Try to restore authentication

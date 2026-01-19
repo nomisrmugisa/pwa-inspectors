@@ -1,4 +1,4 @@
-import { ALL_FACILITY_DEPARTMENTS, SPECIALIZATION_DEPARTMENT_MAPPING } from './facilityServiceDepartments.js';
+import { ALL_FACILITY_DEPARTMENTS, getDepartmentsForSpecialization } from './facilityServiceDepartments.js';
 
 /**
  * Section Visibility Configuration
@@ -38,7 +38,7 @@ export const CANONICAL_FACILITY_TYPES = [
 
 // Map a variety of legacy / DHIS2 / CSV labels to canonical facility types
 const LEGACY_TO_CANONICAL = {
-  'Hospital': 'Hospital',
+  // Hospital is now a canonical type
   'hospital': 'Hospital',
   'Clinic': 'General Practice',
   'clinic': 'General Practice',
@@ -108,29 +108,25 @@ const legacySectionVisibilityConfig = {
   // Hospital - show all sections
   'Hospital': {
     'Document Review': true,
-    'INSPECTION INFORMATION': true,
-    'FACILITY GOVERNANCE AND MANAGEMENT': true,
-    'RESUSCITATION SERVICES': true,
-    'OUT PATIENT SERVICE': true,
-    'OBSTETRICS AND GYNAECOLOGY': true,
-    'CENTRAL SUPPLY / STERILIZATION': true,
-    'PHARMACY': true,
-    'RADIOLOGY (MEDICAL IMAGING; X?RAY DEPARTMENT)': true,
-    'PHYSIOTHERAPY CARE': true,
-    'ENGINEERING / MAINTENANCE SERVICES': true,
-    'TOILET FACILITIES': true,
-    'SERVICES PROVIDED': true,
-    'PERSONNEL': true,
-    'FACILITY-ENVIRONMENT': true,
     'ORGANISATION AND MANAGEMENT': true,
     'STATUTORY REQUIREMENTS': true,
     'POLICIES AND PROCEDURES': true,
-    'SAFETY AND WASTE MANAGEMENT': true,
-    'SUPPLIES': true,
+    'Inspection Type': true,
+    'Inspectors Details': true,
+    'SERVICES PROVIDED': true,
+    'FACILITY-ENVIRONMENT': true,
     'FACILITY-RECEPTION/WAITING AREA': true,
     'FACILITY-SCREENING ROOM': true,
     'FACILITY-CONSULTATION/ TREATMENT ROOM': true,
     'FACILITY-PROCEDURE ROOM': true,
+    'BLEEDING ROOM': true,
+    'SLUICE ROOM': true,
+    'TOILET FACILITIES': true,
+    'PHARMACY/DISPENSARY': true,
+    'SAFETY AND WASTE MANAGEMENT': true,
+    'SUPPLIES': true,
+    'RECORDS/ INFORMATION MANAGEMENT': true,
+    'CUSTOMER SATISFACTION': false
   },
 
   // Clinic - show all sections
@@ -402,6 +398,7 @@ export const sectionVisibilityConfig = {
   'General Practice': legacySectionVisibilityConfig['Clinic'],
   'Paediatric': legacySectionVisibilityConfig['Clinic'],
   'Nursing  Home': legacySectionVisibilityConfig['Clinic'],
+  'Nursing  Home': legacySectionVisibilityConfig['Clinic'],
   'Emergency Medical Services': legacySectionVisibilityConfig['EMS'],
   'Hospital': legacySectionVisibilityConfig['Hospital']
 };
@@ -605,6 +602,7 @@ export const dataElementFilterConfig = {
   'General Practice': legacyDataElementFilterConfig['Clinic'],
   'Paediatric': legacyDataElementFilterConfig['Clinic'],
   'Nursing  Home': legacyDataElementFilterConfig['Clinic'],
+  'Nursing  Home': legacyDataElementFilterConfig['Clinic'],
   'Emergency Medical Services': legacyDataElementFilterConfig['Clinic'],
   'Hospital': legacyDataElementFilterConfig['Hospital']
 };
@@ -657,21 +655,57 @@ export const shouldShowSection = (sectionName, facilityClassification) => {
   // First, try direct lookup
   let shouldShow = facilityConfig[rawSectionName];
 
-  // 1. Check if the section matches any of our dynamic CSV departments
+  // 1. Check if the section matches any of our dynamic CSV departments FOR THIS FACILITY
   // This ensures that any section added to the CSV is automatically visible
-  const availableDepts = SPECIALIZATION_DEPARTMENT_MAPPING[normalizedClassification] || [];
-  const isDynamicCsvSection = availableDepts.some(dept => {
-    const deptUpper = dept.toUpperCase();
-    // Use exact match or check if it's a major part of the name to avoid overly broad matching
-    return sectionNameUpper === deptUpper ||
-      sectionNameUpper.replace(/^SECTION\s+[A-Z]\s*-\s*/i, '') === deptUpper;
+  // without needing manual updates to this file or the whitelist.
+
+  // CRITICAL FIX: Use strict matching against departments specifically available to this facility.
+  // This prevents leakage, e.g., preventing "TOILET FACILITIES HOSPITAL" from showing for "TOILET FACILITIES"
+  // just because one string contains the other.
+  const allowedDepartments = getDepartmentsForSpecialization(normalizedClassification);
+  const upperSectionName = rawSectionName.toUpperCase();
+
+  const isAllowedForFacility = allowedDepartments.some(dept => {
+    const upperDept = dept.toUpperCase();
+
+    // 1. Exact match
+    if (upperDept === upperSectionName) return true;
+
+    // 2. Handle "SECTION X-" prefix difference (standardize on stripping it)
+    // If CSV has "SECTION A-FOO" and we pass "FOO", it should match.
+    // But "TOILET FACILITIES HOSPITAL" should NOT match "TOILET FACILITIES".
+    const cleanDept = upperDept.replace(/^SECTION\s+[A-Z0-9]+\s*-\s*/, '');
+    if (cleanDept === upperSectionName) return true;
+
+    // 3. Reverse check: if we pass "SECTION A-FOO" and CSV has "FOO" (less likely but possible)
+    const cleanSection = upperSectionName.replace(/^SECTION\s+[A-Z0-9]+\s*-\s*/, '');
+    if (upperDept === cleanSection) return true;
+
+    return false;
   });
 
-  if (isDynamicCsvSection) {
+  if (isAllowedForFacility) {
     console.log(
-      `✅ Section "${sectionName}" matches a dynamic CSV department - defaulting to SHOW`
+      `✅ Section "${sectionName}" is explicitly allowed for "${normalizedClassification}" via CSV mapping - defaulting to SHOW`
     );
     return true;
+  }
+
+  // Also check if it's a generic CSV section that is NOT allowed for this facility
+  // If so, we should explicitly HIDE it to prevent leakage
+  const isGenericCsvSection = ALL_FACILITY_DEPARTMENTS.some(dept => {
+    const upperDept = dept.toUpperCase();
+    if (upperDept === upperSectionName) return true;
+    const cleanDept = upperDept.replace(/^SECTION\s+[A-Z0-9]+\s*-\s*/, '');
+    if (cleanDept === upperSectionName) return true;
+    return false;
+  });
+
+  if (isGenericCsvSection && !isAllowedForFacility) {
+    console.log(
+      `🚫 Section "${sectionName}" is a known CSV section but NOT allowed for "${normalizedClassification}" - explicitly HIDING`
+    );
+    return false;
   }
 
   // 2. CSV-driven sections that should default to visible even if legacy config doesn't know them.

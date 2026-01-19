@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist-final.csv
- * Generated on: 2026-01-18 15:31:00
+ * Generated on: 2026-01-19 03:32:42
  * Facility Type: Hospital
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -133,6 +133,22 @@ const Hospital = {
             "9.9.17 Essential equipment checked daily?",
         ]
     },
+    "TOILET FACILITIES HOSPITAL": {
+        "showOnly": [
+            "TOILETS--",
+            "9.10.1 Minimum two toilets (male/female)?",
+            "9.10.2 Toilets labelled male/female?",
+            "9.10.3 Toilet suitable for children?",
+            "9.10.4 Toilets wheelchair accessible?",
+            "9.10.5 Toilet designed for wheelchair users?",
+            "9.10.6 Separate toilet for staff?",
+            "9.10.7 Toilets fitted with washbasin (hot/cold water)?",
+            "9.10.8 Suitable soap dispenser?",
+            "9.10.9 Appropriate hand drying provision?",
+            "9.10.10 Female toilet has sanitary pad disposal?",
+            "9.10.11 Toilets aesthetically pleasing?",
+        ]
+    },
     "OUT PATIENT SERVICE": {
         "showOnly": [
             "RECEPTION AREA--",
@@ -234,6 +250,7 @@ const Hospital = {
             "16.6.3.15 Wall clock?",
             "16.6.3.16 Post?partum haemorrhage emergency pack checked?",
             "16.6.3.17 Resuscitation trolley regularly checked?",
+            "Batch 4",
         ]
     },
     "CENTRAL SUPPLY / STERILIZATION": {
@@ -266,12 +283,12 @@ const Hospital = {
             "19.5.5 Toilets fitted with basins, soap, drying facilities?",
             "19.5.6 Female toilet has SHE bin with pedal?",
             "19.5.7 Changing room aesthetically pleasing?",
-            "SUPPLIES--",
+            "SUPPLIES2--",
             "19.6.1 Policy on supplies/purchasing?",
             "19.6.2 Adequate supplies available?",
             "19.6.3 Policy on expired supplies?",
             "19.6.4 Stock control system?",
-            "TOILET FACILITIES--",
+            "TOILET FACILITIES1--",
             "19.7.1 Minimum two toilets (male/female)?",
             "19.7.2 Toilet suitable for children?",
             "19.7.3 Toilets labelled male/female?",
@@ -282,7 +299,7 @@ const Hospital = {
             "19.7.8 Toilet designed for wheelchair users?",
             "19.7.9 Female toilet has sanitary pad disposal?",
             "19.7.10 Toilets aesthetically pleasing?",
-            "SAFETY AND WASTE MANAGEMENT--",
+            "SAFETY AND WASTE MANAGEMENT2--",
             "19.8.1 Policy on waste management?",
             "19.8.2 Standard operating procedures on waste management?",
             "19.8.3 Waste disposal system?",
@@ -318,6 +335,7 @@ const Hospital = {
             "20.1.22 License displayed?",
             "20.1.23 Pharmacists name/contact displayed at entrance?",
             "20.1.24 Quality Management System?",
+            "Batch 5",
         ]
     },
     "RADIOLOGY (MEDICAL IMAGING; X?RAY DEPARTMENT)": {
@@ -328,24 +346,24 @@ const Hospital = {
             "22.1.3 Head/manager trained health personnel?",
             "22.1.4 Documented policies/procedures for services?",
             "22.1.5 Quality Management System in place?",
-            "SERVICES PROVIDED--",
+            "SERVICES PROVIDED2--",
             "22.2.1.1 General practice services provided?",
             "22.2.1.2 Specialist services provided?",
             "22.2.1.3 Other services provided?",
-            "PERSONNEL--",
+            "PERSONNEL2--",
             "22.3.1 Total number of staff recorded?",
             "22.3.2 Total number of professional staff?",
             "22.3.4 Staff registered with relevant councils?",
             "22.3.5 Receptionist full time?",
             "22.3.6 Cleaner full time?",
-            "SUPPLIES--",
+            "SUPPLIES3--",
             "22.4.1 Policy on supplies/purchasing?",
             "22.4.2 Adequate storage space for supplies?",
             "22.4.3 Adequate supplies for services?",
             "22.4.4 Policy on expired supplies?",
             "22.4.5 Stock control system in place?",
             "22.4.6 Adequate supply of sheets/towels stored appropriately?",
-            "RECEPTION / WAITING AREA--",
+            "RECEPTION / WAITING AREA1--",
             "22.5.1 Reception area has adequate space?",
             "22.5.2 Telephone available?",
             "22.5.3 Reception desk and chair available?",
@@ -379,11 +397,12 @@ const Hospital = {
             "22.7.4 Clinical/domestic waste bins available?",
             "22.7.5 Adequate ventilation and lighting?",
             "22.7.6 Provision for handwashing?",
-            "TOILET FACILITIES--",
+            "TOILET FACILITIES2--",
             "22.8.1 Minimum two toilets (male/female)?",
             "22.8.2 Toilet suitable for children?",
             "22.8.3 Toilets labelled male/female?",
-            "SAFETY AND WASTE MANAGEMENT--",
+            "Batch 6",
+            "SAFETY AND WASTE MANAGEMENT3--",
             "24.14.1 Policy on waste management?",
             "24.14.2 SOPs on waste management?",
             "24.14.3 Functional laundry facility?",
@@ -412,7 +431,7 @@ const Hospital = {
             "24.14.12 Disaster preparedness policy?",
         ]
     },
-    "PHYSIOTHERAPY CARE": {
+    "PHYSIOTHERAPY CARE-A": {
         "showOnly": [
             "ORGANIZATION AND MANAGEMENT--",
             "25.1.1 Documented organizational structure?",
@@ -420,7 +439,7 @@ const Hospital = {
             "25.1.3 Head/manager trained health personnel?",
             "25.1.4 Documented policies/procedures for services?",
             "25.1.5 Quality Management System in place?",
-            "SERVICES PROVIDED--",
+            "SERVICES PROVIDED1--",
             "25.2.1 General practice services provided?",
             "25.2.2 Specialist services provided?",
             "25.2.3 Home visits provided?",
@@ -431,7 +450,7 @@ const Hospital = {
             "25.3.2 Total number of professional staff?",
             "25.3.4 Staff registered with relevant councils?",
             "25.3.5 Receptionist full time?",
-            "SUPPLIES--",
+            "SUPPLIES4--",
             "25.4.1 Policy on supplies/purchasing?",
             "25.4.2 Adequate storage space for supplies?",
             "25.4.3 Adequate supplies for services?",
@@ -456,7 +475,7 @@ const Hospital = {
             "25.4.6.17 Disinfectant available?",
             "25.4.6.18 Antiseptic available?",
             "25.4.6.19 Massage oil/cream available?",
-            "RECEPTION / WAITING AREA--",
+            "RECEPTION / WAITING AREA2--",
             "25.5.1 Reception area has adequate space?",
             "25.5.2 Telephone available?",
             "25.5.3 Reception desk with chair available?",
@@ -482,11 +501,16 @@ const Hospital = {
             "25.6.3.11 Cotton wool/wipes available?",
             "25.6.3.12 X?Ray viewing box available?",
             "25.6.3.13 Sharps disposal container available?",
-            "TOILET FACILITIES--",
+            "TOILET FACILITIES3--",
             "25.7.1 Minimum two toilets available?",
             "25.7.2 Toilets labelled male/female?",
             "25.7.3 Toilets fitted with washbasin (hot/cold water)?",
-            "TOILET FACILITIES--",
+            "Batch 7",
+        ]
+    },
+    "PHYSIOTHERAPY CARE-B": {
+        "showOnly": [
+            "TOILET FACILITIES4--",
             "25.7.1 Minimum two toilets available?",
             "25.7.2 Toilets labelled male/female?",
             "25.7.3 Toilets fitted with washbasin (hot/cold water)?",
@@ -495,7 +519,7 @@ const Hospital = {
             "25.7.6 Toilet designed for wheelchair users?",
             "25.7.7 Toilets wheelchair accessible?",
             "25.7.8 Female toilet has sanitary pad disposal bin?",
-            "SAFETY AND WASTE MANAGEMENT--",
+            "SAFETY AND WASTE MANAGEMENT1--",
             "25.8.1 Waste disposal system in place?",
             "25.8.1.1 Chemical waste managed?",
             "25.8.1.2 Clinical waste managed?",
@@ -567,7 +591,7 @@ const Hospital = {
             "31.2.1 Total number of staff recorded?",
             "31.2.2 Breakdown: Engineers, Technicians, Admin, Support, Others",
             "31.2.3 Professionals registered with relevant councils?",
-            "RECEPTION / WAITING AREA--",
+            "RECEPTION / WAITING AREA3--",
             "31.3.1 Reception area has adequate space?",
             "31.3.2 Telephone available?",
             "31.3.3 Reception desk with chair available?",
@@ -580,12 +604,12 @@ const Hospital = {
             "31.4.3 On?site workshop available?",
             "31.4.4 Patient care equipment tested/calibrated per manufacturer specs?",
             "31.4.5 Testing frequency/calibration documentation available?",
-            "SUPPLIES--",
+            "SUPPLIES1--",
             "31.5.1 Policy on supplies/purchasing?",
             "31.5.2 Adequate supplies for services?",
             "31.5.3 Policy on expired supplies?",
             "31.5.4 Stock control system in place?",
-            "TOILET FACILITIES--",
+            "TOILET FACILITIES5--",
             "31.6.1 Minimum two toilets available (male/female)?",
             "31.6.2 Toilet suitable for children?",
         ]

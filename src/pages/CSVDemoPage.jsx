@@ -303,7 +303,6 @@ contracts for staff,?,?,?,?,?,?,?,?,?,?,?,?,?,?`;
               <option value="Paediatric">Paediatric</option>
               <option value="Nursing  Home">Nursing Home</option>
               <option value="Emergency Medical Services">Emergency Medical Services</option>
-              <option value="Hospital">Hospital</option>
             </select>
           </div>
 
