@@ -217,6 +217,7 @@
 
 /* Tables */
 .de-table {
+    min-width: 800px;
     width: 100%;
     border-collapse: collapse;
     font-size: 13px;
