@@ -1,0 +1,148 @@
+{
+  "generated_on": "2026-01-20T12:18:05.237579",
+  "source_file": "checklist-final.csv",
+  "facility_types": [
+    "Obstetrics & Gynaecology",
+    "Laboratory",
+    "Psychology",
+    "Eye (Opthalmology /Optometry)",
+    "Physiotherapy",
+    "Dental",
+    "Dental Laboratory",
+    "Ear, Nose & Throat",
+    "Rehabilitation Centre",
+    "Radiology",
+    "General Practice",
+    "Paediatric",
+    "Nursing  Home",
+    "Emergency Medical Services",
+    "Hospital"
+  ],
+  "sections": [
+    "SECTION A-ORGANISATION AND MANAGEMENT",
+    "SERVICES PROVIDED",
+    "PERSONNEL",
+    "FACILITY-ENVIRONMENT",
+    "FACILITY-RECEPTION/WAITING AREA",
+    "FACILITY-SCREENING ROOM",
+    "FACILITY-CONSULTATION/ TREATMENT ROOM",
+    "NURSES' STATION",
+    "IN PATIENT ADMISSION ROOMS",
+    "OFFICE FOR THE MANAGER",
+    "EMERGENCY EQUIPMENT",
+    "FACILITY-PROCEDURE ROOM",
+    "SLUICE ROOM",
+    "BLEEDING ROOM",
+    "TOILET FACILITIES",
+    "PHARMACY/DISPENSARY",
+    "SAFETY AND WASTE MANAGEMENT",
+    "SUPPLIES",
+    "CUSTOMER SATISFACTION",
+    "SPECIMEN RECEPTION ROOM",
+    "LABORATORY TESTING AREAS CHEMISTRY",
+    "HIV SCREENING",
+    "INSTRUMENT WASHING/STERILISING ROOM",
+    "X-RAY ROOM",
+    "ULTRASOUND ROOM",
+    "FACILITY-CALL CENTRE",
+    "FACILITY GOVERNANCE AND MANAGEMENT",
+    "HUMAN RESOURCE MANAGEMENT",
+    "ADMINISTRATIVE SERVICES",
+    "FACILITY ENVIRONMENT",
+    "CUSTOMER CARE, RIGHTS AND SATISFACTION",
+    "INFECTION PREVENTION AND CONTROL",
+    "FACILITY RESUSCITATION SERVICES",
+    "ACCIDENT & EMERGENCY AND RESUSCITATION SERVICES",
+    "OUT PATIENT SERVICE",
+    "CRITICAL CARE UNIT (HIGH CARE)",
+    "COMBINED GENERAL MEDICAL/ SURGICAL/PAEDIATRIC WARDS",
+    "GENERAL MEDICAL WARDS",
+    "SURGICAL /ORTHOPAEDIC WARDS",
+    "PAEDIATRIC CARE/ SPECIALTIES AND WARDS/ NEONATOLOGY",
+    "OBSTETRICS AND GYNAECOLOGY",
+    "PSYCHIATRIC SERVICES AND WARDS",
+    "CENTRAL SUPPLIES AND STERILISATION DEPARTMENT (CSSD)",
+    "PHARMACY",
+    "LABORATORY",
+    "RADIOLOGY (MEDICAL IMAGING; X-RAY DEPARTMENT)",
+    "EYE CLINIC",
+    "PHYSIOTHERAPY CARE",
+    "DIETETICS",
+    "FOOD SERVICE AND KITCHEN",
+    "HOUSEKEEPING SERVICE",
+    "LAUNDRY SERVICES",
+    "MAINTENANCE SERVICES",
+    "EQUIPMENT AND HEALTHCARE TECHNOLOGY",
+    "HOSPITAL SUPPLIES",
+    "OCCUPATIONAL THERAPY",
+    "SPEECH THERAPY",
+    "SOCIAL WORK"
+  ],
+  "statistics": {
+    "total_facility_types": 15,
+    "total_sections": 58,
+    "total_questions": 3715
+  },
+  "facility_statistics": {
+    "Obstetrics & Gynaecology": {
+      "applicable_questions": 290,
+      "coverage_percentage": 7.8
+    },
+    "Laboratory": {
+      "applicable_questions": 296,
+      "coverage_percentage": 8.0
+    },
+    "Psychology": {
+      "applicable_questions": 176,
+      "coverage_percentage": 4.7
+    },
+    "Eye (Opthalmology /Optometry)": {
+      "applicable_questions": 298,
+      "coverage_percentage": 8.0
+    },
+    "Physiotherapy": {
+      "applicable_questions": 221,
+      "coverage_percentage": 5.9
+    },
+    "Dental": {
+      "applicable_questions": 273,
+      "coverage_percentage": 7.3
+    },
+    "Dental Laboratory": {
+      "applicable_questions": 165,
+      "coverage_percentage": 4.4
+    },
+    "Ear, Nose & Throat": {
+      "applicable_questions": 277,
+      "coverage_percentage": 7.5
+    },
+    "Rehabilitation Centre": {
+      "applicable_questions": 328,
+      "coverage_percentage": 8.8
+    },
+    "Radiology": {
+      "applicable_questions": 173,
+      "coverage_percentage": 4.7
+    },
+    "General Practice": {
+      "applicable_questions": 308,
+      "coverage_percentage": 8.3
+    },
+    "Paediatric": {
+      "applicable_questions": 272,
+      "coverage_percentage": 7.3
+    },
+    "Nursing  Home": {
+      "applicable_questions": 319,
+      "coverage_percentage": 8.6
+    },
+    "Emergency Medical Services": {
+      "applicable_questions": 199,
+      "coverage_percentage": 5.4
+    },
+    "Hospital": {
+      "applicable_questions": 2978,
+      "coverage_percentage": 80.2
+    }
+  }
+}

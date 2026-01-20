@@ -98,8 +98,9 @@ class FacilityFilterGenerator:
 
             # Detect section headers
             # A row is a section header IF:
-            # 1. It matches strong section header patterns (regardless of random '?' markers in CSV)
-            # 2. OR It has NO '?' marked for any facility type AND matches weaker patterns
+            # 1. It matches strong section header patterns (regardless of '?' markers in CSV)
+            # 2. OR It is ALL CAPS with length > 3 (regardless of '?' markers)
+            # This allows sections like "DENTAL" to be recognized even if they have applicability markers
             
             clean_text_upper = clean_text.upper()
             is_strong_header = (
@@ -111,11 +112,15 @@ class FacilityFilterGenerator:
                 (clean_text.isupper() and len(clean_text) > 5 and not clean_text.strip().endswith('?') and not clean_text.strip().endswith('--'))
             )
             
+            # Recognize ALL CAPS text as section headers regardless of ? markers
             is_weak_header = (
-                (clean_text.isupper() and len(clean_text) > 3)
+                (clean_text.isupper() and len(clean_text) > 3 and not clean_text.strip().endswith('--'))
             )
 
-            is_section_header = is_strong_header or ((not has_any_applicability) and is_weak_header)
+            is_section_header = (
+                (is_strong_header or is_weak_header) and 
+                (clean_text and not clean_text[0].isdigit())
+            )
 
             if is_section_header:
                 # Normalize: Uppercase, remove spaces around hyphens, and strip trailing --/symbols

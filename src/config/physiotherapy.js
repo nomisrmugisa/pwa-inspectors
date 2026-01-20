@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist-final.csv
- * Generated on: 2026-01-19 03:32:42
+ * Generated on: 2026-01-20 13:30:01
  * Facility Type: Physiotherapy
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -258,7 +258,6 @@ const Physiotherapy = {
             "Measuring tape",
             "Set of goniometers",
             "Pair of scissors",
-            "TENS",
         ]
     },
     "CUSTOMER SATISFACTION": {

@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist-final.csv
- * Generated on: 2026-01-19 03:32:42
+ * Generated on: 2026-01-20 15:04:24
  * Facility Type: Emergency Medical Services
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -94,10 +94,6 @@ const EmergencyMedicalServices = {
             "Signed contracts or offer letters",
             "Medical eamination certificates",
             "Evidence of continous Professional Development",
-        ]
-    },
-    "FACILITY-ENVIRONMENT": {
-        "showOnly": [
             "Does the facility have wheelchair accessibility?",
             "Is it fenced, secure and easily accessible",
             "Is there space for parking? Specify",
@@ -164,13 +160,13 @@ const EmergencyMedicalServices = {
             "Does the Facility have a policy on waste management?",
             "Does the Facility have SOPs on waste management?",
             "Does the Facility have a waste disposal system? Specify:",
-            "Domestic Waste",
-            "Clinical Waste",
-            "Does the Facility have a policy and procedures on safety?",
-            "Is there a policy and procedure on accidental eposure to HIV?",
-            "Does the Facility have fire protection equipment?",
-            "Fire etinguishers",
-            "Emergency eits",
+            ". Domestic Waste",
+            ". Clinical Waste",
+            ". Does the Facility have a policy and procedures on safety?",
+            ". Is there a policy and procedure on accidental eposure to HIV?",
+            ". Does the Facility have fire protection equipment?",
+            ".Fire etinguishers",
+            ".Emergency eits",
             "Additional:",
             "Fire alarms",
             "Smoke detectors",
@@ -206,10 +202,6 @@ const EmergencyMedicalServices = {
         "showOnly": [
             "Is there evidence of facility liason with the Primary Health Care Department? (A guide the reports to be submitted available)",
             "Is there evidence of statistical reporting to the Primary Health Care Departments as per available guideline?",
-        ]
-    },
-    "FACILITY-CALL CENTRE": {
-        "showOnly": [
             "Does reception area have adequate space? Elaborate.",
             "Is the telephone/ cell phone available?",
             "Is the telephone able to record calls",

@@ -11,7 +11,7 @@ Usage:
     python src/config/generateFilters.py
 
 Input:
-    - src/config/checklist for facilities2.0.csv
+    - src/config/checklist-final.csv
 
 Output:
     - Individual .js files for each facility type in src/config/
@@ -30,7 +30,7 @@ from datetime import datetime
 from pathlib import Path
 
 class FacilityFilterGenerator:
-    def __init__(self, csv_path="src/config/checklist for facilities2.0.csv"):
+    def __init__(self, csv_path="checklist-final.csv"):
         self.csv_path = csv_path
         self.facility_types = []
         self.sections = []
@@ -77,12 +77,20 @@ class FacilityFilterGenerator:
             first_column = row[0].strip()
 
             # Detect section headers - fully capitalized names (no lowercase letters)
-            if (first_column and
-                first_column.isupper() and
-                len(first_column) > 3 and
-                not first_column.endswith('?')):
+            # Note: We allow section names with '?' (e.g., "RADIOLOGY (MEDICAL IMAGING; X?RAY DEPARTMENT)")
+            # Strip number prefixes (e.g., "1.0 GOVERNANCE" -> "GOVERNANCE", "23: DENTAL" -> "DENTAL")
+            def strip_number_prefix(s):
+                """Strip number prefix like '1.0 ', '18:', '21.16 ', etc. from section name"""
+                import re
+                return re.sub(r'^[\d]+[.\d]*[\s:]+', '', s).strip()
 
-                current_section = first_column
+            cleaned_column = strip_number_prefix(first_column)
+
+            if (cleaned_column and
+                cleaned_column.isupper() and
+                len(cleaned_column) > 3):
+
+                current_section = cleaned_column
                 if current_section not in self.sections:
                     self.sections.append(current_section)
                     print(f"📋 Found section: {current_section}")
@@ -159,7 +167,7 @@ class FacilityFilterGenerator:
 
         content = f'''/**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
- * Generated from: checklist for facilities2.0.csv
+ * Generated from: checklist-final.csv
  * Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
  * Facility Type: {facility_type}
  *
@@ -218,7 +226,7 @@ export default {sanitized_name};
 
         content = f'''/**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
- * Generated from: checklist for facilities2.0.csv
+ * Generated from: checklist-final.csv
  * Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
  *
  * This file imports all individual clinic filter files and combines them
@@ -302,7 +310,7 @@ export default facilityServiceFilters;
         # Generate the JavaScript content
         content = f'''/**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
- * Generated from: checklist for facilities2.0.csv
+ * Generated from: checklist-final.csv
  * Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
  *
  * This file defines facility service departments based on actual sections
@@ -314,9 +322,10 @@ export default facilityServiceFilters;
 export const ALL_FACILITY_DEPARTMENTS = [
 '''
 
-        # Add all departments
+        # Add all departments (escape apostrophes for valid JS)
         for dept in all_departments:
-            content += f"  '{dept}',\n"
+            escaped_dept = dept.replace("'", "\\'")
+            content += f"  '{escaped_dept}',\n"
 
         content += '''];
 
@@ -324,11 +333,13 @@ export const ALL_FACILITY_DEPARTMENTS = [
 export const SPECIALIZATION_DEPARTMENT_MAPPING = {
 '''
 
-        # Add specialization mappings
+        # Add specialization mappings (escape apostrophes for valid JS)
         for facility_type, departments in specialization_mapping.items():
-            content += f"  '{facility_type}': [\n"
+            escaped_facility_type = facility_type.replace("'", "\\'")
+            content += f"  '{escaped_facility_type}': [\n"
             for dept in departments:
-                content += f"    '{dept}',\n"
+                escaped_dept = dept.replace("'", "\\'")
+                content += f"    '{escaped_dept}',\n"
             content += f"  ],\n\n"
 
         content += '''};

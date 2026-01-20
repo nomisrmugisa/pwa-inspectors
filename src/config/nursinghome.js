@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist-final.csv
- * Generated on: 2026-01-19 03:32:42
+ * Generated on: 2026-01-20 15:04:24
  * Facility Type: Nursing  Home
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -93,10 +93,6 @@ const NursingHome = {
             "Signed contracts or offer letters",
             "Medical eamination certificates",
             "Evidence of continous Professional Development",
-        ]
-    },
-    "FACILITY-ENVIRONMENT": {
-        "showOnly": [
             "Does the facility have wheelchair accessibility?",
             "Is it fenced, secure and easily accessible",
             "Is there space for parking? Specify",
@@ -113,10 +109,6 @@ const NursingHome = {
             "Is there backup system for electricity?",
             "Is there backup system for water?",
             "Where there are ramps, are there safety features?",
-        ]
-    },
-    "FACILITY-RECEPTION/WAITING AREA": {
-        "showOnly": [
             "Does reception area have adequate space? Elaborate.",
             "Is the telephone/ cell phone available?",
             "Is a reception desk and chair available",
@@ -128,10 +120,6 @@ const NursingHome = {
             "Is there patient charter available in Setswana and English?",
             "Is there available drinking water source?",
             "Are educational materials available for clients",
-        ]
-    },
-    "FACILITY-SCREENING ROOM": {
-        "showOnly": [
             "Does the screening room have space? Elaborate.",
             "Does the screening room have wheelchair accessibility?",
             "At least 3 Chairs",
@@ -148,10 +136,6 @@ const NursingHome = {
             "Hand wash facilities",
             "Appropriate hand drying facilities",
             "Appropriate hand wash soap",
-        ]
-    },
-    "FACILITY-CONSULTATION/ TREATMENT ROOM": {
-        "showOnly": [
             "Does the consultation room have adequate space?",
             "Does the consultation room have wheelchair accessibility",
             "Chairs and a table",
@@ -363,13 +347,13 @@ const NursingHome = {
             "Does the Facility have a policy on waste management?",
             "Does the Facility have SOPs on waste management?",
             "Does the Facility have a waste disposal system? Specify:",
-            "Domestic Waste",
-            "Clinical Waste",
-            "Does the Facility have a policy and procedures on safety?",
-            "Is there a policy and procedure on accidental eposure to HIV?",
-            "Does the Facility have fire protection equipment?",
-            "Fire etinguishers",
-            "Emergency eits",
+            ". Domestic Waste",
+            ". Clinical Waste",
+            ". Does the Facility have a policy and procedures on safety?",
+            ". Is there a policy and procedure on accidental eposure to HIV?",
+            ". Does the Facility have fire protection equipment?",
+            ".Fire etinguishers",
+            ".Emergency eits",
             "Additional:",
             "Fire alarms",
             "Smoke detectors",
