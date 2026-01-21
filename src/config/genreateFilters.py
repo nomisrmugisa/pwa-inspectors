@@ -77,20 +77,16 @@ class FacilityFilterGenerator:
             first_column = row[0].strip()
 
             # Detect section headers - fully capitalized names (no lowercase letters)
-            # Note: We allow section names with '?' (e.g., "RADIOLOGY (MEDICAL IMAGING; X?RAY DEPARTMENT)")
-            # Strip number prefixes (e.g., "1.0 GOVERNANCE" -> "GOVERNANCE", "23: DENTAL" -> "DENTAL")
-            def strip_number_prefix(s):
-                """Strip number prefix like '1.0 ', '18:', '21.16 ', etc. from section name"""
-                import re
-                return re.sub(r'^[\d]+[.\d]*[\s:]+', '', s).strip()
+            # Rules:
+            # 1. Must be fully uppercase (punctuation allowed)
+            # 2. Must be longer than 3 characters
+            # 3. Must NOT start with a number (no number prefixes like "21.16 ELISA", "1.0 GOVERNANCE")
+            if (first_column and
+                first_column.isupper() and
+                len(first_column) > 3 and
+                not first_column[0].isdigit()):
 
-            cleaned_column = strip_number_prefix(first_column)
-
-            if (cleaned_column and
-                cleaned_column.isupper() and
-                len(cleaned_column) > 3):
-
-                current_section = cleaned_column
+                current_section = first_column
                 if current_section not in self.sections:
                     self.sections.append(current_section)
                     print(f"📋 Found section: {current_section}")

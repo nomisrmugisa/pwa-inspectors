@@ -327,6 +327,7 @@
 
 .comparison-container {
     padding: 0;
+    overflow-x: auto;
     /* max-height removed to allow outer window scrolling */
 }
 
