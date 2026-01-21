@@ -194,7 +194,7 @@ const isBoldDataElement = (dataElement) => {
 
 // Form field component for individual data elements
 
-function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoading = false, readOnly = false, getCurrentPosition, formatCoordinatesForDHIS2, staticText, onCommentChange, comments = {}, manualSpecialization = null, facilityType = null, getCurrentFacilityClassification = null }) {
+function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoading = false, readOnly = false, getCurrentPosition, formatCoordinatesForDHIS2, staticText, onCommentChange, comments = {}, manualSpecialization = null, facilityType = null, getCurrentFacilityClassification = null, facilityOrgUnit = null }) {
 
   const { dataElement } = psde;
 
@@ -261,11 +261,17 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       // Check if we have a facility type selected
       const currentFacilityType = window.__currentFacilityType || 'Unknown';
 
+      // Check if facility is selected - required before allowing department selection
+      const hasFacilitySelected = facilityOrgUnit && facilityOrgUnit.trim() !== '';
+
       // Check if specialization is selected - required before allowing department selection
       // Check both the prop and the global variable for robustness
       const globalSpecialization = window.__manualSpecialization || window.__currentSpecialization;
       const effectiveSpecialization = manualSpecialization || globalSpecialization;
       const hasSpecializationSelected = effectiveSpecialization && effectiveSpecialization.trim() !== '';
+
+      // Both facility and specialization must be selected
+      const canSelectDepartments = hasFacilitySelected && hasSpecializationSelected;
 
       // DEBUG: Log the specialization check
       console.log('🔍 SPECIALIZATION CHECK:', {
@@ -273,6 +279,9 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
         globalSpecialization,
         effectiveSpecialization,
         hasSpecializationSelected,
+        hasFacilitySelected,
+        facilityOrgUnit,
+        canSelectDepartments,
         manualSpecializationType: typeof manualSpecialization,
         manualSpecializationValue: JSON.stringify(manualSpecialization),
         timestamp: new Date().toISOString()
@@ -284,6 +293,9 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
           dataElementName: dataElement.displayName,
           manualSpecialization,
           hasSpecializationSelected,
+          hasFacilitySelected,
+          facilityOrgUnit,
+          canSelectDepartments,
           currentFacilityType,
           serviceFieldType,
           manualSpecializationLength: manualSpecialization ? manualSpecialization.length : 0,
@@ -425,16 +437,14 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
       };
 
       return (
-        <div key={`facility-service-departments-${currentFacilityType}`} className={`form-field multiselect-field ${readOnly ? 'readonly' : ''} ${!hasSpecializationSelected ? 'disabled' : ''}`}>
+        <div key={`facility-service-departments-${currentFacilityType}`} className={`form-field multiselect-field ${readOnly ? 'readonly' : ''} ${!canSelectDepartments ? 'disabled' : ''}`}>
           {/* Hide label for Facility Service Departments to avoid duplication with section title */}
           {serviceFieldType !== 'facility_service_departments' &&
             <label htmlFor={fieldId} className="form-label">{dataElement.displayName}</label>
           }
 
-          {/* Show warning when specialization is not selected */}
-          {(() => {
-            return !hasSpecializationSelected;
-          })() && (
+          {/* Show warning when facility or specialization is not selected */}
+          {!canSelectDepartments && (
               <div style={{
                 backgroundColor: '#fff3cd',
                 border: '1px solid #ffc107',
@@ -446,7 +456,18 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <span>⚠️</span>
-                  <span><strong>Please select a specialization first</strong> before choosing facility service departments.</span>
+                  <span>
+                    {!hasFacilitySelected && !hasSpecializationSelected && (
+                      <strong>Please select a Facility/Organisation Unit and a specialization first</strong>
+                    )}
+                    {!hasFacilitySelected && hasSpecializationSelected && (
+                      <strong>Please select a Facility/Organisation Unit first</strong>
+                    )}
+                    {hasFacilitySelected && !hasSpecializationSelected && (
+                      <strong>Please select a specialization first</strong>
+                    )}
+                    {' '}before choosing facility service departments.
+                  </span>
                 </div>
               </div>
             )}
@@ -515,7 +536,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
                       display: 'flex',
                       alignItems: 'center',
                       padding: '6px 8px',
-                      cursor: (readOnly || !hasSpecializationSelected) ? 'not-allowed' : 'pointer',
+                      cursor: (readOnly || !canSelectDepartments) ? 'not-allowed' : 'pointer',
                       borderRadius: '3px',
                       margin: '1px 0',
                       backgroundColor: isSelected ? '#e3f2fd' : 'transparent',
@@ -523,16 +544,16 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
                       fontSize: '14px',
                       fontFamily: 'inherit',
                       transition: 'all 0.2s ease',
-                      opacity: !hasSpecializationSelected ? 0.5 : 1,
-                      color: !hasSpecializationSelected ? '#999' : 'inherit'
+                      opacity: !canSelectDepartments ? 0.5 : 1,
+                      color: !canSelectDepartments ? '#999' : 'inherit'
                     }}
                     onMouseEnter={(e) => {
-                      if (!readOnly && !isSelected && hasSpecializationSelected) {
+                      if (!readOnly && !isSelected && canSelectDepartments) {
                         e.target.style.backgroundColor = '#f5f5f5';
                       }
                     }}
                     onMouseLeave={(e) => {
-                      if (!readOnly && !isSelected && hasSpecializationSelected) {
+                      if (!readOnly && !isSelected && canSelectDepartments) {
                         e.target.style.backgroundColor = 'transparent';
                       }
                     }}
@@ -541,7 +562,7 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
                       type="checkbox"
                       checked={isSelected}
                       onChange={(e) => {
-                        if (readOnly || !hasSpecializationSelected) return;
+                        if (readOnly || !canSelectDepartments) return;
 
                         const newSelectedValues = e.target.checked
                           ? [...selectedValues, name]
@@ -554,11 +575,11 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
                         const syntheticEvent = { target: { value: jsonValue, id: fieldId } };
                         onChange(syntheticEvent);
                       }}
-                      disabled={readOnly || !hasSpecializationSelected}
+                      disabled={readOnly || !canSelectDepartments}
                       style={{
                         marginRight: '8px',
-                        cursor: (readOnly || !hasSpecializationSelected) ? 'not-allowed' : 'pointer',
-                        opacity: !hasSpecializationSelected ? 0.5 : 1
+                        cursor: (readOnly || !canSelectDepartments) ? 'not-allowed' : 'pointer',
+                        opacity: !canSelectDepartments ? 0.5 : 1
                       }}
                     />
                     <span style={{ flex: 1 }}>{name}</span>
@@ -2197,6 +2218,8 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
                         facilityType={facilityType}
 
                         comments={comments}
+
+                        facilityOrgUnit={formData.orgUnit}
 
                       />
 

@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useReducer, useEffect, useMemo } from 'react';
 import { useAPI } from '../hooks/useAPI';
 import { useStorage } from '../hooks/useStorage';
-import indexedDBService from '../services/indexedDBService';
 
 // Initial state
 const initialState = {
@@ -648,20 +647,8 @@ export function AppProvider({ children }) {
   const login = async (serverUrl, username, password) => {
     dispatch({ type: ActionTypes.LOGIN_START });
 
-    // Clear any existing form drafts and local storage data to ensure a fresh start
-    try {
-      await indexedDBService.clearAll();
-      console.log('✅ Cleared all form drafts from IndexedDB on login');
-    } catch (dbError) {
-      console.warn('Failed to clear IndexedDB on login:', dbError);
-    }
-
-    try {
-      localStorage.removeItem('lastSelectedFacility');
-      console.log('✅ Cleared localStorage form data on login');
-    } catch (lsError) {
-      console.warn('Failed to clear localStorage on login:', lsError);
-    }
+    // Note: NOT clearing form drafts on login - drafts are preserved across sessions
+    // so users can continue where they left off
 
     try {
       // Clean URL
@@ -722,41 +709,35 @@ export function AppProvider({ children }) {
 
   const logout = async () => {
     const confirmed = window.confirm(
-      "Logging out will clear all synced data and form drafts from this device. Do you want to continue?"
+      "Are you sure you want to log out? Your drafts will be preserved for when you log back in."
     );
     if (!confirmed) return;
 
     try {
       if (storage.isReady) {
         try {
-          await storage.clearAll(); // Clear ALL events (drafts, pending, synced)
           await storage.clearAuth();
+          // Note: NOT clearing events/drafts - they are preserved across sessions
         } catch (storageError) {
           console.warn('Failed to clear stored credentials:', storageError);
           // Continue with logout anyway
         }
       }
 
-      // Clear all form drafts from IndexedDB
-      try {
-        await indexedDBService.clearAll();
-        console.log('✅ Cleared all form drafts from IndexedDB');
-      } catch (indexedDBError) {
-        console.warn('Failed to clear IndexedDB:', indexedDBError);
-        // Continue with logout anyway
-      }
+      // Note: NOT clearing IndexedDB form drafts - they are preserved across sessions
+      // Users can continue their drafts when they log back in
 
-      // Clear localStorage items related to forms
+      // Clear only session-specific localStorage items
       try {
         localStorage.removeItem('lastSelectedFacility');
-        console.log('✅ Cleared localStorage form data');
+        console.log('✅ Cleared session localStorage data');
       } catch (localStorageError) {
         console.warn('Failed to clear localStorage:', localStorageError);
         // Continue with logout anyway
       }
 
       dispatch({ type: ActionTypes.LOGOUT });
-      showToast('Logged out successfully', 'info');
+      showToast('Logged out successfully. Your drafts have been preserved.', 'info');
     } catch (error) {
       console.error('Logout error:', error);
       // Force logout even if storage fails
