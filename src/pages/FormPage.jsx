@@ -126,6 +126,23 @@ const normalizeSectionHeaderName = (name) => {
   return name.replace(/\s*--\s*$/, '').trim();
 };
 
+// Detect number-prefixed all-caps labels (e.g., "18.15.1 GENERAL DOES THE THEATRE...")
+// Pattern: starts with number(s) and dots/spaces, followed by ALL CAPS text
+const isNumberPrefixedAllCapsLabel = (name) => {
+  if (!name || typeof name !== 'string') return false;
+  // Match: starts with digits, possibly followed by dots/digits (like 18.15.1),
+  // then space, then ALL CAPS text (letters, spaces, punctuation but NO lowercase)
+  const match = name.match(/^[\d.]+\s+(.+)$/);
+  if (!match) return false;
+  const textAfterNumber = match[1];
+  // Check if the text after the number prefix is all uppercase (no lowercase letters)
+  // Allow numbers, spaces, and punctuation
+  return textAfterNumber.length > 3 &&
+         textAfterNumber === textAfterNumber.toUpperCase() &&
+         /[A-Z]/.test(textAfterNumber) &&  // Must have at least one letter
+         !/[a-z]/.test(textAfterNumber);    // No lowercase letters
+};
+
 const cleanDHIS2Name = (name) => {
   if (!name) return '';
 
@@ -1345,6 +1362,12 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
         return false; // Hide these fields from users
       }
 
+      // Always show subsection headers (elements ending with "--") and number-prefixed all-caps labels
+      if (isSectionHeaderName(displayName) || isSectionHeaderName(psde.dataElement.displayName) ||
+          isNumberPrefixedAllCapsLabel(displayName) || isNumberPrefixedAllCapsLabel(psde.dataElement.displayName)) {
+        return true;
+      }
+
       // Check if this is a Comments/Remarks data element
       const isComment = /\s*(Comments?|Remarks?)\s*$/i.test(displayName);
 
@@ -1474,6 +1497,12 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
             return false; // Hide these fields from users
           }
 
+          // Always show subsection headers (elements ending with "--") and number-prefixed all-caps labels
+          if (isSectionHeaderName(displayName) || isSectionHeaderName(psde.dataElement.displayName) ||
+              isNumberPrefixedAllCapsLabel(displayName) || isNumberPrefixedAllCapsLabel(psde.dataElement.displayName)) {
+            return true;
+          }
+
           // Check if this is a Comments/Remarks data element
           const isComment = /\s*(Comments?|Remarks?)\s*$/i.test(displayName);
 
@@ -1585,9 +1614,15 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
 
       // Check for bold data elements that should start on a new page
       // Look ahead to see if there's a bold element within the current page
+      // Note: Subsection headers (--) and number-prefixed all-caps labels don't trigger new pages
       let foundBoldElement = false;
       for (let i = currentIndex + 1; i < Math.min(endIndex, filteredDataElements.length); i++) {
         const element = filteredDataElements[i];
+        const elementName = element?.dataElement?.displayName || '';
+        // Skip page break for subsection headers and number-prefixed all-caps labels
+        if (isSectionHeaderName(elementName) || isNumberPrefixedAllCapsLabel(elementName)) {
+          continue; // These are inline labels, not page break triggers
+        }
         if (isBoldDataElement(element.dataElement)) {
           // Found a bold element - end the current page before it
           endIndex = i;
@@ -1783,8 +1818,9 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
   const shouldShowForName = (name) => {
     if (isInspectionTypeSection || isDocumentReviewSection) return true; // Exclude from filters
     if (!name) return false;
-    // Always show headers regardless of service filter
+    // Always show headers and number-prefixed all-caps labels regardless of service filter
     if (isSectionHeaderName(name)) return true;
+    if (isNumberPrefixedAllCapsLabel(name)) return true;
     const lower = name.toLowerCase();
     const isComment = lower.includes('comments') || lower.includes('comment') || lower.includes('remarks');
     if (isComment) {
@@ -2039,6 +2075,12 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
 
                 // Render subsection header (no input) if name ends with "--"
                 const deName = psde?.dataElement?.displayName || '';
+
+                // Check if previous element was a number-prefixed all-caps label
+                const prevElement = index > 0 ? visibleFields[index - 1] : null;
+                const prevElementName = prevElement?.dataElement?.displayName || '';
+                const isPrevNumberPrefixedLabel = isNumberPrefixedAllCapsLabel(prevElementName);
+
                 if (isSectionHeaderName(deName)) {
                   const headerText = normalizeSectionHeaderName(deName);
                   console.log(`🎯 Rendering subsection header: "${headerText}" (original: "${deName}", ID: ${psde.dataElement.id})`);
@@ -2046,7 +2088,7 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
                     <div key={`header-${psde.dataElement.id}-${actualIndex}`} style={{
                       fontWeight: 700,
                       fontSize: '16px',
-                      margin: '24px 0 12px',
+                      margin: isPrevNumberPrefixedLabel ? '12px 0 12px' : '24px 0 12px',
                       padding: '8px 0',
                       borderBottom: '2px solid #e0e0e0',
                       color: '#333'
@@ -2056,13 +2098,32 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
                   );
                 }
 
+                // Render number-prefixed all-caps labels as bold labels (no input)
+                // Double size (30px), dark blue color
+                if (isNumberPrefixedAllCapsLabel(deName)) {
+                  console.log(`🏷️ Rendering number-prefixed all-caps label: "${deName}" (ID: ${psde.dataElement.id})`);
+                  return (
+                    <div key={`label-${psde.dataElement.id}-${actualIndex}`} style={{
+                      fontWeight: 700,
+                      fontSize: '30px',
+                      margin: '20px 0 10px',
+                      padding: '6px 0',
+                      color: '#1a237e'
+                    }}>
+                      {deName}
+                    </div>
+                  );
+                }
+
                 // Check if this is a bold data element (but not a section header)
                 const isBold = isBoldDataElement(psde.dataElement);
                 const shouldRenderAsBold = isBold && !isSectionHeaderName(deName);
 
                 // Add page break indicator for bold elements that start a new page
+                // But not for subsection headers or number-prefixed all-caps labels (they're inline)
                 const isFirstFieldOnPage = actualIndex === startIndex;
-                const showPageBreakIndicator = shouldRenderAsBold && !isFirstFieldOnPage;
+                const isInlineLabel = isSectionHeaderName(deName) || isNumberPrefixedAllCapsLabel(deName);
+                const showPageBreakIndicator = shouldRenderAsBold && !isFirstFieldOnPage && !isInlineLabel;
 
                 return (
                   <div key={`field-container-${psde.dataElement.id}-${actualIndex}`} style={shouldHideInspectionId ? { display: 'none' } : undefined}>
