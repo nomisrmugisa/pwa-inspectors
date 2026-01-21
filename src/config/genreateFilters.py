@@ -273,8 +273,8 @@ export default facilityServiceFilters;
             if normalized_section not in all_departments:
                 all_departments.append(normalized_section)
 
-        # Sort departments alphabetically for consistency
-        all_departments.sort()
+        # Keep departments in the order they appear in the CSV file
+        # (no sorting - preserve original order)
 
         # Build specialization to department mapping
         specialization_mapping = {}
@@ -297,8 +297,8 @@ export default facilityServiceFilters;
                 if has_questions:
                     facility_departments.append(normalized_section)
 
-            # Sort departments for this facility
-            facility_departments.sort()
+            # Keep departments in the order they appear in the CSV file
+            # (no sorting - preserve original order)
             specialization_mapping[facility_type] = facility_departments
 
             print(f"  🏥 {facility_type}: {len(facility_departments)} departments")
