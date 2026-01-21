@@ -174,8 +174,6 @@ const cleanDHIS2Name = (name) => {
  * Patterns detected:
  * - Section headers ending with "--"
  * - ALL CAPS text (likely headers)
- * - Numbered sections (e.g., "1. Introduction", "2.1 Staff")
- * - Common header keywords (SECTION, PART, CHAPTER, etc.)
  *
  * @param {Object} dataElement - The DHIS2 data element object
  * @returns {boolean} - Whether this data element should be treated as bold/header
@@ -191,22 +189,7 @@ const isBoldDataElement = (dataElement) => {
   // 2. Data elements that are all caps (likely headers/important sections)
   if (name === name.toUpperCase() && name.length > 3) return true;
 
-  // 3. Data elements that start with numbers followed by a period (e.g., "1. Introduction", "2.1 Staff")
-  if (/^\d+(\.\d+)*\.\s/.test(name)) return true;
-
-  // 4. Data elements that contain common header patterns
-  const headerPatterns = [
-    /^(SECTION|Section)\s+[A-Z0-9]/i,
-    /^(PART|Part)\s+[A-Z0-9]/i,
-    /^(CHAPTER|Chapter)\s+[A-Z0-9]/i,
-    /^(AREA|Area)\s+[A-Z0-9]/i,
-    /^(DOMAIN|Domain)\s+[A-Z0-9]/i,
-    /^(CATEGORY|Category)\s+[A-Z0-9]/i,
-    /^\d+\.\s*(INTRODUCTION|BACKGROUND|OVERVIEW|SUMMARY)/i,
-    /^(INTRODUCTION|BACKGROUND|OVERVIEW|SUMMARY)$/i
-  ];
-
-  return headerPatterns.some(pattern => pattern.test(name));
+  return false;
 };
 
 // Form field component for individual data elements
@@ -1612,28 +1595,52 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
 
       let endIndex = currentIndex + pageSize;
 
-      // Check for bold data elements that should start on a new page
-      // Look ahead to see if there's a bold element within the current page
-      // Note: Subsection headers (--) and number-prefixed all-caps labels don't trigger new pages
-      let foundBoldElement = false;
+      // Check for elements that should start on a new page
+      // - Number-prefixed all-caps labels ALWAYS trigger a new page
+      // - Subsection headers (--) trigger a new page UNLESS they follow a label
+      // - Other bold elements trigger a new page
+      let foundPageBreakElement = false;
       for (let i = currentIndex + 1; i < Math.min(endIndex, filteredDataElements.length); i++) {
         const element = filteredDataElements[i];
         const elementName = element?.dataElement?.displayName || '';
-        // Skip page break for subsection headers and number-prefixed all-caps labels
-        if (isSectionHeaderName(elementName) || isNumberPrefixedAllCapsLabel(elementName)) {
-          continue; // These are inline labels, not page break triggers
+
+        // Check previous element to see if it's a number-prefixed all-caps label
+        const prevElement = i > 0 ? filteredDataElements[i - 1] : null;
+        const prevElementName = prevElement?.dataElement?.displayName || '';
+        const prevIsLabel = isNumberPrefixedAllCapsLabel(prevElementName);
+
+        // Number-prefixed all-caps labels ALWAYS trigger a new page
+        if (isNumberPrefixedAllCapsLabel(elementName)) {
+          endIndex = i;
+          pageSize = endIndex - currentIndex;
+          foundPageBreakElement = true;
+          break;
         }
+
+        // Subsection headers trigger a new page UNLESS they follow a label
+        if (isSectionHeaderName(elementName)) {
+          if (prevIsLabel) {
+            continue; // Stay on the same page as the label
+          } else {
+            // Trigger a new page
+            endIndex = i;
+            pageSize = endIndex - currentIndex;
+            foundPageBreakElement = true;
+            break;
+          }
+        }
+
         if (isBoldDataElement(element.dataElement)) {
           // Found a bold element - end the current page before it
           endIndex = i;
           pageSize = endIndex - currentIndex;
-          foundBoldElement = true;
+          foundPageBreakElement = true;
           break;
         }
       }
 
-      // If we didn't find a bold element, apply the original comment field logic
-      if (!foundBoldElement) {
+      // If we didn't find a page break element, apply the original comment field logic
+      if (!foundPageBreakElement) {
         // Check if the next field after this page would be a comment field
         if (endIndex < filteredDataElements.length) {
           const nextField = filteredDataElements[endIndex];
@@ -2120,10 +2127,11 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
                 const shouldRenderAsBold = isBold && !isSectionHeaderName(deName);
 
                 // Add page break indicator for bold elements that start a new page
-                // But not for subsection headers or number-prefixed all-caps labels (they're inline)
+                // Subsection headers (--) are inline and don't trigger page breaks
+                // Number-prefixed all-caps labels trigger new pages but don't need the indicator (they ARE the page start)
                 const isFirstFieldOnPage = actualIndex === startIndex;
-                const isInlineLabel = isSectionHeaderName(deName) || isNumberPrefixedAllCapsLabel(deName);
-                const showPageBreakIndicator = shouldRenderAsBold && !isFirstFieldOnPage && !isInlineLabel;
+                const isInlineLabel = isSectionHeaderName(deName); // Only subsection headers are inline
+                const showPageBreakIndicator = shouldRenderAsBold && !isFirstFieldOnPage && !isInlineLabel && !isNumberPrefixedAllCapsLabel(deName);
 
                 return (
                   <div key={`field-container-${psde.dataElement.id}-${actualIndex}`} style={shouldHideInspectionId ? { display: 'none' } : undefined}>
