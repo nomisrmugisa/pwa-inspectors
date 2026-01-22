@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useApp } from '../contexts/AppContext';
 import { useStorage } from '../hooks/useStorage';
 import { InspectionPreview } from '../components/InspectionPreview';
+import indexedDBService from '../services/indexedDBService';
 
 export function HomePage() {
   const navigate = useNavigate();
@@ -27,6 +28,24 @@ export function HomePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedFacilityId, setSelectedFacilityId] = useState(null);
   const [previewEvent, setPreviewEvent] = useState(null);
+  const [mostRecentDraft, setMostRecentDraft] = useState(null);
+
+  // Check for most recent draft on load
+  useEffect(() => {
+    const checkDraft = async () => {
+      try {
+        const draft = await indexedDBService.getMostRecentFormData();
+        if (draft && draft.eventId && draft.metadata?.isDraft) {
+          console.log('📋 Found most recent draft in HomePage:', draft.eventId);
+          setMostRecentDraft(draft);
+        }
+      } catch (error) {
+        console.error('Failed to check for drafts:', error);
+      }
+    };
+
+    checkDraft();
+  }, []);
 
   // Get facility filter from URL parameters or localStorage
   useEffect(() => {
@@ -257,6 +276,47 @@ export function HomePage() {
           </button>
         </div>
       </div>
+
+      {/* Draft Resume Prompt */}
+      {mostRecentDraft && (
+        <div style={{
+          backgroundColor: '#fff9c4',
+          border: '1px solid #fbc02d',
+          borderRadius: '8px',
+          padding: '16px',
+          marginBottom: '24px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <span style={{ fontSize: '24px' }}>📝</span>
+            <div>
+              <h4 style={{ margin: 0, color: '#f57f17' }}>Draft in Progress</h4>
+              <p style={{ margin: '4px 0 0 0', fontSize: '14px', color: '#5f6368' }}>
+                You have an unfinished inspection for <strong>{getFacilityName(mostRecentDraft.formData?.orgUnit)}</strong>.
+              </p>
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button
+              className="btn btn-primary btn-sm"
+              onClick={() => navigate(`/form/${mostRecentDraft.eventId}`)}
+              style={{ padding: '8px 16px', backgroundColor: '#f57f17', borderColor: '#f57f17' }}
+            >
+              Resume Draft
+            </button>
+            <button
+              className="btn btn-sm"
+              onClick={() => setMostRecentDraft(null)}
+              style={{ color: '#5f6368', background: 'none', border: 'none' }}
+            >
+              Dismiss
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Inspector Details Section */}
       {user && (

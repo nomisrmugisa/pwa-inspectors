@@ -40,7 +40,7 @@ class FacilityFilterGenerator:
 
     def parse_csv(self):
         """Parse the CSV file and extract facility types, sections, and questions"""
-        print(f"📄 Parsing CSV file: {self.csv_path}")
+        print(f"Parsing CSV file: {self.csv_path}")
 
         # Try different encodings to handle the CSV file
         encodings = ['utf-8', 'utf-8-sig', 'latin-1', 'cp1252']
@@ -51,10 +51,10 @@ class FacilityFilterGenerator:
                 with open(self.csv_path, 'r', encoding=encoding) as file:
                     reader = csv.reader(file)
                     lines = list(reader)
-                print(f"✅ Successfully read CSV with {encoding} encoding")
+                print(f"[OK] Successfully read CSV with {encoding} encoding")
                 break
             except UnicodeDecodeError:
-                print(f"❌ Failed to read with {encoding} encoding")
+                print(f"[ERROR] Failed to read with {encoding} encoding")
                 continue
 
         if lines is None:
@@ -74,7 +74,7 @@ class FacilityFilterGenerator:
         }
         
         self.facility_types = [name_standardization.get(ft, ft) for ft in raw_types]
-        print(f"🏥 Found {len(self.facility_types)} facility types: {self.facility_types}")
+        print(f"Found {len(self.facility_types)} facility types: {self.facility_types}")
 
         # Parse sections and questions
         current_section = "GENERAL"  # Default section if none found yet
@@ -87,7 +87,7 @@ class FacilityFilterGenerator:
             first_column = row[0].strip()
             # Clean bullet points, dots, dashes and other prefixes
             # BUT keep trailing -- for detection
-            clean_text = re.sub(r'^[·\.\-\s]+', '', first_column)
+            clean_text = re.sub(r'^[\.\-\s]+', '', first_column)
             
             # Determine applicability per facility type on this row
             applicability = []
@@ -131,7 +131,7 @@ class FacilityFilterGenerator:
                 
                 if current_section not in self.sections:
                     self.sections.append(current_section)
-                    print(f"📋 Found section: {current_section}")
+                    print(f"Found section: {current_section}")
             elif current_section:
                 # Treat as a question if either:
                 # - The text ends with '?', or
@@ -144,8 +144,8 @@ class FacilityFilterGenerator:
                         'row_number': i
                     })
 
-        print(f"📋 Found {len(self.sections)} sections")
-        print(f"❓ Found {len(self.questions_data)} questions")
+        print(f"Found {len(self.sections)} sections")
+        print(f"Found {len(self.questions_data)} questions")
 
         return True
 
@@ -157,7 +157,7 @@ class FacilityFilterGenerator:
 
     def generate_facility_filter(self, facility_index, facility_type):
         """Generate filter configuration for a specific facility type"""
-        print(f"🔧 Generating filter for: {facility_type}")
+        print(f"Generating filter for: {facility_type}")
 
         facility_config = {}
 
@@ -177,7 +177,7 @@ class FacilityFilterGenerator:
                 facility_config[normalized_section] = {
                     "showOnly": applicable_questions
                 }
-                print(f"  📝 {normalized_section}: {len(applicable_questions)} questions")
+                print(f"  {normalized_section}: {len(applicable_questions)} questions")
 
         return facility_config
 
@@ -211,9 +211,9 @@ const {sanitized_name} = {{
             content += f'        "showOnly": [\n'
 
             for question in section_config["showOnly"]:
-                # Sanitize: collapse newlines, remove CRs, and escape backslashes/quotes
-                sanitized = question.replace('\\r\\n', ' ').replace('\\n', ' ').replace('\\r', ' ').strip()
-                sanitized = sanitized.replace('\\\\', '\\\\\\\\').replace('"', '\\\\"')
+                # Sanitize: collapse actual newlines, remove CRs, and escape backslashes/quotes
+                sanitized = question.replace('\r\n', ' ').replace('\n', ' ').replace('\r', ' ').strip()
+                sanitized = sanitized.replace('\\', '\\\\').replace('"', '\\"')
                 content += f'            "{sanitized}",\n'
 
             content += f'        ]\n'
@@ -237,7 +237,7 @@ export default {sanitized_name};
         with open(filepath, 'w', encoding='utf-8') as file:
             file.write(content)
 
-        print(f"✅ Generated: {filepath}")
+        print(f"[DONE] Generated: {filepath}")
         return filepath
 
     def generate_main_filters_file(self):
@@ -288,7 +288,7 @@ export function shouldShowDataElementForService(dataElementName, selectedService
     const normalize = (str) => {
         if (!str) return '';
         // Strip leading non-alphanumeric symbols like bullets
-        return str.replace(/^[^a-zA-Z0-9(]+/, "").replace(/['‘’]/g, "").toLowerCase().trim();
+        return str.replace(/^[^a-zA-Z0-9(]+/, "").replace(/[']/g, "").toLowerCase().trim();
     };
 
     const normalizedDataElementName = normalize(dataElementName);
@@ -371,12 +371,12 @@ export default facilityServiceFilters;
         with open(main_file_path, 'w', encoding='utf-8') as file:
             file.write(content)
 
-        print(f"✅ Generated main file: {main_file_path}")
+        print(f"[DONE] Generated main file: {main_file_path}")
         return main_file_path
 
     def generate_facility_service_departments_file(self):
         """Generate the facilityServiceDepartments.js file based on actual sections from CSV"""
-        print("🏢 Generating facilityServiceDepartments.js...")
+        print("Generating facilityServiceDepartments.js...")
 
         # Get all unique sections (departments) from the CSV
         all_departments = []
@@ -413,7 +413,7 @@ export default facilityServiceFilters;
             facility_departments.sort()
             specialization_mapping[facility_type] = facility_departments
 
-            print(f"  🏥 {facility_type}: {len(facility_departments)} departments")
+            print(f"  {facility_type}: {len(facility_departments)} departments")
 
         # Generate the JavaScript content
         content = f'''/**
@@ -491,9 +491,9 @@ export default {
         with open(departments_file_path, 'w', encoding='utf-8') as file:
             file.write(content)
 
-        print(f"✅ Generated: {departments_file_path}")
-        print(f"📊 Total departments: {len(all_departments)}")
-        print(f"🏥 Specializations: {len(specialization_mapping)}")
+        print(f"[DONE] Generated: {departments_file_path}")
+        print(f"Total departments: {len(all_departments)}")
+        print(f"Specializations: {len(specialization_mapping)}")
 
         return departments_file_path
 
@@ -525,19 +525,19 @@ export default {
         with open(report_path, 'w', encoding='utf-8') as file:
             json.dump(summary, file, indent=2)
 
-        print(f"📊 Generated report: {report_path}")
+        print(f"Generated report: {report_path}")
         return summary
 
     def run(self):
         """Main execution method"""
-        print("🚀 Starting Facility Filter Generation...")
-        print("=" * 60)
+        print("Starting Facility Filter Generation...")
+        print("-" * 60)
 
         try:
             # Parse the CSV file
             self.parse_csv()
 
-            print("\n🔧 Generating individual filter files...")
+            print("\nGenerating individual filter files...")
             generated_files = []
 
             # Generate filter file for each facility type
@@ -547,33 +547,33 @@ export default {
                     filepath = self.write_facility_filter_file(facility_type, config)
                     generated_files.append(filepath)
                 else:
-                    print(f"⚠️  No applicable questions found for: {facility_type}")
+                    print(f"[WARN] No applicable questions found for: {facility_type}")
 
             # Generate main filters file
-            print(f"\n🔧 Generating main facilityServiceFilters.js...")
+            print(f"\nGenerating main facilityServiceFilters.js...")
             self.generate_main_filters_file()
 
             # Generate facility service departments file
-            print(f"\n🏢 Generating facilityServiceDepartments.js...")
+            print(f"\nGenerating facilityServiceDepartments.js...")
             self.generate_facility_service_departments_file()
 
             # Generate summary report
-            print(f"\n📊 Generating summary report...")
+            print(f"\nGenerating summary report...")
             self.generate_summary_report()
 
-            print("\n" + "=" * 60)
-            print("✅ Generation Complete!")
-            print(f"📁 Generated {len(generated_files)} facility filter files")
-            print(f"📁 Generated main filter file: facilityServiceFilters.js")
-            print(f"📁 Generated departments file: facilityServiceDepartments.js")
-            print(f"📊 Total questions processed: {len(self.questions_data)}")
-            print(f"🏥 Facility types: {len(self.facility_types)}")
-            print(f"📋 Sections: {len(self.sections)}")
+            print("-" * 60)
+            print("Generation Complete!")
+            print(f" Generated {len(generated_files)} facility filter files")
+            print(f" Generated main filter file: facilityServiceFilters.js")
+            print(f" Generated departments file: facilityServiceDepartments.js")
+            print(f"Total entries: {len(self.questions_data)}")
+            print(f"Facility types: {len(self.facility_types)}")
+            print(f"Sections: {len(self.sections)}")
 
             return True
 
         except Exception as e:
-            print(f"❌ Error during generation: {str(e)}")
+            print(f"Error during generation: {str(e)}")
             return False
 
 if __name__ == "__main__":
@@ -581,8 +581,8 @@ if __name__ == "__main__":
     success = generator.run()
 
     if success:
-        print("\n🎉 Filter generation completed successfully!")
-        print("💡 You can now use the generated filter files in your application.")
+        print("\n Filter generation completed successfully!")
+        print(" You can now use the generated filter files in your application.")
     else:
-        print("\n💥 Filter generation failed. Please check the error messages above.")
+        print("\n Filter generation failed. Please check the error messages above.")
         exit(1)

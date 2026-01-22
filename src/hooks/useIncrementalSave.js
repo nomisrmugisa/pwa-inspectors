@@ -9,8 +9,8 @@ import indexedDBService from '../services/indexedDBService';
 export const useIncrementalSave = (eventId, options = {}) => {
   const {
     debounceMs = 300,
-    onSaveSuccess = () => {},
-    onSaveError = () => {},
+    onSaveSuccess = () => { },
+    onSaveError = () => { },
     enableLogging = true
   } = options;
 
@@ -46,7 +46,7 @@ export const useIncrementalSave = (eventId, options = {}) => {
     try {
       // Get all pending field updates
       const updates = Array.from(pendingSaves.current.entries());
-      
+
       if (enableLogging) {
         console.log(`💾 Saving ${updates.length} field(s) to IndexedDB:`, updates.map(([key]) => key));
       }
@@ -114,7 +114,7 @@ export const useIncrementalSave = (eventId, options = {}) => {
     try {
       await indexedDBService.saveFormData(eventId, fieldKey, fieldValue, {
         ...metadata,
-        immediateeSave: true,
+        immediateSave: true,
         timestamp: new Date().toISOString()
       });
 
@@ -149,7 +149,7 @@ export const useIncrementalSave = (eventId, options = {}) => {
       clearTimeout(saveTimeoutRef.current);
       saveTimeoutRef.current = null;
     }
-    await debouncedSave();
+    return await debouncedSave();
   }, [debouncedSave]);
 
   // Load existing form data
@@ -179,10 +179,10 @@ export const useIncrementalSave = (eventId, options = {}) => {
     try {
       const existingData = await indexedDBService.getFormData(eventId);
       const completedSections = existingData?.metadata?.completedSections || [];
-      
+
       const updatedMetadata = {
         currentSection: sectionName,
-        completedSections: isCompleted && !completedSections.includes(sectionName) 
+        completedSections: isCompleted && !completedSections.includes(sectionName)
           ? [...completedSections, sectionName]
           : completedSections,
         lastSectionUpdate: new Date().toISOString()

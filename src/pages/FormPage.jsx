@@ -138,9 +138,9 @@ const isNumberPrefixedAllCapsLabel = (name) => {
   // Check if the text after the number prefix is all uppercase (no lowercase letters)
   // Allow numbers, spaces, and punctuation
   return textAfterNumber.length > 3 &&
-         textAfterNumber === textAfterNumber.toUpperCase() &&
-         /[A-Z]/.test(textAfterNumber) &&  // Must have at least one letter
-         !/[a-z]/.test(textAfterNumber);    // No lowercase letters
+    textAfterNumber === textAfterNumber.toUpperCase() &&
+    /[A-Z]/.test(textAfterNumber) &&  // Must have at least one letter
+    !/[a-z]/.test(textAfterNumber);    // No lowercase letters
 };
 
 const cleanDHIS2Name = (name) => {
@@ -445,32 +445,32 @@ function FormField({ psde, value, onChange, error, dynamicOptions = null, isLoad
 
           {/* Show warning when facility or specialization is not selected */}
           {!canSelectDepartments && (
-              <div style={{
-                backgroundColor: '#fff3cd',
-                border: '1px solid #ffc107',
-                borderRadius: '4px',
-                padding: '12px',
-                marginBottom: '12px',
-                fontSize: '14px',
-                color: '#856404'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span>⚠️</span>
-                  <span>
-                    {!hasFacilitySelected && !hasSpecializationSelected && (
-                      <strong>Please select a Facility/Organisation Unit and a specialization first</strong>
-                    )}
-                    {!hasFacilitySelected && hasSpecializationSelected && (
-                      <strong>Please select a Facility/Organisation Unit first</strong>
-                    )}
-                    {hasFacilitySelected && !hasSpecializationSelected && (
-                      <strong>Please select a specialization first</strong>
-                    )}
-                    {' '}before choosing facility service departments.
-                  </span>
-                </div>
+            <div style={{
+              backgroundColor: '#fff3cd',
+              border: '1px solid #ffc107',
+              borderRadius: '4px',
+              padding: '12px',
+              marginBottom: '12px',
+              fontSize: '14px',
+              color: '#856404'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span>⚠️</span>
+                <span>
+                  {!hasFacilitySelected && !hasSpecializationSelected && (
+                    <strong>Please select a Facility/Organisation Unit and a specialization first</strong>
+                  )}
+                  {!hasFacilitySelected && hasSpecializationSelected && (
+                    <strong>Please select a Facility/Organisation Unit first</strong>
+                  )}
+                  {hasFacilitySelected && !hasSpecializationSelected && (
+                    <strong>Please select a specialization first</strong>
+                  )}
+                  {' '}before choosing facility service departments.
+                </span>
               </div>
-            )}
+            </div>
+          )}
 
           {/* Material UI Card for Facility Service Departments */}
           <div style={{
@@ -1368,7 +1368,7 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
 
       // Always show subsection headers (elements ending with "--") and number-prefixed all-caps labels
       if (isSectionHeaderName(displayName) || isSectionHeaderName(psde.dataElement.displayName) ||
-          isNumberPrefixedAllCapsLabel(displayName) || isNumberPrefixedAllCapsLabel(psde.dataElement.displayName)) {
+        isNumberPrefixedAllCapsLabel(displayName) || isNumberPrefixedAllCapsLabel(psde.dataElement.displayName)) {
         return true;
       }
 
@@ -1503,7 +1503,7 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
 
           // Always show subsection headers (elements ending with "--") and number-prefixed all-caps labels
           if (isSectionHeaderName(displayName) || isSectionHeaderName(psde.dataElement.displayName) ||
-              isNumberPrefixedAllCapsLabel(displayName) || isNumberPrefixedAllCapsLabel(psde.dataElement.displayName)) {
+            isNumberPrefixedAllCapsLabel(displayName) || isNumberPrefixedAllCapsLabel(psde.dataElement.displayName)) {
             return true;
           }
 
@@ -2939,6 +2939,10 @@ function FormPage() {
   const location = useLocation();
   const isNewInspectionRequest = searchParams.get('new') === 'true';
 
+  // State for draft prompt
+  const [showDraftPrompt, setShowDraftPrompt] = useState(false);
+  const [suggestedDraftId, setSuggestedDraftId] = useState(null);
+
   // Ensure we always have an eventId for incremental saving
   // If no eventId, check for most recent draft first before generating new one
   useEffect(() => {
@@ -2958,9 +2962,10 @@ function FormPage() {
           const mostRecent = await indexedDBService.getMostRecentFormData();
 
           if (mostRecent && mostRecent.eventId) {
-            console.log('📋 Found most recent draft, restoring eventId:', mostRecent.eventId);
-            // Navigate to existing draft instead of creating new one
-            navigate(`/form/${mostRecent.eventId}`, { replace: true });
+            console.log('📋 Found most recent draft:', mostRecent.eventId);
+            // Instead of auto-navigating, show a prompt to the user
+            setSuggestedDraftId(mostRecent.eventId);
+            setShowDraftPrompt(true);
           } else {
             // No existing draft found, generate new eventId
             const generatedId = generateDHIS2Id();
@@ -3901,6 +3906,42 @@ function FormPage() {
     },
     enableLogging: true
   });
+
+  // Handle auto-save on page exit/reload
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      // Trigger a flush of any pending saves
+      // Note: We can't await this reliably in beforeunload, but we try
+      flushPendingSaves();
+
+      // We don't block the exit with a prompt as requested (auto-save should be silent but complete)
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [flushPendingSaves]);
+
+  // Handle "Reload triggers new inspection" as requested
+  useEffect(() => {
+    const checkForReload = () => {
+      // Use performance API to check if this mount is due to a reload
+      const navigationEntries = performance.getEntriesByType('navigation');
+      const isReload = navigationEntries.length > 0 && navigationEntries[0].type === 'reload';
+
+      if (isReload && eventId && !isNewInspectionRequest) {
+        console.log('🔄 Page reload detected. Saving current and starting new inspection flow.');
+        // Ensure any pending work for the current ID is flushed
+        // (The beforeunload listener should have handled this, but just in case)
+        flushPendingSaves();
+
+        // Redirect to /form to trigger the initializeEventId logic which can show the prompt
+        // or just go to /form?new=true if we want to force new
+        navigate('/form?new=true', { replace: true });
+      }
+    };
+
+    checkForReload();
+  }, []); // Only run once on mount
 
   // Load existing form data from IndexedDB on mount
   useEffect(() => {
@@ -6291,6 +6332,86 @@ function FormPage() {
   return (
 
     <div className="screen">
+      {/* Draft Restore Prompt */}
+      {showDraftPrompt && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.6)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 10000,
+          padding: '20px',
+          backdropFilter: 'blur(4px)'
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            padding: '32px',
+            borderRadius: '16px',
+            maxWidth: '450px',
+            width: '100%',
+            boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
+            textAlign: 'center',
+            animation: 'modalFadeIn 0.3s ease-out'
+          }}>
+            <div style={{ fontSize: '48px', marginBottom: '16px' }}>📝</div>
+            <h3 style={{ marginBottom: '12px', color: '#202124', fontSize: '22px' }}>Resume Inspection?</h3>
+            <p style={{ marginBottom: '28px', color: '#5f6368', lineHeight: '1.6', fontSize: '16px' }}>
+              We found a draft from your previous session. Would you like to continue it or start a completely new inspection?
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <button
+                onClick={() => {
+                  setShowDraftPrompt(false);
+                  navigate(`/form/${suggestedDraftId}`, { replace: true });
+                }}
+                style={{
+                  padding: '14px 24px',
+                  backgroundColor: '#1a73e8',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontWeight: '600',
+                  fontSize: '16px',
+                  boxShadow: '0 2px 6px rgba(26,115,232,0.3)'
+                }}
+              >
+                Continue Last Draft
+              </button>
+              <button
+                onClick={() => {
+                  setShowDraftPrompt(false);
+                  const generatedId = generateDHIS2Id();
+                  navigate(`/form/${generatedId}`, { replace: true, state: { isNew: true } });
+                }}
+                style={{
+                  padding: '12px 24px',
+                  backgroundColor: 'white',
+                  color: '#5f6368',
+                  border: '1px solid #dadce0',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontWeight: '500',
+                  fontSize: '15px'
+                }}
+              >
+                Start New Inspection
+              </button>
+            </div>
+          </div>
+          <style>{`
+            @keyframes modalFadeIn {
+              from { opacity: 0; transform: translateY(-20px); }
+              to { opacity: 1; transform: translateY(0); }
+            }
+          `}</style>
+        </div>
+      )}
       {/* Floating Progress Component */}
       {/* <FloatingProgress /> */}
 
