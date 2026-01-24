@@ -57,7 +57,7 @@ SERVICES PROVIDED,,,,,,,,,,,,,,,
 What are the services provided at the Facility?--,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
 General services; Specify,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
 Specialist services; Specify,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
-Other services (Specify); ,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
+Other services (Specify); ?.....,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
 Are hours of operation displayed?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
 State hours of operation,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
 Are emergency contact numbers displayed?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
@@ -72,7 +72,7 @@ What is the intended total number of staff,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
 What is the current number of staff--,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
 General Health Professionals (Specify),?,?,?,?,?,?,?,?,?,?,?,?,?,?,
 Specialists (Specify),?,?,?,?,?,?,?,?,?,?,?,?,?,?,
-Other (specify),?,?,?,?,?,?,?,?,?,?,?,?,?,?,
+Other (Specify),?,?,?,?,?,?,?,?,?,?,?,?,?,?,
 Administrative Staff (Specify),?,?,?,?,?,?,?,?,?,?,?,?,?,?,
 Support staff (Specify),?,?,?,?,?,?,?,?,?,?,?,?,?,?,
 Are professionals registered with the relevant Councils?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
@@ -84,7 +84,7 @@ Evidence of orientation and induction,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
 Signed contracts or offer letters,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
 Medical eamination certificates,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
 Evidence of continous Professional Development,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
-FACILITY-Environment,,,,,,,,,,,,,,,
+FACILITY-ENVIRONMENT,,,,,,,,,,,,,,,
 Does the facility have wheelchair accessibility?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
 "Is it fenced, secure and easily accessible",?,?,?,?,?,?,?,?,?,?,?,?,?,?,
 Is there space for parking? Specify,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
@@ -103,7 +103,7 @@ Is there backup system for electricity?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
 Is there backup system for water?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
 "Where there are ramps, are there safety features?",?,?,?,?,?,?,?,?,?,?,?,?,?,?,
 ,,,,,,,,,,,,,,,
-FACILITY-Reception/waiting area,,,,,,,,,,,,,,,
+FACILITY-RECEPTION/WAITING AREA,,,,,,,,,,,,,,,
 Does reception area have adequate space? Elaborate.,?,?,?,?,?,?,?,?,?,?,?,?,?,,
 Is the telephone/ cell phone available?,?,?,?,?,?,?,?,?,?,?,?,?,?,,
 Is a reception desk and chair available,?,?,?,?,?,?,?,?,?,?,?,?,?,,
@@ -116,7 +116,7 @@ Is there patient charter available in Setswana and English?,?,?,?,?,?,?,?,?,?,?,
 Is there available drinking water source?,?,?,?,?,?,?,?,?,?,?,?,?,?,,
 Are educational materials available for clients,?,?,?,?,?,?,?,?,?,?,?,?,?,,
 ,,,,,,,,,,,,,,,
-FACILITY- Screening room,,,,,,,,,,,,,,,
+FACILITY-SCREENING ROOM,,,,,,,,,,,,,,,
 Does the screening room have space? Elaborate.,?,,,?,,?,,,?,,?,?,?,,
 Does the screening room have wheelchair accessibility?,?,,,?,,?,,,?,,?,?,?,,
 Is screening room equipped with the following?--,,,,,,,,,,,,,,,
@@ -134,7 +134,7 @@ Sharps container,?,,,?,,?,,?,?,,?,?,?,,
 Hand wash facilities,?,,,?,,?,,?,?,,?,?,?,,
 Appropriate hand drying facilities,?,,,?,,?,,?,?,,?,?,?,,
 Appropriate hand wash soap,?,,,?,?,?,,?,?,,?,?,?,,
-FACILITY- Consultation/ Treatment room,,,,,,,,,,,,,,,
+FACILITY-CONSULTATION/ TREATMENT ROOM,,,,,,,,,,,,,,,
 Does the consultation room have adequate space?,?,,?,?,?,?,,?,?,,?,?,?,,
 Does the consultation room have wheelchair accessibility,?,,?,?,?,?,,?,?,,?,?,?,,
 Does the consultation room have the following --,,,,,,,,,,,,,,,
@@ -188,7 +188,7 @@ Head light / head mirror ,?,,,,,,,?,,,,?,,,
 Height measuring device,?,,,?,?,?,,?,?,,?,?,?,,
 HIV testing kit,?,,?,?,?,?,,?,?,,?,?,?,,
 Irrigator ,,,,,,,,?,,,,,,,
-Jobson-Horne�s probe,,,,,,,,?,,,,,,,
+Jobson-Horneï¿½s probe,,,,,,,,?,,,,,,,
 Laryngoscope set,?,,,?,,,,?,?,,?,?,?,,
 Lensometer,,,,?,,,,,,,,,,,
 Lubricating jell or solution,?,,,,?,,,,?,,?,?,?,,
@@ -208,7 +208,7 @@ Reference material,?,,?,?,?,?,,,?,,?,?,?,,
 Retinal camera,,,,?,,,,,,,,,,,
 Sanitary pads,?,,,,,,,,,,,,,,
 Sharps container,?,,?,?,?,?,,?,?,,?,?,?,,
-Siegel�s speculum,,,,,,,,?,,,,,,,
+Siegelï¿½s speculum,,,,,,,,?,,,,,,,
 Slit lamp,,,,?,,,,,,,,,,,
 Snellen chart (6 meters from client),,,,?,,,,,,,,,,,
 Sound proof room/ booth,,,?,,,,,?,,,,,,,
@@ -329,7 +329,7 @@ Is the room equipped with the following--,,,,,,,,,,,,,,?,
 Canvas bag trolley with cover,?,,,?,,,,?,?,,?,?,?,?,
 Canvas bag trolley with cover for non soiled linen,?,,,?,,,,?,?,,?,?,?,?,
 Canvas bag trolley with cover for soiled linen,?,,,?,,,,?,,,?,?,?,?,
-clinical waste bins with lid,?,,,?,,,,?,?,,?,?,?,?,
+Clinical waste bins with lid,?,,,?,,,,?,?,,?,?,?,?,
 Disinfectant,?,,,?,,,,?,?,,?,?,?,?,
 Domestic waste bins with lid,?,,,?,,,,?,?,,?,?,?,?,
 Heavy duty gloves,?,,,?,,,,?,?,,?,?,?,?,
@@ -361,8 +361,8 @@ Ice packs,?,?,,?,,,,?,?,,?,?,?,,
 Specimen racks,?,?,,?,,,,?,?,,?,?,?,,
 ,,,,,,,,,,,,,,,
 TOILET FACILITIES,,,,,,,,,,,,,,,
-Is there a minimum of two toilets available (for Male and   Female patients)?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
-Are toilets fitted with hand wash facilities?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
+Is there a minimum of two toilets available (for male and,,,,?,?,?,?,?,?,?,?,?,?,?,
+Are toilets fitted with hand wash facilities?,,,,?,?,?,?,?,?,?,?,?,?,?,
 Is there suitable soap dispenser?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
  Is there an appropriate hand drying provision?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
 Is there a separate toilet for staff?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
@@ -543,7 +543,7 @@ Antiseptic,,,,,?,,,,,,,,,,
 Massage oil/cream,,,,,?,,,,,,,,,,
 Sheets,,,,,?,,,,,,,,,,
 Towels,,,,,?,,,,,,,,,,
-Are supplies stored according to manufacturer�s recommendations?,,,,,?,,,,,,,,,,
+Are supplies stored according to manufacturerï¿½s recommendations?,,,,,?,,,,,,,,,,
 Is the epiry of these items closely monitored?,,,,,?,,,,,,,,,,
 Does the facility have appropriate equipment and instruments for the services provided?,,,,,?,,,,,,,,,,
 Does the facility have the following equipment?--,,,,,?,,,,,,,,,,
@@ -624,7 +624,7 @@ Are lab equipment calibrated,,?,,,,,,,,,,,,,
 Is there an equipment preventative maintenance plan?,,?,,,,,,,,,,,,,
 Is epiry of items monitored?,,?,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,
-Laboratory testing areas Haematology:--,,,,,,,,,,,,,,,
+LABORATORY TESTING AREAS HAEMATOLOGY,,,,,,,,,,,,,,,
 Does the testing area have adequate space?,,?,,,,,,,,,,,,,
 Are there adequate lab stools and benches?,,?,,,,,,,,,,,,,
 Is there hand washing provision?,,?,,,,,,,,,,,,,
@@ -637,8 +637,8 @@ Is there hand washing provision?,,?,,,,,,,,,,,,,
 Is there air-conditioner with monitoring device and chart?,,?,,,,,,,,,,,,,
 List clinical tests done at Haematology:,,?,,,,,,,,,,,,,
 ,,?,,,,,,,,,,,,,
-Does the lab have Technical SOPs (test methods),,?,,,,,,,,,,,,,
-Does the lab have the following equipment: --,,?,,,,,,,,,,,,,
+Does the lab have Technical SOPs (test methods,,?,,,,,,,,,,,,,
+Does the lab have the following-- equipment?,,?,,,,,,,,,,,,,
 Haematology analyser?,,?,,,,,,,,,,,,,
 Microscope?,,?,,,,,,,,,,,,,
 Staining Racks?,,?,,,,,,,,,,,,,
@@ -646,12 +646,12 @@ Water bath?,,?,,,,,,,,,,,,,
 Coagulation machine?,,?,,,,,,,,,,,,,
 ESR tubes and caps?,,?,,,,,,,,,,,,,
 Sample Rocker?,,?,,,,,,,,,,,,,
-Medical fridge,,?,,,,,,,,,,,,,
+Medical fridge?,,?,,,,,,,,,,,,,
 Sample rotator?,,?,,,,,,,,,,,,,
-Automated Pipettes,,?,,,,,,,,,,,,,
-Graduated Pipettes,,?,,,,,,,,,,,,,
+Automated Pipettes?,,?,,,,,,,,,,,,,
+Graduated Pipettes?,,?,,,,,,,,,,,,,
 Pipette Fillers?,,?,,,,,,,,,,,,,
-Are normal and abnormal Quality Control done and recorded,,?,,,,,,,,,,,,,
+Are normal and abnormal Quality Control done and recorded?,,?,,,,,,,,,,,,,
 How often are Quality controls run?,,?,,,,,,,,,,,,,
 Are QC results monitored over a period of time?,,?,,,,,,,,,,,,,
 Does the lab participate in Eternal Quality Assessment Schemes?,,?,,,,,,,,,,,,,
@@ -665,7 +665,7 @@ Are lab equipment calibrated,,?,,,,,,,,,,,,,
 Is there an equipment preventative maintenance plan?,,?,,,,,,,,,,,,,
 Is epiry of items monitored?,,?,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,
-Microbiology:--,,,,,,,,,,,,,,,
+MICROBIOLOGY,,,,,,,,,,,,,,,
 Does the testing area have adequate space?,,?,,,,,,,,,,,,,
 Are there adequate lab stools and benches?,,?,,,,,,,,,,,,,
 Is there hand washing provision?,,?,,,,,,,,,,,,,
@@ -715,46 +715,47 @@ HIV SCREENING,,?,,,,,,,,,,,,,
 Does the lab do any HIV screening,,?,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,
 INSTRUMENT WASHING/STERILISING ROOM,,,,,,,,,,,,,,,
-Is there a washing room with adequate space? ,,,,,,?,,,,,,,,,
+Is There A Washing Room With Adequate Space?,,,,,,?,,,,,,,,,
 Is the room equipped with the following--,,,,,,?,,,,,,,,,
-Stainless steel sink with running water,,,,,,?,,,,,,,,,
+Stainless Steel Sink With Running Water,,,,,,?,,,,,,,,,
 Stainless Steel Waste Discarding Sink Supplied With Hot And Cold Water,,,,,,?,,,,,,,,,
 Is the room ventilated? Elaborate,,,,,,?,,,,,,,,,
 Is the room equipped with the following--,,,,,,?,,,,,,,,,
 Chair,,,,,,?,,,,,,,,,
 Microwave,,,,,,?,,,,,,,,,
 Autoclave,,,,,,?,,,,,,,,,
-Sterilising containers,,,,,,?,,,,,,,,,
-Sterilising solutions,,,,,,?,,,,,,,,,
-Pack wrappers,,,,,,?,,,,,,,,,
+Sterilising Containers,,,,,,?,,,,,,,,,
+Sterilising Solutions,,,,,,?,,,,,,,,,
+Pack Wrappers,,,,,,?,,,,,,,,,
 Disinfectant,,,,,,?,,,,,,,,,
-Sharps container,,,,,,?,,,,,,,,,
-Waste bin with lid for clinical waste,,,,,,?,,,,,,,,,
-Waste bin with lid for domestic waste,,,,,,?,,,,,,,,,
-Hand wash facilities,,,,,,?,,,,,,,,,
-Appropriate hand drying facilities,,,,,,?,,,,,,,,,
-Disposable gloves,,,,,,?,,,,,,,,,
+Sharps Container,,,,,,?,,,,,,,,,
+Waste Bin With Lid For Clinical Waste,,,,,,?,,,,,,,,,
+Waste Bin With Lid For Domestic Waste,,,,,,?,,,,,,,,,
+Hand Wash Facilities,,,,,,?,,,,,,,,,
+Appropriate Hand Drying Facilities,,,,,,?,,,,,,,,,
+Disposable Gloves,,,,,,?,,,,,,,,,
 ,,,,,,,,,,,,,,,
 X-RAY ROOM,,,,,,,,,,,,,,,
- Does the -ray room have adequate space? ,,,,,,,,,,?,,,,,
- Does the -ray room have wheelchair accessibility? ,,,,,,,,,,?,,,,,
-Are the following items available in the room?,,,,,,,,,,?,,,,,
-"Red warning light at the entrance, which automatically switches on whenever eposure is made.",,,,,,,,,,?,,,,,
-Eamination/treatment couch with tiltable headrest.,,,,,,,,,,?,,,,,
-Lead gowns of different lead equivalence for staff and relatives,,,,,,,,,,?,,,,,
-Different sizes of gonad protection.,,,,,,,,,,?,,,,,
-Thyroid shields.,,,,,,,,,,?,,,,,
-Control panel shielded with lead window.,,,,,,,,,,?,,,,,
-X-ray viewing box,,,,,,,,,,?,,,,,
-Gloves non-sterile,,,,,,,,,,?,,,,,
-Waste bin with lid for clinical waste,,,,,,,,,,?,,,,,
-Waste bin with lid for non-clinical waste? Sharps disposal container.,,,,,,,,,,?,,,,,
-Are the walls barium-plastered?,,,,,,,,,,?,,,,,
-Are the walls built from concrete bricks 30cm wide or have an air gap?,,,,,,,,,,?,,,,,
-Are the doors lined with lead?,,,,,,,,,,?,,,,,
-Are the doors sliding type? ,,,,,,,,,,?,,,,,
-"If doors are not sliding, do they have lead strips along the edges to prevent radiation leakages?",,,,,,,,,,?,,,,,
-"If windows eist, are they leaded",,,,,,,,,,?,,,,,
+ Does The X-Ray Room Have Adequate Space?,,,,,,,,,,?,,,,,
+ Does The X-Ray Room Have Wheelchair Accessibility?,,,,,,,,,,?,,,,,
+Are The Following Items Available In The Room?--,,,,,,,,,,?,,,,,
+"Red Warning Light At The Entrance, Which Automatically Switches On Whenever Exposure Is Made?",,,,,,,,,,?,,,,,
+Examination/Treatment Couch With Tiltable Headrest?,,,,,,,,,,?,,,,,
+Lead Gowns Of Different Lead Equivalence For Staff And Relatives?,,,,,,,,,,?,,,,,
+Different Sizes Of Gonad Protection.?,,,,,,,,,,?,,,,,
+Thyroid Shields.?,,,,,,,,,,?,,,,,
+Control Panel Shielded With Lead Window.?,,,,,,,,,,?,,,,,
+X-Ray Viewing Box?,,,,,,,,,,?,,,,,
+Gloves - non-sterile,,,,,,,,,,?,,,,,
+Waste Bin With Lid For Clinical Waste?,,,,,,,,,,?,,,,,
+Waste Bin With Lid For Non-Clinical Waste?,,,,,,,,,,?,,,,,
+Sharps Disposal Container.?,,,,,,,,,,?,,,,,
+Are The Walls Barium-Plastered?,,,,,,,,,,?,,,,,
+Are The Walls Built From Concrete Bricks 30Cm Wide Or Have An Air Gap?,,,,,,,,,,?,,,,,
+Are The Doors Lined With Lead?,,,,,,,,,,?,,,,,
+Are The Doors Sliding Type?,,,,,,,,,,?,,,,,
+"If Doors Are Not Sliding, Do They Have Lead Strips Along The Edges To Prevent Radiation Leakages?",,,,,,,,,,?,,,,,
+"If Windows Exist, Are They Leaded?",,,,,,,,,,?,,,,,
 ,,,,,,,,,,,,,,,
 ULTRASOUND ROOM,,,,,,,,,,,,,,,
 Is the ultrasound machine commissioned and records available?,,,,,,,,,,?,,,,,
@@ -763,11 +764,11 @@ Is the room accessible by the handicapped( wheel chairs users)etc.,,,,,,,,,,?,,,
 "Is the room equipped with clinical waste bin, domestic waste bin?",,,,,,,,,,?,,,,,
 Is there adequate ventilation and lighting?,,,,,,,,,,?,,,,,
 Is there provision for handwashing?,,,,,,,,,,?,,,,,
-Liason with Primary Health Care Departments--,,,,,,,,,,,,,,,
+LIASON WITH PRIMARY HEALTH CARE DEPARTMENTS,,,,,,,,,,,,,,,
 Is there evidence of facility liason with the Primary Health Care Department? (A guide the reports to be submitted available),?,?,?,?,?,?,?,?,?,?,?,?,?,?,
 Is there evidence of statistical reporting to the Primary Health Care Departments as per available guideline?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
 ,,,,,,,,,,,,,,,
-FACILITY- Call Centre,,,,,,,,,,,,,,,
+FACILITY-CALL CENTRE,,,,,,,,,,,,,,,
 Does reception area have adequate space? Elaborate.,,,,,,,,,,,,,,?,
 Is the telephone/ cell phone available?,,,,,,,,,,,,,,?,
 Is the telephone able to record calls,,,,,,,,,,,,,,?,
@@ -835,30 +836,30 @@ Organizational Governance--,,,,,,,,,,,,,,,?
 1.2.6 Is the Hospital Board�s relationship with the Management of the hospital described in a written document?,,,,,,,,,,,,,,,?
 1.2.7 Is the responsibility of the governing body in relation to the approval of the hospital budget made known to the staff of the organization?,,,,,,,,,,,,,,,?
 1.2.8 Are there committees to deal with the following issues?,,,,,,,,,,,,,,,?
-1.2.8.1 Performance Improvement,,,,,,,,,,,,,,,?
-1.2.8.2 Quality improvement,,,,,,,,,,,,,,,?
-1.2.8.3 Infection Prevention and Control,,,,,,,,,,,,,,,?
-1.2.8.4 Safety health and environment,,,,,,,,,,,,,,,?
-1.2.8.5 Waste management,,,,,,,,,,,,,,,?
-"1.2.8.6 Drugs, Therapeutic and blood transfusion",,,,,,,,,,,,,,,?
-1.2.8.7 Medical and surgical equipment,,,,,,,,,,,,,,,?
-1.2.8.8 Building and plant maintenance,,,,,,,,,,,,,,,?
-1.2.8.9 Customer complaints handling,,,,,,,,,,,,,,,?
-1.2.8.10 Disciplinary committee,,,,,,,,,,,,,,,?
-1.2.8.11 Maternal Mortality Review,,,,,,,,,,,,,,,?
-1.2.8.12 Theatre users committee,,,,,,,,,,,,,,,?
-1.2.8.13 Ethics,,,,,,,,,,,,,,,?
-1.2.8.14. Clinical audit,,,,,,,,,,,,,,,?
-1.2.8.15 Resuscitation,,,,,,,,,,,,,,,?
+1.2.8.1 Are there committees to deal with Performance Improvement,,,,,,,,,,,,,,,?
+1.2.8.2 Are there committees to deal with Quality improvement,,,,,,,,,,,,,,,?
+1.2.8.3 Are there committees to deal with Infection Prevention and Control,,,,,,,,,,,,,,,?
+1.2.8.4 Are there committees to deal with Safety health and environment,,,,,,,,,,,,,,,?
+1.2.8.5 Are there committees to deal with Waste management,,,,,,,,,,,,,,,?
+"1.2.8.6 Are there committees to deal with Drugs, Therapeutic and blood transfusion",,,,,,,,,,,,,,,?
+1.2.8.7 Are there committees to deal with Medical and surgical equipment,,,,,,,,,,,,,,,?
+1.2.8.8 Are there committees to deal with Building and plant maintenance,,,,,,,,,,,,,,,?
+1.2.8.9 Are there committees to deal with Customer complaints handling,,,,,,,,,,,,,,,?
+1.2.8.10 Are there committees to deal with Disciplinary committee,,,,,,,,,,,,,,,?
+1.2.8.11 Are there committees to deal with Maternal Mortality Review,,,,,,,,,,,,,,,?
+1.2.8.12 Are there committees to deal with Theatre users committee,,,,,,,,,,,,,,,?
+1.2.8.13 Are there committees to deal with Ethics,,,,,,,,,,,,,,,?
+1.2.8.14. Are there committees to deal with Clinical audit,,,,,,,,,,,,,,,?
+1.2.8.15 Are there committees to deal with Resuscitation,,,,,,,,,,,,,,,?
 "1.2.9 If any of the above committees does not exist, how are the related issues dealt with?",,,,,,,,,,,,,,,?
 Quality Management In The Organization--,,,,,,,,,,,,,,,?
 1.3.1 Issues of Quality,,,,,,,,,,,,,,,?
 1.3.1.1 Is there a Quality Management System?,,,,,,,,,,,,,,,?
-"1.3.1.2. If yes, specify:",,,,,,,,,,,,,,,?
+"1.3.1.2. If there is a Quality Management System, please specify:",,,,,,,,,,,,,,,?
 1.3.1.3 Is there a Quality Improvement Committee,,,,,,,,,,,,,,,?
-"1.3.1.4 If yes, who comprises this committee?",,,,,,,,,,,,,,,?
+"1.3.1.4 If there a Quality Improvement Committee, who comprises this committee?",,,,,,,,,,,,,,,?
 1.3.1.5 Do you have a quality manager in post?,,,,,,,,,,,,,,,?
-"1.3.1.6 If yes, please provide their name and details. Also indicate if they perform other roles within your health facility or not.",,,,,,,,,,,,,,,?
+"1.3.1.6 If you have a quality manager in post, please provide their name and details. Also indicate if they perform other roles within your health facility or not.",,,,,,,,,,,,,,,?
 "1.3.1.7 Are there Organizational strategic foundations, Mission, Vision Values?",,,,,,,,,,,,,,,?
 "1.3.1.8 Is the mission statement correctly formulated, i.e. is it clear, concise and representative of the organisation's mandate?",,,,,,,,,,,,,,,?
 1.3.1.9 Is there a clear system for coordination and communication between the director and staff?,,,,,,,,,,,,,,,?
@@ -868,12 +869,15 @@ Quality Management In The Organization--,,,,,,,,,,,,,,,?
 1.3.2.1 Is there an (IT) manager who is suitably qualified and experienced?,,,,,,,,,,,,,,,?
 1.3.2.2 Is there a documented organizational IT structure?,,,,,,,,,,,,,,,?
 1.3.2.3 What is the total number of staff?,,,,,,,,,,,,,,,?
-1.3.2.4 How many are: IT Officers? Administrative staff? Support staff? Others; Specify:,,,,,,,,,,,,,,,?
+1.3.2.4.1 How many IT Officers are there?,,,,,,,,,,,,,,,?
+1.3.2.4.2 How many Administrative staff are there?,,,,,,,,,,,,,,,?
+1.3.2.4.3 How many Support staff are there?,,,,,,,,,,,,,,,?
+1.3.2.4.4 How many Other staff members are there? Please specify,,,,,,,,,,,,,,,?
 1.3.2.5 Are the professionals properly qualified?,,,,,,,,,,,,,,,?
 1.3.2.6 Is there training of all the staff in basic computer skills?,,,,,,,,,,,,,,,?
 1.3.2.7 Does the department have documented policies and procedures for the services provided?,,,,,,,,,,,,,,,?
 1.3.2.8 Is there a patient information management system?,,,,,,,,,,,,,,,?
-"1.3.2.8.1 If yes, how is it secured",,,,,,,,,,,,,,,?
+"1.3.2.8.1 If there is a patient information management system, how is it secured",,,,,,,,,,,,,,,?
 1.3.2.9 Is there an IT equipment maintenance programme?,,,,,,,,,,,,,,,?
 1.3.2.10 Is there a sufficient number of computers?,,,,,,,,,,,,,,,?
 1.3.2.10.1 Do these computers have access to the internet?,,,,,,,,,,,,,,,?
@@ -884,9 +888,9 @@ Facility Management--,,,,,,,,,,,,,,,?
 1.4.1 Does the hospital have a clear documented organizational structure that describes the lines of authority and accountability from governance and within the organization?,,,,,,,,,,,,,,,?
 1.4.2 Do you have the required competencies and qualifications to perform their tasks?,,,,,,,,,,,,,,,?
 1.4.3 Is every position in the organizational structure filled?,,,,,,,,,,,,,,,?
-1.4.4 Is there a plan for employment? Yes No,,,,,,,,,,,,,,,?
-"1.4.4.1 If yes, please specify.",,,,,,,,,,,,,,,?
-"1.4.4.2 If no, please state why.",,,,,,,,,,,,,,,?
+1.4.4 Is there a plan for employment?,,,,,,,,,,,,,,,?
+"1.4.4.1 If there is a plan for employment, please specify.",,,,,,,,,,,,,,,?
+"1.4.4.2 If there is NO plan for employment, please state why.",,,,,,,,,,,,,,,?
 1.4.5 Is there a senior manager who is responsible for the organisational operations within applicable laws and regulations?,,,,,,,,,,,,,,,?
 1.4.5.1 Does the senior manager have the education or experience to carry out his duties or tasks?,,,,,,,,,,,,,,,?
 1.4.5.2 Is the senior manager a trained health professional?,,,,,,,,,,,,,,,?
@@ -908,77 +912,78 @@ Organizational Planning--,,,,,,,,,,,,,,,?
 Organizational Policies And Procedures--,,,,,,,,,,,,,,,?
 1.7.1 Are there policies or procedures to guide the provision of services?,,,,,,,,,,,,,,,?
 1.7.2 Are these policies disseminated to staff,,,,,,,,,,,,,,,?
-1.7.2.1 If yes how are they disseminated,,,,,,,,,,,,,,,?
+"1.7.2.1 If the policies disseminated to staff, how are they disseminated",,,,,,,,,,,,,,,?
 1.7.3 Do these policies and procedures conform to applicable laws and regulations?,,,,,,,,,,,,,,,?
 1.7.4 Does access to and appropriateness of care and treatment depend on the patients ability to pay or on the source of payment?,,,,,,,,,,,,,,,?
 1.7.5 Are there policies and procedures guiding the operation of the Clinical Departments and the provision of all services in the hospital (at departmental level)?,,,,,,,,,,,,,,,?
 1.7.6 Do the policies address the following?,,,,,,,,,,,,,,,?
-1.7.6.1 staff knowledge and skills. Yes No,,,,,,,,,,,,,,,?
-1.7.6.2 required number of staff members,,,,,,,,,,,,,,,?
-1.7.6.3 Quality Improvement Programs,,,,,,,,,,,,,,,?
-1.7.6.4 Coordination and collaboration of services with other Departments,,,,,,,,,,,,,,,?
+1.7.6.1 Do the policies address staff knowledge and skills?,,,,,,,,,,,,,,,?
+1.7.6.2 Do the policies address the required number of staff members,,,,,,,,,,,,,,,?
+1.7.6.3 Do the policies address Quality Improvement Programs,,,,,,,,,,,,,,,?
+1.7.6.4 Do the policies address Coordination and collaboration of services with other Departments,,,,,,,,,,,,,,,?
 "1.7.7 Are policies implemented and monitored as they relate to various departments, services and functions in the hospital and the organization as a whole?",,,,,,,,,,,,,,,?
 1.7.8 Does the hospital have documented Policies and Procedures for the following?,,,,,,,,,,,,,,,?
-1.7.8.1 Admission,,,,,,,,,,,,,,,?
-1.7.8.2 Discharge,,,,,,,,,,,,,,,?
-1.7.8.3 Referral,,,,,,,,,,,,,,,?
-1.7.8.4. Confidentiality,,,,,,,,,,,,,,,?
-1.7.8.5 Medical records,,,,,,,,,,,,,,,?
-1.7.8.6 Management of waste,,,,,,,,,,,,,,,?
-1.7.8.7 Drug supply,,,,,,,,,,,,,,,?
-1.7.8.8 Deaths,,,,,,,,,,,,,,,?
-1.7.8.9 Disaster plans/management,,,,,,,,,,,,,,,?
-1.7.8.10 Patient care,,,,,,,,,,,,,,,?
-1.7.8.11 Treatment protocols,,,,,,,,,,,,,,,?
-1.7.8.12 Infection Prevention & Control,,,,,,,,,,,,,,,?
-1.7.8.13 Patients with special needs,,,,,,,,,,,,,,,?
-1.7.8.14 Patients� rights,,,,,,,,,,,,,,,?
-1.7.8.15 Post exposure prophylaxis,,,,,,,,,,,,,,,?
-1.7.8.16 Occupational health 1.7.8.17Incidents reporting policy,,,,,,,,,,,,,,,?
-1.7.8.18 Refusal of hospital treatment,,,,,,,,,,,,,,,?
+1.7.8.1 Does the hospital have documented Policies and Procedures for Admission,,,,,,,,,,,,,,,?
+1.7.8.2 Does the hospital have documented Policies and Procedures for Discharge,,,,,,,,,,,,,,,?
+1.7.8.3 Does the hospital have documented Policies and Procedures for Referral,,,,,,,,,,,,,,,?
+1.7.8.4. Does the hospital have documented Policies and Procedures for Confidentiality,,,,,,,,,,,,,,,?
+1.7.8.5 Does the hospital have documented Policies and Procedures for Medical records,,,,,,,,,,,,,,,?
+1.7.8.6 Does the hospital have documented Policies and Procedures for Management of waste,,,,,,,,,,,,,,,?
+1.7.8.7 Does the hospital have documented Policies and Procedures for Drug supply,,,,,,,,,,,,,,,?
+1.7.8.8 Does the hospital have documented Policies and Procedures for Deaths,,,,,,,,,,,,,,,?
+1.7.8.9 Does the hospital have documented Policies and Procedures for Disaster plans/management,,,,,,,,,,,,,,,?
+1.7.8.10 Does the hospital have documented Policies and Procedures for Patient care,,,,,,,,,,,,,,,?
+1.7.8.11 Does the hospital have documented Policies and Procedures for Treatment protocols,,,,,,,,,,,,,,,?
+1.7.8.12 Does the hospital have documented Policies and Procedures for Infection Prevention & Control,,,,,,,,,,,,,,,?
+1.7.8.13 Does the hospital have documented Policies and Procedures for Patients with special needs,,,,,,,,,,,,,,,?
+1.7.8.14 Does the hospital have documented Policies and Procedures for Patients� rights,,,,,,,,,,,,,,,?
+1.7.8.15 Does the hospital have documented Policies and Procedures for Post exposure prophylaxis,,,,,,,,,,,,,,,?
+1.7.8.16 Does the hospital have documented Policies and Procedures for Occupational health 1.7.8.17Incidents reporting policy,,,,,,,,,,,,,,,?
+1.7.8.17 Does the hospital have documented Policies and Procedures for Incidents reporting policy,,,,,,,,,,,,,,,?
+1.7.8.18 Does the hospital have documented Policies and Procedures for Refusal of hospital treatment,,,,,,,,,,,,,,,?
 1.7.9 How often are these policies reviewed,,,,,,,,,,,,,,,?
 1.8Services Provided--,,,,,,,,,,,,,,,?
 1.8.1 What is the number of patients seen per month?,,,,,,,,,,,,,,,?
 1.8.2 What services are provided in the hospital?,,,,,,,,,,,,,,,?
-1.8.2.1 Medical Care,,,,,,,,,,,,,,,?
-1.8.2.2 Surgical care,,,,,,,,,,,,,,,?
-1.8.2.3.Ophthalmology,,,,,,,,,,,,,,,?
-1.8.2.4 Ear Nose and Throat Surgery,,,,,,,,,,,,,,,?
-1.8.2.6 Urology,,,,,,,,,,,,,,,?
-1.8.2.7 Oral/ Maxillo-Facial Surgery,,,,,,,,,,,,,,,?
-1.8.2.8 Neurosurgery,,,,,,,,,,,,,,,?
-1.8.2.9 Critical care,,,,,,,,,,,,,,,?
-1.8.2.10 Day Surgery Service,,,,,,,,,,,,,,,?
-1.8.2.11 Obstetric/Maternity,,,,,,,,,,,,,,,?
-1.8.2.12 Psychiatric,,,,,,,,,,,,,,,?
-1.8.2.13 Operating theatre and Anaesthesia,,,,,,,,,,,,,,,?
-1.8.2.14 Intensive Care Unit/ High Care,,,,,,,,,,,,,,,?
-1.8.2.15 Oncology,,,,,,,,,,,,,,,?
-1.8.2.16 Forensic Service,,,,,,,,,,,,,,,?
-1.8.2.17 AIDS Management,,,,,,,,,,,,,,,?
-1.8.2.18 Laboratory,,,,,,,,,,,,,,,?
-1.8.2.19 Blood Bank,,,,,,,,,,,,,,,?
-1.8.2.20 Radiology,,,,,,,,,,,,,,,?
-1.8.2.21 Pharmaceutical,,,,,,,,,,,,,,,?
-1.8.2.22 Emergency care/Casualty,,,,,,,,,,,,,,,?
-1.8.2.23 Outpatients,,,,,,,,,,,,,,,?
-1.8.2.24 Ambulatory care,,,,,,,,,,,,,,,?
-1.8.2.25 Sterilizing & disinfecting unit,,,,,,,,,,,,,,,?
-1.8.2.26 Food service,,,,,,,,,,,,,,,?
-1.8.2.27 Laundry,,,,,,,,,,,,,,,?
-1.8.2.28 Housekeeping service,,,,,,,,,,,,,,,?
-1.8.2.29 Maintenance,,,,,,,,,,,,,,,?
-1.8.2.30 Health care technology management *,,,,,,,,,,,,,,,?
-1.8.2.31 Physiotherapy,,,,,,,,,,,,,,,?
-1.8.2.32 Occupational therapy,,,,,,,,,,,,,,,?
-1.8.2.33 Community Health Occupational /Health Service,,,,,,,,,,,,,,,?
-1.8.2.34 Dietetic,,,,,,,,,,,,,,,?
-1.8.2.35 Speech therapy,,,,,,,,,,,,,,,?
-1.8.2.36 Clinical Psychology,,,,,,,,,,,,,,,?
-1.8.2.37 Rehabilitation (Drug Addiction and Alcoholism),,,,,,,,,,,,,,,?
-1.8.2.38 Social work,,,,,,,,,,,,,,,?
-1.8.2.39Other (specify):________________________________,,,,,,,,,,,,,,,?
-comments,,,,,,,,,,,,,,,?
+1.8.2.1 Does the hospital provide Medical Care services?,,,,,,,,,,,,,,,?
+1.8.2.2 Does the hospital provide Surgical care services?,,,,,,,,,,,,,,,?
+1.8.2.3.Does the hospital provide Ophthalmology services?,,,,,,,,,,,,,,,?
+1.8.2.4 Does the hospital provide Ear Nose and Throat Surgery services?,,,,,,,,,,,,,,,?
+1.8.2.6 Does the hospital provide Urology services?,,,,,,,,,,,,,,,?
+1.8.2.7 Does the hospital provide Oral/ Maxillo-Facial Surgery services?,,,,,,,,,,,,,,,?
+1.8.2.8 Does the hospital provide Neurosurgery services?,,,,,,,,,,,,,,,?
+1.8.2.9 Does the hospital provide Critical care services?,,,,,,,,,,,,,,,?
+1.8.2.10 Does the hospital provide Day Surgery Services?,,,,,,,,,,,,,,,?
+1.8.2.11 Does the hospital provide Obstetric/Maternity services?,,,,,,,,,,,,,,,?
+1.8.2.12 Does the hospital provide Psychiatric services?,,,,,,,,,,,,,,,?
+1.8.2.13 Does the hospital provide Operating theatre and Anaesthesia services?,,,,,,,,,,,,,,,?
+1.8.2.14 Does the hospital provide Intensive Care Unit/ High Care services?,,,,,,,,,,,,,,,?
+1.8.2.15 Does the hospital provide Oncology services?,,,,,,,,,,,,,,,?
+1.8.2.16 Does the hospital provide Forensic Services?,,,,,,,,,,,,,,,?
+1.8.2.17 Does the hospital provide AIDS Management services?,,,,,,,,,,,,,,,?
+1.8.2.18 Does the hospital provide Laboratory services?,,,,,,,,,,,,,,,?
+1.8.2.19 Does the hospital provide Blood Bank services?,,,,,,,,,,,,,,,?
+1.8.2.20 Does the hospital provide Radiology services?,,,,,,,,,,,,,,,?
+1.8.2.21 Does the hospital provide Pharmaceutical services?,,,,,,,,,,,,,,,?
+1.8.2.22 Does the hospital provide Emergency care/Casualty services?,,,,,,,,,,,,,,,?
+1.8.2.23 Does the hospital provide Outpatients services?,,,,,,,,,,,,,,,?
+1.8.2.24 Does the hospital provide Ambulatory care services?,,,,,,,,,,,,,,,?
+1.8.2.25 Does the hospital provide Sterilizing & disinfecting unit services?,,,,,,,,,,,,,,,?
+1.8.2.26 Does the hospital provide Food services?,,,,,,,,,,,,,,,?
+1.8.2.27 Does the hospital provide Laundry services?,,,,,,,,,,,,,,,?
+1.8.2.28 Does the hospital provide Housekeeping services?,,,,,,,,,,,,,,,?
+1.8.2.29 Does the hospital provide Maintenance services?,,,,,,,,,,,,,,,?
+1.8.2.30 Does the hospital provide Health care technology management services? *,,,,,,,,,,,,,,,?
+1.8.2.31 Does the hospital provide Physiotherapy services?,,,,,,,,,,,,,,,?
+1.8.2.32 Does the hospital provide Occupational therapy services?,,,,,,,,,,,,,,,?
+1.8.2.33 Does the hospital provide Community Health Occupational /Health Service?,,,,,,,,,,,,,,,?
+1.8.2.34 Does the hospital provide Dietetic services?,,,,,,,,,,,,,,,?
+1.8.2.35 Does the hospital provide Speech therapy services?,,,,,,,,,,,,,,,?
+1.8.2.36 Does the hospital provide Clinical Psychology services?,,,,,,,,,,,,,,,?
+1.8.2.37 Does the hospital provide Rehabilitation (Drug Addiction and Alcoholism) services?,,,,,,,,,,,,,,,?
+1.8.2.38 Does the hospital provide Social work services?,,,,,,,,,,,,,,,?
+1.8.2.39 Does the hospital provide Other services? Please specify,,,,,,,,,,,,,,,?
+Any comments on hospital provided services? Please specify,,,,,,,,,,,,,,,?
 Research and Ethics--,,,,,,,,,,,,,,,?
 1.9.1 Is there a research and ethics committee that controls all research in the hospital that involve patients and care givers?,,,,,,,,,,,,,,,?
 "1.9.2 Is there a documented review process for all research 
@@ -1016,28 +1021,29 @@ program?
 1.10.4 Are Copies of contracts and service level agreements made available to those who ensure their implementation?,,,,,,,,,,,,,,,?
 Comments,,,,,,,,,,,,,,,?
 HUMAN RESOURCE MANAGEMENT,,,,,,,,,,,,,,,?
-2.0 Does the facility have a staff establishment register What is the facility vacancy and attrition rate,,,,,,,,,,,,,,,?
+2.0.1 Does the facility have a staff establishment register,,,,,,,,,,,,,,,?
+2.0.2 What is the facility vacancy and attrition rate,,,,,,,,,,,,,,,?
 2.1 What is the total number of staff?,,,,,,,,,,,,,,,?
 How Many Are:--,,,,,,,,,,,,,,,?
-2.2.1 Medical Doctors,,,,,,,,,,,,,,,?
-2.2.2 Specialist Doctors as per Speciality areas,,,,,,,,,,,,,,,?
-2.2.3 Nurses,,,,,,,,,,,,,,,?
+2.2.1 How many Medical Doctors are there?,,,,,,,,,,,,,,,?
+2.2.2 How many Specialist Doctors as per Speciality areas,,,,,,,,,,,,,,,?
+2.2.3 How many Nurses are there?,,,,,,,,,,,,,,,?
 2.2.4 Specialized nurses as per Speciality areas,,,,,,,,,,,,,,,?
-2.2.5 Midwives,,,,,,,,,,,,,,,?
-2.2.6 Pharmacist,,,,,,,,,,,,,,,?
-2.2.7 Pharmacy Technicians,,,,,,,,,,,,,,,?
-2.2.8 Laboratory Scientists,,,,,,,,,,,,,,,?
-2.2.9 Laboratory Technicians,,,,,,,,,,,,,,,?
-2.2.10 Physiotherapists,,,,,,,,,,,,,,,?
-2.2.11 Radiologists,,,,,,,,,,,,,,,?
-2.2.12 Radiology Technicians,,,,,,,,,,,,,,,?
-2.2.13 Bio-Medical Engineers,,,,,,,,,,,,,,,?
-2.2.14 Dieticians,,,,,,,,,,,,,,,?
-2.2.15 Social Workers,,,,,,,,,,,,,,,?
-2.2.16 Administrative staff,,,,,,,,,,,,,,,?
-2.2.17 Health Care Auxiliaries,,,,,,,,,,,,,,,?
-2.2.18 Support staff,,,,,,,,,,,,,,,?
-2.2.19 Other Professionals? Specify,,,,,,,,,,,,,,,?
+2.2.5 How many Midwives are there?,,,,,,,,,,,,,,,?
+2.2.6 How many Pharmacist are there?,,,,,,,,,,,,,,,?
+2.2.7 How many Pharmacy Technicians are there?,,,,,,,,,,,,,,,?
+2.2.8 How many Laboratory Scientists are there?,,,,,,,,,,,,,,,?
+2.2.9 How many Laboratory Technicians are there?,,,,,,,,,,,,,,,?
+2.2.10 How many Physiotherapists are there?,,,,,,,,,,,,,,,?
+2.2.11 How many Radiologists are there?,,,,,,,,,,,,,,,?
+2.2.12 How many Radiology Technicians are there?,,,,,,,,,,,,,,,?
+2.2.13 How many Bio-Medical Engineers are there?,,,,,,,,,,,,,,,?
+2.2.14 How many Dieticians are there?,,,,,,,,,,,,,,,?
+2.2.15 How many Social Workers are there?,,,,,,,,,,,,,,,?
+2.2.16 How many Administrative staff are there?,,,,,,,,,,,,,,,?
+2.2.17 How many Health Care Auxiliaries are there?,,,,,,,,,,,,,,,?
+2.2.18 How many Support staff are there?,,,,,,,,,,,,,,,?
+2.2.19 How many Other Professionals are there? Specify,,,,,,,,,,,,,,,?
 2.3 Are all the professionals registered with the relevant Councils?,,,,,,,,,,,,,,,?
 2.4 Is staff qualification verified on appointment?,,,,,,,,,,,,,,,?
 2.5 Is there a staff orientation program?,,,,,,,,,,,,,,,?
@@ -1066,15 +1072,15 @@ Do All Personnel Wear Name Tags?--,,,,,,,,,,,,,,,?
 "2.21 Is there a designated individual who is responsible for the storage, maintenance and retrieval of personnel records?",,,,,,,,,,,,,,,?
 2.22 The personnel record manager is suitably trained and experienced in health record management?,,,,,,,,,,,,,,,?
 2.23Does the personnel record contain the following;--,,,,,,,,,,,,,,,?
-2.23.1 Educational credentials,,,,,,,,,,,,,,,?
-2.23.2 Work contracts,,,,,,,,,,,,,,,?
-2.23.3 Job Effectiveness Description (JED),,,,,,,,,,,,,,,?
-2.23.4 Practising certificates,,,,,,,,,,,,,,,?
-2.23.5 Practising certificates,,,,,,,,,,,,,,,?
-2.23.6 Work permit,,,,,,,,,,,,,,,?
-2.23.7 Resident permit,,,,,,,,,,,,,,,?
-2.23.8 Offer/ Appointment letter,,,,,,,,,,,,,,,?
-Comments,,,,,,,,,,,,,,,?
+2.23.1 Does the personnel record contain Educational credentials?,,,,,,,,,,,,,,,?
+2.23.2 Does the personnel record contain Work contracts?,,,,,,,,,,,,,,,?
+2.23.3 Does the personnel record contain Job Effectiveness Description (JED)?,,,,,,,,,,,,,,,?
+2.23.4 Does the personnel record contain Practising certificates?,,,,,,,,,,,,,,,?
+2.23.5 Does the personnel record contain Practising certificates?,,,,,,,,,,,,,,,?
+2.23.6 Does the personnel record contain Work permit?,,,,,,,,,,,,,,,?
+2.23.7 Does the personnel record contain Resident permit?,,,,,,,,,,,,,,,?
+2.23.8 Does the personnel record contain Offer/ Appointment letter?,,,,,,,,,,,,,,,?
+Any Comments on Human Resource Management? Please specify,,,,,,,,,,,,,,,?
 ADMINISTRATIVE SERVICES,,,,,,,,,,,,,,,?
 3.1 Is there a designated and suitably qualified personnel for administration management who is responsible for the implementation and maintenance of a financial strategy?,,,,,,,,,,,,,,,?
 3.2 Are there written policies and procedures for accounting functions?,,,,,,,,,,,,,,,?
@@ -1523,7 +1529,7 @@ alcove to provide privacy?
 10.7.3.13 Sharps container?,,,,,,,,,,,,,,,?
 10.7.3.14 X-ray viewing box?*,,,,,,,,,,,,,,,?
 10.7.3.14 A fully equipped resuscitation trolley which is regularly checked,,,,,,,,,,,,,,,?
-comments,,,,,,,,,,,,,,,?
+Comments,,,,,,,,,,,,,,,?
 Sluice Room--,,,,,,,,,,,,,,,?
 10.8.1 Does the sluice room have adequate space?,,,,,,,,,,,,,,,?
 10.8.2. Does the sluice room have adequate ventilation,,,,,,,,,,,,,,,?
@@ -1781,18 +1787,18 @@ Customer Satisfaction--,,,,,,,,,,,,,,,?
 12.10.5 Customer complaints,,,,,,,,,,,,,,,?
 GENERAL MEDICAL WARDS,,,,,,,,,,,,,,,?
 Organization And Management--,,,,,,,,,,,,,,,?
-13.1.1 Does the unit have a documented organizational structure? Yes No,,,,,,,,,,,,,,,?
+13.1.1 Does the unit have a documented organizational structure?,,,,,,,,,,,,,,,?
 13.1.2 Does the unit have documented Policies and Procedures for,,,,,,,,,,,,,,,?
 13.1.3 Is there a Quality Management System?,,,,,,,,,,,,,,,?
 13.1.4 If yes,,,,,,,,,,,,,,,?
 13.1.5 Is the unit medical director suitably qualified and experienced?,,,,,,,,,,,,,,,?
 13.1.6 Is the provision of nursing care supervised by a qualified,,,,,,,,,,,,,,,?
-13.1.7 Is the unit in charge suitably qualified and experienced? Yes No,,,,,,,,,,,,,,,?
+13.1.7 Is the unit in charge suitably qualified and experienced?,,,,,,,,,,,,,,,?
 13.1.8 Is there appropriate and adequate equipment for the services,,,,,,,,,,,,,,,?
 13.1.9 Are there protocols for management of conditions?,,,,,,,,,,,,,,,?
 13.1.10 Is there segregation of patients admitted as required by,,,,,,,,,,,,,,,?
 13.1.11 Are there policies and procedures for criteria for admission?,,,,,,,,,,,,,,,?
-13.1.12 Is there an orientation and in-service program for staff? Yes No,,,,,,,,,,,,,,,?
+13.1.12 Is there an orientation and in-service program for staff?,,,,,,,,,,,,,,,?
 Personnel--,,,,,,,,,,,,,,,?
 13.2.1 What is the total number of staff?,,,,,,,,,,,,,,,?
 13.2.2 How many are: Medical Officers?Nurses?,,,,,,,,,,,,,,,?
@@ -1808,7 +1814,7 @@ Cubicle--,,,,,,,,,,,,,,,?
 13.4.1 Does the cubicle (s) have adequate space?,,,,,,,,,,,,,,,?
 13.4.2 Does the cubicle (s) have wheelchair accessibility?,,,,,,,,,,,,,,,?
 13.4.3 Does the cubicle (s) have the following?,,,,,,,,,,,,,,,?
-"13.4.3.1 Patient bed, with tiltable headrest, covered with linen? Yes No",,,,,,,,,,,,,,,?
+"13.4.3.1 Patient bed, with tiltable headrest, covered with linen?",,,,,,,,,,,,,,,?
 13.4.3.2 Is the bed behind a curtain or located within a screened off,,,,,,,,,,,,,,,?
 13.4.3.3 Are there adequate patient lockers?,,,,,,,,,,,,,,,?
 13.4.3.5 Adequate cardiac tables?,,,,,,,,,,,,,,,?
@@ -1859,7 +1865,7 @@ Toilet Facilities--,,,,,,,,,,,,,,,?
 13.8.5 Is there suitable soap dispenser?,,,,,,,,,,,,,,,?
 13.8.6 Is there an appropriate hand drying provision?,,,,,,,,,,,,,,,?
 13.8.7 Is there a separate toilet for staff?,,,,,,,,,,,,,,,?
-13.8.8 Is there a toilet that is designed for wheel chair users? Yes No,,,,,,,,,,,,,,,?
+13.8.8 Is there a toilet that is designed for wheel chair users?,,,,,,,,,,,,,,,?
 13.8.9 Does the female toilet have sanitary pads disposal?,,,,,,,,,,,,,,,?
 13.8.10 Are toilets aesthetically pleasing?,,,,,,,,,,,,,,,?
 Safety And Waste Management--,,,,,,,,,,,,,,,?
@@ -1887,19 +1893,19 @@ Customer Satisfaction--,,,,,,,,,,,,,,,?
 13.10.5 Customer complaints,,,,,,,,,,,,,,,?
 SURGICAL /ORTHOPAEDIC WARDS,,,,,,,,,,,,,,,?
 Organization And Management--,,,,,,,,,,,,,,,?
-14.1.1 Does the unit have a documented organizational structure? Yes No,,,,,,,,,,,,,,,?
+14.1.1 Does the unit have a documented organizational structure?,,,,,,,,,,,,,,,?
 14.1.2. Does the unit have documented Policies and Procedures,,,,,,,,,,,,,,,?
 14.1.3 Does the unit have equipment maintenance program?,,,,,,,,,,,,,,,?
 14.1.4 Is there a Quality Management System?,,,,,,,,,,,,,,,?
 "14.1.5 If yes,",,,,,,,,,,,,,,,?
 14.1.6 Is there a medical director for the unit?,,,,,,,,,,,,,,,?
 14.1.7 Is the provision of nursing care supervised by a qualified,,,,,,,,,,,,,,,?
-14.1.8 Is the unit in charge suitably qualified and experienced? Yes No,,,,,,,,,,,,,,,?
+14.1.8 Is the unit in charge suitably qualified and experienced?,,,,,,,,,,,,,,,?
 14.1.9 Is there appropriate and adequate equipment for the,,,,,,,,,,,,,,,?
 14.1.10 Are there protocols for management of conditions?,,,,,,,,,,,,,,,?
 14.1.11 Is there segregation of patients admitted as required,,,,,,,,,,,,,,,?
 14.1.12 Are there policies and procedures for criteria for admission?,,,,,,,,,,,,,,,?
-14.1.13 Is there an orientation and in-service program for staff? Yes No,,,,,,,,,,,,,,,?
+14.1.13 Is there an orientation and in-service program for staff?,,,,,,,,,,,,,,,?
 Personnel--,,,,,,,,,,,,,,,?
 14.2.1 What is the total number of staff?,,,,,,,,,,,,,,,?
 14.2.2 How many are: Medical Officers?Nurses?,,,,,,,,,,,,,,,?
@@ -1915,7 +1921,7 @@ Cubicle (s)--,,,,,,,,,,,,,,,?
 14.4.1 Does the cubicle (s) have adequate space?,,,,,,,,,,,,,,,?
 14.4.2 Does the cubicle (s) have wheelchair accessibility?,,,,,,,,,,,,,,,?
 14.4.3 Does the cubicle (s) have the following?,,,,,,,,,,,,,,,?
-"14.4.3.1 Patient bed, with tiltable headrest, covered with linen? Yes No",,,,,,,,,,,,,,,?
+"14.4.3.1 Patient bed, with tiltable headrest, covered with linen?",,,,,,,,,,,,,,,?
 14.4.3.2 Is the bed behind a curtain or located within a screened off,,,,,,,,,,,,,,,?
 14.4.3.3 Are there adequate patient lockers?,,,,,,,,,,,,,,,?
 14.4.3.4 Are there adequate cardiac tables?,,,,,,,,,,,,,,,?
@@ -1967,7 +1973,7 @@ Toilet Facilities--,,,,,,,,,,,,,,,?
 14.8.5 Is there suitable soap dispenser?,,,,,,,,,,,,,,,?
 14.8.6 Is there an appropriate hand drying provision?,,,,,,,,,,,,,,,?
 14.8.7 Is there a separate toilet for staff?,,,,,,,,,,,,,,,?
-14.8.8 Is there a toilet that is designed for wheel chair users? Yes No,,,,,,,,,,,,,,,?
+14.8.8 Is there a toilet that is designed for wheel chair users?,,,,,,,,,,,,,,,?
 14.8.9 Does the female toilet have sanitary pads disposal?,,,,,,,,,,,,,,,?
 14.8.10 Are toilets aesthetically pleasing?,,,,,,,,,,,,,,,?
 Safety And Waste Management--,,,,,,,,,,,,,,,?
@@ -1995,19 +2001,19 @@ Customer Satisfaction--,,,,,,,,,,,,,,,?
 14.10.5 Customer complaints,,,,,,,,,,,,,,,?
 PAEDIATRIC CARE/ SPECIALTIES AND WARDS/ NEONATOLOGY,,,,,,,,,,,,,,,?
 Organization And Management--,,,,,,,,,,,,,,,?
-15.1.1 Does the unit have a documented organizational structure? Yes No,,,,,,,,,,,,,,,?
+15.1.1 Does the unit have a documented organizational structure?,,,,,,,,,,,,,,,?
 15.1.2 Does the unit have documented Policies and,,,,,,,,,,,,,,,?
 15.1.3 Does the unit have equipment maintenance program?,,,,,,,,,,,,,,,?
 15.1.4 Is there a Quality Management System?,,,,,,,,,,,,,,,?
 15.1.5 If yes,,,,,,,,,,,,,,,?
 15.1.6 Is there a medical director for each cluster of specialist,,,,,,,,,,,,,,,?
 15.1.7 Is the provision of nursing care supervised by a qualified,,,,,,,,,,,,,,,?
-15.1.8 Is the unit in charge suitably qualified and experienced? Yes No,,,,,,,,,,,,,,,?
+15.1.8 Is the unit in charge suitably qualified and experienced?,,,,,,,,,,,,,,,?
 15.1.9 Is there appropriate and adequate equipment for the,,,,,,,,,,,,,,,?
 15.1.10 Are there protocols for management of conditions?,,,,,,,,,,,,,,,?
 15.1.11 Is there segregation of patients admitted as required by,,,,,,,,,,,,,,,?
 15.1.12 Are there policies and procedures for criteria for admission?,,,,,,,,,,,,,,,?
-15.1.13 Is there an orientation and in-service program for staff? Yes No,,,,,,,,,,,,,,,?
+15.1.13 Is there an orientation and in-service program for staff?,,,,,,,,,,,,,,,?
 Personnel--,,,,,,,,,,,,,,,?
 15.2.1 What is the total number of staff?,,,,,,,,,,,,,,,?
 15.2.2 How many are: Medical Officers?Nurses?,,,,,,,,,,,,,,,?
@@ -2023,7 +2029,7 @@ Cubicle--,,,,,,,,,,,,,,,?
 15.4.1 Does the cubicle (s) have adequate space?,,,,,,,,,,,,,,,?
 15.4.2 Does the cubicle (s) have wheelchair accessibility?,,,,,,,,,,,,,,,?
 15.4.3 Does the cubicle (s) have the following?,,,,,,,,,,,,,,,?
-"15.4.3.1 Patient bed, with tiltable headrest, covered with linen? Yes No",,,,,,,,,,,,,,,?
+"15.4.3.1 Patient bed, with tiltable headrest, covered with linen?",,,,,,,,,,,,,,,?
 15.4.3.2 Is the bed behind a curtain or located within a screened off,,,,,,,,,,,,,,,?
 15.4.3.3 Are there adequate patient lockers?,,,,,,,,,,,,,,,?
 15.4.3.4 Adequate cardiac tables?,,,,,,,,,,,,,,,?
@@ -2050,7 +2056,7 @@ Procedure Room--,,,,,,,,,,,,,,,?
 15.5.3.13 Sharps container?,,,,,,,,,,,,,,,?
 15.5.3.14 X-ray viewing box?*,,,,,,,,,,,,,,,?
 Supplies--,,,,,,,,,,,,,,,?
-15.6.1 Does the unit have a policy on supplies and purchasing? Yes No,,,,,,,,,,,,,,,?
+15.6.1 Does the unit have a policy on supplies and purchasing?,,,,,,,,,,,,,,,?
 15.6.2 Does the unit have adequate supplies for services provided?,,,,,,,,,,,,,,,?
 15.6.3 Does the unit have a policy on expired supplies?,,,,,,,,,,,,,,,?
 15.6.4 Does the unit have a stock control system?,,,,,,,,,,,,,,,?
@@ -2080,7 +2086,7 @@ Safety And Waste Management--,,,,,,,,,,,,,,,?
 15.9.1 Does the unit have a policy on waste management?,,,,,,,,,,,,,,,?
 15.9.2 Does the unit have standard operating procedures on waste management,,,,,,,,,,,,,,,?
 15.9.3 Does the unit have a waste disposal system?,,,,,,,,,,,,,,,?
-15.9.4 Does the unit have a policy and procedures on safety? Yes No,,,,,,,,,,,,,,,?
+15.9.4 Does the unit have a policy and procedures on safety?,,,,,,,,,,,,,,,?
 15.9.5 Are there fire protection equipment?,,,,,,,,,,,,,,,?
 15.9.5.1 Fire extinguishers?,,,,,,,,,,,,,,,?
 15.9.5.2 Smoke detectors?,,,,,,,,,,,,,,,?
@@ -2102,7 +2108,7 @@ Customer Satisfaction--,,,,,,,,,,,,,,,?
 15.10.5 Customer complaints,,,,,,,,,,,,,,,?
 OBSTETRICS AND GYNAECOLOGY,,,,,,,,,,,,,,,?
 Organization And Management--,,,,,,,,,,,,,,,?
-16.1.1 Does the unit have a documented organizational structure? Yes No,,,,,,,,,,,,,,,?
+16.1.1 Does the unit have a documented organizational structure?,,,,,,,,,,,,,,,?
 16.1.2 Does the unit have documented Policies and Procedures,,,,,,,,,,,,,,,?
 16.1.3 Does the unit have equipment maintenance program?,,,,,,,,,,,,,,,?
 16.1.4 Is there a Quality Management System?,,,,,,,,,,,,,,,?
@@ -2129,7 +2135,7 @@ Cubicle--,,,,,,,,,,,,,,,?
 16.4.1 Does the cubicle (s) have adequate space?,,,,,,,,,,,,,,,?
 16.4.2. Does the cubicle (s) have wheelchair accessibility?,,,,,,,,,,,,,,,?
 16.4.3 Does the cubicle (s) have the following?,,,,,,,,,,,,,,,?
-"16.4.3.1 Patient bed, with tiltable headrest, covered with linen? Yes No",,,,,,,,,,,,,,,?
+"16.4.3.1 Patient bed, with tiltable headrest, covered with linen?",,,,,,,,,,,,,,,?
 16.4.3.2 Is the bed behind a curtain or located within a screened off,,,,,,,,,,,,,,,?
 16.4.3.3 Are there adequate patient lockers?,,,,,,,,,,,,,,,?
 16.4.3.4 Adequate cardiac tables?,,,,,,,,,,,,,,,?
@@ -2202,7 +2208,7 @@ Toilet Facilities--,,,,,,,,,,,,,,,?
 16.9.5 Is there suitable soap dispenser?,,,,,,,,,,,,,,,?
 16.9.6 Is there an appropriate hand drying provision?,,,,,,,,,,,,,,,?
 16.9.7 Is there a separate toilet for staff?,,,,,,,,,,,,,,,?
-16.9.8 Is there a toilet that is designed for wheel chair users? Yes No,,,,,,,,,,,,,,,?
+16.9.8 Is there a toilet that is designed for wheel chair users?,,,,,,,,,,,,,,,?
 16.9.9 Does the female toilet have sanitary pads disposal?,,,,,,,,,,,,,,,?
 16.9.10 Are toilets aesthetically pleasing?,,,,,,,,,,,,,,,?
 Safety And Waste Management--,,,,,,,,,,,,,,,?
@@ -2230,7 +2236,7 @@ Customer Satisfaction--,,,,,,,,,,,,,,,?
 16.11.5 Customer complaints?,,,,,,,,,,,,,,,?
 PSYCHIATRIC SERVICES AND WARDS,,,,,,,,,,,,,,,?
 Organization And Management--,,,,,,,,,,,,,,,?
-17.1.1 Does the unit have a documented organizational structure? Yes No,,,,,,,,,,,,,,,?
+17.1.1 Does the unit have a documented organizational structure?,,,,,,,,,,,,,,,?
 17.1.2 Does the unit have documented Policies and Procedures for the services provided?,,,,,,,,,,,,,,,?
 17.1.3 Does the unit have equipment maintenance program?,,,,,,,,,,,,,,,?
 17.1.4 Is there a Quality Management System?,,,,,,,,,,,,,,,?
@@ -2760,6 +2766,53 @@ Personnel--,,,,,,,,,,,,,,,?
 20.3.4 Are they registered with the relevant councils?,,,,,,,,,,,,,,,?
 20.3.5 Is there a receptionist full time?,,,,,,,,,,,,,,,?
 20.3.6 Is there a cleaner full time?,,,,,,,,,,,,,,,?
+Comments,,,,,,,,,,,,,,,?
+20.4 Personnel Training and Health--,,,,,,,,,,,,,,,?
+20.4.1 Are auxiliary personnel under the continuous personal supervision of a Pharmacist?,,,,,,,,,,,,,,,?
+20.4.2 Are auxiliary personnel adequate for all the key functions?,,,,,,,,,,,,,,,?
+20.4.3 Are auxiliary personnel subjected to medical check-up prior to and periodically during employment?,,,,,,,,,,,,,,,?
+20.4.4 Is there an arrangement for engaging another pharmacist during the absence of the in-charge pharmacist?,,,,,,,,,,,,,,,?
+20.4.5 Are there job descriptions for all employees?,,,,,,,,,,,,,,,?
+20.4.6 Is there continuing education for the pharmacist?,,,,,,,,,,,,,,,?
+20.4.7 Is there periodical in-service training for all employees,,,,,,,,,,,,,,,?
+20.4.8 Do personnel wear suitable and clean clothing over their street clothes?,,,,,,,,,,,,,,,?
+20.4.9 Do personnel receive instructions on good personal hygiene?,,,,,,,,,,,,,,,?
+20.4.10 Are personnel trained on policies and procedures,,,,,,,,,,,,,,,?
+20.5. Supplies--,,,,,,,,,,,,,,,?
+20.5.1 Does the pharmacy have a policy on supplies and purchasing?,,,,,,,,,,,,,,,?
+20.5.2 Does the pharmacy have adequate space for storage of supplies?,,,,,,,,,,,,,,,?
+20.5.3 Does the pharmacy have adequate supplies for the services provided?,,,,,,,,,,,,,,,?
+20.5.3.1 Are these stored appropriately?,,,,,,,,,,,,,,,?
+20.5.4 Does the pharmacy have a policy on expired supplies?,,,,,,,,,,,,,,,?
+20.5.4.1 Is the expiry of these items closely,,,,,,,,,,,,,,,?
+monitored?,,,,,,,,,,,,,,,?
+20.5.4.2 Does the pharmacy have a Policy of disposal of expired drugs,,,,,,,,,,,,,,,?
+20.5.5 Does the pharmacy have a stock control system?,,,,,,,,,,,,,,,?
+Comments,,,,,,,,,,,,,,,?
+20.6 Environment--,,,,,,,,,,,,,,,?
+20.6.1 Does the pharmacy have wheelchair accessibility?,,,,,,,,,,,,,,,?
+20.6.2 Are the premises secure and easily accessible?,,,,,,,,,,,,,,,?
+20.6.3 Is the pharmacy space adequate for all the intended purposes?,,,,,,,,,,,,,,,?
+20.6.4 Is there adequate space for parking?,,,,,,,,,,,,,,,?
+20.6.5 Is the pharmacy area clean and neat?,,,,,,,,,,,,,,,?
+20.6.6 Are the surfaces free from dust?,,,,,,,,,,,,,,,?
+20.6.7 Is there adequate lighting?,,,,,,,,,,,,,,,?
+20.6.8 Is there adequate air-conditioning?,,,,,,,,,,,,,,,?
+20.6.9 Is there a mechanism in place for monitoring and controlling temperature and humidity?,,,,,,,,,,,,,,,?
+"20.6.10 Is flooring of cleanable, smooth, and impervious material?",,,,,,,,,,,,,,,?
+20.6.11 Are there relevant restriction/ warning signs?,,,,,,,,,,,,,,,?
+Comments,,,,,,,,,,,,,,,?
+20.7 Reception / Waiting Area--,,,,,,,,,,,,,,,?
+20.7.1 Does the reception area have adequate space?,,,,,,,,,,,,,,,?
+20.7.2 Is a telephone available?,,,,,,,,,,,,,,,?
+20.7.3 Is the reception desk and chair available?,,,,,,,,,,,,,,,?
+20.7.4 Is there a receptionist at all times?,,,,,,,,,,,,,,,?
+20.7.5 Is there a standardized patient registration system?,,,,,,,,,,,,,,,?
+20.7.6 Are there adequate patient waiting chairs/benches?,,,,,,,,,,,,,,,?
+20.7.7 Is there a waste bin?,,,,,,,,,,,,,,,?
+20.7.8 Are education materials available?,,,,,,,,,,,,,,,?
+20.7.9 Is there a water fountain?,,,,,,,,,,,,,,,?
+Comments,,,,,,,,,,,,,,,?
 20.8 General drug storage--,,,,,,,,,,,,,,,?
 20.8.1 Is the storage of drugs suitable?,,,,,,,,,,,,,,,?
 20.8.2 Are drugs well protected from direct sunlight?,,,,,,,,,,,,,,,?
@@ -2775,65 +2828,68 @@ Personnel--,,,,,,,,,,,,,,,?
 20.8.12 Is there a system in place for monitoring stock especially open stock?,,,,,,,,,,,,,,,?
 20.8.13 Is there a cold room and refrigerator that is used for keeping keep,,,,,,,,,,,,,,,?
 20.8.14 Aare the temperatures monitored,,,,,,,,,,,,,,,?
-20.8.8 Specific drug storage,,,,,,,,,,,,,,,?
+Comments,,,,,,,,,,,,,,,?
+20.8.8 Specific drug storage--,,,,,,,,,,,,,,,?
 20.8.1 Are thermolabile drugs stored correctly?,,,,,,,,,,,,,,,?
 20.8.2 Is there a fridge for the thermolabile drugs?,,,,,,,,,,,,,,,?
 20.8.3 Is temperature in the storage and dispensing areas controlled?,,,,,,,,,,,,,,,?
 20.8.4 Is temperature in the storage and dispensing areas monitored?,,,,,,,,,,,,,,,?
 20.8.5 Is a record maintained for temperature monitoring?,,,,,,,,,,,,,,,?
-20.8.6 Are thermometers in the storage and dispensing areas properly,,,,,,,,,,,,,,,?
-20.8.7 Are all expired or rejected drugs physically separated from other,,,,,,,,,,,,,,,?
-20.8.8 Is the area where expired or rejected drugs are stored clearly,,,,,,,,,,,,,,,?
-20.8.9 Are there any expired or rejected drugs on the shelves? (List). Yes,,,,,,,,,,,,,,,?
+20.8.6 Are thermometers in the storage and dispensing areas properly placed?,,,,,,,,,,,,,,,?
+20.8.7 Are all expired or rejected drugs physically separated from other drug stocks?,,,,,,,,,,,,,,,?
+20.8.8 Is the area where expired or rejected drugs are stored clearly marked?,,,,,,,,,,,,,,,?
+20.8.9 Are there any expired or rejected drugs on the shelves? (List).,,,,,,,,,,,,,,,?
 20.8.10 Is there a system for tracking expiry dates of drugs?,,,,,,,,,,,,,,,?
 20.8.11 Are schedule 1A and 1B drugs stored in a locked cabinet?,,,,,,,,,,,,,,,?
 20.8.12 Is the cabinet bolted to the floor or wall?,,,,,,,,,,,,,,,?
-20.8.13 Are drugs stored in non-original containers labelled with:,,,,,,,,,,,,,,,?
+20.8.13 Are drugs stored in non-original containers labelled with:--,,,,,,,,,,,,,,,?
 20.9.13.1 name of drug?,,,,,,,,,,,,,,,?
 20.8.2 strength?,,,,,,,,,,,,,,,?
 20.8.3 batch number?,,,,,,,,,,,,,,,?
 20.8.4 reference number to link to original container?,,,,,,,,,,,,,,,?
 20.8.5 expiry date?,,,,,,,,,,,,,,,?
 20.9.13.6 name of manufacturer?,,,,,,,,,,,,,,,?
-20.8.9 Drug supply,,,,,,,,,,,,,,,?
-20.8.1 Are suppliers licensed according to country,,,,,,,,,,,,,,,?
-20.8.2 Is there a system for tracking suppliers?,,,,,,,,,,,,,,,?
-20.10.3 Are all drugs registered according to the Drugs and Related,,,,,,,,,,,,,,,?
-20.8.4 Are drugs sold in the pharmacy labelled with the Botswana,,,,,,,,,,,,,,,?
-20.8.5 Are any traditional products fortified with allopathic drugs? Yes No,,,,,,,,,,,,,,,?
-20.8.6 Does the pharmacist possess any extra knowledge on the safe use of,,,,,,,,,,,,,,,?
-20.8.7 Are donations sold in the pharmacy?,,,,,,,,,,,,,,,?
-20.8.8 Are generic equivalents where available kept in the pharmacy? Yes No,,,,,,,,,,,,,,,?
-20.8.10 Dispensary Area,,,,,,,,,,,,,,,?
-20.11.1 Is the dispensing surface of an adequate size to allow for an,,,,,,,,,,,,,,,?
-20.8.2 Is the surface clean and free from dust,,,,,,,,,,,,,,,?
-20.8.3 Is there a suitable means of lighting in the dispensing area?,,,,,,,,,,,,,,,?
-20.11.4 Is there a suitable means of counting tablets and capsules,,,,,,,,,,,,,,,?
-20.8.5 Is there a suitable means of measuring liquids dispensed?,,,,,,,,,,,,,,,?
-20.8.6 Is there a suitable range of containers for the dispensing of: Yes,,,,,,,,,,,,,,,?
-20.8.1 tablets/capsules?,,,,,,,,,,,,,,,?
-20.8.2 liquids?,,,,,,,,,,,,,,,?
-20.8.3 creams/ointments?,,,,,,,,,,,,,,,?
-"20.8.7 Are there suitable labels for a,b and c above?:",,,,,,,,,,,,,,,?
-20.8.8 Does labelling bear the following?,,,,,,,,,,,,,,,?
-20.8.1 name of the patient?,,,,,,,,,,,,,,,?
-20.8.2 name of the drug?,,,,,,,,,,,,,,,?
-20.8.3 quantity of the drug?,,,,,,,,,,,,,,,?
-20.8.4 strength and dosage form?,,,,,,,,,,,,,,,?
-20.8.5 dosage instructions?,,,,,,,,,,,,,,,?
-20.8.6 pharmacy name?,,,,,,,,,,,,,,,?
-20.8.7 signature of the dispenser?,,,,,,,,,,,,,,,?
-20.8.8 date of dispensing?,,,,,,,,,,,,,,,?
-20.8.9 The expiry date,,,,,,,,,,,,,,,?
-20.8.10 The batch number,,,,,,,,,,,,,,,?
-20.8.9 Are labels legibly written?,,,,,,,,,,,,,,,?
-20.8.10 Does the generic name of the drug dispensed appear on the,,,,,,,,,,,,,,,?
-20.8.11 Is there a referencing system that links the dispensed drug to the,,,,,,,,,,,,,,,?
-20.8.12 Are there any preparations compounded on the premises? (List,,,,,,,,,,,,,,,?
-20.8.13 Is there any pre-packing carried out in the practice?,,,,,,,,,,,,,,,?
-20.8.15 Are verbal or telephonic or electronic mail or facsimile,,,,,,,,,,,,,,,?
-"20.8.16 Are Schedule 1A, B & C drugs sold by a Pharmacist or a Trainee",,,,,,,,,,,,,,,?
-20.8.17 Are Schedule 2 drugs sold by a pharmacist or a Trainee,,,,,,,,,,,,,,,?
+20.10 Drug supply--,,,,,,,,,,,,,,,?
+20.10.1 Are suppliers licensed according to country requirements?,,,,,,,,,,,,,,,?
+20.10.2 Is there a system for tracking suppliers?,,,,,,,,,,,,,,,?
+20.10.3 Are all drugs registered according to the Drugs and Related Substances Act? (Attach list of unauthorised drugs).,,,,,,,,,,,,,,,?
+20.10.4 Are drugs sold in the pharmacy labelled with the Botswana registration number (BOT)?,,,,,,,,,,,,,,,?
+20.10.5 Are any traditional products fortified with allopathic drugs?,,,,,,,,,,,,,,,?
+20.10.6 Does the pharmacist possess any extra knowledge on the safe use of raditional and related products?,,,,,,,,,,,,,,,?
+20.10.7 Are donations sold in the pharmacy?,,,,,,,,,,,,,,,?
+20.10.8 Are generic equivalents where available kept in the pharmacy?,,,,,,,,,,,,,,,?
+20.11 Dispensary Area--,,,,,,,,,,,,,,,?
+20.11.1 Is the dispensing surface of an adequate size to allow for an efficient work flow?,,,,,,,,,,,,,,,?
+20.11.2 Is the surface clean and free from dust,,,,,,,,,,,,,,,?
+20.11.3 Is there a suitable means of lighting in the dispensing area?,,,,,,,,,,,,,,,?
+20.11.4 Is there a suitable means of counting tablets and capsules dispensed?,,,,,,,,,,,,,,,?
+20.11.5 Is there a suitable means of measuring liquids dispensed?,,,,,,,,,,,,,,,?
+20.11.6 Is there a suitable range of containers for the dispensing of:--,,,,,,,,,,,,,,,?
+20.11.6.1 tablets/capsules?,,,,,,,,,,,,,,,?
+20.11.6.2 liquids?,,,,,,,,,,,,,,,?
+20.11.6.3 creams/ointments?,,,,,,,,,,,,,,,?
+"20.11.7 Are there suitable labels for a,b and c above?:",,,,,,,,,,,,,,,?
+20.11.8 Does labelling bear the following?,,,,,,,,,,,,,,,?
+20.11.8.1 name of the patient?,,,,,,,,,,,,,,,?
+20.11.8.2 name of the drug?,,,,,,,,,,,,,,,?
+20.11.8.3 quantity of the drug?,,,,,,,,,,,,,,,?
+20.11.8.4 strength and dosage form?,,,,,,,,,,,,,,,?
+20.11.8.5 dosage instructions?,,,,,,,,,,,,,,,?
+20.11.8.6 pharmacy name?,,,,,,,,,,,,,,,?
+20.11.8.7 signature of the dispenser?,,,,,,,,,,,,,,,?
+20.11.8.8 date of dispensing?,,,,,,,,,,,,,,,?
+20.11.8.9 The expiry date,,,,,,,,,,,,,,,?
+20.11.8.10 The batch number,,,,,,,,,,,,,,,?
+20.11.9 Are labels legibly written?,,,,,,,,,,,,,,,?
+20.11.10 Does the generic name of the drug dispensed appear on the label?,,,,,,,,,,,,,,,?
+20.11.11 Is there a referencing system that links the dispensed drug to the original supplier?,,,,,,,,,,,,,,,?
+20.11.12 Are there any preparations compounded on the premises? (List),,,,,,,,,,,,,,,?
+20.11.13 Is there any pre-packing carried out in the practice?,,,,,,,,,,,,,,,?
+20.11.14 Is there a suitable range of compounding equipment? (List)?,,,,,,,,,,,,,,,?
+20.11.15 Are verbal or telephonic or electronic mail or facsimile prescriptions followed up immediately?,,,,,,,,,,,,,,,?
+"20.11.16 Are Schedule 1A, B & C drugs sold by a Pharmacist or a Trainee Pharmacist or Pharmacy technician under the continuous personal supervision of a pharmacist?",,,,,,,,,,,,,,,?
+20.11.17 Are Schedule 2 drugs sold by a pharmacist or a Trainee Pharmacist or Pharmacy technician under the continuous personal supervision of a pharmacist?,,,,,,,,,,,,,,,?
+20.10.18 Are Schedule 3 drugs sold by a Pharmacist or a Trainee pharmacist or Pharmacy technician under the continuous personal supervision of a pharmacist?,,,,,,,,,,,,,,,?
 20.10.19 Is there a counselling room to provide the patient with privacy,,,,,,,,,,,,,,,?
 20.8.10 Documentation,,,,,,,,,,,,,,,?
 20.8.1 Are all invoices kept in the pharmacy for at least three years?,,,,,,,,,,,,,,,?
@@ -3887,7 +3943,7 @@ DIETETICS,,,,,,,,,,,,,,,?
 26.2.1.3 Outreach,,,,,,,,,,,,,,,?
 26.2.1.4 Others Specify [Fill in],,,,,,,,,,,,,,,?
 26.2.2 What is the average number of patients seen per month? [___] Comments:[Fill in] [Fill in] [Fill in],,,,,,,,,,,,,,,?
-26.3.1 What is the total number of staff? [___],,,,,,,,,,,,,,,?
+26.3.1 What is the total number of staff?,,,,,,,,,,,,,,,?
 26.3.2 What is the total number of professional staff?[___],,,,,,,,,,,,,,,?
 "26.3.3 What are their Qualifications? (State number). PhD? [___], Masters? ______ Degree?[___], Diploma?____, Other? ________ Specify [Fill in]",,,,,,,,,,,,,,,?
 26.3.4 Are they registered with the relevant councils?,,,,,,,,,,,,,,,?
@@ -4250,7 +4306,7 @@ Specify",,,,,,,,,,,,,,,?
 31.7.6 Is there a policy and procedure on accidental exposure to HIV?,,,,,,,,,,,,,,,?
 31.7.7 Does the facility have a hand washing policy?,,,,,,,,,,,,,,,?
 31.7.8 Does the facility have fire protection equipment?,,,,,,,,,,,,,,,?
-31.7.8.1 Fire extinguishers? 31.7.8.1 Fire extinguishers? 31.7.8.1 Fire extinguishers? 31.7.8.1 Fire extinguishers? 31.7.8.1 Fire extinguishers? 31.7.8.1 Fire extinguishers? 31.7.8.1 Fire extinguishers? 31.7.8.1 Fire extinguishers? 31.7.8.1 Fire extinguishers? 31.7.8.1 Fire extinguishers? 31.7.8.1 Fire extinguishers? 31.7.8.1 Fire extinguishers? 31.7.8.1 Fire extinguishers? 31.7.8.1 Fire extinguishers? 31.7.8.1 Fire extinguishers? Yes Yes Yes Yes Yes No No No No N/A N/A N/A N/A N/A N/A N/A N/A,,,,,,,,,,,,,,,?
+31.7.8.1 Fire extinguishers? 31.7.8.1 Fire extinguishers? 31.7.8.1 Fire extinguishers? 31.7.8.1 Fire extinguishers? 31.7.8.1 Fire extinguishers? 31.7.8.1 Fire extinguishers? 31.7.8.1 Fire extinguishers? 31.7.8.1 Fire extinguishers? 31.7.8.1 Fire extinguishers? 31.7.8.1 Fire extinguishers? 31.7.8.1 Fire extinguishers? 31.7.8.1 Fire extinguishers? 31.7.8.1 Fire extinguishers? 31.7.8.1 Fire extinguishers? 31.7.8.1 Fire extinguishers? Yes Yes Yes Yes No No No N/A N/A N/A N/A N/A N/A N/A N/A,,,,,,,,,,,,,,,?
 31.7.8.2 Emergency exits? 31.7.8.2 Emergency exits? 31.7.8.2 Emergency exits? 31.7.8.2 Emergency exits? 31.7.8.2 Emergency exits? 31.7.8.2 Emergency exits? 31.7.8.2 Emergency exits? 31.7.8.2 Emergency exits? 31.7.8.2 Emergency exits? 31.7.8.2 Emergency exits? 31.7.8.2 Emergency exits? 31.7.8.2 Emergency exits? 31.7.8.2 Emergency exits? 31.7.8.2 Emergency exits? 31.7.8.2 Emergency exits? Yes Yes Yes Yes Yes No No No No N/A N/A N/A N/A N/A N/A N/A N/A,,,,,,,,,,,,,,,?
 31.7.8.3 Fire alarms? 31.7.8.3 Fire alarms? 31.7.8.3 Fire alarms? 31.7.8.3 Fire alarms? 31.7.8.3 Fire alarms? 31.7.8.3 Fire alarms? 31.7.8.3 Fire alarms? 31.7.8.3 Fire alarms? 31.7.8.3 Fire alarms? 31.7.8.3 Fire alarms? 31.7.8.3 Fire alarms? 31.7.8.3 Fire alarms? 31.7.8.3 Fire alarms? 31.7.8.3 Fire alarms? 31.7.8.3 Fire alarms? Yes Yes Yes Yes Yes No No No No N/A N/A N/A N/A N/A N/A N/A N/A,,,,,,,,,,,,,,,?
 31.7.8.4 Smoke detectors? 31.7.8.4 Smoke detectors? 31.7.8.4 Smoke detectors? 31.7.8.4 Smoke detectors? 31.7.8.4 Smoke detectors? 31.7.8.4 Smoke detectors? 31.7.8.4 Smoke detectors? 31.7.8.4 Smoke detectors? 31.7.8.4 Smoke detectors? 31.7.8.4 Smoke detectors? 31.7.8.4 Smoke detectors? 31.7.8.4 Smoke detectors? 31.7.8.4 Smoke detectors? 31.7.8.4 Smoke detectors? 31.7.8.4 Smoke detectors? Yes Yes Yes Yes Yes No No No No N/A N/A N/A N/A N/A N/A N/A N/A,,,,,,,,,,,,,,,?
@@ -4370,7 +4426,7 @@ Reception/ Waiting Area--,,,,,,,,,,,,,,,?
 33.3.5 Is there a standardized patient registration system?,,,,,,,,,,,,,,,?
 33.3.6 Are there any education materials available?,,,,,,,,,,,,,,,?
 33.3.7 Is there a waste bin?,,,,,,,,,,,,,,,?
-33.3.8 Is there a wash basin with disinfectant and paper towel? Yes No,,,,,,,,,,,,,,,?
+33.3.8 Is there a wash basin with disinfectant and paper towel?,,,,,,,,,,,,,,,?
 33.3.9 Does the reception have a wheel chair access?,,,,,,,,,,,,,,,?
 Services Provided--,,,,,,,,,,,,,,,?
 33.4.1 What services are being provided?,,,,,,,,,,,,,,,?
@@ -4393,7 +4449,7 @@ Personnel Training And Health--,,,,,,,,,,,,,,,?
 33.5.2 Are auxiliary personnel adequate for all the key functions? Yes,,,,,,,,,,,,,,,?
 33.5.3 Is there an arrangement of engaging other occupational therapist,,,,,,,,,,,,,,,?
 33.5.4 Are there job description for all employees?,,,,,,,,,,,,,,,?
-33.5.5 Is there continuing education for Occupational therapists? Yes No,,,,,,,,,,,,,,,?
+33.5.5 Is there continuing education for Occupational therapists?,,,,,,,,,,,,,,,?
 33.6.1 Is there a chair and table for occupational therapists?,,,,,,,,,,,,,,,?
 33.6.2 Is there a comfortable chair for the patient?,,,,,,,,,,,,,,,?
 33.6.3 Is there adequate space for occupational therapist to consult,,,,,,,,,,,,,,,?
@@ -4413,7 +4469,7 @@ Environment--,,,,,,,,,,,,,,,?
 33.7.8 Are there relevant restriction/warning signs?,,,,,,,,,,,,,,,?
 33.7.9 Is there enough ventilation?,,,,,,,,,,,,,,,?
 33.7.10 Is there a sign prohibiting smoking in the premises?,,,,,,,,,,,,,,,?
-33.7.11 Is there a sign prohibiting eating and drinking anywhere? Yes No,,,,,,,,,,,,,,,?
+33.7.11 Is there a sign prohibiting eating and drinking anywhere?,,,,,,,,,,,,,,,?
 Toilet Facilities--,,,,,,,,,,,,,,,?
 33.8.1 Is there a minimum of two toilets available for male,,,,,,,,,,,,,,,?
 33.8.2 Are the toilets labelled male and female respectively?,,,,,,,,,,,,,,,?
@@ -4485,7 +4541,7 @@ Reception/ Waiting Area--,,,,,,,,,,,,,,,?
 34.3.5 Is there a standardized patient registration system?,,,,,,,,,,,,,,,?
 34.3.6 Are there any education materials available?,,,,,,,,,,,,,,,?
 34.3.7 Is there a waste bin?,,,,,,,,,,,,,,,?
-34.3.8 Is there a wash basin with disinfectant and paper towel? Yes No,,,,,,,,,,,,,,,?
+34.3.8 Is there a wash basin with disinfectant and paper towel?,,,,,,,,,,,,,,,?
 34.3.9 Does the reception have a wheel chair access?,,,,,,,,,,,,,,,?
 Services Provided--,,,,,,,,,,,,,,,?
 34.4.1 What services are being provided?,,,,,,,,,,,,,,,?
@@ -4496,7 +4552,7 @@ Services Provided--,,,,,,,,,,,,,,,?
 Personnel Training And Health--,,,,,,,,,,,,,,,?
 34.5.1 Are auxiliary personnel under the continuous personal,,,,,,,,,,,,,,,?
 34.5.2 Are auxiliary personnel adequate for all the key functions? Yes,,,,,,,,,,,,,,,?
-34.5.3 Is there an arrangement of engaging other speech therapist Yes No,,,,,,,,,,,,,,,?
+34.5.3 Is there an arrangement of engaging other speech therapist,,,,,,,,,,,,,,,?
 34.5.4 Are there job description for all employees?,,,,,,,,,,,,,,,?
 34.5.5 Is there continuing education for speech therapists?,,,,,,,,,,,,,,,?
 34.6.1 Is there a chair and table for speech therapists?,,,,,,,,,,,,,,,?
@@ -4518,7 +4574,7 @@ Environment--,,,,,,,,,,,,,,,?
 34.7.8 Are there relevant restriction/warning signs?,,,,,,,,,,,,,,,?
 34.7.9 Is there enough ventilation?,,,,,,,,,,,,,,,?
 34.7.10 Is there a sign prohibiting smoking in the premises?,,,,,,,,,,,,,,,?
-34.7.11 Is there a sign prohibiting eating and drinking anywhere? Yes No,,,,,,,,,,,,,,,?
+34.7.11 Is there a sign prohibiting eating and drinking anywhere?,,,,,,,,,,,,,,,?
 Toilet Facilities--,,,,,,,,,,,,,,,?
 34.8.1 Is there a minimum of two toilets available for male,,,,,,,,,,,,,,,?
 34.8.2 Are the toilets labelled male and female respectively?,,,,,,,,,,,,,,,?
@@ -4588,7 +4644,7 @@ Reception/ Waiting Area--,,,,,,,,,,,,,,,?
 35.3.5 Is there a standardized patient registration system?,,,,,,,,,,,,,,,?
 35.3.6 Are there any education materials available?,,,,,,,,,,,,,,,?
 35.3.7 Is there a waste bin?,,,,,,,,,,,,,,,?
-35.3.8 Is there a wash basin with disinfectant and paper towel? Yes No,,,,,,,,,,,,,,,?
+35.3.8 Is there a wash basin with disinfectant and paper towel?,,,,,,,,,,,,,,,?
 Services Provided--,,,,,,,,,,,,,,,?
 35.4.1 What services are being provided?,,,,,,,,,,,,,,,?
 35.4.1.1 Aids counselling?,,,,,,,,,,,,,,,?
@@ -4603,7 +4659,7 @@ Services Provided--,,,,,,,,,,,,,,,?
 Personnel Training And Health--,,,,,,,,,,,,,,,?
 35.5.1 Are auxiliary personnel under the continuous personal,,,,,,,,,,,,,,,?
 35.5.2 Are auxiliary personnel adequate for all the key functions? Yes,,,,,,,,,,,,,,,?
-35.5.3 Is there an arrangement of engaging other social workers Yes No,,,,,,,,,,,,,,,?
+35.5.3 Is there an arrangement of engaging other social workers,,,,,,,,,,,,,,,?
 35.5.5 Is there continuing education for social workers?,,,,,,,,,,,,,,,?
 35.6.1 Is there a chair and table for social workers?,,,,,,,,,,,,,,,?
 35.6.2 Is there a comfortable chair for the patient?,,,,,,,,,,,,,,,?
@@ -4648,4 +4704,4 @@ Client Satisfaction--,,,,,,,,,,,,,,,?
 35.10.2 Is there a feedback mechanism?,,,,,,,,,,,,,,,?
 35.10.2.1 Suggestion box?,,,,,,,,,,,,,,,?
 35.10.3 Is there a toll free number?,,,,,,,,,,,,,,,?
-35.10.4 Others?,?,,,,,,,,,,,,,,
+35.10.4 Others?,,,,,,,,,,,,,,,?

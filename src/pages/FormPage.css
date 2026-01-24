@@ -7,7 +7,8 @@
   max-width: 100%;
   /* Changed from 1200px to allow full width */
   margin: 0 auto;
-  padding: 20px;
+  padding: 0 20px 20px;
+  /* Removed top padding for alignment */
   box-sizing: border-box;
 }
 
@@ -1286,4 +1287,99 @@
 .form-select:disabled:hover {
   border-color: #ddd;
   box-shadow: none;
+}
+
+/* --- Layout Overrides for Full Width --- */
+
+.form-container {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 20px 20px 0 !important;
+  box-sizing: border-box;
+}
+
+.form-layout-with-sidebar {
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  margin-top: 0;
+  /* Aligned with sidebar header top */
+}
+
+.form-main-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  /* Removed fixed margin-left for sticky sidebar compatibility */
+  width: auto;
+  max-width: none;
+}
+
+/* Remove top margin from the first section in the main content area for alignment */
+.form-main-content .form-section {
+  margin-top: 0 !important;
+}
+
+.screen.form-page-screen {
+  max-width: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+.form-section {
+  width: 100% !important;
+  max-width: none !important;
+  box-sizing: border-box !important;
+}
+
+.dynamic-sections-container {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+
+/* Ensure all top-level form sections respect sidebar margin when sidebar is visible */
+/* Simplified for sticky sidebar context */
+.inspection-form.with-sidebar>.facility-info-display,
+.inspection-form.with-sidebar>.specialization-selector-section {
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* New Status Area Styling */
+.form-page-status-area {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.specialization-status-banner {
+  background-color: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 8px;
+  padding: 12px 20px;
+  border-left: 4px solid #ffc107;
+}
+
+.specialization-status-banner .status-indicator {
+  font-weight: 600;
+  color: #856404;
+  margin-bottom: 4px;
+}
+
+.specialization-status-banner .status-note {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* If sidebar is NOT present, ensure no unexpected margins */
+.inspection-form:not(.with-sidebar)>.facility-info-display,
+.inspection-form:not(.with-sidebar)>.specialization-selector-section {
+  margin-left: 0 !important;
 }

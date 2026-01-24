@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist-final.csv
- * Generated on: 2026-01-22 19:33:53
+ * Generated on: 2026-01-24 23:18:00
  * Facility Type: Ear, Nose & Throat
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -64,7 +64,7 @@ const EarNoseandThroat = {
             "What are the services provided at the Facility?--",
             "General services; Specify",
             "Specialist services; Specify",
-            "Other services (Specify);",
+            "Other services (Specify); ?.....",
             "Are hours of operation displayed?",
             "State hours of operation",
             "Are emergency contact numbers displayed?",
@@ -81,7 +81,7 @@ const EarNoseandThroat = {
             "What is the current number of staff--",
             "General Health Professionals (Specify)",
             "Specialists (Specify)",
-            "Other (specify)",
+            "Other (Specify)",
             "Administrative Staff (Specify)",
             "Support staff (Specify)",
             "Are professionals registered with the relevant Councils?",
@@ -182,13 +182,13 @@ const EarNoseandThroat = {
             "Height measuring device",
             "HIV testing kit",
             "Irrigator",
-            "Jobson-Horneï¿½s probe",
+            "Jobson-HorneÃ¯Â¿Â½s probe",
             "Laryngoscope set",
             "Needle holders",
             "Non sterile gloves",
             "Otoscope set",
             "Sharps container",
-            "Siegelï¿½s speculum",
+            "SiegelÃ¯Â¿Â½s speculum",
             "Sound proof room/ booth",
             "Sphygmomanometer",
             "Sterile gloves",
@@ -255,7 +255,7 @@ const EarNoseandThroat = {
             "Canvas bag trolley with cover",
             "Canvas bag trolley with cover for non soiled linen",
             "Canvas bag trolley with cover for soiled linen",
-            "clinical waste bins with lid",
+            "Clinical waste bins with lid",
             "Disinfectant",
             "Domestic waste bins with lid",
             "Heavy duty gloves",
@@ -289,7 +289,7 @@ const EarNoseandThroat = {
     },
     "TOILET FACILITIES": {
         "showOnly": [
-            "Is there a minimum of two toilets available (for Male and   Female patients)?",
+            "Is there a minimum of two toilets available (for male and",
             "Are toilets fitted with hand wash facilities?",
             "Is there suitable soap dispenser?",
             "Is there an appropriate hand drying provision?",
@@ -343,7 +343,7 @@ const EarNoseandThroat = {
             "Is there a complaints, procedure",
         ]
     },
-    "ULTRASOUND ROOM": {
+    "LIASON WITH PRIMARY HEALTH CARE DEPARTMENTS": {
         "showOnly": [
             "Is there evidence of facility liason with the Primary Health Care Department? (A guide the reports to be submitted available)",
             "Is there evidence of statistical reporting to the Primary Health Care Departments as per available guideline?",

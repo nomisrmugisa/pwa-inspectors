@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist-final.csv
- * Generated on: 2026-01-22 19:33:53
+ * Generated on: 2026-01-24 23:18:00
  * Facility Type: Psychology
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -65,7 +65,7 @@ const Psychology = {
             "What are the services provided at the Facility?--",
             "General services; Specify",
             "Specialist services; Specify",
-            "Other services (Specify);",
+            "Other services (Specify); ?.....",
             "Are hours of operation displayed?",
             "State hours of operation",
             "Are emergency contact numbers displayed?",
@@ -82,7 +82,7 @@ const Psychology = {
             "What is the current number of staff--",
             "General Health Professionals (Specify)",
             "Specialists (Specify)",
-            "Other (specify)",
+            "Other (Specify)",
             "Administrative Staff (Specify)",
             "Support staff (Specify)",
             "Are professionals registered with the relevant Councils?",
@@ -168,8 +168,6 @@ const Psychology = {
     },
     "TOILET FACILITIES": {
         "showOnly": [
-            "Is there a minimum of two toilets available (for Male and   Female patients)?",
-            "Are toilets fitted with hand wash facilities?",
             "Is there suitable soap dispenser?",
             "Is there an appropriate hand drying provision?",
             "Is there a separate toilet for staff?",
@@ -222,7 +220,7 @@ const Psychology = {
             "Is there a complaints, procedure",
         ]
     },
-    "ULTRASOUND ROOM": {
+    "LIASON WITH PRIMARY HEALTH CARE DEPARTMENTS": {
         "showOnly": [
             "Is there evidence of facility liason with the Primary Health Care Department? (A guide the reports to be submitted available)",
             "Is there evidence of statistical reporting to the Primary Health Care Departments as per available guideline?",

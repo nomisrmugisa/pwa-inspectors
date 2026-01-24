@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist-final.csv
- * Generated on: 2026-01-22 19:33:53
+ * Generated on: 2026-01-24 23:18:00
  * Facility Type: Radiology
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -65,7 +65,7 @@ const Radiology = {
             "What are the services provided at the Facility?--",
             "General services; Specify",
             "Specialist services; Specify",
-            "Other services (Specify);",
+            "Other services (Specify); ?.....",
             "Are hours of operation displayed?",
             "State hours of operation",
             "Are emergency contact numbers displayed?",
@@ -82,7 +82,7 @@ const Radiology = {
             "What is the current number of staff--",
             "General Health Professionals (Specify)",
             "Specialists (Specify)",
-            "Other (specify)",
+            "Other (Specify)",
             "Administrative Staff (Specify)",
             "Support staff (Specify)",
             "Are professionals registered with the relevant Councils?",
@@ -140,7 +140,7 @@ const Radiology = {
     },
     "TOILET FACILITIES": {
         "showOnly": [
-            "Is there a minimum of two toilets available (for Male and   Female patients)?",
+            "Is there a minimum of two toilets available (for male and",
             "Are toilets fitted with hand wash facilities?",
             "Is there suitable soap dispenser?",
             "Is there an appropriate hand drying provision?",
@@ -196,25 +196,26 @@ const Radiology = {
     },
     "X-RAY ROOM": {
         "showOnly": [
-            "Does the -ray room have adequate space?",
-            "Does the -ray room have wheelchair accessibility?",
-            "Are the following items available in the room?",
-            "Red warning light at the entrance, which automatically switches on whenever eposure is made.",
-            "Eamination/treatment couch with tiltable headrest.",
-            "Lead gowns of different lead equivalence for staff and relatives",
-            "Different sizes of gonad protection.",
-            "Thyroid shields.",
-            "Control panel shielded with lead window.",
-            "X-ray viewing box",
-            "Gloves non-sterile",
-            "Waste bin with lid for clinical waste",
-            "Waste bin with lid for non-clinical waste? Sharps disposal container.",
-            "Are the walls barium-plastered?",
-            "Are the walls built from concrete bricks 30cm wide or have an air gap?",
-            "Are the doors lined with lead?",
-            "Are the doors sliding type?",
-            "If doors are not sliding, do they have lead strips along the edges to prevent radiation leakages?",
-            "If windows eist, are they leaded",
+            "Does The X-Ray Room Have Adequate Space?",
+            "Does The X-Ray Room Have Wheelchair Accessibility?",
+            "Are The Following Items Available In The Room?--",
+            "Red Warning Light At The Entrance, Which Automatically Switches On Whenever Exposure Is Made?",
+            "Examination/Treatment Couch With Tiltable Headrest?",
+            "Lead Gowns Of Different Lead Equivalence For Staff And Relatives?",
+            "Different Sizes Of Gonad Protection.?",
+            "Thyroid Shields.?",
+            "Control Panel Shielded With Lead Window.?",
+            "X-Ray Viewing Box?",
+            "Gloves - non-sterile",
+            "Waste Bin With Lid For Clinical Waste?",
+            "Waste Bin With Lid For Non-Clinical Waste?",
+            "Sharps Disposal Container.?",
+            "Are The Walls Barium-Plastered?",
+            "Are The Walls Built From Concrete Bricks 30Cm Wide Or Have An Air Gap?",
+            "Are The Doors Lined With Lead?",
+            "Are The Doors Sliding Type?",
+            "If Doors Are Not Sliding, Do They Have Lead Strips Along The Edges To Prevent Radiation Leakages?",
+            "If Windows Exist, Are They Leaded?",
         ]
     },
     "ULTRASOUND ROOM": {
@@ -225,6 +226,10 @@ const Radiology = {
             "Is the room equipped with clinical waste bin, domestic waste bin?",
             "Is there adequate ventilation and lighting?",
             "Is there provision for handwashing?",
+        ]
+    },
+    "LIASON WITH PRIMARY HEALTH CARE DEPARTMENTS": {
+        "showOnly": [
             "Is there evidence of facility liason with the Primary Health Care Department? (A guide the reports to be submitted available)",
             "Is there evidence of statistical reporting to the Primary Health Care Departments as per available guideline?",
         ]

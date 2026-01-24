@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Configure paths
-const csvPath = 'checklist for facilities.csv';
+const csvPath = 'checklist-final.csv';
 const metadataPath = 'dhis2_full_metadata_v2.json';
 
 // Simple Levenshtein distance

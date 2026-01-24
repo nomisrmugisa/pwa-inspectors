@@ -3,7 +3,7 @@
  * Provides debounced saving to avoid excessive writes
  */
 
-import { useCallback, useRef, useEffect } from 'react';
+import { useCallback, useRef, useEffect, useState } from 'react';
 import indexedDBService from '../services/indexedDBService';
 
 export const useIncrementalSave = (eventId, options = {}) => {
@@ -13,6 +13,18 @@ export const useIncrementalSave = (eventId, options = {}) => {
     onSaveError = () => { },
     enableLogging = true
   } = options;
+
+  // Form data state - this is the main state that FormPage uses
+  const [formData, setFormData] = useState({
+    orgUnit: '',
+    eventDate: (() => {
+      const today = new Date();
+      if (!isNaN(today.getTime())) {
+        return today.toISOString().split('T')[0];
+      }
+      return '2025-01-01';
+    })()
+  });
 
   // Store pending saves to batch them
   const pendingSaves = useRef(new Map());
@@ -215,6 +227,8 @@ export const useIncrementalSave = (eventId, options = {}) => {
   }, [debouncedSave]);
 
   return {
+    formData,
+    setFormData,
     saveField,
     saveFieldImmediate,
     saveFields,

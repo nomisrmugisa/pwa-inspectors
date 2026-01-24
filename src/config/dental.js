@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist-final.csv
- * Generated on: 2026-01-22 19:33:53
+ * Generated on: 2026-01-24 23:18:00
  * Facility Type: Dental
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -65,7 +65,7 @@ const Dental = {
             "What are the services provided at the Facility?--",
             "General services; Specify",
             "Specialist services; Specify",
-            "Other services (Specify);",
+            "Other services (Specify); ?.....",
             "Are hours of operation displayed?",
             "State hours of operation",
             "Are emergency contact numbers displayed?",
@@ -82,7 +82,7 @@ const Dental = {
             "What is the current number of staff--",
             "General Health Professionals (Specify)",
             "Specialists (Specify)",
-            "Other (specify)",
+            "Other (Specify)",
             "Administrative Staff (Specify)",
             "Support staff (Specify)",
             "Are professionals registered with the relevant Councils?",
@@ -197,7 +197,7 @@ const Dental = {
     },
     "TOILET FACILITIES": {
         "showOnly": [
-            "Is there a minimum of two toilets available (for Male and   Female patients)?",
+            "Is there a minimum of two toilets available (for male and",
             "Are toilets fitted with hand wash facilities?",
             "Is there suitable soap dispenser?",
             "Is there an appropriate hand drying provision?",
@@ -306,28 +306,28 @@ const Dental = {
     },
     "INSTRUMENT WASHING/STERILISING ROOM": {
         "showOnly": [
-            "Is there a washing room with adequate space?",
+            "Is There A Washing Room With Adequate Space?",
             "Is the room equipped with the following--",
-            "Stainless steel sink with running water",
+            "Stainless Steel Sink With Running Water",
             "Stainless Steel Waste Discarding Sink Supplied With Hot And Cold Water",
             "Is the room ventilated? Elaborate",
             "Is the room equipped with the following--",
             "Chair",
             "Microwave",
             "Autoclave",
-            "Sterilising containers",
-            "Sterilising solutions",
-            "Pack wrappers",
+            "Sterilising Containers",
+            "Sterilising Solutions",
+            "Pack Wrappers",
             "Disinfectant",
-            "Sharps container",
-            "Waste bin with lid for clinical waste",
-            "Waste bin with lid for domestic waste",
-            "Hand wash facilities",
-            "Appropriate hand drying facilities",
-            "Disposable gloves",
+            "Sharps Container",
+            "Waste Bin With Lid For Clinical Waste",
+            "Waste Bin With Lid For Domestic Waste",
+            "Hand Wash Facilities",
+            "Appropriate Hand Drying Facilities",
+            "Disposable Gloves",
         ]
     },
-    "ULTRASOUND ROOM": {
+    "LIASON WITH PRIMARY HEALTH CARE DEPARTMENTS": {
         "showOnly": [
             "Is there evidence of facility liason with the Primary Health Care Department? (A guide the reports to be submitted available)",
             "Is there evidence of statistical reporting to the Primary Health Care Departments as per available guideline?",

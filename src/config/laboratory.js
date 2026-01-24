@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist-final.csv
- * Generated on: 2026-01-22 19:33:53
+ * Generated on: 2026-01-24 23:18:00
  * Facility Type: Laboratory
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -64,7 +64,7 @@ const Laboratory = {
             "What are the services provided at the Facility?--",
             "General services; Specify",
             "Specialist services; Specify",
-            "Other services (Specify);",
+            "Other services (Specify); ?.....",
             "Are hours of operation displayed?",
             "State hours of operation",
             "Are emergency contact numbers displayed?",
@@ -81,7 +81,7 @@ const Laboratory = {
             "What is the current number of staff--",
             "General Health Professionals (Specify)",
             "Specialists (Specify)",
-            "Other (specify)",
+            "Other (Specify)",
             "Administrative Staff (Specify)",
             "Support staff (Specify)",
             "Are professionals registered with the relevant Councils?",
@@ -166,8 +166,6 @@ const Laboratory = {
     },
     "TOILET FACILITIES": {
         "showOnly": [
-            "Is there a minimum of two toilets available (for Male and   Female patients)?",
-            "Are toilets fitted with hand wash facilities?",
             "Is there suitable soap dispenser?",
             "Is there an appropriate hand drying provision?",
             "Is there a separate toilet for staff?",
@@ -272,6 +270,10 @@ const Laboratory = {
             "Are lab equipment calibrated",
             "Is there an equipment preventative maintenance plan?",
             "Is epiry of items monitored?",
+        ]
+    },
+    "LABORATORY TESTING AREAS HAEMATOLOGY": {
+        "showOnly": [
             "Does the testing area have adequate space?",
             "Are there adequate lab stools and benches?",
             "Is there hand washing provision?",
@@ -283,8 +285,8 @@ const Laboratory = {
             "Is there hand washing provision?",
             "Is there air-conditioner with monitoring device and chart?",
             "List clinical tests done at Haematology:",
-            "Does the lab have Technical SOPs (test methods)",
-            "Does the lab have the following equipment: --",
+            "Does the lab have Technical SOPs (test methods",
+            "Does the lab have the following-- equipment?",
             "Haematology analyser?",
             "Microscope?",
             "Staining Racks?",
@@ -292,12 +294,12 @@ const Laboratory = {
             "Coagulation machine?",
             "ESR tubes and caps?",
             "Sample Rocker?",
-            "Medical fridge",
+            "Medical fridge?",
             "Sample rotator?",
-            "Automated Pipettes",
-            "Graduated Pipettes",
+            "Automated Pipettes?",
+            "Graduated Pipettes?",
             "Pipette Fillers?",
-            "Are normal and abnormal Quality Control done and recorded",
+            "Are normal and abnormal Quality Control done and recorded?",
             "How often are Quality controls run?",
             "Are QC results monitored over a period of time?",
             "Does the lab participate in Eternal Quality Assessment Schemes?",
@@ -310,6 +312,10 @@ const Laboratory = {
             "Are lab equipment calibrated",
             "Is there an equipment preventative maintenance plan?",
             "Is epiry of items monitored?",
+        ]
+    },
+    "MICROBIOLOGY": {
+        "showOnly": [
             "Does the testing area have adequate space?",
             "Are there adequate lab stools and benches?",
             "Is there hand washing provision?",
@@ -362,7 +368,7 @@ const Laboratory = {
             "Does the lab do any HIV screening",
         ]
     },
-    "ULTRASOUND ROOM": {
+    "LIASON WITH PRIMARY HEALTH CARE DEPARTMENTS": {
         "showOnly": [
             "Is there evidence of facility liason with the Primary Health Care Department? (A guide the reports to be submitted available)",
             "Is there evidence of statistical reporting to the Primary Health Care Departments as per available guideline?",

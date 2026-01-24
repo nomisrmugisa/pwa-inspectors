@@ -1,0 +1,211 @@
+.form-navigation-sidebar {
+    width: 280px;
+    background-color: #fff;
+    border-right: 1px solid #e0e0e0;
+    height: calc(100vh - 140px);
+    /* Adjusted for sticky */
+    position: sticky;
+    top: 80px;
+    /* Aligned with header height in sticky mode */
+    overflow-y: auto;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+    z-index: 90;
+    /* Lower than main header */
+}
+
+.sidebar-header {
+    padding: 24px;
+    background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
+    color: white;
+}
+
+.sidebar-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.sidebar-content {
+    flex: 1;
+}
+
+.nav-section-item {
+    border-bottom: 1px solid #f0f0f0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.section-main-info {
+    padding: 16px 24px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.nav-section-item.active {
+    background-color: #f0f7ff;
+    border-left: 4px solid #007bff;
+    box-shadow: inset 2px 0 5px rgba(0, 123, 255, 0.05);
+}
+
+.nav-section-item.locked {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background-color: #fcfcfc;
+}
+
+.section-name {
+    font-weight: 600;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.95rem;
+    transition: color 0.3s ease;
+    flex: 1;
+}
+
+.section-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.expand-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    color: #999;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.expand-icon:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #333;
+}
+
+.nav-section-item.active .expand-icon {
+    color: #007bff;
+}
+
+.nav-section-item.active .section-name {
+    color: #007bff;
+}
+
+.lock-icon {
+    font-size: 0.9rem;
+}
+
+.progress-container {
+    height: 6px;
+    background-color: #e9ecef;
+    border-radius: 3px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: #28a745;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.progress-text {
+    position: absolute;
+    right: 0;
+    top: -18px;
+    font-size: 0.75rem;
+    color: #666;
+    font-weight: 700;
+}
+
+.subsections-list {
+    padding: 4px 0 12px 0;
+    background-color: #fafafa;
+    border-top: 1px solid #f0f0f0;
+}
+
+.nav-subsection-item {
+    padding: 10px 24px 10px 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-left: 2px solid transparent;
+}
+
+.nav-subsection-item:hover {
+    background-color: #f0f4f8;
+    border-left: 2px solid #007bff33;
+}
+
+.sub-name {
+    font-size: 0.85rem;
+    color: #555;
+}
+
+.sub-progress-mini {
+    height: 3px;
+    background-color: #eee;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.sub-progress-bar {
+    height: 100%;
+    background-color: #4caf50;
+    transition: width 0.3s ease;
+}
+
+/* Hover effects */
+.nav-section-item:not(.locked):hover {
+    background-color: #f8f9fa;
+}
+
+.nav-section-item.active:hover {
+    background-color: #f0f7ff;
+}
+
+/* Scrollbar styling */
+.form-navigation-sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.form-navigation-sidebar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.form-navigation-sidebar::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+}
+
+.form-navigation-sidebar::-webkit-scrollbar-thumb:hover {
+    background: #aaa;
+}
+
+.sub-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.sub-count {
+    font-size: 0.75rem;
+    color: #666;
+    font-weight: 600;
+    margin-left: 8px;
+}

@@ -3,16 +3,13 @@ import json
 import re
 
 def normalize_name(name):
-    # Strictly return the name as is for "exact matching"
-    # Only stripping outer whitespace which is usually a file-reading artifact
     return name.strip() if name else ""
 
-def compare_washing_room():
-    print("Starting Strict Comparison for 'INSTRUMENT WASHING/STERILISING ROOM'")
+def compare_haematology():
+    print("Starting Strict Comparison for 'LABORATORY TESTING AREAS HAEMATOLOGY'")
     
-    # 1. Parse CSV
     csv_questions = []
-    target_section = "INSTRUMENT WASHING/STERILISING ROOM"
+    target_section = "LABORATORY TESTING AREAS HAEMATOLOGY"
     in_target_section = False
     
     encodings = ['utf-8', 'utf-8-sig', 'latin-1', 'cp1252']
@@ -29,28 +26,26 @@ def compare_washing_room():
             continue
     
     if not lines:
-        print("Failed to read CSV with any supported encoding")
+        print("Failed to read CSV")
         return
 
     try:
         # lines is a list of lists.
-        # Skip header 1 and header 2
-        
         for row in lines[2:]:
-            if not row: continue
-            
+            if not row or not row[0]: continue
             col1 = row[0].strip()
-            # Check for section header
-            if col1.isupper() and len(col1) > 3 and not col1.endswith('?'):
-                current_section = re.sub(r'\s*-\s*', '-', col1)
-                # Normalize spaces in section name comparison as well just in case
-                if normalize_name(current_section) == normalize_name(target_section):
+            
+            is_section_format = (len(row) > 10 and all(not c.strip() for c in row[1:10]))
+            has_question_mark = col1.endswith('?') or any(c.strip() == '?' for c in row[1:])
+            
+            if col1 and not has_question_mark and (col1.isupper() or is_section_format or col1.endswith('--')):
+                current_section = normalize_name(re.sub(r'\s*-\s*', '-', col1))
+                if current_section == target_section:
                     in_target_section = True
                 else:
                     in_target_section = False
             
-            # If inside target section, collect questions
-            elif in_target_section and (col1.endswith('?') or any(c.strip() == '?' for c in row[1:])):
+            elif in_target_section and has_question_mark:
                 csv_questions.append(normalize_name(col1))
                     
         print(f"Found {len(csv_questions)} questions in CSV for '{target_section}'")
@@ -61,7 +56,6 @@ def compare_washing_room():
     # 2. Parse DHIS2 Metadata
     dhis2_questions = []
     
-    # Try reading with utf-8-sig first to handle BOM
     metadata = None
     json_encodings = ['utf-8-sig', 'utf-8', 'latin-1']
     
@@ -69,13 +63,12 @@ def compare_washing_room():
         try:
             with open('dhis2_full_metadata_v2.json', 'r', encoding=encoding) as f:
                 metadata = json.load(f)
-            print(f"Successfully read DHIS2 Metadata with {encoding} encoding")
             break
-        except (UnicodeDecodeError, json.JSONDecodeError):
+        except:
             continue
             
     if not metadata:
-         print("Failed to read DHIS2 Metadata with supported encodings")
+         print("Failed to read DHIS2 Metadata")
          return
 
     try:
@@ -83,17 +76,16 @@ def compare_washing_room():
         target_uid = None
         
         for section in sections:
-            if normalize_name(section.get('name', '')) == normalize_name(target_section):
+            s_name = normalize_name(section.get('name', ''))
+            if s_name == target_section:
                 target_uid = section.get('id')
                 data_elements = section.get('dataElements', [])
                 
-                # Resolve data element name candidates
                 all_psdes = metadata.get('programStageDataElements', [])
                 de_cand_map = {}
                 for psde in all_psdes:
                     if 'dataElement' in psde:
                         de = psde['dataElement']
-                        # Collect all fields that might hold the "exact" name
                         cands = [
                             de.get('formName'),
                             de.get('displayFormName'),
@@ -102,25 +94,16 @@ def compare_washing_room():
                         ]
                         de_cand_map[de['id']] = [normalize_name(c) for c in cands if c]
                 
-                # If section has dataElements directly
                 for de_ref in data_elements:
                     de_id = de_ref.get('id')
                     if de_id in de_cand_map:
-                        # For exact matching, any of the candidates could be the "correct" one
-                        # but we'll collect all to check if ANY match exactly
                         dhis2_questions.extend(de_cand_map[de_id])
                 break
         
         if not target_uid:
             print(f"Could not find section '{target_section}' in DHIS2 metadata")
-            print("   Similar sections found:")
-            for s in sections:
-                s_name = s.get('name', '')
-                if 'WASHING' in s_name or 'STERILISING' in s_name:
-                    print(f"   - {s_name}")
-            # Don't return, let's show empty DHIS2 list vs CSV
             
-        print(f"Found {len(dhis2_questions)} data elements in DHIS2 for '{target_section}'")
+        print(f"Found {len(dhis2_questions)} data elements (candidates) in DHIS2 for '{target_section}'")
 
     except Exception as e:
         print(f"Error reading DHIS2 metadata: {e}")
@@ -132,22 +115,17 @@ def compare_washing_room():
     csv_set = set(csv_questions)
     dhis2_set = set(dhis2_questions)
     
-    # Precise matches
-    matches = csv_set & dhis2_set
-    # Total missing
     missing_in_dhis2 = csv_set - dhis2_set
-    missing_in_csv = dhis2_set - csv_set
     
     if not missing_in_dhis2:
         print("\nPERFECT STRICT MATCH! All CSV elements have an exact match in DHIS2.")
     else:
         print(f"\nSTRICT MISMATCHES FOUND ({len(missing_in_dhis2)} items):")
         
-        # Analyze each missing CSV item for "Near Misses"
         for q in sorted(missing_in_dhis2):
-            print(f"\n--- CSV: \"{q}\" ---")
+            safe_q = q.encode('ascii', 'replace').decode('ascii')
+            print(f"\n--- CSV: \"{safe_q}\" ---")
             
-            # Find near misses in DHIS2
             norm_q = q.lower().replace(" ", "")
             near_misses = []
             for d in dhis2_questions:
@@ -155,25 +133,15 @@ def compare_washing_room():
                     near_misses.append(d)
             
             if near_misses:
-                print("    NEAR MISSES IN DHIS2 (Case/Space Difference):")
+                print("    NEAR MISSES IN DHIS2:")
                 for nm in set(near_misses):
                     print(f"    - \"{nm}\"")
             else:
                 print("    NO SIMILAR ITEM FOUND IN DHIS2 SECTION")
-
-    if missing_in_csv:
-        # We also want to see what else is in DHIS2 but not in CSV
-        # Excluding the items that were just "near misses" for CSV items
-        csv_normalized = {c.lower().replace(" ", "") for c in csv_set}
-        truly_extra_in_dhis2 = []
-        for d in dhis2_set:
-            if d.lower().replace(" ", "") not in csv_normalized:
-                truly_extra_in_dhis2.append(d)
         
-        if truly_extra_in_dhis2:
-            print(f"\nEXTRA ITEMS IN DHIS2 (Not in CSV even with fuzzy matching):")
-            for d in sorted(set(truly_extra_in_dhis2)):
-                print(f"    - \"{d}\"")
+        print("\n--- ALL DHIS2 ITEMS IN SECTION ---")
+        for d in sorted(set(dhis2_questions)):
+             print(f"  - \"{d}\"")
 
 if __name__ == "__main__":
-    compare_washing_room()
+    compare_haematology()
