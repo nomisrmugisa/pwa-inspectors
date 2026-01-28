@@ -59,15 +59,40 @@ export function HomePage() {
     // Removed auto-assignment logic per user request - facility field should be blank on login
   }, [searchParams, userAssignments]);
 
-  // Load events from storage
+  // Load events from storage (both submitted events and drafts)
   useEffect(() => {
     const loadEvents = async () => {
       if (!storage.isReady) return;
 
       try {
         setIsLoading(true);
-        const allEvents = await storage.getAllEvents();
-        setEvents(allEvents || []);
+
+        // Load submitted/synced events from DHIS2PWA database
+        const submittedEvents = await storage.getAllEvents();
+
+        // Load draft events from InspectionFormDB database
+        const draftEvents = await indexedDBService.getAllFormData();
+
+        // Convert drafts to event format for display
+        const convertedDrafts = draftEvents
+          .filter(draft => draft.metadata?.isDraft)
+          .map(draft => ({
+            event: draft.eventId,
+            orgUnit: draft.formData?.orgUnit,
+            eventDate: draft.formData?.eventDate || new Date().toISOString().split('T')[0],
+            status: 'draft',
+            syncStatus: 'draft',
+            createdAt: draft.createdAt,
+            updatedAt: draft.lastUpdated,
+            isDraft: true,
+            // Include original draft data for editing
+            _draftData: draft
+          }));
+
+        // Combine both types of events
+        const allEvents = [...submittedEvents, ...convertedDrafts];
+
+        setEvents(allEvents);
       } catch (error) {
         console.error('Failed to load events:', error);
         showToast('Failed to load events', 'error');
@@ -77,7 +102,7 @@ export function HomePage() {
     };
 
     loadEvents();
-  }, [storage.isReady, stats]); // Reload when stats change (after sync)
+  }, [storage.isReady]); // Only reload when storage becomes ready
 
   // Filter events based on search term and selected facility
   const filteredEvents = useMemo(() => {
@@ -86,7 +111,6 @@ export function HomePage() {
     // First filter by selected facility if specified
     if (selectedFacilityId) {
       filtered = filtered.filter(event => event.orgUnit === selectedFacilityId);
-      console.log(`🏥 Filtered ${events.length} events to ${filtered.length} for facility: ${selectedFacilityId}`);
     }
 
     // Then filter by search term if provided
@@ -162,7 +186,12 @@ export function HomePage() {
 
 
 
-  const getStatusIcon = (status) => {
+  const getStatusIcon = (status, event) => {
+    // Handle draft events
+    if (event?.isDraft || status === 'draft') {
+      return '📝';
+    }
+
     // If offline and status is error, show as pending
     if (!isOnline && status === 'error') {
       return '⏱';
@@ -182,7 +211,12 @@ export function HomePage() {
     }
   };
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (status, event) => {
+    // Handle draft events
+    if (event?.isDraft || status === 'draft') {
+      return 'info';
+    }
+
     // If offline and status is error, show as pending (warning color)
     if (!isOnline && status === 'error') {
       return 'warning';
@@ -234,6 +268,11 @@ export function HomePage() {
   };
 
   const getStatusText = (event) => {
+    // Handle draft events
+    if (event.isDraft || event.status === 'draft') {
+      return 'Draft';
+    }
+
     const status = event.status || event.syncStatus || 'unknown';
 
     // If offline and status is error, show as pending submission
@@ -597,9 +636,9 @@ export function HomePage() {
                       <h4 className="form-title">
                         Inspection - {formatEventDate(event.eventDate)}
                       </h4>
-                      <div className={`form-status ${getStatusColor(event.status || event.syncStatus)}`}>
+                      <div className={`form-status ${getStatusColor(event.status || event.syncStatus, event)}`}>
                         <span className="status-icon">
-                          {getStatusIcon(event.status || event.syncStatus)}
+                          {getStatusIcon(event.status || event.syncStatus, event)}
                         </span>
                         <span className="status-text">
                           {getStatusText(event)}

@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist-final.csv
- * Generated on: 2026-01-21 07:19:45
+ * Generated on: 2026-01-28 05:11:38
  * Facility Type: Physiotheraphy
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -65,7 +65,7 @@ const Physiotheraphy = {
             "What are the services provided at the Facility?--",
             "General services; Specify",
             "Specialist services; Specify",
-            "Other services (Specify);",
+            "Other services (Specify); ?.....",
             "Are hours of operation displayed?",
             "State hours of operation",
             "Are emergency contact numbers displayed?",
@@ -82,7 +82,7 @@ const Physiotheraphy = {
             "What is the current number of staff--",
             "General Health Professionals (Specify)",
             "Specialists (Specify)",
-            "Other (specify)",
+            "Other (Specify)",
             "Administrative Staff (Specify)",
             "Support staff (Specify)",
             "Are professionals registered with the relevant Councils?",
@@ -93,6 +93,10 @@ const Physiotheraphy = {
             "Signed contracts or offer letters",
             "Medical eamination certificates",
             "Evidence of continous Professional Development",
+        ]
+    },
+    "FACILITY-ENVIRONMENT": {
+        "showOnly": [
             "Does the facility have wheelchair accessibility?",
             "Is it fenced, secure and easily accessible",
             "Is there space for parking? Specify",
@@ -110,6 +114,10 @@ const Physiotheraphy = {
             "Is there backup system for electricity?",
             "Is there backup system for water?",
             "Where there are ramps, are there safety features?",
+        ]
+    },
+    "FACILITY-RECEPTION/WAITING AREA": {
+        "showOnly": [
             "Does reception area have adequate space? Elaborate.",
             "Is the telephone/ cell phone available?",
             "Is a reception desk and chair available",
@@ -121,7 +129,15 @@ const Physiotheraphy = {
             "Is there patient charter available in Setswana and English?",
             "Is there available drinking water source?",
             "Are educational materials available for clients",
+        ]
+    },
+    "FACILITY-SCREENING ROOM": {
+        "showOnly": [
             "Appropriate hand wash soap",
+        ]
+    },
+    "FACILITY-CONSULTATION/ TREATMENT ROOM": {
+        "showOnly": [
             "Does the consultation room have adequate space?",
             "Does the consultation room have wheelchair accessibility",
             "Chairs and a table",
@@ -158,7 +174,7 @@ const Physiotheraphy = {
     },
     "TOILET FACILITIES": {
         "showOnly": [
-            "Is there a minimum of two toilets available (for Male and   Female patients)?",
+            "Is there a minimum of two toilets available (for male and",
             "Are toilets fitted with hand wash facilities?",
             "Is there suitable soap dispenser?",
             "Is there an appropriate hand drying provision?",
@@ -220,7 +236,7 @@ const Physiotheraphy = {
             "Massage oil/cream",
             "Sheets",
             "Towels",
-            "Are supplies stored according to manufacturerï¿½s recommendations?",
+            "Are supplies stored according to manufacturerÃ¯Â¿Â½s recommendations?",
             "Is the epiry of these items closely monitored?",
             "Does the facility have appropriate equipment and instruments for the services provided?",
             "Does the facility have the following equipment?--",
@@ -254,7 +270,7 @@ const Physiotheraphy = {
             "Is there a complaints, procedure",
         ]
     },
-    "ULTRASOUND ROOM": {
+    "LIASON WITH PRIMARY HEALTH CARE DEPARTMENTS": {
         "showOnly": [
             "Is there evidence of facility liason with the Primary Health Care Department? (A guide the reports to be submitted available)",
             "Is there evidence of statistical reporting to the Primary Health Care Departments as per available guideline?",

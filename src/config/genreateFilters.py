@@ -128,7 +128,50 @@ class FacilityFilterGenerator:
 
         facility_config = {}
 
-        for section in self.sections:
+        # Use Hospital-specific order for Hospital, otherwise use self.sections
+        if facility_type == 'Hospital':
+            sections_to_process = [
+                "FACILITY GOVERNANCE AND MANAGEMENT",
+                "HUMAN RESOURCE MANAGEMENT",
+                "ADMINISTRATIVE SERVICES",
+                "FACILITY ENVIRONMENT",
+                "CUSTOMER CARE, RIGHTS AND SATISFACTION",
+                "SAFETY AND WASTE MANAGEMENT",
+                "INFECTION PREVENTION AND CONTROL",
+                "FACILITY RESUSCITATION SERVICES",
+                "ACCIDENT & EMERGENCY AND RESUSCITATION SERVICES",
+                "OUT PATIENT SERVICE",
+                "CRITICAL CARE UNIT (HIGH CARE)",
+                "COMBINED GENERAL MEDICAL/ SURGICAL/PAEDIATRIC WARDS",
+                "GENERAL MEDICAL WARDS",
+                "SURGICAL /ORTHOPAEDIC WARDS",
+                "PAEDIATRIC CARE/ SPECIALTIES AND WARDS/ NEONATOLOGY",
+                "OBSTETRICS AND GYNAECOLOGY",
+                "PSYCHIATRIC SERVICES AND WARDS",
+                "OPERATING THEATRE",
+                "CENTRAL SUPPLIES AND STERILISATION DEPARTMENT (CSSD)",
+                "PHARMACY",
+                "LABORATORY",
+                "ELISA--",
+                "RADIOLOGY (MEDICAL IMAGING; X-RAY DEPARTMENT)",
+                "DENTAL",
+                "EYE CLINIC",
+                "PHYSIOTHERAPY CARE",
+                "DIETETICS",
+                "FOOD SERVICE AND KITCHEN",
+                "HOUSEKEEPING SERVICE",
+                "LAUNDRY SERVICES",
+                "MAINTENANCE SERVICES",
+                "EQUIPMENT AND HEALTHCARE TECHNOLOGY",
+                "HOSPITAL SUPPLIES",
+                "OCCUPATIONAL THERAPY",
+                "SPEECH THERAPY",
+                "SOCIAL WORK",
+            ]
+        else:
+            sections_to_process = self.sections
+
+        for section in sections_to_process:
             normalized_section = self.normalize_section_name(section)
 
             # Get all questions that apply to this facility in this section
@@ -283,19 +326,80 @@ export default facilityServiceFilters;
             # Get sections that have questions for this facility type
             facility_departments = []
 
-            for section in self.sections:
-                normalized_section = self.normalize_section_name(section)
+            # Special handling for Hospital to preserve CSV order
+            if facility_type == 'Hospital':
+                print(f"🏥 Processing Hospital sections in CSV order...")
+                # Hospital sections in CSV order
+                hospital_sections_csv_order = [
+                    "FACILITY GOVERNANCE AND MANAGEMENT",
+                    "HUMAN RESOURCE MANAGEMENT",
+                    "ADMINISTRATIVE SERVICES",
+                    "FACILITY ENVIRONMENT",
+                    "CUSTOMER CARE, RIGHTS AND SATISFACTION",
+                    "SAFETY AND WASTE MANAGEMENT",
+                    "INFECTION PREVENTION AND CONTROL",
+                    "FACILITY RESUSCITATION SERVICES",
+                    "ACCIDENT & EMERGENCY AND RESUSCITATION SERVICES",
+                    "OUT PATIENT SERVICE",
+                    "CRITICAL CARE UNIT (HIGH CARE)",
+                    "COMBINED GENERAL MEDICAL/ SURGICAL/PAEDIATRIC WARDS",
+                    "GENERAL MEDICAL WARDS",
+                    "SURGICAL /ORTHOPAEDIC WARDS",
+                    "PAEDIATRIC CARE/ SPECIALTIES AND WARDS/ NEONATOLOGY",
+                    "OBSTETRICS AND GYNAECOLOGY",
+                    "PSYCHIATRIC SERVICES AND WARDS",
+                    "OPERATING THEATRE",
+                    "CENTRAL SUPPLIES AND STERILISATION DEPARTMENT (CSSD)",
+                    "PHARMACY",
+                    "LABORATORY",
+                    "ELISA--",
+                    "RADIOLOGY (MEDICAL IMAGING; X-RAY DEPARTMENT)",
+                    "DENTAL",
+                    "EYE CLINIC",
+                    "PHYSIOTHERAPY CARE",
+                    "DIETETICS",
+                    "FOOD SERVICE AND KITCHEN",
+                    "HOUSEKEEPING SERVICE",
+                    "LAUNDRY SERVICES",
+                    "MAINTENANCE SERVICES",
+                    "EQUIPMENT AND HEALTHCARE TECHNOLOGY",
+                    "HOSPITAL SUPPLIES",
+                    "OCCUPATIONAL THERAPY",
+                    "SPEECH THERAPY",
+                    "SOCIAL WORK",
+                ]
 
-                # Check if this section has any questions for this facility
-                has_questions = any(
-                    question_data['section'] == section and
-                    i < len(question_data['applicability']) and
-                    question_data['applicability'][i]
-                    for question_data in self.questions_data
-                )
+                # Only include sections that actually have questions for Hospital
+                for section in hospital_sections_csv_order:
+                    has_questions = any(
+                        question_data['section'] == section and
+                        i < len(question_data['applicability']) and
+                        question_data['applicability'][i]
+                        for question_data in self.questions_data
+                    )
+                    if has_questions:
+                        normalized_section = self.normalize_section_name(section)
+                        facility_departments.append(normalized_section)
+                        print(f"  ✅ Added: {normalized_section}")
+                    else:
+                        print(f"  ❌ Skipped (no questions): {section}")
 
-                if has_questions:
-                    facility_departments.append(normalized_section)
+                print(f"🏥 Hospital departments in order: {facility_departments[:5]}... (showing first 5)")
+            else:
+                # For other facility types, use the original logic
+                for section in self.sections:
+                    normalized_section = self.normalize_section_name(section)
+
+                    # Check if this section has any questions for this facility
+                    has_questions = any(
+                        question_data['section'] == section and
+                        i < len(question_data['applicability']) and
+                        question_data['applicability'][i]
+                        for question_data in self.questions_data
+                    )
+
+                    if has_questions:
+                        facility_departments.append(normalized_section)
 
             # Keep departments in the order they appear in the CSV file
             # (no sorting - preserve original order)
