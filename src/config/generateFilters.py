@@ -409,8 +409,8 @@ export default facilityServiceFilters;
                 if has_questions:
                     facility_departments.append(normalized_section)
 
-            # Sort departments for this facility
-            facility_departments.sort()
+            # Keep departments in CSV order (don't sort alphabetically)
+            # facility_departments.sort()  # Commented out to preserve CSV order
             specialization_mapping[facility_type] = facility_departments
 
             print(f"  {facility_type}: {len(facility_departments)} departments")

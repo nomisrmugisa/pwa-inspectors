@@ -67,30 +67,32 @@ export function HomePage() {
       try {
         setIsLoading(true);
 
-        // Load submitted/synced events from DHIS2PWA database
+        // Load submitted/synced events from DHIS2PWA database (includes Type 2 explicit drafts)
         const submittedEvents = await storage.getAllEvents();
 
-        // Load draft events from InspectionFormDB database
-        const draftEvents = await indexedDBService.getAllFormData();
+        // Load Type 1 auto-saved draft events from InspectionFormDB database
+        const autoSavedDrafts = await indexedDBService.getAllFormData();
 
-        // Convert drafts to event format for display
-        const convertedDrafts = draftEvents
-          .filter(draft => draft.metadata?.isDraft)
+        // Convert Type 1 auto-saved drafts to event format for display
+        const convertedAutoSavedDrafts = autoSavedDrafts
           .map(draft => ({
             event: draft.eventId,
             orgUnit: draft.formData?.orgUnit,
             eventDate: draft.formData?.eventDate || new Date().toISOString().split('T')[0],
-            status: 'draft',
-            syncStatus: 'draft',
+            status: 'auto-draft',
+            syncStatus: 'auto-draft',
             createdAt: draft.createdAt,
             updatedAt: draft.lastUpdated,
             isDraft: true,
+            isAutoSaved: true,
             // Include original draft data for editing
             _draftData: draft
           }));
 
-        // Combine both types of events
-        const allEvents = [...submittedEvents, ...convertedDrafts];
+        // Combine all types of events: submitted/synced events (including Type 2 drafts) + Type 1 auto-saved drafts
+        const allEvents = [...submittedEvents, ...convertedAutoSavedDrafts];
+
+        console.log(`📊 Loaded events: ${submittedEvents.length} submitted/synced events, ${convertedAutoSavedDrafts.length} auto-saved drafts`);
 
         setEvents(allEvents);
       } catch (error) {
@@ -187,9 +189,9 @@ export function HomePage() {
 
 
   const getStatusIcon = (status, event) => {
-    // Handle draft events
-    if (event?.isDraft || status === 'draft') {
-      return '📝';
+    // Handle draft events (both Type 1 auto-drafts and Type 2 explicit drafts)
+    if (event?.isDraft || status === 'draft' || status === 'auto-draft') {
+      return event?.isAutoSaved ? '💾' : '📝'; // Different icons for auto-saved vs explicit drafts
     }
 
     // If offline and status is error, show as pending
@@ -212,8 +214,8 @@ export function HomePage() {
   };
 
   const getStatusColor = (status, event) => {
-    // Handle draft events
-    if (event?.isDraft || status === 'draft') {
+    // Handle draft events (both Type 1 auto-drafts and Type 2 explicit drafts)
+    if (event?.isDraft || status === 'draft' || status === 'auto-draft') {
       return 'info';
     }
 
@@ -268,9 +270,9 @@ export function HomePage() {
   };
 
   const getStatusText = (event) => {
-    // Handle draft events
-    if (event.isDraft || event.status === 'draft') {
-      return 'Draft';
+    // Handle draft events (both Type 1 auto-drafts and Type 2 explicit drafts)
+    if (event.isDraft || event.status === 'draft' || event.status === 'auto-draft') {
+      return event.isAutoSaved ? 'Auto-saved Draft' : 'Draft';
     }
 
     const status = event.status || event.syncStatus || 'unknown';

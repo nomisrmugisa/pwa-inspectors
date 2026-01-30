@@ -63,7 +63,7 @@ const FormNavigationSidebar = ({
     return (
         <div className="form-navigation-sidebar">
             <div className="sidebar-header">
-                <h3>Inspection Progress</h3>
+                <h3>Selected Sections</h3>
                 <div className="overall-progress">
                     {/* Overall progress could go here if needed */}
                 </div>

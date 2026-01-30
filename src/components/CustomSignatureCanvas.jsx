@@ -134,12 +134,15 @@ const CustomSignatureCanvas = ({ onSignatureChange, existingSignature = null, di
   }, [onSignatureChange]);
 
   return (
-    <div className="signature-capture-container">
+    <div className="signature-capture-container" style={{
+      maxWidth: '600px',
+      margin: '0 auto'
+    }}>
       <div className="signature-header">
-        <h4 style={{ margin: '0 0 12px 0', color: '#495057', fontSize: '16px' }}>
+        <h4 style={{ margin: '0 0 12px 0', color: '#495057', fontSize: '16px', textAlign: 'center' }}>
           📝 Interviewee Signature
         </h4>
-        <p style={{ margin: '0 0 16px 0', color: '#6c757d', fontSize: '14px' }}>
+        <p style={{ margin: '0 0 16px 0', color: '#6c757d', fontSize: '14px', textAlign: 'center' }}>
           Please provide your signature to confirm the information provided during this inspection.
         </p>
       </div>
@@ -194,7 +197,7 @@ const CustomSignatureCanvas = ({ onSignatureChange, existingSignature = null, di
       <div className="signature-actions" style={{
         display: 'flex',
         gap: '12px',
-        justifyContent: 'flex-end',
+        justifyContent: 'center',
         alignItems: 'center'
       }}>
         <div className="signature-status" style={{

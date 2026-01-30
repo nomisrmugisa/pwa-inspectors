@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist-final.csv
- * Generated on: 2026-01-28 05:11:39
+ * Generated on: 2026-01-30 05:40:30
  *
  * This file defines facility service departments based on actual sections
  * found in the CSV checklist configuration.
@@ -60,11 +60,9 @@ export const ALL_FACILITY_DEPARTMENTS = [
   'CENTRAL SUPPLIES AND STERILISATION DEPARTMENT (CSSD)',
   'PHARMACY',
   'LABORATORY',
-  'ELISA--',
   'RADIOLOGY (MEDICAL IMAGING; X-RAY DEPARTMENT)',
   'DENTAL',
   'EYE CLINIC',
-  'PHYSIOTHERAPY CARE',
   'DIETETICS',
   'FOOD SERVICE AND KITCHEN',
   'HOUSEKEEPING SERVICE',
@@ -353,11 +351,9 @@ export const SPECIALIZATION_DEPARTMENT_MAPPING = {
     'CENTRAL SUPPLIES AND STERILISATION DEPARTMENT (CSSD)',
     'PHARMACY',
     'LABORATORY',
-    'ELISA--',
     'RADIOLOGY (MEDICAL IMAGING; X-RAY DEPARTMENT)',
     'DENTAL',
     'EYE CLINIC',
-    'PHYSIOTHERAPY CARE',
     'DIETETICS',
     'FOOD SERVICE AND KITCHEN',
     'HOUSEKEEPING SERVICE',

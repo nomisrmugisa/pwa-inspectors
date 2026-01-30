@@ -81,10 +81,12 @@ class FacilityFilterGenerator:
             # 1. Must be fully uppercase (punctuation allowed)
             # 2. Must be longer than 3 characters
             # 3. Must NOT start with a number (no number prefixes like "21.16 ELISA", "1.0 GOVERNANCE")
+            # 4. Must NOT end with "--" (excludes subsection headers like "ELISA--", "Rapid HIV Testing--")
             if (first_column and
                 first_column.isupper() and
                 len(first_column) > 3 and
-                not first_column[0].isdigit()):
+                not first_column[0].isdigit() and
+                not first_column.endswith('--')):
 
                 current_section = first_column
                 if current_section not in self.sections:

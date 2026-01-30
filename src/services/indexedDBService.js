@@ -6,9 +6,46 @@
 class IndexedDBService {
   constructor() {
     this.dbName = 'InspectionFormDB';
-    this.version = 1;
+    this.version = 2; // Increased version for user association schema
     this.storeName = 'formData';
     this.db = null;
+  }
+
+  /**
+   * Get current user information from storage
+   */
+  async getCurrentUser() {
+    try {
+      // Access the main DHIS2PWA database directly to get current user
+      const request = indexedDB.open('DHIS2PWA', 2);
+
+      return new Promise((resolve) => {
+        request.onsuccess = () => {
+          const db = request.result;
+          const transaction = db.transaction(['auth'], 'readonly');
+          const store = transaction.objectStore('auth');
+          const authRequest = store.get('current');
+
+          authRequest.onsuccess = () => {
+            const authData = authRequest.result;
+            resolve(authData?.user || null);
+          };
+
+          authRequest.onerror = () => {
+            console.warn('⚠️ Could not get auth data for user association');
+            resolve(null);
+          };
+        };
+
+        request.onerror = () => {
+          console.warn('⚠️ Could not open DHIS2PWA database for user association');
+          resolve(null);
+        };
+      });
+    } catch (error) {
+      console.warn('⚠️ Could not get current user for draft association:', error);
+      return null;
+    }
   }
 
   /**
@@ -31,17 +68,34 @@ class IndexedDBService {
 
       request.onupgradeneeded = (event) => {
         const db = event.target.result;
-        
+        const oldVersion = event.oldVersion;
+
         // Create object store if it doesn't exist
         if (!db.objectStoreNames.contains(this.storeName)) {
           const store = db.createObjectStore(this.storeName, { keyPath: 'eventId' });
-          
+
           // Create indexes for efficient querying
           store.createIndex('lastUpdated', 'lastUpdated', { unique: false });
           store.createIndex('isDraft', 'metadata.isDraft', { unique: false });
           store.createIndex('facilityId', 'formData.orgUnit', { unique: false });
-          
+          store.createIndex('userId', 'userId', { unique: false }); // NEW: Index for user-specific queries
+          store.createIndex('userIdAndDraft', ['userId', 'metadata.isDraft'], { unique: false }); // NEW: Compound index
+
           console.log('📦 Created IndexedDB object store:', this.storeName);
+        } else if (oldVersion < 2) {
+          // Handle schema upgrade for existing databases
+          const transaction = event.target.transaction;
+          const store = transaction.objectStore(this.storeName);
+
+          // Add new indexes if they don't exist
+          if (!store.indexNames.contains('userId')) {
+            store.createIndex('userId', 'userId', { unique: false });
+            console.log('📦 Added userId index to existing store');
+          }
+          if (!store.indexNames.contains('userIdAndDraft')) {
+            store.createIndex('userIdAndDraft', ['userId', 'metadata.isDraft'], { unique: false });
+            console.log('📦 Added userIdAndDraft compound index to existing store');
+          }
         }
       };
     });
@@ -55,6 +109,10 @@ class IndexedDBService {
       await this.init();
     }
 
+    // Get current user for association
+    const currentUser = await this.getCurrentUser();
+    const userId = currentUser?.username || currentUser?.id || 'anonymous';
+
     return new Promise((resolve, reject) => {
       const transaction = this.db.transaction([this.storeName], 'readwrite');
       const store = transaction.objectStore(this.storeName);
@@ -65,6 +123,8 @@ class IndexedDBService {
       getRequest.onsuccess = () => {
         const existingData = getRequest.result || {
           eventId: eventId,
+          userId: userId, // NEW: Associate with current user
+          userDisplayName: currentUser?.displayName || userId, // NEW: Store display name for reference
           formData: {},
           metadata: {
             isDraft: true,
@@ -75,6 +135,12 @@ class IndexedDBService {
           createdAt: new Date().toISOString(),
           lastUpdated: new Date().toISOString()
         };
+
+        // Ensure userId is always set (for existing drafts without userId)
+        if (!existingData.userId) {
+          existingData.userId = userId;
+          existingData.userDisplayName = currentUser?.displayName || userId;
+        }
 
         // Update the specific field
         existingData.formData[fieldKey] = fieldValue;
@@ -117,12 +183,18 @@ class IndexedDBService {
       await this.init();
     }
 
+    // Get current user for association
+    const currentUser = await this.getCurrentUser();
+    const userId = currentUser?.username || currentUser?.id || 'anonymous';
+
     return new Promise((resolve, reject) => {
       const transaction = this.db.transaction([this.storeName], 'readwrite');
       const store = transaction.objectStore(this.storeName);
 
       const data = {
         eventId: eventId,
+        userId: userId, // NEW: Associate with current user
+        userDisplayName: currentUser?.displayName || userId, // NEW: Store display name for reference
         formData: formData,
         metadata: {
           isDraft: true,
@@ -179,21 +251,27 @@ class IndexedDBService {
   }
 
   /**
-   * Get all draft forms
+   * Get all draft forms for the current user
    */
   async getAllDrafts() {
     if (!this.db) {
       await this.init();
     }
 
+    // Get current user for filtering
+    const currentUser = await this.getCurrentUser();
+    const userId = currentUser?.username || currentUser?.id || 'anonymous';
+
     return new Promise((resolve, reject) => {
       const transaction = this.db.transaction([this.storeName], 'readonly');
       const store = transaction.objectStore(this.storeName);
-      const index = store.index('isDraft');
-      const request = index.getAll(true);
+      const index = store.index('userIdAndDraft');
+
+      // Query for current user's drafts only
+      const request = index.getAll([userId, true]);
 
       request.onsuccess = () => {
-        console.log(`📋 Retrieved ${request.result.length} draft forms from IndexedDB`);
+        console.log(`📋 Retrieved ${request.result.length} draft forms for user ${userId} from IndexedDB`);
         resolve(request.result);
       };
 
@@ -205,10 +283,9 @@ class IndexedDBService {
   }
 
   /**
-   * Get the most recent form data (by lastUpdated timestamp)
-   * Useful for restoring the last form the user was working on
+   * Get all draft forms for all users (admin/debug function)
    */
-  async getMostRecentFormData() {
+  async getAllDraftsAllUsers() {
     if (!this.db) {
       await this.init();
     }
@@ -216,23 +293,56 @@ class IndexedDBService {
     return new Promise((resolve, reject) => {
       const transaction = this.db.transaction([this.storeName], 'readonly');
       const store = transaction.objectStore(this.storeName);
-      const index = store.index('lastUpdated');
-      
-      // Get all records sorted by lastUpdated (descending)
-      const request = index.openCursor(null, 'prev'); // 'prev' = descending order
-      
-      let mostRecent = null;
+      const index = store.index('isDraft');
+      const request = index.getAll(true);
 
-      request.onsuccess = (event) => {
-        const cursor = event.target.result;
-        if (cursor) {
-          // Get the first (most recent) record
-          mostRecent = cursor.value;
-          resolve(mostRecent);
-        } else {
-          // No records found
+      request.onsuccess = () => {
+        console.log(`📋 Retrieved ${request.result.length} draft forms from all users from IndexedDB`);
+        resolve(request.result);
+      };
+
+      request.onerror = () => {
+        console.error('❌ Failed to get draft forms from IndexedDB:', request.error);
+        reject(request.error);
+      };
+    });
+  }
+
+  /**
+   * Get the most recent form data for the current user (by lastUpdated timestamp)
+   * Useful for restoring the last form the user was working on
+   */
+  async getMostRecentFormData() {
+    if (!this.db) {
+      await this.init();
+    }
+
+    // Get current user for filtering
+    const currentUser = await this.getCurrentUser();
+    const userId = currentUser?.username || currentUser?.id || 'anonymous';
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db.transaction([this.storeName], 'readonly');
+      const store = transaction.objectStore(this.storeName);
+      const index = store.index('userId');
+
+      // Get all records for current user, then find most recent
+      const request = index.getAll(userId);
+
+      request.onsuccess = () => {
+        const userRecords = request.result;
+        if (userRecords.length === 0) {
           resolve(null);
+          return;
         }
+
+        // Find the most recent record by lastUpdated timestamp
+        const mostRecent = userRecords.reduce((latest, current) => {
+          return new Date(current.lastUpdated) > new Date(latest.lastUpdated) ? current : latest;
+        });
+
+        console.log(`📖 Retrieved most recent form data for user ${userId}: ${mostRecent.eventId}`);
+        resolve(mostRecent);
       };
 
       request.onerror = () => {
@@ -243,9 +353,45 @@ class IndexedDBService {
   }
 
   /**
-   * Get all form data records (for debugging/management)
+   * Get all form data records for the current user (for debugging/management)
    */
   async getAllFormData() {
+    if (!this.db) {
+      await this.init();
+    }
+
+    // Get current user for filtering
+    const currentUser = await this.getCurrentUser();
+    const userId = currentUser?.username || currentUser?.id || 'anonymous';
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db.transaction([this.storeName], 'readonly');
+      const store = transaction.objectStore(this.storeName);
+      const index = store.index('userId');
+      const request = index.getAll(userId);
+
+      request.onsuccess = () => {
+        // Sort by lastUpdated (most recent first)
+        const sorted = (request.result || []).sort((a, b) => {
+          const dateA = new Date(a.lastUpdated || a.createdAt || 0);
+          const dateB = new Date(b.lastUpdated || b.createdAt || 0);
+          return dateB - dateA; // Descending order
+        });
+        console.log(`📋 Retrieved ${sorted.length} form data records for user ${userId}`);
+        resolve(sorted);
+      };
+
+      request.onerror = () => {
+        console.error('❌ Failed to get all form data from IndexedDB:', request.error);
+        reject(request.error);
+      };
+    });
+  }
+
+  /**
+   * Get all form data records for all users (admin/debug function)
+   */
+  async getAllFormDataAllUsers() {
     if (!this.db) {
       await this.init();
     }
@@ -262,6 +408,7 @@ class IndexedDBService {
           const dateB = new Date(b.lastUpdated || b.createdAt || 0);
           return dateB - dateA; // Descending order
         });
+        console.log(`📋 Retrieved ${sorted.length} form data records from all users`);
         resolve(sorted);
       };
 

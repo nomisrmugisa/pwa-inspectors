@@ -2017,23 +2017,6 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
 
           {section.displayName}
 
-          {/* Visible DE count badge */}
-          <span
-            className="visible-de-count"
-            title={`${filteredDataElements.length} data elements visible in this section`}
-            style={{
-              fontSize: '0.8em',
-              color: '#003875', // Botswana blue text
-              marginLeft: '8px',
-              backgroundColor: 'rgba(255, 255, 255, 0.9)', // White background with slight transparency
-              padding: '2px 6px',
-              borderRadius: '4px',
-              border: '1px solid rgba(255, 255, 255, 0.7)' // Light white border
-            }}
-          >
-            📄 {filteredDataElements.length} shown
-          </span>
-
         </h3>
 
       </div>
@@ -7424,18 +7407,33 @@ function FormPage() {
 
         {/* Form footer with actions */}
 
-        <div className="form-footer">
+        <div className="form-footer" style={{
+          display: 'block',
+          textAlign: 'center',
+          width: '100%'
+        }}>
 
           {/* Signature Capture Section - Only show after inspection info confirmation */}
           {inspectionInfoConfirmed && (
             <div style={{
-              gridColumn: '1 / -1',
-              padding: '20px',
-              backgroundColor: '#f8f9fa',
-              border: '2px solid #e9ecef',
-              borderRadius: '12px',
-              marginBottom: '20px'
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginBottom: '20px',
+              width: '100%',
+              padding: '0'
             }}>
+              <div style={{
+                maxWidth: '600px',
+                width: '90%',
+                padding: '30px',
+                backgroundColor: '#f8f9fa',
+                border: '3px solid #007bff',
+                borderRadius: '15px',
+                boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+                margin: '0 auto',
+                textAlign: 'center'
+              }}>
               <CustomSignatureCanvas
                 onSignatureChange={handleSignatureChange}
                 existingSignature={intervieweeSignature}
@@ -7502,6 +7500,7 @@ function FormPage() {
                   </button>
                 </div>
               )}
+              </div>
             </div>
           )}
 
