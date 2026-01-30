@@ -29,6 +29,44 @@ import json
 from datetime import datetime
 from pathlib import Path
 
+
+def normalize_text(text):
+    """
+    Normalize corrupted special characters from CSV encoding issues.
+
+    This handles common encoding problems when CSV files are created in Windows
+    with Windows-1252 encoding but read as UTF-8, causing character corruption.
+
+    Mappings:
+        ô → " (Left double quote)
+        ö → " (Right double quote)
+        ò → ' (Left single quote)
+        ó → ' (Right single quote)
+        – → - (En dash)
+        — → - (Em dash)
+        … → ... (Ellipsis)
+        � → (removed) (Unicode replacement character)
+    """
+    if not text:
+        return text
+
+    replacements = {
+        'ô': '"',   # Left double quote
+        'ö': '"',   # Right double quote
+        'ò': "'",   # Left single quote
+        'ó': "'",   # Right single quote
+        '–': '-',   # En dash
+        '—': '-',   # Em dash
+        '…': '...', # Ellipsis
+        '�': '',    # Unicode replacement character (remove)
+    }
+
+    for old, new in replacements.items():
+        text = text.replace(old, new)
+
+    return text
+
+
 class FacilityFilterGenerator:
     def __init__(self, csv_path="checklist-final.csv"):
         self.csv_path = csv_path
@@ -63,7 +101,8 @@ class FacilityFilterGenerator:
             raise ValueError("CSV file must have at least 2 rows (headers and facility types)")
 
         # Extract facility types from row 1 (skip first empty column)
-        self.facility_types = [ft.strip() for ft in lines[0][1:] if ft.strip()]
+        # Apply normalization to handle corrupted special characters
+        self.facility_types = [normalize_text(ft.strip()) for ft in lines[0][1:] if ft.strip()]
         print(f"🏥 Found {len(self.facility_types)} facility types: {self.facility_types}")
 
         # Parse sections and questions
@@ -74,7 +113,8 @@ class FacilityFilterGenerator:
             if not row or not row[0].strip():
                 continue
 
-            first_column = row[0].strip()
+            # Normalize text to handle corrupted special characters from CSV encoding issues
+            first_column = normalize_text(row[0].strip())
 
             # Detect section headers - fully capitalized names (no lowercase letters)
             # Rules:

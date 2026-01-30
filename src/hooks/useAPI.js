@@ -959,7 +959,9 @@ class DHIS2APIService {
         const inspectorVal = tei.attributes?.find(a => a.attribute === attrIds.inspectors)?.value ||
           tei.attributes?.find(a => a.displayName === 'Inspectors Final List')?.value || '';
 
-        const isAssigned = user.username && inspectorVal.includes(user.username);
+        // Split by semicolon and check for exact match to avoid "inspector1" matching "inspector10"
+        const inspectorList = inspectorVal.split(';').map(s => s.trim().toLowerCase());
+        const isAssigned = user.username && inspectorList.includes(user.username.toLowerCase());
         return isAssigned;
       });
 

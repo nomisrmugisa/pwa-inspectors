@@ -108,21 +108,16 @@ export function ChecklistDebugTable({
             });
 
             // Get actual DEs from DHIS2
-            const actualDEs = dhis2Section?.dataElements?.map(de =>
-                de.displayName || de.dataElement?.displayName || ''
-            ) || [];
+			// NOTE: DHIS2 can represent section elements under different properties depending on
+			// how metadata was fetched/transformed. Support both shapes.
+			const dhis2SectionElements =
+				dhis2Section?.dataElements ||
+				dhis2Section?.programStageDataElements ||
+				[];
 
-            // Find missing DEs (in expected but not in actual)
-            const missing = expectedDEs.filter(expected => {
-                const normalizedExpected = normalize(expected);
-                return !actualDEs.some(actual => normalize(actual) === normalizedExpected);
-            });
-
-            // Find extra DEs (in actual but not in expected)
-            const extra = actualDEs.filter(actual => {
-                const normalizedActual = normalize(actual);
-                return !expectedDEs.some(expected => normalize(expected) === normalizedActual);
-            });
+			const actualDEs = dhis2SectionElements
+				.map(de => de?.displayName || de?.dataElement?.displayName || '')
+				.filter(Boolean);
 
             // Levenshtein distance for typo detection
             const getLevenshteinDistance = (a, b) => {
@@ -236,20 +231,37 @@ export function ChecklistDebugTable({
                 }
             });
 
+			// Derive missing/extra from mergedRows (occurrence-aware, handles duplicates like multiple "Comments")
+			const missing = mergedRows
+				.filter(r => r.type === 'missing')
+				.map(r => r.expected)
+				.filter(Boolean);
+
+			const extra = mergedRows
+				.filter(r => r.type === 'extra')
+				.map(r => r.actual)
+				.filter(Boolean);
+
             // Determine status
             let status = 'success';
             let message = 'All expected data elements are loaded correctly';
 
-            if (missing.length > 0 && extra.length > 0) {
-                status = 'error';
-                message = `${missing.length} missing, ${extra.length} unexpected`;
-            } else if (missing.length > 0) {
-                status = 'warning';
-                message = `${missing.length} expected data elements are missing`;
-            } else if (extra.length > 0) {
-                status = 'info';
-                message = `${extra.length} unexpected data elements found`;
-            }
+			const hasNonMatchIssues = (mergedRows || []).some(r => r.type !== 'match');
+
+			if (missing.length > 0 && extra.length > 0) {
+				status = 'error';
+				message = `${missing.length} missing, ${extra.length} unexpected`;
+			} else if (missing.length > 0) {
+				status = 'warning';
+				message = `${missing.length} expected data elements are missing`;
+			} else if (extra.length > 0) {
+				status = 'info';
+				message = `${extra.length} unexpected data elements found`;
+			} else if (hasNonMatchIssues) {
+				// e.g. ordering/position mismatches or typos
+				status = 'warning';
+				message = 'Data elements loaded, but ordering/typos differ from expected';
+			}
 
             results.push({
                 serviceDepartment: serviceDept,

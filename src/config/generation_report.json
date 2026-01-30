@@ -1,5 +1,5 @@
 {
-  "generated_on": "2026-01-30T13:05:03.212936",
+  "generated_on": "2026-01-30T21:29:12.494566",
   "source_file": "checklist-final.csv",
   "facility_types": [
     "Obstetrics & Gynaecology",
@@ -87,68 +87,68 @@
   "statistics": {
     "total_facility_types": 15,
     "total_sections": 64,
-    "total_questions": 5292
+    "total_questions": 5448
   },
   "facility_statistics": {
     "Obstetrics & Gynaecology": {
       "applicable_questions": 288,
-      "coverage_percentage": 5.4
+      "coverage_percentage": 5.3
     },
     "Laboratory": {
       "applicable_questions": 294,
-      "coverage_percentage": 5.6
+      "coverage_percentage": 5.4
     },
     "Psychology": {
       "applicable_questions": 174,
-      "coverage_percentage": 3.3
+      "coverage_percentage": 3.2
     },
     "Eye (Opthalmology /Optometry)": {
       "applicable_questions": 298,
-      "coverage_percentage": 5.6
+      "coverage_percentage": 5.5
     },
     "Physiotheraphy": {
       "applicable_questions": 220,
-      "coverage_percentage": 4.2
+      "coverage_percentage": 4.0
     },
     "Dental": {
       "applicable_questions": 273,
-      "coverage_percentage": 5.2
+      "coverage_percentage": 5.0
     },
     "Dental Laboratory": {
       "applicable_questions": 165,
-      "coverage_percentage": 3.1
+      "coverage_percentage": 3.0
     },
     "Ear, Nose & Throat": {
       "applicable_questions": 277,
-      "coverage_percentage": 5.2
+      "coverage_percentage": 5.1
     },
     "Rehabilitation Centre": {
       "applicable_questions": 328,
-      "coverage_percentage": 6.2
+      "coverage_percentage": 6.0
     },
     "Radiology": {
       "applicable_questions": 174,
-      "coverage_percentage": 3.3
+      "coverage_percentage": 3.2
     },
     "General Practice": {
       "applicable_questions": 308,
-      "coverage_percentage": 5.8
+      "coverage_percentage": 5.7
     },
     "Paediatric": {
       "applicable_questions": 272,
-      "coverage_percentage": 5.1
+      "coverage_percentage": 5.0
     },
     "Nursing  Home": {
       "applicable_questions": 319,
-      "coverage_percentage": 6.0
+      "coverage_percentage": 5.9
     },
     "Emergency Medical Services": {
       "applicable_questions": 199,
-      "coverage_percentage": 3.8
+      "coverage_percentage": 3.7
     },
     "Hospital": {
-      "applicable_questions": 4555,
-      "coverage_percentage": 86.1
+      "applicable_questions": 4711,
+      "coverage_percentage": 86.5
     }
   }
 }
