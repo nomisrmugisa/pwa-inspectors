@@ -1346,6 +1346,7 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
         return false; // Hide these fields from users
       }
 
+
       // Always show subsection headers (elements ending with "--") and number-prefixed all-caps labels
       if (isSectionHeaderName(displayName) || isSectionHeaderName(psde.dataElement.displayName) ||
         isNumberPrefixedAllCapsLabel(displayName) || isNumberPrefixedAllCapsLabel(psde.dataElement.displayName)) {
@@ -1354,36 +1355,27 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
 
       // Check if this is a Comments/Remarks data element
       const isComment = /\s*(Comments?|Remarks?)\s*$/i.test(displayName);
-
       if (isComment) {
-        // For Comments/Remarks elements, check if the main element would pass the filter
-        // Extract main element name by removing comment/remarks suffix
-        const mainElementName = displayName.replace(/\s*(Comments?|Remarks?)\s*$/i, '');
+        // For Comments/Remarks elements, check if the main element would pass the filter.
+        // If this is a standalone "Comments" field, fall back to checking "Comments" itself.
+        const mainElementName = displayName.replace(/\s*(Comments?|Remarks?)\s*$/i, '').trim();
+        if (!mainElementName) {
+          return shouldShowDataElementForService(displayName, filteringFacilityType, section.displayName);
+        }
 
-        // Check if the main element passes the filter
-        const mainElementPasses = shouldShowDataElementForService(
+        return shouldShowDataElementForService(
           mainElementName,
           filteringFacilityType,
           section.displayName
         );
-
-        if (!mainElementPasses) {
-        }
-
-        return mainElementPasses;
-      } else {
-        // For main elements, use the standard filter
-        const shouldShow = shouldShowDataElementForService(
-          displayName,
-          filteringFacilityType,
-          section.displayName
-        );
-
-        if (!shouldShow) {
-        }
-
-        return shouldShow;
       }
+
+      // For main elements, use the standard filter
+      return shouldShowDataElementForService(
+        displayName,
+        filteringFacilityType,
+        section.displayName
+      );
 
     });
 
@@ -1487,40 +1479,30 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
             return true;
           }
 
+
           // Check if this is a Comments/Remarks data element
           const isComment = /\s*(Comments?|Remarks?)\s*$/i.test(displayName);
-
           if (isComment) {
-            // For Comments/Remarks elements, check if the main element would pass the filter
-            const mainElementName = displayName.replace(/\s*(Comments?|Remarks?)\s*$/i, '');
+            // For Comments/Remarks elements, check if the main element would pass the filter.
+            // If this is a standalone "Comments" field, fall back to checking "Comments" itself.
+            const mainElementName = displayName.replace(/\s*(Comments?|Remarks?)\s*$/i, '').trim();
+            if (!mainElementName) {
+              return await shouldShowDataElementForService(displayName, filteringFacilityType, sectionName);
+            }
 
-            const mainElementPasses = await shouldShowDataElementForService(
+            return await shouldShowDataElementForService(
               mainElementName,
-              facilityType,
+              filteringFacilityType,
               sectionName
             );
-
-            // DEBUG: Log comment field filtering for ENT
-            // if (isENT && isRelevantSection) {
-            //   console.log(`  [${idx}] Comment field "${displayName}" → main: "${mainElementName}" → ${mainElementPasses ? '✅ PASS' : '❌ FAIL'}`);
-            // }
-
-            return mainElementPasses;
-          } else {
-            // For main elements, use the standard filter
-            const shouldShow = await shouldShowDataElementForService(
-              displayName,
-              facilityType,
-              sectionName
-            );
-
-            // DEBUG: Log main field filtering for ENT
-            // if (isENT && isRelevantSection) {
-            //   console.log(`  [${idx}] Main field "${displayName}" → ${shouldShow ? '✅ PASS' : '❌ FAIL'}`);
-            // }
-
-            return shouldShow;
           }
+
+          // For main elements, use the standard filter
+          return await shouldShowDataElementForService(
+            displayName,
+            filteringFacilityType,
+            sectionName
+          );
 
         })
 
@@ -1852,22 +1834,31 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
 
   const shouldShow = hasDataElements || isInspectionInfoSection || isInspectionTypeSection || isDocumentReviewSection;
 
+
   // Helper to decide visibility consistent with filter logic, including Comments pairing
   const shouldShowForName = (name) => {
     if (isInspectionTypeSection || isDocumentReviewSection) return true; // Exclude from filters
     if (!name) return false;
+
     // Always show headers and number-prefixed all-caps labels regardless of service filter
     if (isSectionHeaderName(name)) return true;
     if (isNumberPrefixedAllCapsLabel(name)) return true;
-    const lower = name.toLowerCase();
-    const isComment = lower.includes('comments') || lower.includes('comment') || lower.includes('remarks');
+
+    const isComment = /\s*(Comments?|Remarks?)\s*$/i.test(name);
     if (isComment) {
       const mainElementName = name
         .replace(/\s*Comments?\s*$/i, '')
         .replace(/\s*Remarks?\s*$/i, '')
         .trim();
+
+      // Standalone "Comments" should be evaluated as "Comments" itself.
+      if (!mainElementName) {
+        return shouldShowDataElementForService(name, filteringFacilityType);
+      }
+
       return shouldShowDataElementForService(mainElementName, filteringFacilityType);
     }
+
     return shouldShowDataElementForService(name, filteringFacilityType);
   };
 
