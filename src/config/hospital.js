@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist-final.csv
- * Generated on: 2026-01-30 05:40:29
+ * Generated on: 2026-01-30 09:32:05
  * Facility Type: Hospital
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -3387,7 +3387,10 @@ const Hospital = {
             "24.14.11.3 Lockable gates?",
             "24.14.12 Does the clinic have a disaster preparedness policy?",
             "Comments",
-            "25. PHYSIOTHERAPY CARE",
+        ]
+    },
+    "PHYSIOTHERAPY CARE": {
+        "showOnly": [
             "Organization And Management--",
             "25.1.1 Does the facility have a documented organizational structure?",
             "25.1.2 Is the director a trained health personnel?",

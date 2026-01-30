@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist-final.csv
- * Generated on: 2026-01-30 05:40:29
+ * Generated on: 2026-01-30 09:32:05
  * Facility Type: Emergency Medical Services
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -241,7 +241,7 @@ const EmergencyMedicalServices = {
             "cricothyroctomy tubes and adapters",
             "Laryngoscopes (varying sizes and shapes)",
             "Ventilation devices (Bag valve mask, oxygen maks)",
-            "Endotracheal tubes",
+            "Emergency medications",
             "Suction tubes",
             "Syringes",
             "Needles",

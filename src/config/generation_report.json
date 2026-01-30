@@ -1,5 +1,5 @@
 {
-  "generated_on": "2026-01-30T05:40:30.809875",
+  "generated_on": "2026-01-30T09:32:07.040058",
   "source_file": "checklist-final.csv",
   "facility_types": [
     "Obstetrics & Gynaecology",
@@ -72,6 +72,7 @@
     "RADIOLOGY (MEDICAL IMAGING; X-RAY DEPARTMENT)",
     "DENTAL",
     "EYE CLINIC",
+    "PHYSIOTHERAPY CARE",
     "DIETETICS",
     "FOOD SERVICE AND KITCHEN",
     "HOUSEKEEPING SERVICE",
@@ -85,8 +86,8 @@
   ],
   "statistics": {
     "total_facility_types": 15,
-    "total_sections": 63,
-    "total_questions": 5293
+    "total_sections": 64,
+    "total_questions": 5292
   },
   "facility_statistics": {
     "Obstetrics & Gynaecology": {
@@ -146,7 +147,7 @@
       "coverage_percentage": 3.8
     },
     "Hospital": {
-      "applicable_questions": 4556,
+      "applicable_questions": 4555,
       "coverage_percentage": 86.1
     }
   }
