@@ -35,7 +35,7 @@ def normalize_text(text):
     Normalize corrupted special characters from CSV encoding issues.
 
     This handles common encoding problems when CSV files are created in Windows
-    with Windows-1252 encoding but read as UTF-8, causing character corruption.
+    with Windows-1252 encoding but read as UTF-8 or Latin-1, causing character corruption.
 
     Mappings:
         ô → " (Left double quote)
@@ -46,11 +46,27 @@ def normalize_text(text):
         — → - (Em dash)
         … → ... (Ellipsis)
         � → (removed) (Unicode replacement character)
+
+    Windows-1252 control characters (when read as Latin-1):
+        \x91 → ' (Left single quote)
+        \x92 → ' (Right single quote / apostrophe)
+        \x93 → " (Left double quote)
+        \x94 → " (Right double quote)
+        \x96 → - (En dash)
+        \x97 → - (Em dash)
+        \x85 → ... (Ellipsis)
+
+    Unicode curly quotes:
+        ' → ' (Right single quote U+2019)
+        ' → ' (Left single quote U+2018)
+        " → " (Left double quote U+201C)
+        " → " (Right double quote U+201D)
     """
     if not text:
         return text
 
     replacements = {
+        # Corrupted UTF-8 characters (Windows-1252 misread as UTF-8)
         'ô': '"',   # Left double quote
         'ö': '"',   # Right double quote
         'ò': "'",   # Left single quote
@@ -59,6 +75,21 @@ def normalize_text(text):
         '—': '-',   # Em dash
         '…': '...', # Ellipsis
         '�': '',    # Unicode replacement character (remove)
+
+        # Windows-1252 control characters (when read as Latin-1)
+        '\x91': "'",   # Left single quote
+        '\x92': "'",   # Right single quote / apostrophe
+        '\x93': '"',   # Left double quote
+        '\x94': '"',   # Right double quote
+        '\x96': '-',   # En dash
+        '\x97': '-',   # Em dash
+        '\x85': '...', # Ellipsis
+
+        # Unicode curly quotes (normalize to straight quotes)
+        ''': "'",   # Right single quote U+2019
+        ''': "'",   # Left single quote U+2018
+        '"': '"',   # Left double quote U+201C
+        '"': '"',   # Right double quote U+201D
     }
 
     for old, new in replacements.items():
