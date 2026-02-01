@@ -15,7 +15,7 @@ import {
 } from '../config/sectionVisibilityConfig';
 
 import facilityServiceFilters, { shouldShowDataElementForService } from '../config/facilityServiceFilters';
-import { getDepartmentsForSpecialization, getDepartmentStats } from '../config/facilityServiceDepartments';
+import { ALL_FACILITY_DEPARTMENTS, getDepartmentsForSpecialization, getDepartmentStats } from '../config/facilityServiceDepartments';
 
 import CustomSignatureCanvas from '../components/CustomSignatureCanvas';
 import { ChecklistDebugTable } from '../components/ChecklistDebugTable';
@@ -3387,8 +3387,39 @@ function FormPage() {
       return shouldInclude;
     });
 
-    console.log('🐞 availableSections (deduplicated):', filtered.map(s => s.displayName));
-    return filtered;
+    const sorted = [...filtered].sort((a, b) => {
+      const normA = internalNormalize(a.displayName);
+      const normB = internalNormalize(b.displayName);
+
+      // Get the correct order for the current specialization
+      const currentSpecialization = facilityType || (typeof getCurrentFacilityClassification === 'function' ? getCurrentFacilityClassification() : null);
+      const specDepts = getDepartmentsForSpecialization(currentSpecialization) || [];
+
+      // Try to find index in specialization-specific list first
+      let idxA = specDepts.findIndex(dept => internalNormalize(dept) === normA);
+      let idxB = specDepts.findIndex(dept => internalNormalize(dept) === normB);
+
+      // Fallback to global list if not found in specialization list
+      if (idxA === -1) idxA = ALL_FACILITY_DEPARTMENTS.findIndex(dept => internalNormalize(dept) === normA);
+      if (idxB === -1) idxB = ALL_FACILITY_DEPARTMENTS.findIndex(dept => internalNormalize(dept) === normB);
+
+      // Keep Inspection Information and Inspection Type at the top regardless of CSV
+      const isInitialA = normA.includes('inspectioninformation') || normA.includes('inspectiontype');
+      const isInitialB = normB.includes('inspectioninformation') || normB.includes('inspectiontype');
+
+      if (isInitialA && !isInitialB) return -1;
+      if (!isInitialA && isInitialB) return 1;
+
+      // If neither is initial, use CSV order
+      if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+      if (idxA !== -1) return -1;
+      if (idxB !== -1) return 1;
+
+      return 0;
+    });
+
+    console.log('🐞 availableSections (sorted by CSV order):', sorted.map(s => s.displayName));
+    return sorted;
   }, [configuration, visibleSections, facilityType, selectedServiceDepartments, manualSpecialization]);
 
   const initialSections = useMemo(() => {

@@ -391,32 +391,26 @@ export default facilityServiceFilters;
             if normalized_section not in all_departments:
                 all_departments.append(normalized_section)
 
-        # Sort departments alphabetically for consistency
-        all_departments.sort()
+        # Preserve CSV order (don't sort alphabetically)
+        # all_departments.sort()
 
         # Build specialization to department mapping
         specialization_mapping = {}
 
         for i, facility_type in enumerate(self.facility_types):
-            # Get sections that have questions for this facility type
+            # Get departments in the order they actually appear with questions for THIS facility
             facility_departments = []
+            seen_depts = set()
+            
+            for question_data in self.questions_data:
+                if (i < len(question_data['applicability']) and 
+                    question_data['applicability'][i]):
+                    
+                    normalized_section = self.normalize_section_name(question_data['section'])
+                    if normalized_section not in seen_depts:
+                        facility_departments.append(normalized_section)
+                        seen_depts.add(normalized_section)
 
-            for section in self.sections:
-                normalized_section = self.normalize_section_name(section)
-
-                # Check if this section has any questions for this facility
-                has_questions = any(
-                    question_data['section'] == section and
-                    i < len(question_data['applicability']) and
-                    question_data['applicability'][i]
-                    for question_data in self.questions_data
-                )
-
-                if has_questions:
-                    facility_departments.append(normalized_section)
-
-            # Keep departments in CSV order (don't sort alphabetically)
-            # facility_departments.sort()  # Commented out to preserve CSV order
             specialization_mapping[facility_type] = facility_departments
 
             print(f"  {facility_type}: {len(facility_departments)} departments")
