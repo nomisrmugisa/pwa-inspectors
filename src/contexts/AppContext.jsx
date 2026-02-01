@@ -691,7 +691,13 @@ export function AppProvider({ children }) {
       showToast(`Welcome, ${authResult.user.displayName}!`, 'success');
 
       // Immediately fetch configuration like Android app
-      await fetchConfiguration();
+      const config = await fetchConfiguration();
+
+      // Validate Metadata (Dev Feature)
+      // This helps catch the "App shows it but DHIS2 doesn't have it" issue
+      import('../utils/metadataValidation').then(({ validateMetadata }) => {
+        validateMetadata(api, config);
+      }).catch(err => console.error("Failed to load metadata validator", err));
 
       // Fetch user assignments
       await fetchUserAssignments();

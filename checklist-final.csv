@@ -2020,7 +2020,6 @@ Personnel--,,,,,,,,,,,,,,,?
 14.2.2.6 How many staff members are Other professionals? Please specify,,,,,,,,,,,,,,,?
 14.2.3 Are the professionals registered with the relevant Councils? Yes,,,,,,,,,,,,,,,?
 Any Comments on Surgical/Orthopaedic wards Personnel?,,,,,,,,,,,,,,,?
-FACILITY GOVERNANCE AND MANAGEMENT,,,,,,,,,,,,,,,?
 Nurses Station--,,,,,,,,,,,,,,,?
 14.3.1 Does the nurses station have adequate space?,,,,,,,,,,,,,,,?
 "14.3.2 Is the telephone, computer and printer available?",,,,,,,,,,,,,,,?
@@ -5383,7 +5382,7 @@ Personnel--,,,,,,,,,,,,,,,?
 34.2.4 Are they registered with the relevant councils?,,,,,,,,,,,,,,,?
 34.2.5 Do the speech therapist personnel show proof of credentials where,,,,,,,,,,,,,,,?
 34.2.6 Is there a receptionist full time?,,,,,,,,,,,,,,,?
-Any Comments on Speech Therapy Personnel?,,,,,,,,,,,,,,,?
+Comments,,,,,,,,,,,,,,,?
 Reception/ Waiting Area--,,,,,,,,,,,,,,,?
 34.3.1 Does the reception area have adequate space?,,,,,,,,,,,,,,,?
 34.3.2 Is there a reception desk and chair?,,,,,,,,,,,,,,,?
@@ -5471,6 +5470,10 @@ Client Satisfaction--,,,,,,,,,,,,,,,?
 34.10.2.2 Is there a feedback mechanism using Survey?,,,,,,,,,,,,,,,?
 34.10.3 Is there a toll free number?,,,,,,,,,,,,,,,?
 SOCIAL WORK,,,,,,,,,,,,,,,?
+Interviewee1: Name,,,,,,,,,,,,,,,?
+Interviewee1: Position Held,,,,,,,,,,,,,,,?
+Interviewee2: Name,,,,,,,,,,,,,,,?
+Interviewee2: Position Held,,,,,,,,,,,,,,,?
 Organization And Management--,,,,,,,,,,,,,,,?
 35.1.1 Is there an organizational structure?,,,,,,,,,,,,,,,?
 35.1.2 Are there policies and procedures for the services provided?,,,,,,,,,,,,,,,?
@@ -5480,29 +5483,30 @@ Organization And Management--,,,,,,,,,,,,,,,?
 35.1.6 Are the responsibilities of the social worker defined in writing?,,,,,,,,,,,,,,,?
 35.1.7 Is there a quality management system?,,,,,,,,,,,,,,,?
 35.1.8 Are there committees to deal with the following issues?--,,,,,,,,,,,,,,,?
-35.1.8.1 Performance improvement,,,,,,,,,,,,,,,?
-35.1.8.2 Quality improvement,,,,,,,,,,,,,,,?
-35.1.8.3 Safety health and environment,,,,,,,,,,,,,,,?
-33.1.8.4 Waste management,,,,,,,,,,,,,,,?
-33.1.8.5 Therapeutic,,,,,,,,,,,,,,,?
-35.1.8.6 Building and plant maintenance,,,,,,,,,,,,,,,?
-35.1.8.7 Customer complaints handling,,,,,,,,,,,,,,,?
-35.1.8.8 Disciplinary committee,,,,,,,,,,,,,,,?
-"35.1.9 If no, how are the above issues dealt with?",,,,,,,,,,,,,,,?
-Comments,,,,,,,,,,,,,,,?
+35.1.8.1 Are there committees to deal with Performance improvement,,,,,,,,,,,,,,,?
+35.1.8.2 Are there committees to deal with Quality improvement,,,,,,,,,,,,,,,?
+35.1.8.3 Are there committees to deal with Safety health and environment,,,,,,,,,,,,,,,?
+33.1.8.4 Are there committees to deal with Waste management,,,,,,,,,,,,,,,?
+33.1.8.5 Are there committees to deal with Therapeutic,,,,,,,,,,,,,,,?
+35.1.8.6 Are there committees to deal with Building and plant maintenance,,,,,,,,,,,,,,,?
+35.1.8.7 Are there committees to deal with Customer complaints handling,,,,,,,,,,,,,,,?
+35.1.8.8 Are there committees to deal with Disciplinary committee,,,,,,,,,,,,,,,?
+"35.1.9 If there is no committee ti deal with issues, how are the above issues dealt with?",,,,,,,,,,,,,,,?
+Any Comments on Social Work Organization and Management?,,,,,,,,,,,,,,,?
 Personnel--,,,,,,,,,,,,,,,?
 35.2.1 What is the number of staff?,,,,,,,,,,,,,,,?
 35.2.2 What is the total number of professionals?,,,,,,,,,,,,,,,?
 35.2.3 What are their qualifications? (state number)--,,,,,,,,,,,,,,,?
-35.2.3.1 PhD,,,,,,,,,,,,,,,?
-35.2.3.2 Masters,,,,,,,,,,,,,,,?
-35.2.3.3 Degree,,,,,,,,,,,,,,,?
-35.2.3.4 Diploma,,,,,,,,,,,,,,,?
-35.2.3.1 Others. Secify:,,,,,,,,,,,,,,,?
+35.2.3.1 How many staff members have a PhD,,,,,,,,,,,,,,,?
+35.2.3.2 How many staff members have a Masters,,,,,,,,,,,,,,,?
+35.2.3.3 How many staff members have a Degree,,,,,,,,,,,,,,,?
+35.2.3.4 How many staff members have a Diploma,,,,,,,,,,,,,,,?
+35.2.3.5 How many staff members have others qualification?,,,,,,,,,,,,,,,?
+35.2.3.6 How many staff members have others qualification? Please specify,,,,,,,,,,,,,,,?
 35.2.4 Are they registered with the relevant councils?,,,,,,,,,,,,,,,?
 35.2.5 Do the social workers show proof of credentials where,,,,,,,,,,,,,,,?
 35.2.6 Is there a receptionist full time?,,,,,,,,,,,,,,,?
-Comments,,,,,,,,,,,,,,,?
+Any Comments on Social Work Personnel,,,,,,,,,,,,,,,?
 Reception/ Waiting Area--,,,,,,,,,,,,,,,?
 35.3.1 Does the reception area have adequate space?,,,,,,,,,,,,,,,?
 35.3.2 Is there a reception desk and chair?,,,,,,,,,,,,,,,?
@@ -5512,22 +5516,26 @@ Reception/ Waiting Area--,,,,,,,,,,,,,,,?
 35.3.6 Are there any education materials available?,,,,,,,,,,,,,,,?
 35.3.7 Is there a waste bin?,,,,,,,,,,,,,,,?
 35.3.8 Is there a wash basin with disinfectant and paper towel?,,,,,,,,,,,,,,,?
+Any Comments on Social Work Reception / Waiting area?,,,,,,,,,,,,,,,?
 Services Provided--,,,,,,,,,,,,,,,?
 35.4.1 What services are being provided?,,,,,,,,,,,,,,,?
-35.4.1.1 Aids counselling?,,,,,,,,,,,,,,,?
-35.4.1.2 Child counselling?,,,,,,,,,,,,,,,?
-35.4.1.3 Adolescent counselling?,,,,,,,,,,,,,,,?
-35.4.1.4 Adult counselling?,,,,,,,,,,,,,,,?
-35.4.1.5 Home visits?,,,,,,,,,,,,,,,?
-35.4.1.6 Outreach services?,,,,,,,,,,,,,,,?
-35.4.1.7 Others? Specify:,,,,,,,,,,,,,,,?
+35.4.1.1 Are Aids counselling services provided?,,,,,,,,,,,,,,,?
+35.4.1.2 Are Child counselling services provided?,,,,,,,,,,,,,,,?
+35.4.1.3 Are Adolescent counselling services provided?,,,,,,,,,,,,,,,?
+35.4.1.4 Are Adult counselling services provided?,,,,,,,,,,,,,,,?
+35.4.1.5 Are Home visits services provided?,,,,,,,,,,,,,,,?
+35.4.1.6 Are Outreach services provided?,,,,,,,,,,,,,,,?
+35.4.1.7 Are any Other services?,,,,,,,,,,,,,,,?
+35.4.1.7 Are any Other services? Please Specify,,,,,,,,,,,,,,,?
 35.4.2 How many patients are seen in a month?,,,,,,,,,,,,,,,?
 35.4.3 What is the number of patients per social worker in a month?,,,,,,,,,,,,,,,?
+Any Comments on Social Work services provided?,,,,,,,,,,,,,,,?
 Personnel Training And Health--,,,,,,,,,,,,,,,?
 35.5.1 Are auxiliary personnel under the continuous personal supervision of a social worker?,,,,,,,,,,,,,,,?
 35.5.2 Are auxiliary personnel adequate for all the key functions?,,,,,,,,,,,,,,,?
 35.5.3 Is there an arrangement of engaging other social workers during the absence of the in-charge social work?,,,,,,,,,,,,,,,?
 35.5.5 Is there continuing education for social workers?,,,,,,,,,,,,,,,?
+Any Comments on Social Work personnel training and health?,,,,,,,,,,,,,,,?
 Facilities and Equipment--,,,,,,,,,,,,,,,?
 35.6.1 Is there a chair and table for social workers?,,,,,,,,,,,,,,,?
 35.6.2 Is there a comfortable chair for the patient?,,,,,,,,,,,,,,,?
@@ -5537,44 +5545,45 @@ Facilities and Equipment--,,,,,,,,,,,,,,,?
 35.6.7 Are the counselling rooms sound proof?,,,,,,,,,,,,,,,?
 35.6.8 Is there adequate space for the storage of equipment and material?,,,,,,,,,,,,,,,?
 35.6.9 Are there lockable cupboard for storing patient’s confidential records?,,,,,,,,,,,,,,,?
-Comments,,,,,,,,,,,,,,,?
+Any Comments on Social Work Facilities and Equipment,,,,,,,,,,,,,,,?
 Toilet Facilities--,,,,,,,,,,,,,,,?
 35.7.1 Is there a minimum of two toilets available for male,,,,,,,,,,,,,,,?
 35.7.2 Are the toilets labelled male and female respectively?,,,,,,,,,,,,,,,?
 35.7.3 Is there a toilet suitable for children?,,,,,,,,,,,,,,,?
-35.7.4 Are the toilets fitted with the following?,,,,,,,,,,,,,,,?
-35.7.4.1 Hand basin with running hot and cold water?,,,,,,,,,,,,,,,?
-35.7.4.2 Suitable soap dispenser?,,,,,,,,,,,,,,,?
-35.7.4.3 Appropriate hand drying provision?,,,,,,,,,,,,,,,?
+35.7.4 Are the toilets fitted with the following?--,,,,,,,,,,,,,,,?
+35.7.4.1 Are the toilets fitted with Hand basin with running hot and cold water?,,,,,,,,,,,,,,,?
+35.7.4.2 Are the toilets fitted with Suitable soap dispenser?,,,,,,,,,,,,,,,?
+35.7.4.3 Are the toilets fitted with appropriate hand drying provision?,,,,,,,,,,,,,,,?
 35.7.4.4 Is there a separate toilet for staff?,,,,,,,,,,,,,,,?
 35.7.4.5 Is there a toilet designed for wheelchair users?,,,,,,,,,,,,,,,?
 35.7.4.6 Are the toilet designed for wheelchair users?,,,,,,,,,,,,,,,?
 35.7.4.7 Does the female toilet have sanitary pads disposal?,,,,,,,,,,,,,,,?
 35.7.4.8 Are the toilets clean?,,,,,,,,,,,,,,,?
-Comments,,,,,,,,,,,,,,,?
+Any Comments ono Social Work Toilet Facilities?,,,,,,,,,,,,,,,?
 Safety And Waste Management--,,,,,,,,,,,,,,,?
 35.8.1 Does the social work unit have a policy on waste management?,,,,,,,,,,,,,,,?
 35.8.2 Does the unit have standard operating procedures on waste management?,,,,,,,,,,,,,,,?
 35.8.3 Does the unit have a waste disposal system?,,,,,,,,,,,,,,,?
 35.8.4 Does the unit have a policy and procedures on safety?,,,,,,,,,,,,,,,?
 35.8.5 Are there fire protection equipments?,,,,,,,,,,,,,,,?
-35.8.5.1 Fire extinguishers?,,,,,,,,,,,,,,,?
-35.8.5.2 Smoke detectors?,,,,,,,,,,,,,,,?
-35.8.5.3 Fire alarms?,,,,,,,,,,,,,,,?
-35.8.5.4 Fire blankets?,,,,,,,,,,,,,,,?
-35.8.5.5 Fire hose?,,,,,,,,,,,,,,,?
+35.8.5.1 Are there Fire extinguishers?,,,,,,,,,,,,,,,?
+35.8.5.2 Are there Smoke detectors?,,,,,,,,,,,,,,,?
+35.8.5.3 Are there Fire alarms?,,,,,,,,,,,,,,,?
+35.8.5.4 Are there Fire blankets?,,,,,,,,,,,,,,,?
+35.8.5.5 Is there Fire hose?,,,,,,,,,,,,,,,?
 35.8.6 Is there adequate security?,,,,,,,,,,,,,,,?
-35.8.6.1 Lockable gates?,,,,,,,,,,,,,,,?
-35.8.6.2 Lockable doors?,,,,,,,,,,,,,,,?
-35.8.6.3 Alarm system?,,,,,,,,,,,,,,,?
-35.8.6.4 Burglar bars?,,,,,,,,,,,,,,,?
-35.8.6.5 Security personnel?,,,,,,,,,,,,,,,?
-Comments,,,,,,,,,,,,,,,?
+35.8.6.1 Are there Lockable gates?,,,,,,,,,,,,,,,?
+35.8.6.2 Are there Lockable doors?,,,,,,,,,,,,,,,?
+35.8.6.3 Is there an Alarm system?,,,,,,,,,,,,,,,?
+35.8.6.4 Are there Burglar bars?,,,,,,,,,,,,,,,?
+35.8.6.5 Are there Security personnel?,,,,,,,,,,,,,,,?
+Any Comments on Safety and Waste Management?,,,,,,,,,,,,,,,?
 Client Satisfaction--,,,,,,,,,,,,,,,?
 35.10.1 Is there a re-assessment policy?,,,,,,,,,,,,,,,?
 35.10.2 Is there a feedback mechanism?,,,,,,,,,,,,,,,?
-35.10.2.1 Suggestion box?,,,,,,,,,,,,,,,?
-35.10.2.2 Surveys?,,,,,,,,,,,,,,,?
+35.10.2.1 Is there a feedback mechanism using Suggestion box?,,,,,,,,,,,,,,,?
+35.10.2.2 Is there a feedback mechanism using Surveys?,,,,,,,,,,,,,,,?
 35.10.3 Is there a toll free number?,,,,,,,,,,,,,,,?
-35.10.4 Others? Specify,,,,,,,,,,,,,,,?
-Comments,,,,,,,,,,,,,,,?
+35.10.4 Are there other feedback mechanism?,,,,,,,,,,,,,,,?
+35.10.4 Are there other feedback mechanism? Specify,,,,,,,,,,,,,,,?
+Any Comments on Customer Satisfaction?,,,,,,,,,,,,,,,?

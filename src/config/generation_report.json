@@ -1,12 +1,12 @@
 {
-  "generated_on": "2026-01-31T20:09:46.179042",
+  "generated_on": "2026-02-01T11:11:02.821481",
   "source_file": "checklist-final.csv",
   "facility_types": [
     "Obstetrics & Gynaecology",
     "Laboratory",
     "Psychology",
     "Eye (Opthalmology /Optometry)",
-    "Physiotheraphy",
+    "Physiotherapy",
     "Dental",
     "Dental Laboratory",
     "Ear, Nose & Throat",
@@ -87,7 +87,7 @@
   "statistics": {
     "total_facility_types": 15,
     "total_sections": 64,
-    "total_questions": 5448
+    "total_questions": 5458
   },
   "facility_statistics": {
     "Obstetrics & Gynaecology": {
@@ -106,7 +106,7 @@
       "applicable_questions": 298,
       "coverage_percentage": 5.5
     },
-    "Physiotheraphy": {
+    "Physiotherapy": {
       "applicable_questions": 220,
       "coverage_percentage": 4.0
     },
@@ -132,7 +132,7 @@
     },
     "General Practice": {
       "applicable_questions": 308,
-      "coverage_percentage": 5.7
+      "coverage_percentage": 5.6
     },
     "Paediatric": {
       "applicable_questions": 272,
@@ -140,14 +140,14 @@
     },
     "Nursing  Home": {
       "applicable_questions": 319,
-      "coverage_percentage": 5.9
+      "coverage_percentage": 5.8
     },
     "Emergency Medical Services": {
       "applicable_questions": 199,
-      "coverage_percentage": 3.7
+      "coverage_percentage": 3.6
     },
     "Hospital": {
-      "applicable_questions": 4711,
+      "applicable_questions": 4721,
       "coverage_percentage": 86.5
     }
   }

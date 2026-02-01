@@ -35,22 +35,35 @@ const FormNavigationSidebar = ({
     const getSubsections = (section) => {
         const subs = [];
         let currentSub = null;
+        const seenSubNames = new Set();
 
         section.dataElements?.forEach(psde => {
             const name = psde?.dataElement?.displayName;
             if (!name) return;
             if (isSectionHeaderName(name)) {
+                const normalizedName = normalizeSectionHeaderName(name);
+                if (seenSubNames.has(normalizedName)) {
+                    // Skip if we've already seen this subsection name in this section
+                    // But still set currentSub to it to collect elements if they are spread out?
+                    // Actually, usually they are together. Let's just avoid adding a new one.
+
+                    // To be safe, we might want to find the existing sub and append to it.
+                    currentSub = subs.find(s => s.name === normalizedName);
+                    return;
+                }
+
                 if (currentSub) subs.push(currentSub);
                 currentSub = {
                     id: psde.dataElement.id,
-                    name: normalizeSectionHeaderName(name),
+                    name: normalizedName,
                     elements: []
                 };
+                seenSubNames.add(normalizedName);
             } else if (currentSub) {
                 currentSub.elements.push(psde);
             }
         });
-        if (currentSub) subs.push(currentSub);
+        if (currentSub && !subs.some(s => s.name === currentSub.name)) subs.push(currentSub);
         return subs;
     };
 

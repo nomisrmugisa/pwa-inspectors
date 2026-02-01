@@ -484,7 +484,7 @@ class DHIS2APIService {
    * Process the stage metadata into sections format
    */
   processStageMetadataIntoSections(stageMetadata) {
-    const sections = [];
+    const rawSections = [];
 
     console.log('🔍 Processing stage metadata into sections...');
 
@@ -492,17 +492,6 @@ class DHIS2APIService {
       console.log(`📋 Found ${stageMetadata.programStageSections.length} program stage sections`);
 
       stageMetadata.programStageSections.forEach((section, index) => {
-        // DEBUG: Trace Specimen Reception Room processing
-        if ((section.name && section.name.toUpperCase().includes('SPECIMEN')) ||
-          (section.displayName && section.displayName.toUpperCase().includes('SPECIMEN'))) {
-          console.log('👀 PROCESSING SPECIMEN SECTION:', {
-            name: section.name,
-            displayName: section.displayName,
-            dataElementsCount: section.dataElements?.length || 0,
-            dataElementNames: section.dataElements?.map(de => de.formName || de.displayName || de.name)
-          });
-        }
-
         // First, collect all data elements with their metadata
         let dataElementsWithMetadata = section.dataElements?.map((de, deIndex) => ({
           id: `psde_${de.id}`,
@@ -530,44 +519,71 @@ class DHIS2APIService {
           const existing = nameToElementMap.get(name);
 
           if (!existing) {
-            // First occurrence of this name
             nameToElementMap.set(name, element);
           } else {
-            // Duplicate found - keep the one with the latest lastUpdated date
             const existingDate = existing.lastUpdated ? new Date(existing.lastUpdated) : new Date(0);
             const currentDate = element.lastUpdated ? new Date(element.lastUpdated) : new Date(0);
 
             if (currentDate > existingDate) {
-              console.log(`  🔄 Duplicate found: "${name}" - keeping newer version (${element.dataElement.id} updated ${element.lastUpdated})`);
               nameToElementMap.set(name, element);
-            } else {
-              console.log(`  🔄 Duplicate found: "${name}" - keeping existing version (${existing.dataElement.id} updated ${existing.lastUpdated})`);
             }
           }
         });
 
-        // Convert map back to array, preserving original sort order where possible
         const deduplicatedElements = Array.from(nameToElementMap.values())
           .sort((a, b) => a.sortOrder - b.sortOrder);
 
         const processedSection = {
-          id: `section_${index}`,
+          id: section.id || `section_${index}`,
           displayName: section.name || section.displayName,
-          description: null,
+          description: section.description || null,
           sortOrder: section.sortOrder || index,
           dataElements: deduplicatedElements
         };
 
-        console.log(`  📂 Section ${index + 1}: "${processedSection.displayName}" with ${processedSection.dataElements.length} Data Elements`);
-
-        sections.push(processedSection);
+        rawSections.push(processedSection);
       });
-    } else {
-      console.log('📋 No program stage sections found in metadata');
     }
 
-    console.log(`✅ Processed ${sections.length} sections from stage metadata`);
-    return sections;
+    // Now deduplicate SECTIONS by normalized displayName to prevent duplicate selected sections
+    const nameToSectionMap = new Map();
+
+    // Internal normalization for deduplication
+    const internalNormalize = (str) => {
+      if (!str) return '';
+      return str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase().trim();
+    };
+
+    rawSections.forEach(section => {
+      const normalizedName = internalNormalize(section.displayName);
+      const existing = nameToSectionMap.get(normalizedName);
+
+      if (!existing) {
+        nameToSectionMap.set(normalizedName, section);
+      } else {
+        console.log(`  🔄 Duplicate section found (normalized): "${section.displayName}" matches "${existing.displayName}" - merging data elements`);
+        // Merge data elements, deduplicating them by ID
+        const elementMap = new Map();
+        existing.dataElements.forEach(de => elementMap.set(de.dataElement.id, de));
+        section.dataElements.forEach(de => elementMap.set(de.dataElement.id, de));
+
+        existing.dataElements = Array.from(elementMap.values())
+          .sort((a, b) => a.sortOrder - b.sortOrder);
+
+        // Use the lower sort order
+        if (section.sortOrder < existing.sortOrder) {
+          existing.sortOrder = section.sortOrder;
+        }
+
+        // Prefer the name from checklist-final if possible (could be improved, but let's keep existing's name)
+      }
+    });
+
+    const finalSections = Array.from(nameToSectionMap.values())
+      .sort((a, b) => a.sortOrder - b.sortOrder);
+
+    console.log(`✅ Processed ${finalSections.length} unique sections from stage metadata (from ${rawSections.length} raw sections)`);
+    return finalSections;
   }
 
   /**
@@ -721,7 +737,7 @@ class DHIS2APIService {
   async getInspectionIdForFacility(orgUnitId) {
     const SCHEDULE_PROGRAM_ID = 'wyQbzZAaJJa';
     console.log(`🔍 Fetching Inspection ID for Facility: ${orgUnitId} from program ${SCHEDULE_PROGRAM_ID}`);
-    
+
     try {
       // Fetch TEIs for this facility in the scheduling program
       const response = await this.request(
@@ -730,38 +746,38 @@ class DHIS2APIService {
 
       const teis = response?.trackedEntityInstances || [];
       console.log(`📋 Found ${teis.length} inspection schedules for this facility`);
-      
+
       if (teis.length > 0) {
         const today = new Date();
-        
+
         // Filter for authorized inspections within date range
         for (const tei of teis) {
           const attributes = tei.attributes || [];
-          
+
           // Check if this is an authorized inspection
           const statusAttr = attributes.find(attr => attr.code === 'INSP_SCHEDULE_STATUS');
           if (!statusAttr || statusAttr.value !== 'INSP_SCHEDULE_AUTHORIZED') {
             console.log(`⏭️ Skipping TEI ${tei.trackedEntityInstance} - status: ${statusAttr?.value || 'UNKNOWN'}`);
             continue;
           }
-          
+
           // Check date range
           const startDateAttr = attributes.find(attr => attr.code === 'INSP_START_DATE' || attr.code === 'INSP_PROPOSED_START_DATE');
           const endDateAttr = attributes.find(attr => attr.code === 'INSP_END_DATE' || attr.code === 'INSP_PROPOSED_END_DATE');
-          
+
           if (startDateAttr && endDateAttr) {
             const startDate = new Date(startDateAttr.value);
             const endDate = new Date(endDateAttr.value);
-            
+
             if (today < startDate || today > endDate) {
               console.log(`⏭️ Skipping TEI ${tei.trackedEntityInstance} - outside date range (${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()})`);
               continue;
             }
           }
-          
+
           // This TEI matches all criteria, return its inspection ID
           const inspectionIdAttr = attributes.find(attr => attr.code === 'INSP_INSPECTION_ID');
-          
+
           if (inspectionIdAttr && inspectionIdAttr.value) {
             console.log(`✅ Found Inspection ID: ${inspectionIdAttr.value} (TEI: ${tei.trackedEntityInstance})`);
             console.log(`   Status: ${statusAttr.value}`);
@@ -770,7 +786,7 @@ class DHIS2APIService {
           }
         }
       }
-      
+
       console.warn('⚠️ No authorized INSP_INSPECTION_ID found for this facility within current date range');
       return null;
     } catch (error) {

@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from: checklist-final.csv
- * Generated on: 2026-01-31 20:09:43
+ * Generated on: 2026-02-01 11:11:02
  * Facility Type: Ear, Nose & Throat
  *
  * To regenerate this file, run: python src/config/generateFilters.py
@@ -305,13 +305,13 @@ const EarNoseandThroat = {
             "Does the Facility have a policy on waste management?",
             "Does the Facility have SOPs on waste management?",
             "Does the Facility have a waste disposal system? Specify:",
-            ". Domestic Waste",
-            ". Clinical Waste",
-            ". Does the Facility have a policy and procedures on safety?",
-            ". Is there a policy and procedure on accidental eposure to HIV?",
-            ". Does the Facility have fire protection equipment?",
-            ".Fire etinguishers",
-            ".Emergency eits",
+            "Domestic Waste",
+            "Clinical Waste",
+            "Does the Facility have a policy and procedures on safety?",
+            "Is there a policy and procedure on accidental eposure to HIV?",
+            "Does the Facility have fire protection equipment?",
+            "Fire etinguishers",
+            "Emergency eits",
             "Additional:",
             "Fire alarms",
             "Smoke detectors",

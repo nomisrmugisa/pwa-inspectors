@@ -2,7 +2,43 @@ import json
 import os
 import re
 
+def get_credentials():
+    env_path = '.env'
+    creds = {}
+    if os.path.exists(env_path):
+        with open(env_path, 'r') as f:
+            for line in f:
+                if '=' in line:
+                    key, value = line.strip().split('=', 1)
+                    creds[key] = value
+    return creds.get('DHIS2_USERNAME'), creds.get('DHIS2_PASSWORD')
+
+def fetch_latest_metadata():
+    username, password = get_credentials()
+    if not username or not password:
+        print("⚠️  Skipping metadata fetch: DHIS2_USERNAME or DHIS2_PASSWORD not found in .env")
+        print("   (Create a .env file with these variables to enable auto-update)")
+        return
+
+    print("🔄 Fetching latest DHIS2 metadata...")
+    try:
+        import subprocess
+        result = subprocess.run(
+            ["node", "scripts/fetch-metadata.js", username, password],
+            capture_output=True,
+            text=True
+        )
+        if result.returncode == 0:
+            print("✅ Metadata updated successfully.")
+        else:
+            print(f"❌ Failed to fetch metadata: {result.stderr}")
+    except Exception as e:
+        print(f"❌ Error running fetch script: {e}")
+
 def load_dhis2_metadata():
+    # Attempt to fetch fresh metadata first
+    fetch_latest_metadata()
+    
     try:
         with open('dhis2_full_metadata_v2.json', 'r', encoding='utf-8-sig') as f:
             data = json.load(f)
@@ -14,10 +50,18 @@ def load_dhis2_metadata():
                 best_name = de.get('formName') or de.get('displayFormName') or de.get('displayName')
                 if best_name:
                     dhis2_elements[best_name.strip()] = de['id']
+            # Fallback for older metadata structure or direct dataElements list
+            if not dhis2_elements and 'dataElements' in data:
+                 for de in data['dataElements']:
+                    best_name = de.get('formName') or de.get('displayFormName') or de.get('displayName')
+                    if best_name:
+                        dhis2_elements[best_name.strip()] = de['id']
+            
             return dhis2_elements
     except Exception as e:
         print(f"❌ Error loading DHIS2 metadata: {e}")
         return {}
+
 
 def extract_questions_from_js_config(file_path):
     questions_by_section = {}

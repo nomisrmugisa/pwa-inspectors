@@ -3,15 +3,46 @@ import json
 import re
 import os
 
-def normalize_name(name):
-    # Strictly return the name as is for "exact matching"
-    # Only stripping outer whitespace which is usually a file-reading artifact
-    return name.strip() if name else ""
+def get_credentials():
+    env_path = '.env'
+    creds = {}
+    if os.path.exists(env_path):
+        with open(env_path, 'r') as f:
+            for line in f:
+                if '=' in line:
+                    key, value = line.strip().split('=', 1)
+                    creds[key] = value
+    return creds.get('DHIS2_USERNAME'), creds.get('DHIS2_PASSWORD')
+
+def fetch_latest_metadata():
+    username, password = get_credentials()
+    if not username or not password:
+        print("⚠️  Skipping metadata fetch: DHIS2_USERNAME or DHIS2_PASSWORD not found in .env")
+        print("   (Create a .env file with these variables to enable auto-update)")
+        return
+
+    print("🔄 Fetching latest DHIS2 metadata...")
+    try:
+        import subprocess
+        result = subprocess.run(
+            ["node", "scripts/fetch-metadata.js", username, password],
+            capture_output=True,
+            text=True
+        )
+        if result.returncode == 0:
+            print("✅ Metadata updated successfully.")
+        else:
+            print(f"❌ Failed to fetch metadata: {result.stderr}")
+    except Exception as e:
+        print(f"❌ Error running fetch script: {e}")
 
 def verify_all_sections():
     print("Starting Global Strict Comparison for all sections")
     
-    # 1. Parse CSV
+    # 1. Update Metadata
+    fetch_latest_metadata()
+
+    # 2. Parse CSV
     section_map = {} # {section_name: [questions]}
     current_section = None
     

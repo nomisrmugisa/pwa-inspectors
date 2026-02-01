@@ -3356,27 +3356,58 @@ function FormPage() {
   // --- Memoized Sections for Navigation ---
   const availableSections = useMemo(() => {
     const all = configuration?.programStage?.sections || visibleSections || [];
-    return all.filter(section => {
+    const seenNames = new Set();
+
+    // Internal normalization for UI deduplication
+    const internalNormalize = (str) => {
+      if (!str) return '';
+      return str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase().trim();
+    };
+
+    const filtered = all.filter(section => {
       if (!section || !section.displayName) return false;
+
+      const normalizedName = internalNormalize(section.displayName);
+      if (seenNames.has(normalizedName)) return false;
+
       const currentClassification = (typeof getCurrentFacilityClassification === 'function' ? getCurrentFacilityClassification() : null) || facilityType;
       const passesMainFilter = shouldShowSection(section.displayName, currentClassification);
       const passesDeptFilter = shouldShowSectionForServiceDepartments(section.displayName, selectedServiceDepartments);
+
       const displayName = section.displayName || '';
       const isPre = displayName.toLowerCase().startsWith('pre');
       const isUnwanted = displayName === "Final_Inspection_Event" || displayName === "Preliminary-Report" || displayName === "Inspectors Details";
-      return passesMainFilter && passesDeptFilter && !isPre && !isUnwanted;
+
+      const shouldInclude = passesMainFilter && passesDeptFilter && !isPre && !isUnwanted;
+
+      if (shouldInclude) {
+        seenNames.add(normalizedName);
+      }
+
+      return shouldInclude;
     });
+
+    console.log('🐞 availableSections (deduplicated):', filtered.map(s => s.displayName));
+    return filtered;
   }, [configuration, visibleSections, facilityType, selectedServiceDepartments, manualSpecialization]);
 
-  const initialSections = useMemo(() => availableSections.filter(section => {
-    const name = (section.displayName || '').toLowerCase();
-    return name.includes('inspection information') || name.includes('inspection type');
-  }), [availableSections]);
+  const initialSections = useMemo(() => {
+    const sections = availableSections.filter(section => {
+      const name = (section.displayName || '').toLowerCase();
+      return name.includes('inspection information') || name.includes('inspection type');
+    });
+    console.log('🐞 initialSections:', sections.map(s => s.displayName));
+    return sections;
+  }, [availableSections]);
 
-  const remainingSections = useMemo(() => availableSections.filter(section => {
-    const name = (section.displayName || '').toLowerCase();
-    return !name.includes('inspection information') && !name.includes('inspection type');
-  }), [availableSections]);
+  const remainingSections = useMemo(() => {
+    const sections = availableSections.filter(section => {
+      const name = (section.displayName || '').toLowerCase();
+      return !name.includes('inspection information') && !name.includes('inspection type');
+    });
+    console.log('🐞 remainingSections:', sections.map(s => s.displayName));
+    return sections;
+  }, [availableSections]);
 
   // Auto-select first remaining section if confirmed and none active
   useEffect(() => {
@@ -7425,72 +7456,72 @@ function FormPage() {
                 margin: '0 auto',
                 textAlign: 'center'
               }}>
-              <CustomSignatureCanvas
-                onSignatureChange={handleSignatureChange}
-                existingSignature={intervieweeSignature}
-                disabled={false}
-              />
+                <CustomSignatureCanvas
+                  onSignatureChange={handleSignatureChange}
+                  existingSignature={intervieweeSignature}
+                  disabled={false}
+                />
 
-              {/* Confirmation Checkbox - show after signature */}
-              {intervieweeSignature && (
-                <div className="confirmation-checkbox" style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px',
-                  padding: '16px',
-                  background: 'var(--md-surface-variant)',
-                  borderRadius: '8px',
-                  marginTop: '20px',
-                  marginBottom: '20px'
-                }}>
-                  <input
-                    type="checkbox"
-                    id="confirmation-checkbox"
-                    checked={isConfirmed}
-                    onChange={(e) => setIsConfirmed(e.target.checked)}
-                    style={{ width: '18px', height: '18px' }}
-                  />
-                  <label htmlFor="confirmation-checkbox" style={{
-                    margin: 0,
-                    fontSize: '0.9rem',
-                    color: 'var(--md-on-surface-variant)',
-                    cursor: 'pointer'
+                {/* Confirmation Checkbox - show after signature */}
+                {intervieweeSignature && (
+                  <div className="confirmation-checkbox" style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    padding: '16px',
+                    background: 'var(--md-surface-variant)',
+                    borderRadius: '8px',
+                    marginTop: '20px',
+                    marginBottom: '20px'
                   }}>
-                    I confirm that I have completed the inspection and reviewed all information
-                  </label>
-                </div>
-              )}
+                    <input
+                      type="checkbox"
+                      id="confirmation-checkbox"
+                      checked={isConfirmed}
+                      onChange={(e) => setIsConfirmed(e.target.checked)}
+                      style={{ width: '18px', height: '18px' }}
+                    />
+                    <label htmlFor="confirmation-checkbox" style={{
+                      margin: 0,
+                      fontSize: '0.9rem',
+                      color: 'var(--md-on-surface-variant)',
+                      cursor: 'pointer'
+                    }}>
+                      I confirm that I have completed the inspection and reviewed all information
+                    </label>
+                  </div>
+                )}
 
-              {/* Submit and Save buttons - show after confirmation */}
-              {isConfirmed && (
-                <div style={{
-                  display: 'flex',
-                  gap: '12px',
-                  justifyContent: 'center',
-                  marginTop: '16px'
-                }}>
-                  <button
-                    type="button"
-                    onClick={handleSubmit}
-                    className="btn btn-primary"
-                    disabled={isSubmitting}
-                    title="Submit inspection form"
-                  >
-                    {isSubmitting ? 'Submitting...' : 'Submit Inspection'}
-                  </button>
+                {/* Submit and Save buttons - show after confirmation */}
+                {isConfirmed && (
+                  <div style={{
+                    display: 'flex',
+                    gap: '12px',
+                    justifyContent: 'center',
+                    marginTop: '16px'
+                  }}>
+                    <button
+                      type="button"
+                      onClick={handleSubmit}
+                      className="btn btn-primary"
+                      disabled={isSubmitting}
+                      title="Submit inspection form"
+                    >
+                      {isSubmitting ? 'Submitting...' : 'Submit Inspection'}
+                    </button>
 
-                  <button
-                    type="button"
-                    onClick={handleSaveDraft}
-                    className="btn btn-secondary"
-                    disabled={isSubmitting || (!isOnline && !isDraft)}
-                    title="Save as draft"
-                  >
-                    {isSubmitting ? 'Saving...' : 'Save Draft'}
-                  </button>
-                </div>
-              )}
+                    <button
+                      type="button"
+                      onClick={handleSaveDraft}
+                      className="btn btn-secondary"
+                      disabled={isSubmitting || (!isOnline && !isDraft)}
+                      title="Save as draft"
+                    >
+                      {isSubmitting ? 'Saving...' : 'Save Draft'}
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           )}

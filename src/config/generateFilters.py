@@ -282,6 +282,12 @@ export function shouldShowDataElementForService(dataElementName, selectedService
         return true; // Show all if no service selected or service not found
     }
 
+    // SPECIAL EXCEPTION: Hospital facility type should show ALL data elements without filtering
+    // This allows hospitals to access all sections and questions from DHIS2
+    if (selectedService === 'Hospital' || selectedService === 'Service Hospital') {
+        return true;
+    }
+
     const serviceFilters = facilityServiceFilters[selectedService];
 
     // Helper to normalize strings for comparison (handles apostrophes, case, and whitespace)
