@@ -16,6 +16,17 @@ export const normalizeSectionHeaderName = (name) => {
 };
 
 /**
+ * Detect if a string is all uppercase letters (ignoring numbers/punctuation)
+ */
+export const isAllCaps = (name) => {
+    if (!name || typeof name !== 'string') return false;
+    const clean = name.trim();
+    if (clean.length <= 3) return false;
+    // Must have letters, and none of them can be lowercase
+    return /[A-Z]/.test(clean) && !/[a-z]/.test(clean);
+};
+
+/**
  * Detect number-prefixed all-caps labels (e.g., "18.15.1 GENERAL DOES THE THEATRE...")
  */
 export const isNumberPrefixedAllCapsLabel = (name) => {
@@ -43,7 +54,7 @@ export const calculateProgress = (dataElements, formData) => {
     const inputElements = dataElements.filter(psde => {
         const name = psde?.dataElement?.displayName || '';
         if (!name) return false;
-        return !isSectionHeaderName(name) && !isNumberPrefixedAllCapsLabel(name);
+        return !isSectionHeaderName(name) && !isNumberPrefixedAllCapsLabel(name) && !isAllCaps(name);
     });
 
     if (inputElements.length === 0) return 0;
@@ -66,7 +77,7 @@ export const getProgressCounts = (dataElements, formData) => {
     const inputElements = dataElements.filter(psde => {
         const name = psde?.dataElement?.displayName || '';
         if (!name) return false;
-        return !isSectionHeaderName(name) && !isNumberPrefixedAllCapsLabel(name);
+        return !isSectionHeaderName(name) && !isNumberPrefixedAllCapsLabel(name) && !isAllCaps(name);
     });
     const total = inputElements.length;
     const answered = inputElements.reduce((acc, psde) => {

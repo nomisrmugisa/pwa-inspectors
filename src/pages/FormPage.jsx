@@ -25,7 +25,8 @@ import FormNavigationSidebar from '../components/FormNavigationSidebar';
 import {
   isSectionHeaderName,
   normalizeSectionHeaderName,
-  isNumberPrefixedAllCapsLabel
+  isNumberPrefixedAllCapsLabel,
+  isAllCaps
 } from '../utils/formUtils';
 
 import './FormPage.css'; // Import FormPage specific styles
@@ -1473,7 +1474,16 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
             return false; // Hide these fields from users
           }
 
-          // Always show subsection headers (elements ending with "--") and number-prefixed all-caps labels
+          // For Hospital category, hide data elements that are capitalized (headers/labels)
+          const isHospital = filteringFacilityType === 'Hospital' || filteringFacilityType === 'Service Hospital';
+          const isCapitalized = isAllCaps(displayName) || isAllCaps(psde.dataElement.displayName) ||
+            isSectionHeaderName(displayName) || isNumberPrefixedAllCapsLabel(displayName);
+
+          if (isHospital && isCapitalized) {
+            return false;
+          }
+
+          // Always show subsection headers (elements ending with "--") and number-prefixed all-caps labels for other categories
           if (isSectionHeaderName(displayName) || isSectionHeaderName(psde.dataElement.displayName) ||
             isNumberPrefixedAllCapsLabel(displayName) || isNumberPrefixedAllCapsLabel(psde.dataElement.displayName)) {
             return true;
