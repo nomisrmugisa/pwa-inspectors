@@ -1475,17 +1475,18 @@ function FormSection({ section, formData, onChange, errors, serviceSections, loa
           }
 
           // For Hospital category, hide data elements that are capitalized (headers/labels)
+          // BUT ALWAYS SHOW subsection headers (ending with --)
           const isHospital = filteringFacilityType === 'Hospital' || filteringFacilityType === 'Service Hospital';
-          const isCapitalized = isAllCaps(displayName) || isAllCaps(psde.dataElement.displayName) ||
-            isSectionHeaderName(displayName) || isNumberPrefixedAllCapsLabel(displayName);
+          const isHeader = isSectionHeaderName(displayName) || isSectionHeaderName(psde.dataElement.displayName);
+          const isLabel = isAllCaps(displayName) || isAllCaps(psde.dataElement.displayName) ||
+            isNumberPrefixedAllCapsLabel(displayName);
 
-          if (isHospital && isCapitalized) {
+          if (isHospital && !isHeader && isLabel) {
             return false;
           }
 
           // Always show subsection headers (elements ending with "--") and number-prefixed all-caps labels for other categories
-          if (isSectionHeaderName(displayName) || isSectionHeaderName(psde.dataElement.displayName) ||
-            isNumberPrefixedAllCapsLabel(displayName) || isNumberPrefixedAllCapsLabel(psde.dataElement.displayName)) {
+          if (isHeader || isNumberPrefixedAllCapsLabel(displayName) || isNumberPrefixedAllCapsLabel(psde.dataElement.displayName)) {
             return true;
           }
 
