@@ -189,53 +189,33 @@ export function HomePage() {
 
 
   const getStatusIcon = (status, event) => {
-    // Handle draft events (both Type 1 auto-drafts and Type 2 explicit drafts)
-    if (event?.isDraft || status === 'draft' || status === 'auto-draft') {
-      return event?.isAutoSaved ? '💾' : '📝'; // Different icons for auto-saved vs explicit drafts
+    // 1. Synced
+    if (status === 'synced') {
+      return '✓';
     }
 
-    // If offline and status is error, show as pending
-    if (!isOnline && status === 'error') {
-      return '⏱';
+    // 2. Error (Online only)
+    if (isOnline && (status === 'error' || event?.syncStatus === 'error')) {
+      return '✗';
     }
 
-    switch (status) {
-      case 'synced':
-        return '✓';
-      case 'pending':
-        return '⏱';
-      case 'error':
-        return '✗';
-      case 'draft':
-        return '📄';
-      default:
-        return '?';
-    }
+    // 3. Pending Submission (Everything else: Pending, Drafts, Offline Errors)
+    return '⏱';
   };
 
   const getStatusColor = (status, event) => {
-    // Handle draft events (both Type 1 auto-drafts and Type 2 explicit drafts)
-    if (event?.isDraft || status === 'draft' || status === 'auto-draft') {
-      return 'info';
+    // 1. Synced
+    if (status === 'synced') {
+      return 'success';
     }
 
-    // If offline and status is error, show as pending (warning color)
-    if (!isOnline && status === 'error') {
-      return 'warning';
+    // 2. Error (Online only)
+    if (isOnline && (status === 'error' || event?.syncStatus === 'error')) {
+      return 'error';
     }
 
-    switch (status) {
-      case 'synced':
-        return 'success';
-      case 'pending':
-        return 'warning';
-      case 'error':
-        return 'error';
-      case 'draft':
-        return 'info';
-      default:
-        return 'default';
-    }
+    // 3. Pending Submission (Everything else)
+    return 'warning';
   };
 
   const formatEventDate = (dateString) => {
@@ -270,19 +250,20 @@ export function HomePage() {
   };
 
   const getStatusText = (event) => {
-    // Handle draft events (both Type 1 auto-drafts and Type 2 explicit drafts)
-    if (event.isDraft || event.status === 'draft' || event.status === 'auto-draft') {
-      return event.isAutoSaved ? 'Auto-saved Draft' : 'Draft';
-    }
-
     const status = event.status || event.syncStatus || 'unknown';
 
-    // If offline and status is error, show as pending submission
-    if (!isOnline && status === 'error') {
-      return 'Pending Submission';
+    // 1. Synced
+    if (status === 'synced') {
+      return 'Synced';
     }
 
-    return status.charAt(0).toUpperCase() + status.slice(1);
+    // 2. Error (Online only)
+    if (isOnline && (status === 'error' || event.syncStatus === 'error')) {
+      return 'Error';
+    }
+
+    // 3. Pending Submission (Everything else)
+    return 'Pending Submission';
   };
 
   if (!configuration) {

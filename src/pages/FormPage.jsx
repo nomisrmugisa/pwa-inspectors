@@ -3837,11 +3837,9 @@ function FormPage() {
     // Find all coordinate fields
 
     const coordinateFields = configuration.programStage.allDataElements.filter(psde => {
-
-      const fieldName = (psde.dataElement.displayName || psde.dataElement.shortName || '').toLowerCase();
-
-      return fieldName.includes('coordinates') || fieldName.includes('coordinate') || fieldName.includes('gps') || fieldName.includes('location');
-
+      // FIX: Only auto-assign validation to fields that are explicitly configured as COORDINATE type
+      // This prevents accidental overwriting of text fields that happen to have "location" in the name
+      return psde.dataElement.valueType === 'COORDINATE';
     });
 
     if (coordinateFields.length === 0) {
