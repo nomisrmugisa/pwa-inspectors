@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 
 import { useParams, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 
@@ -3015,16 +3015,34 @@ function FormPage() {
           const mostRecent = await indexedDBService.getMostRecentFormData();
 
           if (mostRecent && mostRecent.eventId) {
-            console.log('📋 Found most recent draft:', mostRecent.eventId);
-            // Instead of auto-navigating, show a prompt to the user
-            setSuggestedDraftId(mostRecent.eventId);
-            setShowDraftPrompt(true);
-          } else {
-            // No existing draft found, generate new eventId
-            const generatedId = generateDHIS2Id();
-            console.log('🆕 No existing draft found, generating new eventId:', generatedId);
-            navigate(`/form/${generatedId}`, { replace: true });
+            // CROSS-CHECK: Verify if this draft already exists in main offlineStorage (as synced/pending)
+            let isAlreadySubmitted = false;
+            if (storage.isReady) {
+              try {
+                const offlineEvent = await storage.getEvent(mostRecent.eventId);
+                if (offlineEvent && (offlineEvent.status === 'synced' || offlineEvent.status === 'pending' || offlineEvent.syncStatus === 'synced')) {
+                  console.log(`🧹 Auto-cleaning stale draft ${mostRecent.eventId} - already exists in offline storage`);
+                  await indexedDBService.markAsSubmitted(mostRecent.eventId);
+                  isAlreadySubmitted = true;
+                }
+              } catch (e) {
+                console.warn('Draft cross-check failed:', e);
+              }
+            }
+
+            if (!isAlreadySubmitted) {
+              console.log('📋 Found most recent draft:', mostRecent.eventId);
+              // Instead of auto-navigating, show a prompt to the user
+              setSuggestedDraftId(mostRecent.eventId);
+              setShowDraftPrompt(true);
+              return; // Stop here, wait for user input
+            }
           }
+
+          // No existing draft found OR draft was cleaned up, generate new eventId
+          const generatedId = generateDHIS2Id();
+          console.log('🆕 No existing draft found, generating new eventId:', generatedId);
+          navigate(`/form/${generatedId}`, { replace: true });
         } catch (error) {
           console.error('❌ Error checking for existing drafts:', error);
           // On error, generate new eventId as fallback
@@ -3059,8 +3077,9 @@ function FormPage() {
 
     setEventDate,
 
-    trackedEntityInstances
-
+    trackedEntityInstances,
+    syncEvents,
+    storage
   } = useApp();
 
   // State to track service sections - Defined early to avoid ReferenceError
@@ -3079,16 +3098,8 @@ function FormPage() {
   // State to track target subsection for navigation
   const [targetSubsectionId, setTargetSubsectionId] = useState(null);
 
-  // Initialize useIncrementalSave early to provide formData to helper functions
-  const {
-    formData,
-    setFormData,
-    saveField,
-    saveFieldImmediate,
-    flushPendingSaves,
-    loadFormData,
-    updateSectionMetadata
-  } = useIncrementalSave(eventId, {
+  // Memoize save handlers to prevent infinite loops in hooks/effects
+  const saveOptions = useMemo(() => ({
     debounceMs: 300,
     onSaveSuccess: (result) => {
       // Show visual save indicator
@@ -3110,7 +3121,19 @@ function FormPage() {
       });
       setTimeout(() => setSaveStatus(prev => ({ ...prev, isVisible: false })), 3000);
     }
-  });
+  }), [showToast]); // Only recreate if showToast changes (rare)
+
+  // Initialize useIncrementalSave early to provide formData to helper functions
+  const {
+    formData,
+    setFormData,
+    saveField,
+    saveFieldImmediate,
+    saveFields,
+    flushPendingSaves,
+    loadFormData,
+    updateSectionMetadata
+  } = useIncrementalSave(eventId, saveOptions);
 
 
 
@@ -3481,7 +3504,7 @@ function FormPage() {
     }));
 
     // Save the specialization field incrementally to IndexedDB
-    if (eventId) {
+    if (eventId && inspectionInfoConfirmed) {
       saveField(specializationFieldName, selectedSpecialization);
     }
 
@@ -4088,7 +4111,7 @@ function FormPage() {
           setFacilityInfo(facilityData);
 
           // Save facility info to IndexedDB metadata for restoration on Resume Draft
-          if (eventId) {
+          if (eventId && inspectionInfoConfirmed) {
             indexedDBService.saveFormData(eventId, '_facility_info_update', null, { facilityInfo: facilityData })
               .catch(err => console.error('Failed to save facility info to draft:', err));
           }
@@ -4176,15 +4199,41 @@ function FormPage() {
 
   const [intervieweeSignature, setIntervieweeSignature] = useState(null);
 
+  // Guard for flushing data on confirmation to prevent infinite loops
+  const hasFlushedOnConfirm = useRef(false);
+  // Reset guard if confirmation is toggled off
+  useEffect(() => {
+    if (!inspectionInfoConfirmed) {
+      hasFlushedOnConfirm.current = false;
+    }
+  }, [inspectionInfoConfirmed]);
+
   // Initialize incremental save functionality
 
 
   // Persist active section when it changes
   useEffect(() => {
-    if (eventId && activeSectionId) {
+    if (eventId && activeSectionId && inspectionInfoConfirmed) {
       updateSectionMetadata(activeSectionId);
     }
-  }, [activeSectionId, eventId, updateSectionMetadata]);
+  }, [activeSectionId, eventId, updateSectionMetadata, inspectionInfoConfirmed]);
+
+  // Flush all form data once inspection info is confirmed
+  // This ensures that facility/specialization/departments chosen BEFORE confirmation
+  // are finally persisted as a draft as soon as the user checks the box.
+  useEffect(() => {
+    if (inspectionInfoConfirmed && eventId && formData && !hasFlushedOnConfirm.current) {
+      console.log('📝 Inspection info confirmed, flushing initial form data to draft storage...');
+      hasFlushedOnConfirm.current = true; // Set guard immediately
+      saveFields(formData);
+
+      // Also ensure facility info is saved if we have it
+      if (facilityInfo) {
+        indexedDBService.saveFormData(eventId, '_facility_info_update', null, { facilityInfo })
+          .catch(err => console.error('Failed to flush facility info on confirmation:', err));
+      }
+    }
+  }, [inspectionInfoConfirmed, eventId, saveFields, formData, facilityInfo]); // Keep deps but guard with ref
 
   // Handle auto-save on page exit/reload
   useEffect(() => {
@@ -4200,6 +4249,8 @@ function FormPage() {
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [flushPendingSaves]);
 
+  /* 
+  // REMOVED: Contradicts "Auth Persistence on Refresh" goal
   // Handle "Reload triggers new inspection" as requested
   useEffect(() => {
     const checkForReload = () => {
@@ -4221,13 +4272,50 @@ function FormPage() {
 
     checkForReload();
   }, []); // Only run once on mount
+  */
 
   // Load existing form data from IndexedDB on mount
   useEffect(() => {
     const loadExistingData = async () => {
       if (eventId) {
         try {
-          const existingData = await loadFormData();
+          let existingData = await loadFormData();
+
+          // FALLBACK: If no draft found, check if it's a Pending Submission in main offlineStorage
+          if (!existingData && storage.isReady) {
+            console.log(`🔍 No local draft found for ${eventId}, checking offline storage...`);
+            try {
+              const offlineEvent = await storage.getEvent(eventId);
+              if (offlineEvent) {
+                console.log('📄 Found event in offline storage! Converting to form state...');
+
+                // Map DHIS2 dataValues back to form format
+                const convertedFormData = {};
+                if (Array.isArray(offlineEvent.dataValues)) {
+                  offlineEvent.dataValues.forEach(dv => {
+                    convertedFormData[`dataElement_${dv.dataElement}`] = dv.value;
+                  });
+                }
+
+                existingData = {
+                  eventId: offlineEvent.event,
+                  formData: {
+                    ...convertedFormData,
+                    orgUnit: offlineEvent.orgUnit,
+                    eventDate: offlineEvent.eventDate
+                  },
+                  metadata: {
+                    isFromOfflineStorage: true,
+                    status: offlineEvent.status,
+                    lastUpdated: offlineEvent.updatedAt || offlineEvent.createdAt
+                  }
+                };
+              }
+            } catch (storageError) {
+              console.warn('⚠️ Error fetching from offline storage:', storageError);
+            }
+          }
+
           if (existingData && existingData.formData) {
 
             // Set loading flag to prevent clearing service departments
@@ -4379,7 +4467,7 @@ function FormPage() {
     };
 
     loadExistingData();
-  }, [eventId]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [eventId, storage?.isReady]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Handle comment changes for data elements
   const handleCommentChange = (dataElementId, comment) => {
@@ -4395,7 +4483,7 @@ function FormPage() {
       saveCommentsToDataElement(updated);
 
       // Save comments incrementally to IndexedDB
-      if (eventId) {
+      if (eventId && inspectionInfoConfirmed) {
         saveField(`comment_${dataElementId}`, comment?.trim() || '');
       }
 
@@ -4464,7 +4552,7 @@ function FormPage() {
     setIntervieweeSignature(signatureDataURL);
 
     // Save signature immediately to IndexedDB (critical field)
-    if (eventId) {
+    if (eventId && inspectionInfoConfirmed) {
       saveFieldImmediate('intervieweeSignature', signatureDataURL);
     }
   };
@@ -5485,7 +5573,7 @@ function FormPage() {
     }));
 
     // Save field incrementally to IndexedDB
-    if (eventId) {
+    if (eventId && inspectionInfoConfirmed) {
       saveField(fieldName, value);
     }
 
@@ -5521,7 +5609,7 @@ function FormPage() {
         }));
 
         // Save the auto-populated date
-        if (eventId) {
+        if (eventId && inspectionInfoConfirmed) {
           saveField('eventDate', todayString);
         }
       }
@@ -5783,7 +5871,29 @@ function FormPage() {
 
       const savedEvent = await saveEvent(eventData, saveDraft);
 
+      // If this was a real submission (pending/completed), mark the local draft as submitted
+      // to prevent it from being suggested as a "recent draft" later.
+      if (!saveDraft && finalEventId) {
+        try {
+          await indexedDBService.markAsSubmitted(finalEventId);
+          console.log('✅ Local draft marked as submitted');
+        } catch (markError) {
+          console.warn('⚠️ Failed to mark local draft as submitted (non-critical):', markError);
+        }
+      }
+
       setIsDraft(saveDraft);
+
+      // If this was a real submission (not a draft), trigger a sync immediately
+      if (!saveDraft && isOnline) {
+        console.log('🚀 Final submission successful, triggering immediate sync...');
+        try {
+          await syncEvents();
+          console.log('✅ Post-submission sync attempt completed');
+        } catch (syncError) {
+          console.warn('⚠️ Post-submission sync background attempt failed (will retry later):', syncError);
+        }
+      }
 
       // Always navigate to dashboard after successful save (both draft and final)
       navigate('/home');

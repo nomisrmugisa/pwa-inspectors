@@ -30,10 +30,16 @@ class StorageService {
         resolve(this.db);
       };
 
+      request.onblocked = () => {
+        console.warn('IndexedDB open blocked. Please close other tabs of this app.');
+        // We don't reject here because it might unblock later, 
+        // but we log it to help debugging.
+      };
+
       request.onupgradeneeded = (event) => {
         const db = event.target.result;
         const oldVersion = event.oldVersion;
-        
+
         console.log(`Upgrading IndexedDB from version ${oldVersion} to ${this.version}`);
 
         // Create stores if they don't exist
@@ -77,7 +83,7 @@ class StorageService {
     await this.ensureReady();
     const transaction = this.db.transaction(['auth'], 'readwrite');
     const store = transaction.objectStore('auth');
-    
+
     await new Promise((resolve, reject) => {
       const request = store.put({ id: 'current', ...authData });
       request.onsuccess = () => resolve();
@@ -89,7 +95,7 @@ class StorageService {
     await this.ensureReady();
     const transaction = this.db.transaction(['auth'], 'readonly');
     const store = transaction.objectStore('auth');
-    
+
     return new Promise((resolve, reject) => {
       const request = store.get('current');
       request.onsuccess = () => {
@@ -109,7 +115,7 @@ class StorageService {
     await this.ensureReady();
     const transaction = this.db.transaction(['auth'], 'readwrite');
     const store = transaction.objectStore('auth');
-    
+
     await new Promise((resolve, reject) => {
       const request = store.delete('current');
       request.onsuccess = () => resolve();
@@ -122,13 +128,13 @@ class StorageService {
     await this.ensureReady();
     const transaction = this.db.transaction(['configuration'], 'readwrite');
     const store = transaction.objectStore('configuration');
-    
+
     const configRecord = {
       id: 'current',
       ...configuration,
       updatedAt: new Date().toISOString()
     };
-    
+
     await new Promise((resolve, reject) => {
       const request = store.put(configRecord);
       request.onsuccess = () => resolve();
@@ -140,7 +146,7 @@ class StorageService {
     await this.ensureReady();
     const transaction = this.db.transaction(['configuration'], 'readonly');
     const store = transaction.objectStore('configuration');
-    
+
     return new Promise((resolve, reject) => {
       const request = store.get('current');
       request.onsuccess = () => {
@@ -160,7 +166,7 @@ class StorageService {
     await this.ensureReady();
     const transaction = this.db.transaction(['configuration'], 'readwrite');
     const store = transaction.objectStore('configuration');
-    
+
     await new Promise((resolve, reject) => {
       const request = store.delete('current');
       request.onsuccess = () => resolve();
@@ -173,12 +179,12 @@ class StorageService {
     await this.ensureReady();
     const transaction = this.db.transaction(['events'], 'readwrite');
     const store = transaction.objectStore('events');
-    
+
     const eventRecord = {
       ...eventData,
       updatedAt: new Date().toISOString()
     };
-    
+
     await new Promise((resolve, reject) => {
       const request = store.put(eventRecord);
       request.onsuccess = () => resolve();
@@ -190,7 +196,7 @@ class StorageService {
     await this.ensureReady();
     const transaction = this.db.transaction(['events'], 'readwrite');
     const store = transaction.objectStore('events');
-    
+
     return new Promise((resolve, reject) => {
       const getRequest = store.get(eventId);
       getRequest.onsuccess = () => {
@@ -201,7 +207,7 @@ class StorageService {
             ...updates,
             updatedAt: new Date().toISOString()
           };
-          
+
           const putRequest = store.put(updatedEvent);
           putRequest.onsuccess = () => resolve(updatedEvent);
           putRequest.onerror = () => reject(putRequest.error);
@@ -217,7 +223,7 @@ class StorageService {
     await this.ensureReady();
     const transaction = this.db.transaction(['events'], 'readonly');
     const store = transaction.objectStore('events');
-    
+
     return new Promise((resolve, reject) => {
       const request = store.get(eventId);
       request.onsuccess = () => resolve(request.result);
@@ -229,7 +235,7 @@ class StorageService {
     await this.ensureReady();
     const transaction = this.db.transaction(['events'], 'readwrite');
     const store = transaction.objectStore('events');
-    
+
     await new Promise((resolve, reject) => {
       const request = store.delete(eventId);
       request.onsuccess = () => resolve();
@@ -241,7 +247,7 @@ class StorageService {
     await this.ensureReady();
     const transaction = this.db.transaction(['events'], 'readonly');
     const store = transaction.objectStore('events');
-    
+
     return new Promise((resolve, reject) => {
       const request = store.getAll();
       request.onsuccess = () => resolve(request.result || []);
@@ -253,11 +259,11 @@ class StorageService {
     await this.ensureReady();
     const transaction = this.db.transaction(['events'], 'readonly');
     const store = transaction.objectStore('events');
-    
+
     return new Promise((resolve, reject) => {
       const events = [];
       let request;
-      
+
       if (filter.status) {
         const index = store.index('status');
         request = index.openCursor(IDBKeyRange.only(filter.status));
@@ -267,35 +273,35 @@ class StorageService {
       } else {
         request = store.openCursor();
       }
-      
+
       request.onsuccess = (event) => {
         const cursor = event.target.result;
         if (cursor) {
           const eventData = cursor.value;
-          
+
           // Apply additional filters
           let includeEvent = true;
-          
+
           if (filter.program && eventData.program !== filter.program) {
             includeEvent = false;
           }
-          
+
           if (filter.orgUnit && eventData.orgUnit !== filter.orgUnit) {
             includeEvent = false;
           }
-          
+
           if (filter.startDate && eventData.eventDate < filter.startDate) {
             includeEvent = false;
           }
-          
+
           if (filter.endDate && eventData.eventDate > filter.endDate) {
             includeEvent = false;
           }
-          
+
           if (includeEvent) {
             events.push(eventData);
           }
-          
+
           cursor.continue();
         } else {
           // Sort by created date (newest first)
@@ -303,7 +309,7 @@ class StorageService {
           resolve(events);
         }
       };
-      
+
       request.onerror = () => reject(request.error);
     });
   }
@@ -313,12 +319,12 @@ class StorageService {
     await this.ensureReady();
     const transaction = this.db.transaction(['metadata'], 'readwrite');
     const store = transaction.objectStore('metadata');
-    
+
     await new Promise((resolve, reject) => {
-      const request = store.put({ 
-        key, 
-        data, 
-        timestamp: Date.now() 
+      const request = store.put({
+        key,
+        data,
+        timestamp: Date.now()
       });
       request.onsuccess = () => resolve();
       request.onerror = () => reject(request.error);
@@ -329,7 +335,7 @@ class StorageService {
     await this.ensureReady();
     const transaction = this.db.transaction(['metadata'], 'readonly');
     const store = transaction.objectStore('metadata');
-    
+
     return new Promise((resolve, reject) => {
       const request = store.get(key);
       request.onsuccess = () => {
@@ -344,7 +350,7 @@ class StorageService {
     await this.ensureReady();
     const transaction = this.db.transaction(['metadata'], 'readwrite');
     const store = transaction.objectStore('metadata');
-    
+
     if (key) {
       await new Promise((resolve, reject) => {
         const request = store.delete(key);
@@ -365,12 +371,12 @@ class StorageService {
     await this.ensureReady();
     const transaction = this.db.transaction(['stats'], 'readwrite');
     const store = transaction.objectStore('stats');
-    
+
     await new Promise((resolve, reject) => {
-      const request = store.put({ 
-        id: 'current', 
-        ...stats, 
-        updatedAt: new Date().toISOString() 
+      const request = store.put({
+        id: 'current',
+        ...stats,
+        updatedAt: new Date().toISOString()
       });
       request.onsuccess = () => resolve();
       request.onerror = () => reject(request.error);
@@ -381,7 +387,7 @@ class StorageService {
     await this.ensureReady();
     const transaction = this.db.transaction(['stats'], 'readonly');
     const store = transaction.objectStore('stats');
-    
+
     return new Promise((resolve, reject) => {
       const request = store.get('current');
       request.onsuccess = () => {
@@ -411,12 +417,35 @@ class StorageService {
     }
   }
 
+  async clearAllEvents() {
+    await this.ensureReady();
+    const stores = ['events', 'stats'];
+    const transaction = this.db.transaction(stores, 'readwrite');
+
+    await Promise.all(stores.map(storeName => {
+      const store = transaction.objectStore(storeName);
+      return new Promise((resolve, reject) => {
+        const request = store.clear();
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+      });
+    }));
+
+    // Re-initialize stats
+    await this.setStats({
+      totalEvents: 0,
+      pendingEvents: 0,
+      syncedEvents: 0,
+      errorEvents: 0
+    });
+  }
+
   // Utility methods
   async clearAll() {
     await this.ensureReady();
     const storeNames = ['auth', 'events', 'metadata', 'configuration', 'stats'];
     const transaction = this.db.transaction(storeNames, 'readwrite');
-    
+
     const promises = storeNames.map(storeName => {
       const store = transaction.objectStore(storeName);
       return new Promise((resolve, reject) => {
@@ -425,13 +454,13 @@ class StorageService {
         request.onerror = () => reject(request.error);
       });
     });
-    
+
     await Promise.all(promises);
   }
 
   async exportData() {
     await this.ensureReady();
-    
+
     const [auth, events, metadata, configuration, stats] = await Promise.all([
       this.getAuth(),
       this.getAllEvents(),
@@ -439,7 +468,7 @@ class StorageService {
       this.getConfiguration(),
       this.getStats()
     ]);
-    
+
     return {
       auth,
       events,
@@ -454,7 +483,7 @@ class StorageService {
     await this.ensureReady();
     const transaction = this.db.transaction(['metadata'], 'readonly');
     const store = transaction.objectStore('metadata');
-    
+
     return new Promise((resolve, reject) => {
       const request = store.getAll();
       request.onsuccess = () => {
@@ -505,7 +534,7 @@ export function useStorage() {
         if (!storageRef.current) {
           storageRef.current = new StorageService();
         }
-        
+
         await storageRef.current.init();
         setIsReady(true);
       } catch (error) {
@@ -566,6 +595,10 @@ export function useStorage() {
     deleteEvent: async (...args) => {
       if (!isReady || !storageRef.current) throw new Error('Storage not ready');
       return storageRef.current.deleteEvent(...args);
+    },
+    clearAllEvents: async (...args) => {
+      if (!isReady || !storageRef.current) throw new Error('Storage not ready');
+      return storageRef.current.clearAllEvents(...args);
     },
     getAllEvents: async (...args) => {
       if (!isReady || !storageRef.current) throw new Error('Storage not ready');

@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "build": "node index.js build",
+    "build": "node init && node index.js build",
     "update": "node index.js update",
     "ask": "node cli.js"
   },
@@ -23,6 +23,3 @@
     "sqlite-vss": "^0.1.2"
   }
 }
-
-
-

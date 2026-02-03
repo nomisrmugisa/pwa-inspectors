@@ -4,6 +4,16 @@ import { useApp } from '../contexts/AppContext';
 import { useStorage } from '../hooks/useStorage';
 import { InspectionPreview } from '../components/InspectionPreview';
 import indexedDBService from '../services/indexedDBService';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Typography,
+  Box
+} from '@mui/material';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 export function HomePage() {
   const navigate = useNavigate();
@@ -11,10 +21,12 @@ export function HomePage() {
   const {
     configuration,
     stats,
+    pendingEvents,
     isOnline,
     syncEvents,
     retryEvent,
     deleteEvent,
+    clearAllInspections,
     showToast,
     userAssignments,
     user,
@@ -30,14 +42,42 @@ export function HomePage() {
   const [previewEvent, setPreviewEvent] = useState(null);
   const [mostRecentDraft, setMostRecentDraft] = useState(null);
 
-  // Check for most recent draft on load
+  // State for success popup
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
+
+  const handleConfirmClear = async () => {
+    const success = await clearAllInspections();
+    if (success) {
+      setEvents([]);
+      setMostRecentDraft(null);
+    }
+    setShowClearConfirm(false);
+  };
+
+  // Check for most recent draft on load - dependent on user being present
   useEffect(() => {
     const checkDraft = async () => {
+      if (!user) return; // Wait for user to be loaded
+
       try {
         const draft = await indexedDBService.getMostRecentFormData();
+
+        // Verify draft belongs to current user
+        const currentUserId = user.username || user.id;
+
+        // The service should already filter by user, but we double-check here
+        // We accept if userId matches, or if draft has no userId (legacy/anonymous) but we want to be strict now
         if (draft && draft.eventId && draft.metadata?.isDraft) {
-          console.log('📋 Found most recent draft in HomePage:', draft.eventId);
-          setMostRecentDraft(draft);
+
+          // STRICT CHECK: Only show if it matches the current user
+          if (draft.userId === currentUserId || (!draft.userId && currentUserId === 'admin')) {
+            console.log('📋 Found most recent draft for user:', currentUserId, draft.eventId);
+            setMostRecentDraft(draft);
+          } else {
+            console.log('⚠️ Ignoring draft for different user:', draft.userId, 'Current:', currentUserId);
+          }
         }
       } catch (error) {
         console.error('Failed to check for drafts:', error);
@@ -45,7 +85,7 @@ export function HomePage() {
     };
 
     checkDraft();
-  }, []);
+  }, [user]);
 
   // Get facility filter from URL parameters or localStorage
   useEffect(() => {
@@ -59,52 +99,80 @@ export function HomePage() {
     // Removed auto-assignment logic per user request - facility field should be blank on login
   }, [searchParams, userAssignments]);
 
-  // Load events from storage (both submitted events and drafts)
+  // Centralized function to load events from storage
+  const loadEvents = async () => {
+    if (!storage.isReady) return;
+
+    try {
+      setIsLoading(true);
+
+      // Load submitted/synced events from DHIS2PWA database
+      const submittedEvents = await storage.getAllEvents();
+
+      // Load Type 1 auto-saved draft events from InspectionFormDB database
+      const autoSavedDrafts = await indexedDBService.getAllFormData();
+
+      // Convert Type 1 auto-saved drafts to event format for display
+      const convertedAutoSavedDrafts = autoSavedDrafts
+        .map(draft => ({
+          event: draft.eventId,
+          orgUnit: draft.formData?.orgUnit,
+          eventDate: draft.formData?.eventDate || new Date().toISOString().split('T')[0],
+          status: 'auto-draft',
+          syncStatus: 'auto-draft',
+          createdAt: draft.createdAt,
+          updatedAt: draft.lastUpdated,
+          isDraft: true,
+          isAutoSaved: true,
+          _draftData: draft
+        }));
+
+      // Filter out auto-saved drafts that already exist in submitted/synced events
+      // Robust de-duplication by normalizing IDs
+      const uniqueAutoSavedDrafts = convertedAutoSavedDrafts.filter(draft => {
+        const draftId = (draft.event || '').toString().trim();
+        if (!draftId) return true; // Keep if no ID (shouldn't happen)
+
+        return !submittedEvents.some(submitted => {
+          const submittedId = (submitted.event || '').toString().trim();
+          return submittedId === draftId;
+        });
+      });
+
+      // Combine all types of events
+      const allEvents = [...submittedEvents, ...uniqueAutoSavedDrafts];
+
+      console.log(`📊 Loaded events: ${submittedEvents.length} submitted/synced, ${convertedAutoSavedDrafts.length} drafts`);
+      setEvents(allEvents);
+    } catch (error) {
+      console.error('Failed to load events:', error);
+      showToast('Failed to load events', 'error');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Load events on mount and when storage is ready
   useEffect(() => {
-    const loadEvents = async () => {
-      if (!storage.isReady) return;
+    loadEvents();
+  }, [storage.isReady]);
 
-      try {
-        setIsLoading(true);
-
-        // Load submitted/synced events from DHIS2PWA database (includes Type 2 explicit drafts)
-        const submittedEvents = await storage.getAllEvents();
-
-        // Load Type 1 auto-saved draft events from InspectionFormDB database
-        const autoSavedDrafts = await indexedDBService.getAllFormData();
-
-        // Convert Type 1 auto-saved drafts to event format for display
-        const convertedAutoSavedDrafts = autoSavedDrafts
-          .map(draft => ({
-            event: draft.eventId,
-            orgUnit: draft.formData?.orgUnit,
-            eventDate: draft.formData?.eventDate || new Date().toISOString().split('T')[0],
-            status: 'auto-draft',
-            syncStatus: 'auto-draft',
-            createdAt: draft.createdAt,
-            updatedAt: draft.lastUpdated,
-            isDraft: true,
-            isAutoSaved: true,
-            // Include original draft data for editing
-            _draftData: draft
-          }));
-
-        // Combine all types of events: submitted/synced events (including Type 2 drafts) + Type 1 auto-saved drafts
-        const allEvents = [...submittedEvents, ...convertedAutoSavedDrafts];
-
-        console.log(`📊 Loaded events: ${submittedEvents.length} submitted/synced events, ${convertedAutoSavedDrafts.length} auto-saved drafts`);
-
-        setEvents(allEvents);
-      } catch (error) {
-        console.error('Failed to load events:', error);
-        showToast('Failed to load events', 'error');
-      } finally {
-        setIsLoading(false);
-      }
+  // Auto-refresh events when window regains focus (e.g., returning from Form page)
+  useEffect(() => {
+    const handleFocus = () => {
+      console.log('🔄 Window focused - refreshing events...');
+      loadEvents();
     };
 
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, [storage.isReady]);
+
+  // Auto-refresh when context state changes (after sync/retry operations)
+  useEffect(() => {
+    console.log('📊 Context state changed, reloading events from storage...');
     loadEvents();
-  }, [storage.isReady]); // Only reload when storage becomes ready
+  }, [pendingEvents, stats]);
 
   // Filter events based on search term and selected facility
   const filteredEvents = useMemo(() => {
@@ -133,6 +201,39 @@ export function HomePage() {
     return filtered;
   }, [events, searchTerm, selectedFacilityId, configuration]);
 
+  // Calculate stats based on the current view (filtered by facility, but NOT by search term)
+  // This ensures the dashboard stats match what the user sees in the list (mostly)
+  const dashboardStats = useMemo(() => {
+    let statEvents = events;
+
+    // Filter by facility if selected
+    if (selectedFacilityId) {
+      statEvents = statEvents.filter(event => event.orgUnit === selectedFacilityId);
+    }
+
+    const newStats = {
+      totalEvents: statEvents.length,
+      pendingEvents: 0,
+      syncedEvents: 0,
+      errorEvents: 0
+    };
+
+    statEvents.forEach(event => {
+      const status = event.status || event.syncStatus;
+
+      if (status === 'synced') {
+        newStats.syncedEvents++;
+      } else if (status === 'error' || event.syncStatus === 'error') {
+        newStats.errorEvents++;
+      } else {
+        // All others (pending, draft, auto-draft) count as Pending
+        newStats.pendingEvents++;
+      }
+    });
+
+    return newStats;
+  }, [events, selectedFacilityId]);
+
 
   // Helper to generate DHIS2 compatible ID
   const generateDHIS2Id = () => {
@@ -158,16 +259,24 @@ export function HomePage() {
     navigate(`/form/${event.event}`);
   };
 
-  const handleSync = () => {
-    syncEvents();
+  const handleSync = async () => {
+    await syncEvents();
+    // Force refresh the list after sync attempt
+    await loadEvents();
   };
 
   const handleRetryEvent = async (eventId) => {
     try {
-      await retryEvent(eventId);
-      // Reload events to show updated status
-      const allEvents = await storage.getAllEvents();
-      setEvents(allEvents || []);
+      const success = await retryEvent(eventId);
+
+      if (success) {
+        // Reload all events to show updated status correctly
+        await loadEvents();
+
+        // Show success popup
+        setSuccessMessage('Inspection synced successfully!');
+        setShowSuccessDialog(true);
+      }
     } catch (error) {
       console.error('Failed to retry event:', error);
       showToast('Failed to retry event', 'error');
@@ -177,9 +286,8 @@ export function HomePage() {
   const handleDeleteEvent = async (eventId) => {
     try {
       await deleteEvent(eventId);
-      // Reload events to show updated list
-      const allEvents = await storage.getAllEvents();
-      setEvents(allEvents || []);
+      // Reload all events to show updated list
+      await loadEvents();
     } catch (error) {
       console.error('Failed to delete event:', error);
       showToast('Failed to delete event', 'error');
@@ -418,7 +526,7 @@ export function HomePage() {
         <div className="stat-card total">
           <div className="stat-icon">[T]</div>
           <div className="stat-content">
-            <h3>{stats.totalEvents}</h3>
+            <h3>{dashboardStats.totalEvents}</h3>
             <p>Total Inspections</p>
           </div>
         </div>
@@ -426,53 +534,76 @@ export function HomePage() {
         <div className="stat-card pending">
           <div className="stat-icon">⏱</div>
           <div className="stat-content">
-            <h3>{stats.pendingEvents}</h3>
-            <p>Pending Sync</p>
+            <h3>{dashboardStats.pendingEvents}</h3>
+            <p>Pending Submission</p>
           </div>
         </div>
 
         <div className="stat-card synced">
           <div className="stat-icon">✓</div>
           <div className="stat-content">
-            <h3>{stats.syncedEvents}</h3>
+            <h3>{dashboardStats.syncedEvents}</h3>
             <p>Synced</p>
           </div>
         </div>
 
-        {stats.errorEvents > 0 && (
-          <div className={`stat-card ${isOnline ? 'error' : 'pending'}`}>
-            <div className="stat-icon">{isOnline ? '✗' : '⏱'}</div>
+        {dashboardStats.errorEvents > 0 && (
+          <div className="stat-card error">
+            <div className="stat-icon">✗</div>
             <div className="stat-content">
-              <h3>{stats.errorEvents}</h3>
-              <p>{isOnline ? 'Errors' : 'Pending Submission'}</p>
+              <h3>{dashboardStats.errorEvents}</h3>
+              <p>Errors</p>
             </div>
           </div>
         )}
       </div>
 
       {/* Sync Actions */}
-      {(stats.pendingEvents > 0 || stats.errorEvents > 0) && (
-        <div className="sync-section">
-          <div className="sync-info">
-            {stats.pendingEvents > 0 && (
-              <p>Upload: {stats.pendingEvents} inspections waiting to sync</p>
-            )}
-            {stats.errorEvents > 0 && (
-              <p style={{ color: '#000000' }}>
-                {isOnline ? '✗' : '⏱'} {stats.errorEvents} inspections {isOnline ? 'failed to sync' : 'pending submission (offline)'}
-              </p>
-            )}
-          </div>
+      <div className="sync-section">
+        <div className="sync-info">
+          {dashboardStats.pendingEvents > 0 && (
+            <p>Upload: {dashboardStats.pendingEvents} inspections waiting to sync</p>
+          )}
+          {dashboardStats.errorEvents > 0 && (
+            <p style={{ color: '#000000' }}>
+              ✗ {dashboardStats.errorEvents} inspections failed to sync
+            </p>
+          )}
+          {dashboardStats.pendingEvents === 0 && dashboardStats.errorEvents === 0 && (
+            <p style={{ color: '#6c757d', fontSize: '14px' }}>✓ All records are up to date</p>
+          )}
+        </div>
+
+        <div style={{ display: 'flex', gap: '12px' }}>
+          {(dashboardStats.pendingEvents > 0 || dashboardStats.errorEvents > 0) && (
+            <button
+              className="btn btn-secondary"
+              onClick={handleSync}
+              disabled={!isOnline}
+            >
+              ↻ Sync Now
+            </button>
+          )}
 
           <button
-            className="btn btn-secondary"
-            onClick={handleSync}
-            disabled={!isOnline}
+            className="btn btn-danger"
+            onClick={() => setShowClearConfirm(true)}
+            style={{
+              backgroundColor: '#dc3545',
+              color: '#ffffff',
+              padding: '8px 16px',
+              fontWeight: 'bold',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              boxShadow: '0 2px 4px rgba(220, 53, 69, 0.3)'
+            }}
+            title="Clear all data for all inspectors on this device"
           >
-            ↻ Sync Now
+            🗑 Clear All
           </button>
         </div>
-      )}
+      </div>
 
 
 
@@ -690,7 +821,8 @@ export function HomePage() {
                       </button>
                     )}
 
-                    {(event.status === 'error' || event.syncStatus === 'error') && (
+                    {/* Retry Button - Show for Error OR Pending Submission (ALL drafts included) */}
+                    {(event.status !== 'synced' && event.syncStatus !== 'synced') && (
                       <button
                         className="btn btn-secondary btn-sm retry-btn"
                         onClick={(e) => {
@@ -699,13 +831,14 @@ export function HomePage() {
                         }}
                         disabled={!isOnline}
                         title={isOnline
-                          ? `Retry sync: ${event.syncError || 'Unknown error'}`
-                          : 'Cannot retry while offline - will sync when connection is restored'
+                          ? 'Retry sync / Submit now'
+                          : 'Cannot sync while offline'
                         }
                       >
                         {isOnline ? '↻ Retry' : '⏱ Pending'}
                       </button>
                     )}
+
                     <button
                       className="btn btn-danger btn-sm delete-btn"
                       onClick={(e) => {
@@ -723,6 +856,71 @@ export function HomePage() {
           )}
         </div>
       </div>
+
+
+      {/* Clear All Confirmation Dialog */}
+      <Dialog
+        open={showClearConfirm}
+        onClose={() => setShowClearConfirm(false)}
+      >
+        <DialogTitle sx={{ color: '#991b1b' }}>
+          Confirm Data Wipe
+        </DialogTitle>
+        <DialogContent>
+          <Typography variant="body1">
+            Are you sure you want to <strong>delete all inspections</strong> from this device?
+          </Typography>
+          <Typography variant="body2" sx={{ mt: 2 }}>
+            This includes:
+          </Typography>
+          <ul style={{ fontSize: '14px', color: '#666', marginTop: '8px' }}>
+            <li>All saved drafts</li>
+            <li>All inspections waiting to be synced</li>
+            <li>All locally stored history of synced inspections</li>
+          </ul>
+          <Typography variant="body2" sx={{ mt: 2, fontWeight: 'bold', color: '#991b1b' }}>
+            This action cannot be undone.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowClearConfirm(false)} color="inherit">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmClear} variant="contained" color="error">
+            Yes, Clear All Data
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Success Dialog */}
+      <Dialog
+        open={showSuccessDialog}
+        onClose={() => setShowSuccessDialog(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <Box sx={{ textAlign: 'center', p: 2 }}>
+          <CheckCircleOutlineIcon color="success" sx={{ fontSize: 60, mb: 2 }} />
+          <DialogTitle id="alert-dialog-title" sx={{ p: 0, mb: 1 }}>
+            {"Success!"}
+          </DialogTitle>
+          <DialogContent>
+            <Typography>
+              {successMessage}
+            </Typography>
+          </DialogContent>
+          <DialogActions sx={{ justifyContent: 'center' }}>
+            <Button
+              onClick={() => setShowSuccessDialog(false)}
+              variant="contained"
+              autoFocus
+              color="primary"
+            >
+              OK
+            </Button>
+          </DialogActions>
+        </Box>
+      </Dialog>
 
       {/* Inspection Preview Modal */}
       {previewEvent && (

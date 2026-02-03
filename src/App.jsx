@@ -17,17 +17,16 @@ import ActiveInspectionsDebug from './components/ActiveInspectionsDebug';
 function AppRouter() {
   const { isAuthenticated, configuration, loading, toast, isOnline, stats, syncEvents } = useApp();
 
-  if (loading) {
-    return <LoadingScreen />;
-  }
-
-
   useEffect(() => {
     // console.log("sync now ", isOnline, stats.pendingEvents);
     if (isOnline && stats.pendingEvents > 0) {
       syncEvents();
     }
   }, [isOnline, stats.pendingEvents]);
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <div className="app">
