@@ -9,10 +9,19 @@ import indexedDBService from '../services/indexedDBService';
 export const useIncrementalSave = (eventId, options = {}) => {
   const {
     debounceMs = 300,
-    onSaveSuccess = () => { },
-    onSaveError = () => { },
+    onSaveSuccess,
+    onSaveError,
     enableLogging = true
   } = options;
+
+  // Use refs for callbacks to keep internal functions stable even if callbacks change
+  const onSaveSuccessRef = useRef(onSaveSuccess);
+  const onSaveErrorRef = useRef(onSaveError);
+
+  useEffect(() => {
+    onSaveSuccessRef.current = onSaveSuccess;
+    onSaveErrorRef.current = onSaveError;
+  }, [onSaveSuccess, onSaveError]);
 
   // Form data state - this is the main state that FormPage uses
   const [formData, setFormData] = useState({
@@ -75,11 +84,13 @@ export const useIncrementalSave = (eventId, options = {}) => {
       pendingSaves.current.clear();
 
       // Notify success
-      onSaveSuccess({
-        eventId,
-        savedFields: updates.length,
-        timestamp: new Date().toISOString()
-      });
+      if (onSaveSuccessRef.current) {
+        onSaveSuccessRef.current({
+          eventId,
+          savedFields: updates.length,
+          timestamp: new Date().toISOString()
+        });
+      }
 
       if (enableLogging) {
         console.log(`✅ Successfully saved ${updates.length} field(s) for event ${eventId}`);
@@ -87,9 +98,9 @@ export const useIncrementalSave = (eventId, options = {}) => {
 
     } catch (error) {
       console.error('❌ Failed to save fields to IndexedDB:', error);
-      onSaveError(error);
+      if (onSaveErrorRef.current) onSaveErrorRef.current(error);
     }
-  }, [eventId, onSaveSuccess, onSaveError, enableLogging]);
+  }, [eventId, enableLogging]);
 
   // Save field function
   const saveField = useCallback((fieldKey, fieldValue) => {
@@ -130,13 +141,15 @@ export const useIncrementalSave = (eventId, options = {}) => {
         timestamp: new Date().toISOString()
       });
 
-      onSaveSuccess({
-        eventId,
-        savedFields: 1,
-        immediate: true,
-        fieldKey,
-        timestamp: new Date().toISOString()
-      });
+      if (onSaveSuccessRef.current) {
+        onSaveSuccessRef.current({
+          eventId,
+          savedFields: 1,
+          immediate: true,
+          fieldKey,
+          timestamp: new Date().toISOString()
+        });
+      }
 
       if (enableLogging) {
         console.log(`⚡ Immediately saved field: ${fieldKey} = ${fieldValue}`);
@@ -144,9 +157,9 @@ export const useIncrementalSave = (eventId, options = {}) => {
 
     } catch (error) {
       console.error('❌ Failed to immediately save field:', error);
-      onSaveError(error);
+      if (onSaveErrorRef.current) onSaveErrorRef.current(error);
     }
-  }, [eventId, onSaveSuccess, onSaveError, enableLogging]);
+  }, [eventId, enableLogging]);
 
   // Save multiple fields at once
   const saveFields = useCallback((fieldsObject) => {
@@ -179,10 +192,10 @@ export const useIncrementalSave = (eventId, options = {}) => {
       return data;
     } catch (error) {
       console.error('❌ Failed to load form data:', error);
-      onSaveError(error);
+      if (onSaveErrorRef.current) onSaveErrorRef.current(error);
       return null;
     }
-  }, [eventId, onSaveError, enableLogging]);
+  }, [eventId, enableLogging]);
 
   // Update section metadata
   const updateSectionMetadata = useCallback(async (sectionName, isCompleted = false) => {
@@ -209,9 +222,9 @@ export const useIncrementalSave = (eventId, options = {}) => {
 
     } catch (error) {
       console.error('❌ Failed to update section metadata:', error);
-      onSaveError(error);
+      if (onSaveErrorRef.current) onSaveErrorRef.current(error);
     }
-  }, [eventId, onSaveError, enableLogging]);
+  }, [eventId, enableLogging]);
 
   // Cleanup on unmount
   useEffect(() => {
