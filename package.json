@@ -4,8 +4,8 @@
   "description": "PWA for DHIS2 single program stage data capture with offline support built with React",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "node api.js && vite",
+    "build": "node api.js && vite build",
     "preview": "vite preview",
     "extract:questions": "node ./scripts/extract-questions.js",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0"
