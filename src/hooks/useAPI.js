@@ -163,7 +163,17 @@ class DHIS2APIService {
         if (contentType && contentType.includes('application/json')) {
           data = await response.json();
         } else {
-          data = await response.text();
+          data = { _text: await response.text() };
+        }
+
+        // Add metadata to the data object for easier downstream status detection
+        if (data && typeof data === 'object' && !Array.isArray(data)) {
+          data._success = response.ok;
+          data._status = response.status;
+          data._headers = {
+            location: response.headers.get('Location'),
+            contentType: response.headers.get('Content-Type')
+          };
         }
 
         // Cache GET responses

@@ -28,17 +28,24 @@ class IndexedDBService {
 
           authRequest.onsuccess = () => {
             const authData = authRequest.result;
+            db.close(); // Close connection
             resolve(authData?.user || null);
           };
 
           authRequest.onerror = () => {
             console.warn('⚠️ Could not get auth data for user association');
+            db.close(); // Close connection
             resolve(null);
           };
         };
 
         request.onerror = () => {
           console.warn('⚠️ Could not open DHIS2PWA database for user association');
+          resolve(null);
+        };
+
+        request.onblocked = () => {
+          console.warn('⚠️ DHIS2PWA database access blocked');
           resolve(null);
         };
       });
@@ -145,7 +152,7 @@ class IndexedDBService {
         // Update the specific field
         existingData.formData[fieldKey] = fieldValue;
         existingData.lastUpdated = new Date().toISOString();
-        
+
         // Update metadata if provided
         if (metadata) {
           existingData.metadata = {
@@ -331,17 +338,25 @@ class IndexedDBService {
 
       request.onsuccess = () => {
         const userRecords = request.result;
-        if (userRecords.length === 0) {
+
+        // Filter for records that are explicitly drafts (not marked as submitted)
+        const draftRecords = userRecords.filter(record =>
+          record.metadata?.isDraft !== false &&
+          !record.metadata?.isSubmitted &&
+          !record.metadata?.isFromOfflineStorage // Don't suggest items that came from main offlineStorage
+        );
+
+        if (draftRecords.length === 0) {
           resolve(null);
           return;
         }
 
         // Find the most recent record by lastUpdated timestamp
-        const mostRecent = userRecords.reduce((latest, current) => {
+        const mostRecent = draftRecords.reduce((latest, current) => {
           return new Date(current.lastUpdated) > new Date(latest.lastUpdated) ? current : latest;
         });
 
-        console.log(`📖 Retrieved most recent form data for user ${userId}: ${mostRecent.eventId}`);
+        console.log(`📖 Retrieved most recent draft for user ${userId}: ${mostRecent.eventId}`);
         resolve(mostRecent);
       };
 
