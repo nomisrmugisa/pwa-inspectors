@@ -1,6 +1,7 @@
-import React, { createContext, useContext, useReducer, useEffect, useMemo } from 'react';
+import React, { createContext, useContext, useReducer, useEffect, useMemo, useRef } from 'react';
 import { useAPI } from '../hooks/useAPI';
 import { useStorage } from '../hooks/useStorage';
+import indexedDBService from '../services/indexedDBService';
 
 // Initial state
 const initialState = {
@@ -20,7 +21,7 @@ const initialState = {
   trackedEntityInstances: {},
 
   // UI State
-  loading: false,
+  loading: true,
   error: null,
   toast: null,
 
@@ -119,6 +120,7 @@ function appReducer(state, action) {
     case ActionTypes.LOGOUT:
       return {
         ...initialState,
+        loading: false, // Ensure we don't stay in loading state
         isOnline: state.isOnline
       };
 
@@ -239,40 +241,101 @@ const AppContext = createContext();
 
 // Provider component
 export function AppProvider({ children }) {
-  const [state, dispatch] = useReducer(appReducer, initialState);
+  // Sync restore auth from localStorage for instant, synchronous initialization
+  const initialAuthRestore = useMemo(() => {
+    try {
+      const storedAuth = localStorage.getItem('dhis2_auth');
+      if (storedAuth) {
+        const auth = JSON.parse(storedAuth);
+        if (auth?.serverUrl && auth?.username) {
+          console.log('⚡ Synchronous auth restoration from localStorage successful');
+          return {
+            isAuthenticated: true,
+            user: auth.user,
+            serverUrl: auth.serverUrl,
+            loading: true // Still keep loading true to allow background processes
+          };
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to restore auth synchronously', e);
+    }
+    return null;
+  }, []);
+
+  const [state, dispatch] = useReducer(appReducer, {
+    ...initialState,
+    ...(initialAuthRestore || {})
+  });
   const api = useAPI();
   const storage = useStorage();
   // const [userAssignments, setUserAssignments] = useState([]);
 
+  // Use refs to track initialization state and avoid closure staleness
+  const isInitializing = useRef(false);
+  const isInitialized = useRef(false);
+  const storageReference = useRef(storage);
+  const isSyncing = useRef(false);
 
+  // Sync storage reference on every render
+  useEffect(() => {
+    storageReference.current = storage;
+  }, [storage]);
 
   // Initialize app on mount
   useEffect(() => {
     const initializeApp = async () => {
+      if (isInitializing.current || isInitialized.current) return;
+      isInitializing.current = true;
+
       console.log("Initializing app...");
 
       // Set loading to true during initialization to prevent premature redirect to login
       dispatch({ type: ActionTypes.SET_LOADING, payload: true });
 
       try {
-        // Wait for storage to be ready (it should be ready, but wait just in case)
+        // Wait for storage to be ready
         let waitCount = 0;
-        while (!storage.isReady && waitCount < 50) {
+        while (!storageReference.current.isReady && waitCount < 100) {
           await new Promise(resolve => setTimeout(resolve, 100));
           waitCount++;
         }
 
-        if (!storage.isReady) {
-          console.warn('Storage not ready after waiting, continuing anyway...');
+        if (!storageReference.current.isReady) {
+          console.warn('⚠️ Storage not ready after waiting, checking localStorage fallback...');
         }
 
-        // Try to restore authentication
-        const auth = await storage.getAuth();
-        if (auth?.serverUrl && auth?.credentials) {
-          const { serverUrl, username, password } = auth;
+        // Try to restore authentication from IndexedDB (only if ready)
+        let auth = null;
+        if (storageReference.current.isReady) {
+          try {
+            auth = await storageReference.current.getAuth();
+          } catch (e) {
+            console.warn('Failed to get auth from IDB:', e.message);
+          }
+        }
+
+        // FALLBACK: If IndexedDB has nothing, check localStorage (authoritative for session)
+        if (!auth) {
+          const storedAuth = localStorage.getItem('dhis2_auth');
+          if (storedAuth) {
+            try {
+              auth = JSON.parse(storedAuth);
+              console.log('📦 Restored auth from localStorage fallback');
+            } catch (e) {
+              console.error('Failed to parse localStorage auth', e);
+            }
+          }
+        }
+
+        if (auth?.serverUrl && (auth?.credentials || auth?.password)) {
+          const { serverUrl, username, password, credentials } = auth;
+          const decodedPassword = password || (credentials ? atob(credentials).split(':')[1] : null);
+
+          console.log(`👤 Restoring session for user: ${username}`);
 
           // Configure API
-          api.setConfig(serverUrl, username, password);
+          api.setConfig(serverUrl, username, decodedPassword);
 
           // Check if we're online
           const isOnline = navigator.onLine;
@@ -281,11 +344,18 @@ export function AppProvider({ children }) {
             // Test authentication only when online
             const authResult = await api.testAuth();
             if (authResult.success) {
+              console.log('✅ Online auth test successful');
               // Update stored auth with latest user info
-              await storage.setAuth({
+              const updatedAuth = {
                 ...auth,
-                user: authResult.user
-              });
+                user: authResult.user,
+                lastValidated: new Date().toISOString()
+              };
+
+              if (storageReference.current.isReady) {
+                await storageReference.current.setAuth(updatedAuth);
+              }
+              localStorage.setItem('dhis2_auth', JSON.stringify(updatedAuth));
 
               dispatch({
                 type: ActionTypes.LOGIN_SUCCESS,
@@ -301,65 +371,63 @@ export function AppProvider({ children }) {
               // Fetch user assignments
               await fetchUserAssignments();
             } else {
-              // Only clear credentials if auth test fails while online
-              console.log('Authentication failed, clearing stored credentials');
-              await storage.clearAuth();
+              // Only clear credentials if auth test explicitly fails with 401 Unauthorized
+              if (authResult.error?.includes('401') || authResult.error?.includes('403')) {
+                console.warn('❌ Authentication invalid (401/403), clearing session');
+                if (storageReference.current.isReady) {
+                  await storageReference.current.clearAuth();
+                }
+                localStorage.removeItem('dhis2_auth');
+              } else {
+                console.log('⚠️ Online auth test failed (not 401). Using cached session.');
+                const storedUser = auth.user || { displayName: username, username: username };
+                dispatch({
+                  type: ActionTypes.LOGIN_SUCCESS,
+                  payload: { user: storedUser, serverUrl }
+                });
+
+                if (storageReference.current.isReady) {
+                  const storedConfig = await storageReference.current.getConfiguration();
+                  if (storedConfig) {
+                    dispatch({ type: ActionTypes.FETCH_CONFIGURATION_SUCCESS, payload: storedConfig });
+                  }
+                }
+              }
             }
           } else {
-            // Offline: Restore session from stored auth without testing
-            console.log('Offline: Restoring authentication from stored credentials');
-
-            // Restore user from stored auth if available
-            const storedUser = auth.user || {
-              displayName: username,
-              username: username
-            };
+            // Offline: Restore session from stored auth
+            console.log('🌐 Offline: Restored from cache');
+            const storedUser = auth.user || { displayName: username, username: username };
 
             dispatch({
               type: ActionTypes.LOGIN_SUCCESS,
-              payload: {
-                user: storedUser,
-                serverUrl
-              }
+              payload: { user: storedUser, serverUrl }
             });
 
-            // Try to load configuration from storage if available
-            const storedConfig = await storage.getConfiguration();
-            if (storedConfig) {
-              dispatch({
-                type: ActionTypes.FETCH_CONFIGURATION_SUCCESS,
-                payload: storedConfig
-              });
-            } else {
-              // If no stored config, try fetching (will fail offline, that's ok)
-              try {
-                await fetchConfiguration();
-              } catch (error) {
-                console.log('Could not fetch configuration offline, continuing with stored data');
+            if (storageReference.current.isReady) {
+              const storedConfig = await storageReference.current.getConfiguration();
+              if (storedConfig) {
+                dispatch({ type: ActionTypes.FETCH_CONFIGURATION_SUCCESS, payload: storedConfig });
               }
             }
-
-            // User assignments will be empty offline, which is acceptable
-            console.log('Offline mode: User assignments not available');
           }
+        } else {
+          console.log('ℹ️ No stored session found');
         }
 
         // Load stats
-        const stats = await storage.getStats();
-        if (stats) {
-          dispatch({
-            type: ActionTypes.UPDATE_STATS,
-            payload: stats
-          });
+        if (storageReference.current.isReady) {
+          const stats = await storageReference.current.getStats();
+          if (stats) {
+            dispatch({ type: ActionTypes.UPDATE_STATS, payload: stats });
+          }
+
+          // Load pending events
+          const events = await storageReference.current.getEvents({ status: 'pending' });
+          dispatch({ type: ActionTypes.UPDATE_PENDING_EVENTS, payload: events });
         }
 
-        // Load pending events
-        const events = await storage.getEvents({ status: 'pending' });
-        dispatch({
-          type: ActionTypes.UPDATE_PENDING_EVENTS,
-          payload: events
-        });
-
+        isInitialized.current = true;
       } catch (error) {
         console.error('Failed to initialize app:', error);
         // Don't show error to user if it's just storage not ready
@@ -370,6 +438,7 @@ export function AppProvider({ children }) {
           });
         }
       } finally {
+        isInitializing.current = false;
         // Always set loading to false after initialization completes
         dispatch({ type: ActionTypes.SET_LOADING, payload: false });
       }
@@ -377,7 +446,7 @@ export function AppProvider({ children }) {
 
     // Start initialization - it will wait for storage if needed
     initializeApp();
-  }, [storage.isReady]); // Re-run if storage readiness changes
+  }, [api]); // Only depend on api, which is stable
 
   // Network status monitoring
   useEffect(() => {
@@ -664,19 +733,25 @@ export function AppProvider({ children }) {
         throw new Error(authResult.error || 'Invalid credentials');
       }
 
-      // Store credentials only if storage is ready
+      // Store credentials
+      const authData = {
+        serverUrl: cleanUrl,
+        username,
+        password,
+        credentials: btoa(`${username}:${password}`),
+        user: authResult.user,
+        lastValidated: new Date().toISOString()
+      };
+
+      // Always populate localStorage for fast synchronous restoration
+      localStorage.setItem('dhis2_auth', JSON.stringify(authData));
+
+      // Store in IndexedDB if ready
       if (storage.isReady) {
         try {
-          await storage.setAuth({
-            serverUrl: cleanUrl,
-            username,
-            password,
-            credentials: btoa(`${username}:${password}`),
-            user: authResult.user // Store user info for offline restoration
-          });
+          await storage.setAuth(authData);
         } catch (storageError) {
-          console.warn('Failed to store credentials:', storageError);
-          // Continue anyway since authentication succeeded
+          console.warn('Failed to store credentials in IDB:', storageError);
         }
       }
 
@@ -733,8 +808,9 @@ export function AppProvider({ children }) {
       // Note: NOT clearing IndexedDB form drafts - they are preserved across sessions
       // Users can continue their drafts when they log back in
 
-      // Clear only session-specific localStorage items
+      // Clear session localStorage data
       try {
+        localStorage.removeItem('dhis2_auth');
         localStorage.removeItem('lastSelectedFacility');
         console.log('✅ Cleared session localStorage data');
       } catch (localStorageError) {
@@ -792,6 +868,17 @@ export function AppProvider({ children }) {
 
       await storage.saveEvent(event);
 
+      // If NOT a draft (pending submission), mark the local auto-save draft as submitted
+      // to prevent the prompt from reappearing for this specific event.
+      if (!isDraft && eventId) {
+        try {
+          await indexedDBService.markAsSubmitted(eventId);
+          console.log(`✅ marked draft ${eventId} as submitted in AppContext`);
+        } catch (e) {
+          console.warn('Failed to mark draft as submitted:', e);
+        }
+      }
+
       // Update stats
       await updateStats();
 
@@ -806,6 +893,11 @@ export function AppProvider({ children }) {
   };
 
   const syncEvents = async () => {
+    if (isSyncing.current) {
+      console.log('🔄 Sync already in progress, skipping...');
+      return;
+    }
+
     if (!state.isOnline) {
       showToast('Cannot sync while offline', 'warning');
       return;
@@ -816,6 +908,7 @@ export function AppProvider({ children }) {
       return;
     }
 
+    isSyncing.current = true;
     dispatch({ type: ActionTypes.SYNC_START });
 
     try {
@@ -880,23 +973,87 @@ export function AppProvider({ children }) {
           console.log('📝 Final clean event for sync:', cleanEvent);
 
           const response = await api.submitEvent(cleanEvent); // Submit cleaned event
+          console.log('📡 Sync response received:', response);
 
+          // Get various status indicators from different DHIS2 response formats
           const topLevelStatus = response?.status || response?.httpStatus || response?.response?.status;
           const importSummaries = response?.response?.importSummaries || response?.importSummaries || [];
           const firstSummary = Array.isArray(importSummaries) && importSummaries.length > 0 ? importSummaries[0] : null;
           const summaryStatus = firstSummary?.status || firstSummary?.httpStatus;
 
-          if (topLevelStatus === 'SUCCESS' || topLevelStatus === 'OK' || summaryStatus === 'SUCCESS') {
-            const serverEventId = firstSummary?.reference || firstSummary?.uid || response?.response?.uid || null;
-            // Mark as synced in local storage (keep tracking fields for local use)
+          // Check for explicit record identifiers (indicates success)
+          // Also check Location header if server provided one (very authoritative)
+          let serverEventId = firstSummary?.reference || firstSummary?.uid || response?.response?.uid || response?.uid || null;
+
+          if (!serverEventId && response?._headers?.location) {
+            try {
+              const parts = response._headers.location.split('/');
+              const lastPart = parts[parts.length - 1];
+              if (lastPart && lastPart.length >= 11) { // DHIS2 UIDs are usually 11 chars
+                serverEventId = lastPart;
+                console.log('🆔 Extracted server record ID from Location header:', serverEventId);
+              }
+            } catch (e) {
+              console.warn('Failed to parse Location header for ID', e);
+            }
+          }
+
+          // Count successes in summaries if available
+          const importCount = response?.importCount || response?.response?.importCount || {};
+          const importedCount = importCount.imported || 0;
+          const updatedCount = importCount.updated || 0;
+          const totalProcessed = importedCount + updatedCount;
+          const ignoredCount = importCount.ignored || 0;
+
+          // PERMISSIVE SUCCESS DETECTION
+          // We consider it a success if:
+          // 1. API reported success via _success flag (HTTP 2xx)
+          // 2. Status is SUCCESS or OK
+          // 3. We got a server event UID/reference
+          // 4. Import counts show at least one record processed (and not all were ignored)
+          const isSuccess =
+            response?._success === true ||
+            topLevelStatus === 'SUCCESS' ||
+            topLevelStatus === 'OK' ||
+            summaryStatus === 'SUCCESS' ||
+            serverEventId !== null ||
+            (totalProcessed > 0) ||
+            (response && typeof response === 'object' && Object.keys(response).length >= 2 && ignoredCount === 0);
+
+          console.log(`📊 Sync evaluation for ${event.event}:`, {
+            isSuccess,
+            httpStatus: response?._status,
+            topLevelStatus,
+            summaryStatus,
+            serverEventId,
+            totalProcessed,
+            ignoredCount
+          });
+
+          if (isSuccess) {
+            // Mark as synced in local storage
             await storage.updateEvent(event.event, {
               ...event,
               status: 'synced',
               syncStatus: 'synced',
               syncedAt: new Date().toISOString(),
-              serverEventId
+              serverEventId: serverEventId || event.event // Use local ID as fallback
             });
+
+            // Mark the local draft as submitted if it exists
+            try {
+              await indexedDBService.markAsSubmitted(event.event);
+            } catch (e) {
+              // Ignore failure to mark if record doesn't exist in draft store
+            }
+            console.log(`✅ Event ${event.event} marked as synced in IndexedDB`);
             results.push({ event: event.event, status: 'success' });
+          } else {
+            // If we got here but didn't detect success, it's an error
+            const errorMsg = response?.message ||
+              (firstSummary?.description) ||
+              'Unknown server rejection or empty response';
+            throw new Error(errorMsg);
           }
 
         } catch (error) {
@@ -944,17 +1101,23 @@ export function AppProvider({ children }) {
         payload: error.message
       });
       showToast(`Sync failed: ${error.message}`, 'error');
+    } finally {
+      isSyncing.current = false;
     }
   };
 
   // Retry a single failed event
   const retryEvent = async (eventId) => {
+    console.log('🔄 retryEvent called for:', eventId);
+
     if (!state.isOnline) {
+      console.warn('❌ Retry skipped: Offline');
       showToast('Cannot retry while offline', 'warning');
       return;
     }
 
     if (!storage.isReady) {
+      console.warn('❌ Retry skipped: Storage not ready');
       showToast('Storage not ready - please wait and try again', 'warning');
       return;
     }
@@ -962,15 +1125,32 @@ export function AppProvider({ children }) {
     try {
       // Get the failed event
       const event = await storage.getEvent(eventId);
+      console.log('📄 Event retrieved for retry:', event);
+
       if (!event) {
+        console.error('❌ Retry failed: Event not found');
         showToast('Event not found', 'error');
         return;
       }
 
-      if (event.status !== 'error' && event.syncStatus !== 'error') {
-        showToast('Event is not in error state', 'info');
-        return;
+      // Allow retrying if it's error, pending (stuck), or draft (quick submit)
+      // If already synced, refresh state and return success (UI needs the update)
+      if (event.status === 'synced' || event.syncStatus === 'synced') {
+        console.warn('ℹ️ Event already synced - refreshing UI state');
+        showToast('Event is already synced', 'info');
+
+        // Update stats and refresh events list so UI reflects current state
+        await updateStats();
+        const refreshedEvents = await storage.getAllEvents();
+        dispatch({
+          type: ActionTypes.UPDATE_PENDING_EVENTS,
+          payload: refreshedEvents
+        });
+
+        return true; // Return success so HomePage refreshes
       }
+
+      console.log('🚀 Preparing to retry event...');
 
       // Mark as pending to retry
       await storage.updateEvent(eventId, {
@@ -1008,36 +1188,85 @@ export function AppProvider({ children }) {
       });
 
       const response = await api.submitEvent(cleanEvent);
+      console.log('📡 Retry response received:', response);
 
       const topLevelStatus = response?.status || response?.httpStatus || response?.response?.status;
       const importSummaries = response?.response?.importSummaries || response?.importSummaries || [];
       const firstSummary = Array.isArray(importSummaries) && importSummaries.length > 0 ? importSummaries[0] : null;
       const summaryStatus = firstSummary?.status || firstSummary?.httpStatus;
 
-      if (topLevelStatus === 'SUCCESS' || topLevelStatus === 'OK' || summaryStatus === 'SUCCESS') {
-        const serverEventId = firstSummary?.reference || firstSummary?.uid || response?.response?.uid || null;
+      let serverEventId = firstSummary?.reference || firstSummary?.uid || response?.response?.uid || response?.uid || null;
+
+      if (!serverEventId && response?._headers?.location) {
+        try {
+          const parts = response._headers.location.split('/');
+          const lastPart = parts[parts.length - 1];
+          if (lastPart && lastPart.length >= 11) {
+            serverEventId = lastPart;
+          }
+        } catch (e) { }
+      }
+
+      const importCount = response?.importCount || response?.response?.importCount || {};
+      const importedCount = importCount.imported || 0;
+      const updatedCount = importCount.updated || 0;
+      const totalProcessed = importedCount + updatedCount;
+      const ignoredCount = importCount.ignored || 0;
+
+      const isSuccess =
+        response?._success === true ||
+        topLevelStatus === 'SUCCESS' ||
+        topLevelStatus === 'OK' ||
+        summaryStatus === 'SUCCESS' ||
+        serverEventId !== null ||
+        (totalProcessed > 0) ||
+        (response && typeof response === 'object' && Object.keys(response).length >= 2 && ignoredCount === 0);
+
+      console.log(`📊 Retry evaluation for ${eventId}:`, {
+        isSuccess,
+        httpStatus: response?._status,
+        topLevelStatus,
+        summaryStatus,
+        serverEventId,
+        totalProcessed,
+        ignoredCount
+      });
+
+      if (isSuccess) {
         // Mark as synced
         await storage.updateEvent(eventId, {
           ...event,
           status: 'synced',
           syncStatus: 'synced',
           syncedAt: new Date().toISOString(),
-          serverEventId
+          serverEventId: serverEventId || eventId
         });
+
+        // Mark the local draft as submitted if it exists
+        try {
+          await indexedDBService.markAsSubmitted(eventId);
+        } catch (e) {
+          // Ignore failure
+        }
         showToast('Event synced successfully', 'success');
+
+        // Update stats
+        await updateStats();
+
+        // Refresh events list
+        const refreshedEvents = await storage.getAllEvents();
+        dispatch({
+          type: ActionTypes.UPDATE_PENDING_EVENTS,
+          payload: refreshedEvents
+        });
+
+        return true;
       } else {
-        throw new Error('Server rejected event');
+        const errorMsg = response?.message ||
+          (firstSummary?.description) ||
+          'Server rejected event or returned empty response';
+        throw new Error(errorMsg);
       }
-
-      // Update stats
-      await updateStats();
-
-      // Refresh events list
-      const events = await storage.getEvents();
-      dispatch({
-        type: ActionTypes.SET_EVENTS,
-        payload: events
-      });
 
     } catch (error) {
       console.error(`Failed to retry event ${eventId}:`, error);
@@ -1054,6 +1283,7 @@ export function AppProvider({ children }) {
       }
 
       showToast(`Retry failed: ${error.message}`, 'error');
+      return false;
     }
   };
 
@@ -1102,6 +1332,46 @@ export function AppProvider({ children }) {
     } catch (error) {
       console.error(`Failed to delete event ${eventId}:`, error);
       showToast(`Failed to delete event: ${error.message}`, 'error');
+    }
+  };
+
+  const clearAllInspections = async () => {
+    try {
+      if (!storage.isReady) {
+        showToast('Storage not ready', 'error');
+        return false;
+      }
+
+      console.log('🧹 Clearing all inspections and drafts...');
+
+      // 1. Clear drafts in InspectionFormDB
+      await indexedDBService.clearAll();
+
+      // 2. Clear events and stats in DHIS2PWA
+      await storage.clearAllEvents();
+
+      // 3. Update state
+      dispatch({
+        type: ActionTypes.UPDATE_STATS,
+        payload: {
+          totalEvents: 0,
+          pendingEvents: 0,
+          syncedEvents: 0,
+          errorEvents: 0
+        }
+      });
+
+      dispatch({
+        type: ActionTypes.UPDATE_PENDING_EVENTS,
+        payload: []
+      });
+
+      showToast('All inspections and drafts cleared', 'success');
+      return true;
+    } catch (error) {
+      console.error('Failed to clear all inspections:', error);
+      showToast(`Failed to clear records: ${error.message}`, 'error');
+      return false;
     }
   };
 
@@ -1158,6 +1428,7 @@ export function AppProvider({ children }) {
     syncEvents,
     retryEvent,
     deleteEvent,
+    clearAllInspections,
     updateStats,
     showToast,
     hideToast,
